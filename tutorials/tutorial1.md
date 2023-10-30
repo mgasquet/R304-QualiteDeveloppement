@@ -13,19 +13,19 @@ Au-delà de l'aspect versioning que vous connaissez déjà, git est aussi un out
 
 Par exemple, dans un projet, plusieurs personnes vont travailler sur différentes fonctionnalités (par exemple, une **user story** dans un sprint **SCRUM**). A un moment (à la fin du sprint) il y a besoin d'intégrer ces fonctionnalités au produit final. C'est là qu'intervient le **merging**. Dans certains cas, si deux développeurs ont modifié le même fichier et qu'il est difficile d'appliquer les règles de fusion automatique, un **conflit** survient. C'est alors au développeur de prendre la main est de décider du fichier final qui sera conservé (version du fichier 1, version du fichier 2, ou bien, un mix des deux versions).
 
-Comme vous le savez, différentes plateformes permettent de gérer des dépôts distants : **Github**, **Gitlab**, **Bitbucket**.... En plus de gérer la "mise en cloud" du repository que vous connaissez déjà, ces plateformes proposent aussi des services que nous allons explorer durant les 2 TPs. Lors de la prochaine séance, nous parlerons notamment des fonctionnalités **d'intégration et de déploiement continu** qui permettent de tester, construire, publier notre programme de manière automatique et s'assurer que toutes les fonctionnalités s'intègrent bien ensemble.
+Comme vous le savez, différentes plateformes permettent de gérer des dépôts distants : **GitHub**, **GitLab**, **Bitbucket**.... En plus de gérer la "mise en cloud" du repository que vous connaissez déjà, ces plateformes proposent aussi des services que nous allons explorer durant les 2 TPs. Lors de la prochaine séance, nous parlerons notamment des fonctionnalités **d'intégration et de déploiement continu** qui permettent de tester, construire, publier notre programme de manière automatique et s'assurer que toutes les fonctionnalités s'intègrent bien ensemble.
 
-Lors des deux séances, le fil rouge sera une application **JAVA** (déjà existante mais incomplète) sur laquelle vous travaillerez. D'abord seul et ensuite en collaboration avec d'autres membres de votre groupe. Le but sera alors de versionner son projet et d'y ajouter des nouvelles fonctionnalités. Pendant le premier TP, nous allons utiliser la plateforme **Gitlab** du département informatique, puis, lors du second TP, nous étudierons les **workflows** de la plateforme **Github** qui permettront de tester et déployer automatiquement cette application (et d'autres !).
+Lors des deux séances, le fil rouge sera une application **JAVA** (déjà existante mais incomplète) sur laquelle vous travaillerez. D'abord seul et ensuite en collaboration avec d'autres membres de votre groupe. Le but sera alors de versionner son projet et d'y ajouter des nouvelles fonctionnalités. Pendant le premier TP, nous allons utiliser la plateforme **GitLab** du département informatique, puis, lors du second TP, nous étudierons les **workflows** de la plateforme **GitHub** qui permettront de tester et déployer automatiquement cette application (et d'autres !).
 
 ## Rappels
 
-Normalement, vous avez appris à vous servir de **git** (et du **Gitlab** de l'IUT) depuis l'année dernière. Nous allons revenir rapidement sur les notions élémentaires de base sans trop approfondir. Si vous êtes déjà à l'aise avec **git** vous pouvez survoler cette section, mais il peut être intéressant de la lire pour se remettre dans le bain ou si si n'avez pas touché à git (et gitlab) depuis longtemps !
+Normalement, vous avez appris à vous servir de **git** (et du [**GitLab** de l'IUT](https://gitlabinfo.iutmontp.univ-montp2.fr/) depuis l'année dernière. Nous allons revenir rapidement sur les notions élémentaires de base sans trop approfondir. Si vous êtes déjà à l'aise avec **git** vous pouvez survoler cette section, mais il peut être intéressant de la lire pour se remettre dans le bain ou si si n'avez pas touché à git (et gitlab) depuis longtemps !
 
-En complément, vous pouvez aussi aller consulter le [tutoriel d'introduction à git de première année](https://gitlabinfo.iutmontp.univ-montp2.fr/valicov/tutoGit1ereAnnee).
+En complément, vous pouvez aussi aller consulter le [tutoriel d'introduction à git de première année](https://gitlabinfo.iutmontp.univ-montp2.fr/valicov/tutoGit1ereAnnee). Il existe également des nombreux tutoriels en ligne. Nous vous recommandons le [Git-it-electron](https://github.com/jlord/git-it-electron) qui est à la fois interactif et ludique.
 
 ### Identification et clé de sécurité
 
-Pour que vous puissiez versionner vos projets avec le gitlab de l'IUT, il faut que vous soyez identifié grâce à une clé de sécurité (principe de clé de chiffrement publique/privée). Normalement, vous avez déjà réalisé cette étape l'année dernière, mais au cas où, voici les actions à réaliser :
+Pour que vous puissiez versionner vos projets avec le [**GitLab** de l'IUT](https://gitlabinfo.iutmontp.univ-montp2.fr/), il faut que vous soyez identifié grâce à une clé de sécurité (principe de clé de chiffrement publique/privée). Normalement, vous avez déjà réalisé cette étape l'année dernière ou en début de semestre (en cours de Développement Web - PHP), mais au cas où, voici les actions à réaliser :
 
 * Dans un terminal, exécutez la commande suivante :
 
@@ -33,7 +33,7 @@ Pour que vous puissiez versionner vos projets avec le gitlab de l'IUT, il faut q
 ssh-keygen
 ```
 
-Une **paire de clé** va être générée. Vous pouvez entrer un mot de passe pour sécuriser votre clé (utile, en cas de vol, personne ne pourra l'utiliser...). Vous pouvez également changer le répertoire de destination et le nom du fichier...Mais il est rpéférable de garder vos clés dans le dossier `.ssh` ciblé.
+Une **paire de clés** va être générée. Vous pouvez entrer un mot de passe pour sécuriser votre clé (utile, en cas de vol, personne ne pourra l'utiliser...). Vous pouvez également changer le répertoire de destination et le nom du fichier...Mais il est rpéférable de garder vos clés dans le dossier `.ssh` ciblé.
 
 Il faut partager la clé **publique** à gitlab. Pour cela, copiez la clé dans votre presse-papier avec la commande suivante :
 
@@ -80,7 +80,7 @@ Les différents **commits** réalisés doivent porter des informations sur leur 
 
 Ces commandes configurent l'identité du développeur **seulement pour le repostiroy courant**. Il est néanmoins possible de définir une identité **globale** en ajoutant le paramètre `--global`. Ainsi, la commande n'aura pas à être rappelée lorsqu'on a créé un nouveau repository. Il est néanmoins toujours possible de configurer une identité globale générale et une identité spécifique pour un repository donné, si besoin.
 
-Pour le **Gitlab** du département, précisez votre nom/prénom pour `user.name` et votre adresse mail universitaire pour `user.email`.
+Pour le **GitLab** du département, précisez votre nom/prénom pour `user.name` et votre adresse mail universitaire pour `user.email`.
 
 ### Les quatre commandes essentielles
 
@@ -189,7 +189,7 @@ git push origin master
 
 ## Prise en main
 
-Le but de cette première section est de prendre en main l'application qui vous est fournie, de la comprendre, et de travailler dessus avec **git**. Pour la plateforme en ligne, nous utiliserons [le Gitlab du département informatique](https://gitlabinfo.iutmontp.univ-montp2.fr). Les fonctionnalités présentées à travers **Gitlab** sont applicables à d'autres plateformes ! Il suffit de s'adapter au fonctionnement et spécificités de la plateforme (comme quand vous apprenez un nouveau langage de programmation).
+Le but de cette première section est de prendre en main l'application qui vous est fournie, de la comprendre, et de travailler dessus avec **git**. Pour la plateforme en ligne, nous utiliserons [le GitLab du département informatique](https://gitlabinfo.iutmontp.univ-montp2.fr). Les fonctionnalités présentées à travers **GitLab** sont applicables à d'autres plateformes ! Il suffit de s'adapter au fonctionnement et spécificités de la plateforme (comme quand vous apprenez un nouveau langage de programmation).
 
 ### Installation du projet
 
@@ -203,7 +203,7 @@ Pour l'instant, vous allez simplement utiliser un **fork** pour créer votre pro
 
 <div class="exercise">
 
-1. Rendez-vous sur [le dépôt du projet](https://gitlabinfo.iutmontp.univ-montp2.fr/qualit-de-developpement-semestre-3/editeur-de-texte/) puis réalisez un **fork**. Sur Gitlab, il s'agit du bouton en haut à droite du repository. Au niveau de **Project URL**, dans le champ **Select a namespace** précisez votre nom d'utilisateur (nom + première lettre prénom). Réglez la visibilité du projet sur `public (important pour la suite !).
+1. Rendez-vous sur [le dépôt du projet](https://gitlabinfo.iutmontp.univ-montp2.fr/qualit-de-developpement-semestre-3/editeur-de-texte/) puis réalisez un **fork**. Sur GitLab, il s'agit du bouton en haut à droite du repository. Au niveau de **Project URL**, dans le champ **Select a namespace** précisez votre nom d'utilisateur (nom + première lettre prénom). Réglez la visibilité du projet sur `public (important pour la suite !).
 
 2. Une fois le **fork** achevé, vous obtenez alors un novueau dépôt dans votre espace personnel. Sur votre machine, **clonez** ce dépôt (en utilisant la bonne commande git).
 
@@ -389,7 +389,7 @@ Il ne restera alors que deux commits (dont on peut changer le message).
 
 3. Observez l'historique des commits.
 
-4. Poussez sur votre repository sur Gitlab **en forçant**.
+4. Poussez sur votre repository sur GitLab **en forçant**.
 
 </div>
 
@@ -419,7 +419,7 @@ Maintenant, nous allons ajouter une troisième commande ! Là aussi, effectuez p
 
     Définissez donc une classe adéquate pour cette `commande` et enregistrez là dans la `factory`.
 
-3. Testez votre commande. Regroupez vos commits puis poussez vos modifications sur votre repository **Gitlab**.
+3. Testez votre commande. Regroupez vos commits puis poussez vos modifications sur votre repository **GitLab**.
 
 </div>
 
@@ -627,13 +627,13 @@ Nous allons mettre en application ce que vous avez appris sur les **branches** e
 
 ## Collaborer sur un projet
 
-Jusqu'ici, vous avez travaillé seul, mais le but de **git** est aussi de pouvoir travailler en équipe ! Nous allons voir comment collaborer efficacement et aussi voir ce que **Gitlab** propose comme outils, dans ce sens.
+Jusqu'ici, vous avez travaillé seul, mais le but de **git** est aussi de pouvoir travailler en équipe ! Nous allons voir comment collaborer efficacement et aussi voir ce que **GitLab** propose comme outils, dans ce sens.
 
 ### Ouverture et gestion d'une issue
 
 Vous et les autres étudiants de votre groupe ont inséré un mini bug lors de l'exercice précédent. Nous nous plaçons alors dans le contexte où vous découvrez cette application et rencontrez ce bug ! (évidemment, le projet n'a pas de tests unitaires, sinon il aurait été détecté plus tôt !).  
 
-Comment faire pour reporter ce bug au développeur ? Gitlab propose simplement une rubrique `Issues` (dans le menu de gauche du repository) qui va servir à l'ouverture et la fermeture de **tickets**. Ces **tickets** sont souvent des signalements de bug, mais on peut aussi avoir des suggestions de fonctionnalités, etc... Un autre utilisateur peut même réaliser du code solution et le proposer en résolution du ticket, si le propriétaire du repository l'accepte !
+Comment faire pour reporter ce bug au développeur ? GitLab propose simplement une rubrique `Issues` (dans le menu de gauche du repository) qui va servir à l'ouverture et la fermeture de **tickets**. Ces **tickets** sont souvent des signalements de bug, mais on peut aussi avoir des suggestions de fonctionnalités, etc... Un autre utilisateur peut même réaliser du code solution et le proposer en résolution du ticket, si le propriétaire du repository l'accepte !
 
 Pour la suite des exercices, trouvez-vous un binôme qui est au même point que vous. C'est très important, **vous ne pouvez pas faire le reste du TP seul**. Si l'attente est trop longue, vous pouvez directement passer à la section 4 **"Bonus (pour les plus rapides)"**, en attendant. Éventuellement, vous pouvez essayer de vous débrouiller à 3 si un binôme n'est pas possible avec la configuration du groupe.
 
@@ -641,15 +641,15 @@ Pour la suite des exercices, trouvez-vous un binôme qui est au même point que 
 
 1. **Clonez** le repository d'un collègue qui en est au même point que vous et testez d'exécuter son programme pour trouver le bug qu'il a inséré au niveau de la commande `clear`.
 
-2. Sur le repository **Gitlab** de votre collègue, créez une `issue` et expliquez le bug que vous rencontrez. Une **issue** est en fait un fil de discussion où différentes personnes peuvent intervenir.
+2. Sur le repository **GitLab** de votre collègue, créez une `issue` et expliquez le bug que vous rencontrez. Une **issue** est en fait un fil de discussion où différentes personnes peuvent intervenir.
 
 3. Lorsque votre collègue a fait de même avec **votre repository**, **relevez l'identifiant** (numéro) de l'issue puis retournez dans votre projet et développez un **bugfix**. Il faudra respecter les conventions citées plus tôt pour les branches. Pour le message final du commit, veillez à bien indiquer dans la description le texte suivant : `Closes #numeroIssue` (en remplaçant `numeroIssue`, bien sûr).
 
-4. Une fois le **bugfix** publié puis ultimement intégré à `master` via la fusion de la branche `development`, retournez voir l'issue sur **Gitlab**. Vous constaterez que votre commit a automatiquement été attaché à cette **issue** et qu'elle a même été fermée !
+4. Une fois le **bugfix** publié puis ultimement intégré à `master` via la fusion de la branche `development`, retournez voir l'issue sur **GitLab**. Vous constaterez que votre commit a automatiquement été attaché à cette **issue** et qu'elle a même été fermée !
 
 </div>
 
-Ce qui vient de se passer exploite la notion de **patterns** sur **Gitlab** qui permet de réaliser des actions annexes en se basant sur les messages de **commit**.
+Ce qui vient de se passer exploite la notion de **patterns** sur **GitLab** qui permet de réaliser des actions annexes en se basant sur les messages de **commit**.
 
 Par exemple, le message de commit `Closes #13, #15` ferme les **issues** 13 et 15. Le message `Related to #5` attache le commit sur l'issue 5 sans la fermer (le commit est alors visible sur la page de l'issue). Il est tout à fait possible de combiner pluisuers messages "patterns" et une description normale : `Description..., Closes #6, Related to #13`.
 
@@ -676,7 +676,7 @@ Le fait de faire une demande d'intégration de son code dans le projet d'origine
 
     Il faudra bien respecter le fait d'aller sur la branche de développement puis une branche pour la fonctionnalité, etc...!
 
-4. Une fois la fonctionnalité prête et poussée sur Gitlab, rendez-vous dans votre repository forké puis cliquez sur la rubrique **Code** et **Merge Requests**. Cliquez ensuite sur **New merge request**.
+4. Une fois la fonctionnalité prête et poussée sur GitLab, rendez-vous dans votre repository forké puis cliquez sur la rubrique **Code** et **Merge Requests**. Cliquez ensuite sur **New merge request**.
 
 5. Dans la partie gauche de l'interface est présenté votre repository. Sélectionnez la branche contenant votre nouvelle fonctionnalité. À droite, il s'agit du repository de votre collègue. Sélectionnez la branche de destination (`development`).
 
@@ -704,7 +704,7 @@ Dans l'exercice précédent, vous avez collaboré avec un collègue mais celui-c
 
 2. Pour le **propriétaire** :
     
-    * Dans votre repository Gitlab (pas celui **forké**, celui original), rendez-vous dans la catégorie **Manage** puis **Members**.
+    * Dans votre repository GitLab (pas celui **forké**, celui original), rendez-vous dans la catégorie **Manage** puis **Members**.
 
     * Cliquez sur **Invite members** en haut à droite et ajoutez votre collègue en lui donnant le rôle "Owner".
 
@@ -718,7 +718,7 @@ Dans l'exercice précédent, vous avez collaboré avec un collègue mais celui-c
 
     * Sur ce repository, ajoutez une nouvelle commande `minuscules` similaire à `majuscules` mais pour les minuscules (on utilise `toLowerCase`). Une fois terminé, ne fusionnez pas la branche de votre fonctionnalité sur `development`.
 
-4. Depuis **Gitlab**, créez une **merge request** proposant de fusionner la branche contenant votre **feature** vers `development`. Cette fois, dans la page où vous devez entrer le titre et la description de la requête, précisez votre collègue au niveau du champ `Assignees` et validez.
+4. Depuis **GitLab**, créez une **merge request** proposant de fusionner la branche contenant votre **feature** vers `development`. Cette fois, dans la page où vous devez entrer le titre et la description de la requête, précisez votre collègue au niveau du champ `Assignees` et validez.
 
 5. À partir de [la page principale du site](https://gitlabinfo.iutmontp.univ-montp2.fr/), cliquez sur la catégorie `Merge Requests` puis `Assigned`. Vous pouvez alors visualiser toutes les `merge requests` qui vous ont été assignées.
 
@@ -786,6 +786,6 @@ Si vous êtes en avance, imaginiez et codez une fonctionnalité `undo` permettan
 
 Si vous avez bien tout suivi et intégré, vous devez maintenant être beaucoup plus compétent dans la gestion d'un projet git de manière qualitative, notamment lorsqu'il s'agit de travailler en équipe. Vous devez maintenant impérativement respecter tout cela dans votre parcours étudiant (dans vos SAEs et pour vos futurs projets) et vous y serez forcément confronté en entreprise, notamment dans les SSII. Il faut que les notions abordées lors de ce TP deviennent des automatismes.
 
-Dans le prochain TP, nous allons étudier les **workflows** permettant d'automatiser certaines tâches sur la plateforme en ligne, comme le **test**, le **déploiement** et la publication des programmes, à partir du repository. Pour cela, nous allons changer de plateforme et utiliser **Github**.
+Dans le prochain TP, nous allons étudier les **workflows** permettant d'automatiser certaines tâches sur la plateforme en ligne, comme le **test**, le **déploiement** et la publication des programmes, à partir du repository. Pour cela, nous allons changer de plateforme et utiliser **GitHub**.
 
 Nous avons exploré pas mal de nouvelles commandes de **git** à travers ce premier TP, mais il en existe beaucoup d'autres et certaines très utiles ! Je vous conseille donc de vous informer sur ce sujet, en complément.
