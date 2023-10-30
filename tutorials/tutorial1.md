@@ -19,7 +19,7 @@ Lors des deux séances, le fil rouge sera une application **JAVA** (déjà exist
 
 ## Rappels
 
-Normalement, vous avez appris à vous servir de **git** (et du [**GitLab** de l'IUT](https://gitlabinfo.iutmontp.univ-montp2.fr/) depuis l'année dernière. Nous allons revenir rapidement sur les notions élémentaires de base sans trop approfondir. Si vous êtes déjà à l'aise avec **git** vous pouvez survoler cette section, mais il peut être intéressant de la lire pour se remettre dans le bain ou si si n'avez pas touché à git (et gitlab) depuis longtemps !
+Normalement, vous avez appris à vous servir de **git** (et du [**GitLab** de l'IUT](https://gitlabinfo.iutmontp.univ-montp2.fr/) depuis l'année dernière. Nous allons revenir rapidement sur les notions élémentaires de base sans trop approfondir. Si vous êtes déjà à l'aise avec **git** vous pouvez survoler cette section, mais il peut être intéressant de la lire pour se remettre dans le bain ou si si n'avez pas touché à git (et GitLab) depuis longtemps !
 
 En complément, vous pouvez aussi aller consulter le [tutoriel d'introduction à git de première année](https://gitlabinfo.iutmontp.univ-montp2.fr/valicov/tutoGit1ereAnnee). Il existe également des nombreux tutoriels en ligne. Nous vous recommandons le [Git-it-electron](https://github.com/jlord/git-it-electron) qui est à la fois interactif et ludique.
 
@@ -33,9 +33,9 @@ Pour que vous puissiez versionner vos projets avec le [**GitLab** de l'IUT](http
 ssh-keygen
 ```
 
-Une **paire de clés** va être générée. Vous pouvez entrer un mot de passe pour sécuriser votre clé (utile, en cas de vol, personne ne pourra l'utiliser...). Vous pouvez également changer le répertoire de destination et le nom du fichier...Mais il est rpéférable de garder vos clés dans le dossier `.ssh` ciblé.
+Une **paire de clés** va être générée. Vous pouvez entrer un mot de passe pour sécuriser votre clé (utile, en cas de vol, personne ne pourra l'utiliser...). Vous pouvez également changer le répertoire de destination et le nom du fichier... Mais il est préférable de garder vos clés dans le dossier `.ssh` ciblé.
 
-Il faut partager la clé **publique** à gitlab. Pour cela, copiez la clé dans votre presse-papier avec la commande suivante :
+Il faut partager la clé **publique** à GitLab. Pour cela, copiez la clé dans votre presse-papier avec la commande suivante :
 
 ```bash
 clip < ~/.ssh/id_rsa.pub
@@ -43,7 +43,7 @@ clip < ~/.ssh/id_rsa.pub
 
 À adapter si vous avez changé le nom/la destination de la clé.
 
-Connectez-vous ensuite au [gitlab de l'IUT](https://gitlabinfo.iutmontp.univ-montp2.fr/users/sign_in) en utilisant vos identifiants du département (même chose que pour accéder aux machines).
+Connectez-vous ensuite au [GitLab de l'IUT](https://gitlabinfo.iutmontp.univ-montp2.fr/users/sign_in) en utilisant vos identifiants du département (même chose que pour accéder aux machines).
 
 En haut à gauche, cliquez sur votre image de profil puis `Preférences`. Sur la nouvelle page, cliquez sur `SSH Keys`. Dans la zone `SSH Fingerprints` collez votre clé publique. Donez lui un titre et sauvegardez-la. Vous êtes prêt à travailler !
 
@@ -55,9 +55,9 @@ Il y a deux moyens de réaliser le versioning d'un projet :
 
 * Initialiser le dépôt en local puis le publier sur un nouveau dépôt distant. Par exemple, pour un projet qui existe déjà, mais qui n'a pas encore été versionné.
 
-Nous allons d'abord voir comment faire dans la première situation. Nous allons travailler sur **gitlab**, mais cela fonctionne de la même manière sur toutes les plateformes.
+Nous allons d'abord voir comment faire dans la première situation. Nous allons travailler sur **GitLab**, mais cela fonctionne de la même manière sur toutes les plateformes.
 
-Rendez-vous sur [le gitlab de l'IUT](https://gitlabinfo.iutmontp.univ-montp2.fr). Cliquez sur le bouton `New project` puis `Create blank project`. Décochez la case proposant d'initialiser le projet avec un fichier **README** puis créez le projet.
+Rendez-vous sur [le GitLab de l'IUT](https://gitlabinfo.iutmontp.univ-montp2.fr). Cliquez sur le bouton `New project` puis `Create blank project`. Pensez à décocher la case proposant d'initialiser le projet avec un fichier **README** puis créez le projet.
 
 Afin de **cloner** ce projet, récupérez son adresse en cliquant sur le bouton `Clone`. Prenez la première adresse dans le champ `Clone with SSH`.
 
@@ -162,30 +162,30 @@ Au lieu de **cloner** un repository distant, on peut aussi en créer un en local
 
 2. On initialise le repository en local avec la commande suivante, exécutée à la racine du projet :
 
-```bash
-git init
-```
+    ```bash
+    git init
+    ```
 
 3. On associe le dépôt local avec le dépôt distant :
 
-```bash
-git remote add origin adresse
-```
+    ```bash
+    git remote add origin adresse
+    ```
 
-L'adresse est la même que celle utilisée lorsqu'on clone le repository.
+    L'adresse est la même que celle utilisée lorsqu'on clone le repository.
 
 4. On réalise un **commit** initial (après un **add**!) :
 
-```bash
-git add .
-git commit -m "Intialisation du dépôt"
-```
+    ```bash
+    git add .
+    git commit -m "Intialisation du dépôt"
+    ```
 
 5. Et enfin, on fait un **push** vers le respository distant :
 
-```bash
-git push origin master
-```
+    ```bash
+    git push origin master
+    ```
 
 ## Prise en main
 
@@ -197,7 +197,7 @@ Afin de récupérer les **sources du projet** vous allez réaliser un **fork**.
 
 Cette action consiste à copier un repository dans votre espace de travail, ce qui vous permet alors de travailler sur une version dérivée de l'application sans directement affecter le repository d'origine (où de tout façon vous n'avez pas les droits, normalement).
 
-À terme, vous pouvez proposer d'intégrer vos ajouts directement au repository principal Ce mécanisme peut s'avérer utile si un développeur externe au projet veut proposer une amélioration ou bien simplement un **bugfix**. Le(s) propriétaire(s) du repository pourront intégrer automatiquement (ou refuser) les changements proposés.
+À terme, vous pouvez proposer d'intégrer vos ajouts directement au repository principal. Ce mécanisme peut s'avérer utile si un développeur externe au projet veut proposer une amélioration ou bien simplement un **bugfix**. Le(s) propriétaire(s) du repository pourront intégrer automatiquement (ou refuser) les changements proposés.
 
 Pour l'instant, vous allez simplement utiliser un **fork** pour créer votre propre version dérivée du projet du TP.
 
@@ -215,7 +215,7 @@ Pour l'instant, vous allez simplement utiliser un **fork** pour créer votre pro
 
 </div>
 
-L'application fournie est un mini éditeur de texte en mode ligne de commande. Le programme est capable de recevoir et gérer des commandes et d'exécuter des actions sur le "document texte" que gère l'application.
+L'application fournie est un mini éditeur de texte en mode lignes de commande. Le programme est capable de recevoir et gérer des commandes et d'exécuter des actions sur le "document texte" que gère l'application.
 
 On a le fonctionnement suivant :
 
@@ -227,7 +227,7 @@ On a le fonctionnement suivant :
 
 - La classe **CommandInvoker** permet simplement d'exécuter une commande. Pour l'instant, cette classe peut vous sembler assez inutile, mais vous l'améliorerez dans le futur (si vous êtes en avance !).
 
-- Enfin, le **main** va lire les entrées utilisateurs, extraire le nom de la commande et les paramètres. La factory est ensuite appelée pour instancier la commande correspondante et enfin, l'**invoker** l'exécute. On se fixe comme règle que l'utilisateur doit séparer les différents paramètres d'une commande par des **points virgules**.
+- Enfin, la méthode principale (classe **Main**) va lire les entrées utilisateurs, extraire le nom de la commande et les paramètres. La factory est ensuite appelée pour instancier la commande correspondante et enfin, l'**invoker** l'exécute. On se fixe comme règle que l'utilisateur doit séparer les différents paramètres d'une commande par des **points virgules**.
 
 **Attention**, dans les commandes, le tableau des paramètres est passé tel quel, sans autre traitement. Donc, la première case de ce tableau (index 0) contient le **nom de la commande**. Pour obtenir les paramètres qui intéressent la commande, il faut aller chercher à partir de la seconde case (d'index 1).
 
@@ -261,7 +261,7 @@ Vous l'aurez compris, votre objectif sera de doter notre document de **nouvelles
 
 6. Effectuez un petit changement, par exemple, l'ajout d'un fichier **README.md**. Faites en sorte de faire un nouveau commit et observez de nouveau l'historique avec **git log**.
 
-7. Synchronisez vos changements avec le dépôt distant en utilisant **git push**. Au niveau de la page du projet sur **gitlab** vérifiez que les dossiers/fichiers que vous avez spécifiés dans le fichier **.gitignore** ne sont pas versionnés.
+7. Synchronisez vos changements avec le dépôt distant en utilisant **git push**. Au niveau de la page du projet sur **GitLab** vérifiez que les dossiers/fichiers que vous avez spécifiés dans le fichier **.gitignore** ne sont pas versionnés.
 
 </div>
 
