@@ -13,7 +13,7 @@ Au-delà de l'aspect versioning que vous connaissez déjà, git est aussi un out
 
 Par exemple, dans un projet, plusieurs personnes vont travailler sur différentes fonctionnalités (par exemple, une **user story** dans un sprint **SCRUM**). A un moment (à la fin du sprint) il y a besoin d'intégrer ces fonctionnalités au produit final. C'est là qu'intervient le **merging**. Dans certains cas, si deux développeurs ont modifié le même fichier et qu'il est difficile d'appliquer les règles de fusion automatique, un **conflit** survient. C'est alors au développeur de prendre la main est de décider du fichier final qui sera conservé (version du fichier 1, version du fichier 2, ou bien, un mix des deux versions).
 
-Comme vous le savez, différentes plateformes permettent de gérer des dépôts distants : **GitHub**, **GitLab**, **Bitbucket**.... En plus de gérer la "mise en cloud" du repository que vous connaissez déjà, ces plateformes proposent aussi des services que nous allons explorer durant les 2 TPs. Lors de la prochaine séance, nous parlerons notamment des fonctionnalités **d'intégration et de déploiement continu** qui permettent de tester, construire, publier notre programme de manière automatique et s'assurer que toutes les fonctionnalités s'intègrent bien ensemble.
+Comme vous le savez, différentes plateformes permettent de gérer des dépôts distants : **GitHub**, **GitLab**, **Bitbucket**.... En plus de gérer la "mise en cloud" du dépôt que vous connaissez déjà, ces plateformes proposent aussi des services que nous allons explorer durant les 2 TPs. Lors de la prochaine séance, nous parlerons notamment des fonctionnalités **d'intégration et de déploiement continu** qui permettent de tester, construire, publier notre programme de manière automatique et s'assurer que toutes les fonctionnalités s'intègrent bien ensemble.
 
 Lors des deux séances, le fil rouge sera une application **JAVA** (déjà existante mais incomplète) sur laquelle vous travaillerez. D'abord seul et ensuite en collaboration avec d'autres membres de votre groupe. Le but sera alors de versionner son projet et d'y ajouter des nouvelles fonctionnalités. Pendant le premier TP, nous allons utiliser la plateforme **GitLab** du département informatique, puis, lors du second TP, nous étudierons les **workflows** de la plateforme **GitHub** qui permettront de tester et déployer automatiquement cette application (et d'autres !).
 
@@ -47,11 +47,11 @@ Connectez-vous ensuite au [GitLab de l'IUT](https://gitlabinfo.iutmontp.univ-mon
 
 En haut à gauche, cliquez sur votre image de profil puis `Preférences`. Sur la nouvelle page, cliquez sur `SSH Keys`. Dans la zone `SSH Fingerprints` collez votre clé publique. Donez lui un titre et sauvegardez-la. Vous êtes prêt à travailler !
 
-### Créer et cloner un repository distant
+### Créer et cloner un dépôt distant
 
 Il y a deux moyens de réaliser le versioning d'un projet : 
 
-* Cloner un repository distant (un déjà existant ou bien un fraichement créé) ce qui permet de récupérer les sources sur une machine. Le projet est alors automatiquement lié au dépôt distant.
+* Cloner un dépôt distant (un déjà existant ou bien un fraichement créé) ce qui permet de récupérer les sources sur une machine. Le projet est alors automatiquement lié au dépôt distant.
 
 * Initialiser le dépôt en local puis le publier sur un nouveau dépôt distant. Par exemple, pour un projet qui existe déjà, mais qui n'a pas encore été versionné.
 
@@ -72,15 +72,15 @@ Cette commande fonctionne également pour les projets déjà existants, bien ent
 **Identité du développeur**
 
 ```bash
-git config user.name "nom"
-git config user.email "adresse"
+git config --global user.name "nom"
+git config --global user.email "adresse"
 ```
 
 Les différents **commits** réalisés doivent porter des informations sur leur auteur. De plus, les plateformes de gestion de dépôts distants ont besoin de ces informations pour identifier le profil de l'utilisateur (sur le site) ayant effectué un commit.
 
-Ces commandes configurent l'identité du développeur **seulement pour le repostiroy courant**. Il est néanmoins possible de définir une identité **globale** en ajoutant le paramètre `--global`. Ainsi, la commande n'aura pas à être rappelée lorsqu'on a créé un nouveau repository. Il est néanmoins toujours possible de configurer une identité globale générale et une identité spécifique pour un repository donné, si besoin.
+Ces commandes configurent l'identité du développeur de manière **globale** (pour tous les dépôts). Il est néanmoins possible de définir une identité **locale** (pour un dépôt en particulier) si on se place dans le dépôt concerné et qu'on exécute la commande sans spécifier le paramètre `--global`.
 
-Pour le **GitLab** du département, précisez votre nom/prénom pour `user.name` et votre adresse mail universitaire pour `user.email`.
+Pour le **Gitlab** du département, précisez votre nom/prénom pour `user.name` et votre adresse mail universitaire pour `user.email`.
 
 ### Les quatre commandes essentielles
 
@@ -94,7 +94,7 @@ La première commande va vous permettre d'ajouter des fichiers à traquer :
 git add element
 ```
 
-Par défaut, tous les changements de fichiers ne sont pas automatiquement traqués par **git**. Avant d'effectuer un **commit**, il faut dire les fichiers qu'on ajoute. Si on précise un dossier, tous ses fichiers (et sous-dossiers) seront ajoutés, récursivement. Donc, si on souhaite ajouter tous les fichiers, il suffit de faire, depuis la racine du **repository** :
+Par défaut, tous les changements de fichiers ne sont pas automatiquement traqués par **git**. Avant d'effectuer un **commit**, il faut dire les fichiers qu'on ajoute. Si on précise un dossier, tous ses fichiers (et sous-dossiers) seront ajoutés, récursivement. Donc, si on souhaite ajouter tous les fichiers, il suffit de faire, depuis la racine du **dépôt** :
 
 ```bash
 git add .
@@ -108,13 +108,13 @@ En effet, le point "." désigne le dossier courant. On le rappelle encore, il fa
 git commit -m "Message du commit"
 ```
 
-Cette commande permet donc de créer un **point d'ancrage** pour versionner l'état actuel de votre code. Une **référence** unique (à votre repository) est alors créée. On l'utilise donc comme une commande de sauvegarde.
+Cette commande permet donc de créer un **point d'ancrage** pour versionner l'état actuel de votre code. Une **référence** unique (à votre dépôt) est alors créée. On l'utilise donc comme une commande de sauvegarde.
 
 Le **message** est un élément obligatoire. Il indique ce qui a changé depuis le dernier commit, et s'affichera aussi dans l'historique.
 
 **Push**
 
-Enfin, à tout moment, on peut **pousser** tous les **commits** effectués en local afin de les synchroniser avec le repository distant en utilisant la commande :
+Enfin, à tout moment, on peut **pousser** tous les **commits** effectués en local afin de les synchroniser avec le dépôt distant en utilisant la commande :
 
 ```bash
 git push nom_distant nom_branche
@@ -124,7 +124,7 @@ Le paramètre `nom_branche` correspond à la **branche** dans laquelle vous vous
 
 **Pull**
 
-De l'autre côté, si vous souhaitez récupérer les modifications apportées sur un repository distant afin de mettre à jour votre repository local (par exemple, si un commit a été poussé par un collègue sur le repository distant) il faut utiliser :
+De l'autre côté, si vous souhaitez récupérer les modifications apportées sur un dépôt distant afin de mettre à jour votre dépôt local (par exemple, si un commit a été poussé par un collègue sur le dépôt distant) il faut utiliser :
 
 ```bash
 git pull nom_distant nom_branche
@@ -146,7 +146,7 @@ Néanmoins, on préférera se déplacer vers une **branche** ou bien un **tag** 
 
 Parfois, dans l'environnement de travail, il y a des éléments (fichiers/dossiers) qu'il n'est pas souhaitable de versionner. Par exemple, les **dépendances** d'un projet (qui sont généralement lourdes et installées de manière externe) ou bien encore, les **fichiers de classes compilées** qui ne font pas partie du code source.
 
-Pour faire en sorte que **git** ne traque pas certains éléments, il suffit de créer un fichier **.gitignore** à la racine du repository. On peut alors lui préciser des chemins de fichiers ou des chemins de dossiers à ignorer (chemin depuis la racine du repository). Les chemins des dossiers doivent terminer par le séparateur **/**  
+Pour faire en sorte que **git** ne traque pas certains éléments, il suffit de créer un fichier **.gitignore** à la racine du dépôt. On peut alors lui préciser des chemins de fichiers ou des chemins de dossiers à ignorer (chemin depuis la racine du dépôt). Les chemins des dossiers doivent terminer par le séparateur **/**  
 Par exemple :
 
 ```bash
@@ -154,13 +154,13 @@ exemple/a/mon_fichier_inutile.txt
 mon_fichier_inutile2.txt
 exemple/a/dossier_a_ignorer/
 ```
-### Créer et publier un repository
+### Créer et publier un dépôt
 
-Au lieu de **cloner** un repository distant, on peut aussi en créer un en local puis le publier sur un repository distant vierge. Pour cela :
+Au lieu de **cloner** un dépôt distant, on peut aussi en créer un en local puis le publier sur un dépôt distant vierge. Pour cela :
 
-1. On crée le repository distant
+1. On crée le dépôt distant
 
-2. On initialise le repository en local avec la commande suivante, exécutée à la racine du projet :
+2. On initialise le dépôt en local avec la commande suivante, exécutée à la racine du projet :
 
     ```bash
     git init
@@ -172,7 +172,7 @@ Au lieu de **cloner** un repository distant, on peut aussi en créer un en local
     git remote add origin adresse
     ```
 
-    L'adresse est la même que celle utilisée lorsqu'on clone le repository.
+    L'adresse est la même que celle utilisée lorsqu'on clone le dépôt.
 
 4. On réalise un **commit** initial (après un **add**!) :
 
@@ -195,19 +195,19 @@ Le but de cette première section est de prendre en main l'application qui vous 
 
 Afin de récupérer les **sources du projet** vous allez réaliser un **fork**.
 
-Cette action consiste à copier un repository dans votre espace de travail, ce qui vous permet alors de travailler sur une version dérivée de l'application sans directement affecter le repository d'origine (où de tout façon vous n'avez pas les droits, normalement).
+Cette action consiste à copier un dépôt dans votre espace de travail, ce qui vous permet alors de travailler sur une version dérivée de l'application sans directement affecter le dépôt d'origine (où de tout façon vous n'avez pas les droits, normalement).
 
-À terme, vous pouvez proposer d'intégrer vos ajouts directement au repository principal. Ce mécanisme peut s'avérer utile si un développeur externe au projet veut proposer une amélioration ou bien simplement un **bugfix**. Le(s) propriétaire(s) du repository pourront intégrer automatiquement (ou refuser) les changements proposés.
+À terme, vous pouvez proposer d'intégrer vos ajouts directement au dépôt principal. Ce mécanisme peut s'avérer utile si un développeur externe au projet veut proposer une amélioration ou bien simplement un **bugfix**. Le(s) propriétaire(s) du dépôt pourront intégrer automatiquement (ou refuser) les changements proposés.
 
 Pour l'instant, vous allez simplement utiliser un **fork** pour créer votre propre version dérivée du projet du TP.
 
 <div class="exercise">
 
-1. Rendez-vous sur [le dépôt du projet](https://gitlabinfo.iutmontp.univ-montp2.fr/qualit-de-developpement-semestre-3/editeur-de-texte/) puis réalisez un **fork**. Sur GitLab, il s'agit du bouton en haut à droite du repository. Au niveau de **Project URL**, dans le champ **Select a namespace** précisez votre nom d'utilisateur (nom + première lettre prénom). Réglez la visibilité du projet sur `public (important pour la suite !).
+1. Rendez-vous sur [le dépôt du projet](https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/editeur-de-texte/) puis réalisez un **fork**. Sur GitLab, il s'agit du bouton en haut à droite du dépôt. Au niveau de **Project URL**, dans le champ **Select a namespace** précisez votre nom d'utilisateur (nom + première lettre prénom). Réglez la visibilité du projet sur `public (important pour la suite !).
 
-2. Une fois le **fork** achevé, vous obtenez alors un novueau dépôt dans votre espace personnel. Sur votre machine, **clonez** ce dépôt (en utilisant la bonne commande git).
+2. Une fois le **fork** achevé, vous obtenez alors un nouveau dépôt dans votre espace personnel. Sur votre machine, **clonez** ce dépôt (en utilisant la bonne commande git).
 
-3. Configurez vos informations sur le repository courant (**username** et **email**)
+3. Configurez vos informations sur le dépôt courant (**username** et **email**)
 
 4. Ouvrez le projet avec **IntelliJ IDEA**. Laissez le temps au projet de se configurer.
 
@@ -257,7 +257,7 @@ Vous l'aurez compris, votre objectif sera de doter notre document de **nouvelles
 
 4. Effectuez un **commit** ayant pour message "ajout gitignore".
 
-5. Exécutez la commande **git log** pour observer l'historique des commits, vous devriez en voir deux (celui du repository original et le nouveau).
+5. Exécutez la commande **git log** pour observer l'historique des commits, vous devriez en voir deux (celui du dépôt original et le nouveau).
 
 6. Effectuez un petit changement, par exemple, l'ajout d'un fichier **README.md**. Faites en sorte de faire un nouveau commit et observez de nouveau l'historique avec **git log**.
 
@@ -303,13 +303,13 @@ Pour le prochain exercice (et pour pouvoir vous montrer quelque chose d'intéres
 
     En vous inspirant de la classe `CommandeAjouter`, créez une classe `CommandeRemplacer`. Attention, les paramètres fournis dans la commande sont de type `String` et vous avez besoin de nombres `entier`. Vous pouvez alors utiliser la méthode de classe `Integer.parseInt(...)` pour convertir une chaîne de caractères en entier.
 
-    N'oubliez pas de faire plusieurs commits (comme demandé plus haut) pendant le développement de cette fonctionnalité !
+    N'oubliez pas de faire plusieurs commits (comme demandé plus haut) pendant le développement de cette fonctionnalité ! Par exemple, vous pouvez en faire trois en laissant un bug volontairement dans le code du premier commit puis le fixer avec le second commit, et enfin ajouter des commentaires ou de la documentation avec le troisième commit.
 
 4. Enregistrez cette nouvelle commande dans la méthode **createCommand** de `CommandeFactory`, en vous basant sur l'exemple de la commande `ajouter`.
 
 5. Testez que votre nouvelle commande fonctionne comme attendu.
 
-6. Normalement, vous avez effectué plusieurs `commits`. Poussez vos modifications sur le repository distant.
+6. Normalement, vous avez effectué plusieurs `commits`. Poussez vos modifications sur le dépôt distant.
 </div>
 
 ### Regrouper des commits (et éventuellement réparer ses bêtises !)
@@ -324,7 +324,7 @@ On utilise pour cela la commande suivante :
 git rebase -i HEAD~N
 ```
 
-Ici, `N` doit être remplacé par le nombre de commits à sélectionner (les `N` derniers commits). Si on doit veut sélectionner jusqu'au premier commit du repository on remplace le `HEAD~N` par `--root`. Une fois la commande exécutée, une interface s'affiche, en console.  
+Ici, `N` doit être remplacé par le nombre de commits à sélectionner (les `N` derniers commits). Si on doit veut sélectionner jusqu'au premier commit du dépôt on remplace le `HEAD~N` par `--root`. Une fois la commande exécutée, une interface s'affiche, en console.  
 Par exemple :
 
 ```bash
@@ -368,7 +368,11 @@ Ajout du chat
 
 Le **rebasing** s'effectue alors. On peut consulter l'historique pour constater le changement (`git log`).
 
-Depuis cet état, votre repository distant va refuser d'intégrer vos changements car des commits ont disparus...il ne sait plus où vous en êtes. Vous pouvez alors forcer le changement en utilisant l'option `--force` lors du push.   Attention à ne pas abuser de cette option, car il force le repository distant à se synchroniser sur votre version et donc, effacer les différences entre son contenu et votre repository. Il est donc conseillé d'utiliser cette option seulement dans le cas du rebase, comme nous venons de le voir. De plus, on va plutôt utiliser le **rebase** quasi-exclusivement sous les sous-branches comme nous allons le voir bientôt.
+Depuis cet état, votre dépôt distant va refuser d'intégrer vos changements, car des commits ont disparu... Il ne sait plus où vous en êtes. Vous pouvez alors forcer le changement en utilisant l'option `--force` lors du push. Attention à ne pas abuser de cette option, car il force le dépôt distant à se synchroniser sur votre version et donc, effacer les différences entre son contenu et votre dépôt. Il est donc conseillé d'utiliser cette option seulement dans le cas du rebase, comme nous venons de le voir. De plus, on va plutôt utiliser le **rebase** quasi-exclusivement sous les sous-branches comme nous allons le voir bientôt.
+
+Attention, sur **Gitlab**, la branche **master** est protégée contre le `--force`, par défaut. Pour désactiver cette sécurité : sur la page du dépôt, dans le menu à gauche → **Settings** → **Repository** -> **Protected Branches** -> **Expand**. Un peu plus bas sont listées toutes les branches protégées. Si on veut annuler cette protection, il suffit d'activer l'option **Allowed to force push**. 
+
+La protection contre le `--force` a du sens dans un projet concret où on ne travaille jamais directement sur **master**, mais sur les sous-branches.
 
 Il est possible de faire plusieurs fusions avec un seul **rebase** en indiquant plusieurs commits en **pick** :
 
@@ -387,9 +391,11 @@ Il ne restera alors que deux commits (dont on peut changer le message).
 
 1. Regroupez tous les commits ayant servi au développement de la commande `remplacer` en un seul.
 
-3. Observez l'historique des commits.
+2. Observez l'historique des commits.
 
-4. Poussez sur votre repository sur GitLab **en forçant**.
+3. Sur **Gitlab**, désactivez la protection contre le `--force` sur la branche `master` (c'est une mauvaise pratique comme évoqué plus haut, mais pour l'instant nous n'avons pas le choix, car nous ne travaillons que sur une seule branche.)
+
+4. Poussez sur votre dépôt sur GitLab **en forçant**.
 
 </div>
 
@@ -419,7 +425,7 @@ Maintenant, nous allons ajouter une troisième commande ! Là aussi, effectuez p
 
     Définissez donc une classe adéquate pour cette `commande` et enregistrez là dans la `factory`.
 
-3. Testez votre commande. Regroupez vos commits puis poussez vos modifications sur votre repository **GitLab**.
+3. Testez votre commande. Regroupez vos commits puis poussez vos modifications sur votre dépôt **GitLab**.
 
 </div>
 
@@ -431,7 +437,7 @@ Par exemple, imaginons le scénario suivant :
 
 2. On ajoute un fichier de configuration pour la base de données, **avec les identifiants de connexion !** (login / mot de passe)
 
-3. On a oublié de mettre ce fichier de configuration dans le `.gitignore` ! Et on a fait des commits qu'on a poussés sur le repository distant ! N'importe qui peut donc accéder aux identifiants.
+3. On a oublié de mettre ce fichier de configuration dans le `.gitignore` ! Et on a fait des commits qu'on a poussés sur le dépôt distant ! N'importe qui peut donc accéder aux identifiants.
 
 4. On fait un nouveau commit où le fichier est ajouté au .gitignore...on éxécute la commande `git rm -r --cached .` pour prendre en compte cet ajout tardif, comme ça, le fichier de configuration ne sera plus traqué par git. Mais c'est trop tard, on peut remonter l'historique des commits et retourner à une version où ce fichier est bien là!
 
@@ -474,7 +480,7 @@ Bien sûr, si vous faites beaucoup de commits, ce format peut vite devenir lourd
 
 ### Les branches
 
-Vous pouvez visualiser votre **repository** git comme un **arbre**. Une branche est un endroit où on peut effectuer des commits. Au début, cet "arbre" ne possède qu'une seule **branche** (la branche master/main). Sur une branche, à partir de n'importe quel point (un commit, ou même dans un repository qui vient d'être initialisé), il est possible de démarrer une **nouvelle branche** à partir de ce point.
+Vous pouvez visualiser votre **dépôt** git comme un **arbre**. Une branche est un endroit où on peut effectuer des commits. Au début, cet "arbre" ne possède qu'une seule **branche** (la branche master/main). Sur une branche, à partir de n'importe quel point (un commit, ou même dans un dépôt qui vient d'être initialisé), il est possible de démarrer une **nouvelle branche** à partir de ce point.
 
 La nouvelle **branche** créée est une copie (dérivation) de la branche d'où elle a été créée. Par contre, elle évolue différemment. Tous les commits effectués sur cette branche n'affectent pas la branche d'origine.  
 
@@ -484,7 +490,7 @@ Il est alors possible de changer la branche de travail à n'importe quel moment 
 
 Si cette visualisation est encore trop abstraite pour vous, imaginez-vous dans un univers de science-fiction où vous auriez le pouvoir de créer différentes dimensions parallèle à la nôtre et d'y voyager librement ! À terme, si cela est possible, vous aimeriez réunir plusieurs éléments de chaque dimension dans la nôtre ! Mais cela peu parfois occasionner certains soucis... (c'est tout le sujet du comics DC **Crisis on Infinite Earths** où à la fin, cinq terres se retrouvent réunies en une seule).
 
-Dans un repository **git** profesionnel, vous allez usuellement trouver des **branches permanentes** et des **branches temporaires**.
+Dans un dépôt **git** profesionnel, vous allez usuellement trouver des **branches permanentes** et des **branches temporaires**.
 
 Par exemple, pour les **branches permanentes** :
 
@@ -633,17 +639,17 @@ Jusqu'ici, vous avez travaillé seul, mais le but de **git** est aussi de pouvoi
 
 Vous et les autres étudiants de votre groupe ont inséré un mini bug lors de l'exercice précédent. Nous nous plaçons alors dans le contexte où vous découvrez cette application et rencontrez ce bug ! (évidemment, le projet n'a pas de tests unitaires, sinon il aurait été détecté plus tôt !).  
 
-Comment faire pour reporter ce bug au développeur ? GitLab propose simplement une rubrique `Issues` (dans le menu de gauche du repository) qui va servir à l'ouverture et la fermeture de **tickets**. Ces **tickets** sont souvent des signalements de bug, mais on peut aussi avoir des suggestions de fonctionnalités, etc... Un autre utilisateur peut même réaliser du code solution et le proposer en résolution du ticket, si le propriétaire du repository l'accepte !
+Comment faire pour reporter ce bug au développeur ? GitLab propose simplement une rubrique `Issues` (dans le menu de gauche du dépôt) qui va servir à l'ouverture et la fermeture de **tickets**. Ces **tickets** sont souvent des signalements de bug, mais on peut aussi avoir des suggestions de fonctionnalités, etc... Un autre utilisateur peut même réaliser du code solution et le proposer en résolution du ticket, si le propriétaire du dépôt l'accepte !
 
 Pour la suite des exercices, trouvez-vous un binôme qui est au même point que vous. C'est très important, **vous ne pouvez pas faire le reste du TP seul**. Si l'attente est trop longue, vous pouvez directement passer à la section 4 **"Bonus (pour les plus rapides)"**, en attendant. Éventuellement, vous pouvez essayer de vous débrouiller à 3 si un binôme n'est pas possible avec la configuration du groupe.
 
 <div class="exercise">
 
-1. **Clonez** le repository d'un collègue qui en est au même point que vous et testez d'exécuter son programme pour trouver le bug qu'il a inséré au niveau de la commande `clear`.
+1. **Clonez** le dépôt d'un collègue qui en est au même point que vous et testez d'exécuter son programme pour trouver le bug qu'il a inséré au niveau de la commande `clear`.
 
-2. Sur le repository **GitLab** de votre collègue, créez une `issue` et expliquez le bug que vous rencontrez. Une **issue** est en fait un fil de discussion où différentes personnes peuvent intervenir.
+2. Sur le dépôt **GitLab** de votre collègue, créez une `issue` et expliquez le bug que vous rencontrez. Une **issue** est en fait un fil de discussion où différentes personnes peuvent intervenir.
 
-3. Lorsque votre collègue a fait de même avec **votre repository**, **relevez l'identifiant** (numéro) de l'issue puis retournez dans votre projet et développez un **bugfix**. Il faudra respecter les conventions citées plus tôt pour les branches. Pour le message final du commit, veillez à bien indiquer dans la description le texte suivant : `Closes #numeroIssue` (en remplaçant `numeroIssue`, bien sûr).
+3. Lorsque votre collègue a fait de même avec **votre dépôt**, **relevez l'identifiant** (numéro) de l'issue puis retournez dans votre projet et développez un **bugfix**. Il faudra respecter les conventions citées plus tôt pour les branches. Pour le message final du commit, veillez à bien indiquer dans la description le texte suivant : `Closes #numeroIssue` (en remplaçant `numeroIssue`, bien sûr).
 
 4. Une fois le **bugfix** publié puis ultimement intégré à `master` via la fusion de la branche `development`, retournez voir l'issue sur **GitLab**. Vous constaterez que votre commit a automatiquement été attaché à cette **issue** et qu'elle a même été fermée !
 
@@ -661,9 +667,9 @@ Le fait de faire une demande d'intégration de son code dans le projet d'origine
 
 <div class="exercise">
 
-1. Encore une fois, rendez-vous dans le repository de votre collègue. En haut à droite, appuyez sur le bouton **fork**. Validez. Un nouveau repository "forké" à partir de celui de votre collègue est alors disponnible.
+1. Encore une fois, rendez-vous dans le dépôt de votre collègue. En haut à droite, appuyez sur le bouton **fork**. Validez. Un nouveau dépôt "forké" à partir de celui de votre collègue est alors disponnible.
 
-2. Clonez ce "nouveau" repository sur votre machine : comme ce repository forké vous appartient, vous aurez droit de faire des push dessus !
+2. Clonez ce "nouveau" dépôt sur votre machine : comme ce dépôt forké vous appartient, vous aurez droit de faire des push dessus !
 
 3. Dans l'application récupérée, ajoutez une commande `inserer` qui permet d'insérer une chaîne de caractères à partir d'un index donné. Par exemple :
 
@@ -676,17 +682,17 @@ Le fait de faire une demande d'intégration de son code dans le projet d'origine
 
     Il faudra bien respecter le fait d'aller sur la branche de développement puis une branche pour la fonctionnalité, etc...!
 
-4. Une fois la fonctionnalité prête et poussée sur GitLab, rendez-vous dans votre repository forké puis cliquez sur la rubrique **Code** et **Merge Requests**. Cliquez ensuite sur **New merge request**.
+4. Une fois la fonctionnalité prête et poussée sur GitLab, rendez-vous dans votre dépôt forké puis cliquez sur la rubrique **Code** et **Merge Requests**. Cliquez ensuite sur **New merge request**.
 
-5. Dans la partie gauche de l'interface est présenté votre repository. Sélectionnez la branche contenant votre nouvelle fonctionnalité. À droite, il s'agit du repository de votre collègue. Sélectionnez la branche de destination (`development`).
+5. Dans la partie gauche de l'interface est présenté votre dépôt. Sélectionnez la branche contenant votre nouvelle fonctionnalité. À droite, il s'agit du dépôt de votre collègue. Sélectionnez la branche de destination (`development`).
 
 6. Cliquez sur **Compare branches and continue**. Dans la nouvelle fenêtre, donnez un **titre** puis une **description** de votre nouvelle fonctionnalité dans les zones prévues à cet effet. Ensuite, cliquez simplement sur **Create merge request**
 
-7. Une fois que votre collègue aura fait la même chose pour vous, rendez-vous dans votre repository, également dans la catégorie **Merge Requests**. Vous pouvez alors consulter le détail de la requête. Cliquez sur le bouton **Merge** pour finaliser la fusion puis allez constater le changement, sur la branche `development`. N'oubliez pas de **pull** les modifications, en local !
+7. Une fois que votre collègue aura fait la même chose pour vous, rendez-vous dans votre dépôt, également dans la catégorie **Merge Requests**. Vous pouvez alors consulter le détail de la requête. Cliquez sur le bouton **Merge** pour finaliser la fusion puis allez constater le changement, sur la branche `development`. N'oubliez pas de **pull** les modifications, en local !
 
 </div>
 
-Si jamais une `merge request` ne satisfait pas le(s) proprietaire(s) du repository, ils peuvent laisser des commentaires et/ou la fermer.
+Si jamais une `merge request` ne satisfait pas le(s) proprietaire(s) du dépôt, ils peuvent laisser des commentaires et/ou la fermer.
 
 ### Travailler en équipe
 
@@ -696,15 +702,15 @@ La personne qui a été assignée à la `merge request` est chargée de revoir l
 
 S'il y a des choses à corriger, le membre de l'équipe peut laisser plusieurs commentaires ce qui permet à l'auteur de la fonctionnalité de corriger et de faire une nouvelle merge request.
 
-Dans l'exercice précédent, vous avez collaboré avec un collègue mais celui-ci était "extérieur" au projet. Il est bien sûr tout à fait possible d'intégrer d'autres personnes à un repository pour qu'ils aient les mêmes droits que vous. C'est donc ce que nous allons faire dès maintenant !
+Dans l'exercice précédent, vous avez collaboré avec un collègue mais celui-ci était "extérieur" au projet. Il est bien sûr tout à fait possible d'intégrer d'autres personnes à un dépôt pour qu'ils aient les mêmes droits que vous. C'est donc ce que nous allons faire dès maintenant !
 
 <div class="exercise">
 
-1. Vous allez maintenant travailler sur le même repository. Choisissez un membre du binôme qui jouera le rôle du **propriétaire** (celui qui possède le repository) et l'autre du **collaborateur** (celui qui sera invité sur le projet).
+1. Vous allez maintenant travailler sur le même dépôt. Choisissez un membre du binôme qui jouera le rôle du **propriétaire** (celui qui possède le dépôt) et l'autre du **collaborateur** (celui qui sera invité sur le projet).
 
 2. Pour le **propriétaire** :
     
-    * Dans votre repository GitLab (pas celui **forké**, celui original), rendez-vous dans la catégorie **Manage** puis **Members**.
+    * Dans votre dépôt GitLab (pas celui **forké**, celui original), rendez-vous dans la catégorie **Manage** puis **Members**.
 
     * Cliquez sur **Invite members** en haut à droite et ajoutez votre collègue en lui donnant le rôle "Owner".
 
@@ -714,9 +720,9 @@ Dans l'exercice précédent, vous avez collaboré avec un collègue mais celui-c
 
     * Le projet où vous avez été invité devrait apparaitre à la [la racine du gitlab du département](https://gitlabinfo.iutmontp.univ-montp2.fr/).
 
-    * Clonez ce repository. Vous avez maintenant les droits d'accès et surtout d'écriture.
+    * Clonez ce dépôt. Vous avez maintenant les droits d'accès et surtout d'écriture.
 
-    * Sur ce repository, ajoutez une nouvelle commande `minuscules` similaire à `majuscules` mais pour les minuscules (on utilise `toLowerCase`). Une fois terminé, ne fusionnez pas la branche de votre fonctionnalité sur `development`.
+    * Sur ce dépôt, ajoutez une nouvelle commande `minuscules` similaire à `majuscules` mais pour les minuscules (on utilise `toLowerCase`). Une fois terminé, ne fusionnez pas la branche de votre fonctionnalité sur `development`.
 
 4. Depuis **GitLab**, créez une **merge request** proposant de fusionner la branche contenant votre **feature** vers `development`. Cette fois, dans la page où vous devez entrer le titre et la description de la requête, précisez votre collègue au niveau du champ `Assignees` et validez.
 
@@ -736,7 +742,7 @@ Jusqu'ici, nous n'avons fait que des **merge** sans conflits bloquants, c'est-à
 
 <div class="exercise">
 
-1. Reprenez les rôles de l'exercice précédent, vous travaillez toujours sur le même repository.
+1. Reprenez les rôles de l'exercice précédent, vous travaillez toujours sur le même dépôt.
 
 2. Pour le **propriétaire** :
 
@@ -786,6 +792,6 @@ Si vous êtes en avance, imaginiez et codez une fonctionnalité `undo` permettan
 
 Si vous avez bien tout suivi et intégré, vous devez maintenant être beaucoup plus compétent dans la gestion d'un projet git de manière qualitative, notamment lorsqu'il s'agit de travailler en équipe. Vous devez maintenant impérativement respecter tout cela dans votre parcours étudiant (dans vos SAEs et pour vos futurs projets) et vous y serez forcément confronté en entreprise, notamment dans les SSII. Il faut que les notions abordées lors de ce TP deviennent des automatismes.
 
-Dans le prochain TP, nous allons étudier les **workflows** permettant d'automatiser certaines tâches sur la plateforme en ligne, comme le **test**, le **déploiement** et la publication des programmes, à partir du repository. Pour cela, nous allons changer de plateforme et utiliser **GitHub**.
+Dans le prochain TP, nous allons étudier les **workflows** permettant d'automatiser certaines tâches sur la plateforme en ligne, comme le **test**, le **déploiement** et la publication des programmes, à partir du dépôt. Pour cela, nous allons changer de plateforme et utiliser **GitHub**.
 
 Nous avons exploré pas mal de nouvelles commandes de **git** à travers ce premier TP, mais il en existe beaucoup d'autres et certaines très utiles ! Je vous conseille donc de vous informer sur ce sujet, en complément.
