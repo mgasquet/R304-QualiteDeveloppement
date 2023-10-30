@@ -1,4 +1,4 @@
-baseurl: /R5.A.05-ProgrammationAvancee-Web
+baseurl: /R304-QualiteDeveloppement
 permalink: /:categories/:title
 
 markdown: kramdown
