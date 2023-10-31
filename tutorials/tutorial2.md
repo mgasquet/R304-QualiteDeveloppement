@@ -19,9 +19,9 @@ Tout d'abord, vous allez devoir vous inscrire à Github (si ce n'est pas déjà 
 
 2. Copiez la clé que vous aviez généré dans votre presse-papier :
 
-  ```bash
-  clip < ~/.ssh/id_rsa.pub
-  ```
+    ```bash
+    clip < ~/.ssh/id_rsa.pub
+    ```
 
 3. Rendez-vous sur [la page de gestion des clés](https://github.com/settings/keys) de votre profil Github. Cliquez sur **"New SSH key"**.
 
@@ -129,17 +129,17 @@ Pour `PHP`, on retrouve [plus ou moins la même chose](https://www.jetbrains.com
 
 1. Créez un nouveau dépôt vierge sur **Github**. Reprenez votre projet **éditeur de texte** (du TP précédent). Nous allons changer l'adresse du dépôt distant. Pour cela :
 
-  On supprime **origin** (pointant actuellement sur le dépôt Gitlab) :
+    On supprime **origin** (pointant actuellement sur le dépôt Gitlab) :
 
-  ```bash
-  git remote remove origin
-  ```
+    ```bash
+    git remote remove origin
+    ```
 
-  Et on remplace par la nouvelle adresse :
+    Et on remplace par la nouvelle adresse :
 
-  ```bash
-  git remote add origin adresse
-  ```
+    ```bash
+    git remote add origin adresse
+    ```
 
 2. Faites un **push** et vérifiez que votre projet apparait bien sur le dépôt distant **sur Github**.
 
@@ -422,9 +422,9 @@ Concernant les informations pour se connecter au serveur FTP de l'IUT :
 
 9. Dans votre dépôt local, ajoutez la ligne de code suivante dans le fichier `index.php` :
 
-  ```php
-  echo "<p>Nous sommes le <strong>{$date->format('j F Y')}</strong> et il est <strong>{$date->format('H:i')}</strong></p>";
-  ```
+    ```php
+    echo "<p>Nous sommes le <strong>{$date->format('j F Y')}</strong> et il est <strong>{$date->format('H:i')}</strong></p>";
+    ```
 
 10. Poussez cette modification sur le dépôt distant, patientez et vérifiez que votre site a bien été mis à jour !
 
