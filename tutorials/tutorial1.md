@@ -11,7 +11,7 @@ Dans ce premier TP, vous allez découvrir des fonctionnalités un peu "avancées
 
 Au-delà de l'aspect versioning que vous connaissez déjà, git est aussi un outil central dans le cadre de la gestion du développement d'un projet en équipe. En effet, git permet d'intégrer les modifications et ajouts de code provenant de deux commits différents et même de différentes **branches**. Cette activité est appelée **merging** et peut se faire automatiquement ou à la main en cas de **conflits**.
 
-Par exemple, dans un projet, plusieurs personnes vont travailler sur différentes fonctionnalités (par exemple, une **user story** dans un sprint **SCRUM**). A un moment (à la fin du sprint) il y a besoin d'intégrer ces fonctionnalités au produit final. C'est là qu'intervient le **merging**. Dans certains cas, si deux développeurs ont modifié le même fichier et qu'il est difficile d'appliquer les règles de fusion automatique, un **conflit** survient. C'est alors au développeur de prendre la main est de décider du fichier final qui sera conservé (version du fichier 1, version du fichier 2, ou bien, un mix des deux versions).
+Par exemple, dans un projet, plusieurs personnes vont travailler sur différentes fonctionnalités (par exemple, une **user story** dans un sprint **SCRUM**). À un moment (à la fin du sprint) il y a besoin d'intégrer ces fonctionnalités au produit final. C'est là qu'intervient le **merging**. Dans certains cas, si deux développeurs ont modifié le même fichier et qu'il est difficile d'appliquer les règles de fusion automatique, un **conflit** survient. C'est alors au développeur de prendre la main est de décider du fichier final qui sera conservé (version du fichier 1, version du fichier 2, ou bien, un mix des deux versions).
 
 Comme vous le savez, différentes plateformes permettent de gérer des dépôts distants : **GitHub**, **GitLab**, **Bitbucket**.... En plus de gérer la "mise en cloud" du dépôt que vous connaissez déjà, ces plateformes proposent aussi des services que nous allons explorer durant les 2 TPs. Lors de la prochaine séance, nous parlerons notamment des fonctionnalités **d'intégration et de déploiement continu** qui permettent de tester, construire, publier notre programme de manière automatique et s'assurer que toutes les fonctionnalités s'intègrent bien ensemble.
 
@@ -19,7 +19,7 @@ Lors des deux séances, le fil rouge sera une application **JAVA** (déjà exist
 
 ## Rappels
 
-Normalement, vous avez appris à vous servir de **git** (et du [**GitLab** de l'IUT](https://gitlabinfo.iutmontp.univ-montp2.fr/) depuis l'année dernière. Nous allons revenir rapidement sur les notions élémentaires de base sans trop approfondir. Si vous êtes déjà à l'aise avec **git** vous pouvez survoler cette section, mais il peut être intéressant de la lire pour se remettre dans le bain ou si si n'avez pas touché à git (et GitLab) depuis longtemps !
+Normalement, vous avez appris à vous servir de **git** (et du [**GitLab** de l'IUT](https://gitlabinfo.iutmontp.univ-montp2.fr/)) depuis l'année dernière. Nous allons revenir rapidement sur les notions élémentaires de base sans trop approfondir. Si vous êtes déjà à l'aise avec **git** vous pouvez survoler cette section, mais il peut être intéressant de la lire pour se remettre dans le bain ou si si n'avez pas touché à git (et GitLab) depuis longtemps !
 
 En complément, vous pouvez aussi aller consulter le [tutoriel d'introduction à git de première année](https://gitlabinfo.iutmontp.univ-montp2.fr/valicov/tutoGit1ereAnnee). Il existe également des nombreux tutoriels en ligne. Nous vous recommandons le [Git-it-electron](https://github.com/jlord/git-it-electron) qui est à la fois interactif et ludique.
 
@@ -45,7 +45,7 @@ clip < ~/.ssh/id_rsa.pub
 
 Connectez-vous ensuite au [GitLab de l'IUT](https://gitlabinfo.iutmontp.univ-montp2.fr/users/sign_in) en utilisant vos identifiants du département (même chose que pour accéder aux machines).
 
-En haut à gauche, cliquez sur votre image de profil puis `Preférences`. Sur la nouvelle page, cliquez sur `SSH Keys`. Dans la zone `SSH Fingerprints` collez votre clé publique. Donez lui un titre et sauvegardez-la. Vous êtes prêt à travailler !
+En haut à gauche, cliquez sur votre image de profil puis `Preférences`. Sur la nouvelle page, cliquez sur `SSH Keys`. Dans la zone `SSH Fingerprints` collez votre clé publique. Donnez lui un titre et sauvegardez-la. Vous êtes prêt à travailler !
 
 ### Créer et cloner un dépôt distant
 
@@ -57,11 +57,11 @@ Il y a deux moyens de réaliser le versioning d'un projet :
 
 Nous allons d'abord voir comment faire dans la première situation. Nous allons travailler sur **GitLab**, mais cela fonctionne de la même manière sur toutes les plateformes.
 
-Rendez-vous sur [le GitLab de l'IUT](https://gitlabinfo.iutmontp.univ-montp2.fr). Cliquez sur le bouton `New project` puis `Create blank project`. Pensez à décocher la case proposant d'initialiser le projet avec un fichier **README** puis créez le projet.
+Rendez-vous sur [le GitLab de l'IUT](https://gitlabinfo.iutmontp.univ-montp2.fr). Cliquez sur le bouton `New project` puis `Create blank project`. Pensez à décocher la case proposant d'initialiser le projet avec un fichier **README**, puis créez le projet.
 
 Afin de **cloner** ce projet, récupérez son adresse en cliquant sur le bouton `Clone`. Prenez la première adresse dans le champ `Clone with SSH`.
 
-Sur votre machine, éxécutez la commande suivante pour cloner le projet :
+Sur votre machine, exécutez la commande suivante pour cloner le projet :
 
 ```bash
 git clone adresse
@@ -84,7 +84,7 @@ Pour le **Gitlab** du département, précisez votre nom/prénom pour `user.name`
 
 ### Les quatre commandes essentielles
 
-Quand on travaille sur un projet avec **git**, les trois commandes "basiques" que vous devez absolument maîtriser (depuis l'année dernère) sont : **add**, **commit**, **push** et **pull**.
+Quand on travaille sur un projet avec **git**, les trois commandes "basiques" que vous devez absolument maîtriser (depuis l'année dernière) sont : **add**, **commit**, **push** et **pull**.
 
 **Add**
 
@@ -251,7 +251,7 @@ Vous l'aurez compris, votre objectif sera de doter notre document de **nouvelles
 
 1. Si ce n'est pas déjà fait, ouvrez un terminal et rendez-vous dans le dossier de l'application que vous avez clonée. Laissez-le ouvert, de côté, afin d'exécuter vos commandes, plus tard.
 
-2. Ajoutez un fichier **.gitignore** permettant d'ignorer le dossier `targets/`. Il s'agit de fichiers générés à chaque exécution du projet depuis l'IDE, cela ne doit pas être versionné. Faites aussi en sorte d'ignorer le dossier `.idea/` (fichiers caches relatifs à l'IDE).
+2. Ajoutez un fichier **.gitignore** permettant d'ignorer le dossier `target/`. Il s'agit de fichiers générés à chaque exécution du projet depuis l'IDE, cela ne doit pas être versionné. Faites aussi en sorte d'ignorer le dossier `.idea/` (fichiers caches relatifs à l'IDE).
 
 3. Ajoutez tous les nouveaux fichiers, afin qu'ils soient disponibles pour le **commit**.
 
@@ -277,9 +277,9 @@ Pour le prochain exercice (et pour pouvoir vous montrer quelque chose d'intéres
 
     ```java
     public void remplacer(int start, int end, String remplacement) {
-        String leftPart = this.texte.substring(0, start);
-        String rightPart = this.texte.substring(end);
-        this.texte = leftPart + remplacement + rightPart;
+        String leftPart = texte.substring(0, start);
+        String rightPart = texte.substring(end);
+        texte = leftPart + remplacement + rightPart;
     }
     ```
 2. On souhaite donc créer une commande `remplacer` qui s'exécutera ainsi :
@@ -301,7 +301,7 @@ Pour le prochain exercice (et pour pouvoir vous montrer quelque chose d'intéres
     ane world!
     ```
 
-    En vous inspirant de la classe `CommandeAjouter`, créez une classe `CommandeRemplacer`. Attention, les paramètres fournis dans la commande sont de type `String` et vous avez besoin de nombres `entier`. Vous pouvez alors utiliser la méthode de classe `Integer.parseInt(...)` pour convertir une chaîne de caractères en entier.
+    En vous inspirant de la classe `CommandeAjouter`, créez une classe `CommandeRemplacer`. Attention, les paramètres fournis dans la commande sont de type `String` et vous avez besoin de nombres entiers (`int`). Vous pouvez alors utiliser la méthode de classe `Integer.parseInt(...)` pour convertir une chaîne de caractères en `int`.
 
     N'oubliez pas de faire plusieurs commits (comme demandé plus haut) pendant le développement de cette fonctionnalité ! Par exemple, vous pouvez en faire trois en laissant un bug volontairement dans le code du premier commit puis le fixer avec le second commit, et enfin ajouter des commentaires ou de la documentation avec le troisième commit.
 
@@ -316,7 +316,7 @@ Pour le prochain exercice (et pour pouvoir vous montrer quelque chose d'intéres
 
 Parfois, lors du développement d'une fonctionnalité, il arrive de faire plusieurs commits (et pas juste un seul, quand la fonctionnalité est terminée et fonctionnelle). Cela peut vite alourdir l'historique des commits et le rendre assez peu clair. Néanmoins, c'est une bonne chose de versionner régulièrement son travail ! Il faut juste ne pas le faire de manière excessive (pas un commit après chaque ligne de code !).
 
-Là aussi, git propose une solution : La **réécriture d'historique** aussi appelée squash de commits**. Cette fonctionnalité permet de sélectionner un ensemble de commits (par exemple, les 5 derniers commits) et de le regrouper en un seul et même commits. Ainsi, quand une fonctionnalité a fini d'être développée, on peut regrouper tous les commits qui ont été réalisés lors du développement de cette partie en un seul et même commit et ainsi, rendre l'historique plus élégant.
+Là aussi, git propose une solution : la **réécriture d'historique** aussi appelée **squash de commits**. Cette fonctionnalité permet de sélectionner un ensemble de commits (par exemple, les 5 derniers commits) et de le regrouper en un seul et même commits. Ainsi, quand une fonctionnalité a fini d'être développée, on peut regrouper tous les commits qui ont été réalisés lors du développement de cette partie en un seul et même commit et ainsi, rendre l'historique plus élégant.
 
 On utilise pour cela la commande suivante :
 
@@ -324,7 +324,7 @@ On utilise pour cela la commande suivante :
 git rebase -i HEAD~N
 ```
 
-Ici, `N` doit être remplacé par le nombre de commits à sélectionner (les `N` derniers commits). Si on doit veut sélectionner jusqu'au premier commit du dépôt on remplace le `HEAD~N` par `--root`. Une fois la commande exécutée, une interface s'affiche, en console.  
+Ici, `N` doit être remplacé par le nombre de commits à sélectionner (les `N` derniers commits). Si on souhaite sélectionner jusqu'au premier commit du dépôt, on remplace le `HEAD~N` par `--root`. Une fois la commande exécutée, une interface s'affiche, en console.  
 Par exemple :
 
 ```bash
@@ -370,7 +370,7 @@ Le **rebasing** s'effectue alors. On peut consulter l'historique pour constater 
 
 Depuis cet état, votre dépôt distant va refuser d'intégrer vos changements, car des commits ont disparu... Il ne sait plus où vous en êtes. Vous pouvez alors forcer le changement en utilisant l'option `--force` lors du push. Attention à ne pas abuser de cette option, car il force le dépôt distant à se synchroniser sur votre version et donc, effacer les différences entre son contenu et votre dépôt. Il est donc conseillé d'utiliser cette option seulement dans le cas du rebase, comme nous venons de le voir. De plus, on va plutôt utiliser le **rebase** quasi-exclusivement sous les sous-branches comme nous allons le voir bientôt.
 
-Attention, sur **Gitlab**, la branche **master** est protégée contre le `--force`, par défaut. Pour désactiver cette sécurité : sur la page du dépôt, dans le menu à gauche → **Settings** → **Repository** -> **Protected Branches** -> **Expand**. Un peu plus bas sont listées toutes les branches protégées. Si on veut annuler cette protection, il suffit d'activer l'option **Allowed to force push**. 
+Attention, sur **Gitlab**, la branche **master** est protégée contre le `--force`, par défaut. Pour désactiver cette sécurité : sur la page du dépôt, dans le menu à gauche → **Settings** → **Repository** → **Protected Branches** → **Expand**. Un peu plus bas sont listées toutes les branches protégées. Si on veut annuler cette protection, il suffit d'activer l'option **Allowed to force push**. 
 
 La protection contre le `--force` a du sens dans un projet concret où on ne travaille jamais directement sur **master**, mais sur les sous-branches.
 
@@ -393,7 +393,7 @@ Il ne restera alors que deux commits (dont on peut changer le message).
 
 2. Observez l'historique des commits.
 
-3. Sur **Gitlab**, désactivez la protection contre le `--force` sur la branche `master` (c'est une mauvaise pratique comme évoqué plus haut, mais pour l'instant nous n'avons pas le choix, car nous ne travaillons que sur une seule branche.)
+3. Sur **Gitlab**, désactivez la protection contre le `--force` sur la branche `master` (c'est une mauvaise pratique comme évoqué plus haut, mais pour l'instant, nous n'avons pas le choix, car nous ne travaillons que sur une seule branche.)
 
 4. Poussez sur votre dépôt sur GitLab **en forçant**.
 
@@ -439,7 +439,7 @@ Par exemple, imaginons le scénario suivant :
 
 3. On a oublié de mettre ce fichier de configuration dans le `.gitignore` ! Et on a fait des commits qu'on a poussés sur le dépôt distant ! N'importe qui peut donc accéder aux identifiants.
 
-4. On fait un nouveau commit où le fichier est ajouté au .gitignore...on éxécute la commande `git rm -r --cached .` pour prendre en compte cet ajout tardif, comme ça, le fichier de configuration ne sera plus traqué par git. Mais c'est trop tard, on peut remonter l'historique des commits et retourner à une version où ce fichier est bien là!
+4. On fait un nouveau commit où le fichier est ajouté au .gitignore...on exécute la commande `git rm -r --cached .` pour prendre en compte cet ajout tardif, comme ça, le fichier de configuration ne sera plus traqué par git. Mais c'est trop tard, on peut remonter l'historique des commits et retourner à une version où ce fichier est bien là !
 
 5. Eurêka ! Avec la technique de rebasing, on peut regrouper mon dernier commit "sain" avec le commit précédent. Ainsi, il en résultera un seul commit où ce fichier de configuration n'a jamais été traqué... ! On force le `push`, l'incident est réparé !
 
@@ -488,7 +488,7 @@ Il est alors possible de changer la branche de travail à n'importe quel moment 
 
 À un moment donné, il est alors possible de **fusionner** une branche avec une autre. La branche "receveuse" tente alors d'intégrer les commits de l'autre branche.
 
-Si cette visualisation est encore trop abstraite pour vous, imaginez-vous dans un univers de science-fiction où vous auriez le pouvoir de créer différentes dimensions parallèle à la nôtre et d'y voyager librement ! À terme, si cela est possible, vous aimeriez réunir plusieurs éléments de chaque dimension dans la nôtre ! Mais cela peu parfois occasionner certains soucis... (c'est tout le sujet du comics DC **Crisis on Infinite Earths** où à la fin, cinq terres se retrouvent réunies en une seule).
+Si cette visualisation est encore trop abstraite pour vous, imaginez-vous dans un univers de science-fiction où vous auriez le pouvoir de créer différentes dimensions parallèles à la nôtre et d'y voyager librement ! À terme, si cela est possible, vous aimeriez réunir plusieurs éléments de chaque dimension dans la nôtre ! Mais cela peu parfois occasionner certains soucis... (c'est tout le sujet du comics DC **Crisis on Infinite Earths** où à la fin, cinq terres se retrouvent réunies en une seule).
 
 Dans un dépôt **git** profesionnel, vous allez usuellement trouver des **branches permanentes** et des **branches temporaires**.
 
@@ -657,7 +657,7 @@ Pour la suite des exercices, trouvez-vous un binôme qui est au même point que 
 
 Ce qui vient de se passer exploite la notion de **patterns** sur **GitLab** qui permet de réaliser des actions annexes en se basant sur les messages de **commit**.
 
-Par exemple, le message de commit `Closes #13, #15` ferme les **issues** 13 et 15. Le message `Related to #5` attache le commit sur l'issue 5 sans la fermer (le commit est alors visible sur la page de l'issue). Il est tout à fait possible de combiner pluisuers messages "patterns" et une description normale : `Description..., Closes #6, Related to #13`.
+Par exemple, le message de commit `Closes #13, #15` ferme les **issues** 13 et 15. Le message `Related to #5` attache le commit sur l'issue 5 sans la fermer (le commit est alors visible sur la page de l'issue). Il est tout à fait possible de combiner plusieurs messages "patterns" et une description normale : `Description..., Closes #6, Related to #13`.
 
 ### Extension d'un projet existant
 
@@ -667,7 +667,7 @@ Le fait de faire une demande d'intégration de son code dans le projet d'origine
 
 <div class="exercise">
 
-1. Encore une fois, rendez-vous dans le dépôt de votre collègue. En haut à droite, appuyez sur le bouton **fork**. Validez. Un nouveau dépôt "forké" à partir de celui de votre collègue est alors disponnible.
+1. Encore une fois, rendez-vous dans le dépôt de votre collègue. En haut à droite, appuyez sur le bouton **fork**. Validez. Un nouveau dépôt "forké" à partir de celui de votre collègue est alors disponible.
 
 2. Clonez ce "nouveau" dépôt sur votre machine : comme ce dépôt forké vous appartient, vous aurez droit de faire des push dessus !
 
@@ -680,7 +680,7 @@ Le fait de faire une demande d'intégration de son code dans le projet d'origine
     bonjour le monde
     ```
 
-    Il faudra bien respecter le fait d'aller sur la branche de développement puis une branche pour la fonctionnalité, etc...!
+    Il faudra bien respecter le fait d'aller sur la branche de développement puis une branche pour la fonctionnalité, etc.!
 
 4. Une fois la fonctionnalité prête et poussée sur GitLab, rendez-vous dans votre dépôt forké puis cliquez sur la rubrique **Code** et **Merge Requests**. Cliquez ensuite sur **New merge request**.
 
@@ -692,7 +692,7 @@ Le fait de faire une demande d'intégration de son code dans le projet d'origine
 
 </div>
 
-Si jamais une `merge request` ne satisfait pas le(s) proprietaire(s) du dépôt, ils peuvent laisser des commentaires et/ou la fermer.
+Si jamais une `merge request` ne satisfait pas le(s) propriétaire(s) du dépôt, ils peuvent laisser des commentaires et/ou la fermer.
 
 ### Travailler en équipe
 
@@ -728,7 +728,7 @@ Dans l'exercice précédent, vous avez collaboré avec un collègue mais celui-c
 
 5. À partir de [la page principale du site](https://gitlabinfo.iutmontp.univ-montp2.fr/), cliquez sur la catégorie `Merge Requests` puis `Assigned`. Vous pouvez alors visualiser toutes les `merge requests` qui vous ont été assignées.
 
-6. Faites la review de la requête qui vous a été assignée puis validez-là. Votre collègue ayant fait de même avec votre branche, tout devrait être fusionné sur `development` à ce stade ! Bien sûr, si nous avions un peu plus de temps, nous aurions pu refuser la requête, laisser des commentaires, recommencer... ce qui arrive souvent en entreprise (et c'est normal) ! Généralement, les **développeurs seniors** vérifient les `merge requests` des **développeurs juniors** (vous, bientôt). Les **seniors** se vérifient entre eux ou bien sont se considèrent comme assez expérimentés pour se passer de `merge request` et de revue de code... (mais cela est déconseillé).
+6. Faites la review de la requête qui vous a été assignée puis validez-la. Votre collègue ayant fait de même avec votre branche, tout devrait être fusionné sur `development` à ce stade ! Bien sûr, si nous avions un peu plus de temps, nous aurions pu refuser la requête, laisser des commentaires, recommencer... ce qui arrive souvent en entreprise (et c'est normal) ! Généralement, les **développeurs seniors** vérifient les `merge requests` des **développeurs juniors** (vous, bientôt). Les **seniors** se vérifient entre eux ou bien sont se considèrent comme assez expérimentés pour se passer de `merge request` et de revue de code... (mais cela est déconseillé).
 
 7. En local, récupérez les mises à jour sur la branche `development` en faisant un **pull**.
 
@@ -776,7 +776,7 @@ En effet, comme les deux fonctionnalités développées touchent la même partie
 
     Git indique alors qu'il y a un conflit qu'il faut régler.
 
-2. De retour sur l'IDE, vous constatez alors que la classe `Document` (source du conflit) présente les modifications des deux fichiers. Vous pouvez vous servir des outils de l'IDE ou bien agir manuellement afin de produire la version "finale" de ce fichier : accepter les modifications de l'un ou l'autre des fichiers ou bien fusionner les deux quand cela est possible. Pour ntore cas, vous ne garderez qu'un seul des noms pour l'attribut (soit `texteDocument` soit `contentDocument`).
+2. De retour sur l'IDE, vous constatez alors que la classe `Document` (source du conflit) présente les modifications des deux fichiers. Vous pouvez vous servir des outils de l'IDE ou bien agir manuellement afin de produire la version "finale" de ce fichier : accepter les modifications de l'un ou l'autre des fichiers ou bien fusionner les deux quand cela est possible. Pour notre cas, vous ne garderez qu'un seul des noms pour l'attribut (soit `texteDocument` soit `contentDocument`).
 
 3. Une fois le fichier correctement édité, il ne reste plus qu'à faire un `add`, un `commit` et un `push`. Le message du `commit` doit indiquer qu'une résolution du conflit a eu lieu.
 
@@ -786,7 +786,7 @@ En effet, comme les deux fonctionnalités développées touchent la même partie
 
 ## Bonus (pour les plus rapides)
 
-Si vous êtes en avance, imaginiez et codez une fonctionnalité `undo` permettant **d'annuler** la dernière commande exécutée (et donc, revenir à l'état précédent du document). Si vous arrivez à implémenter cette fonctionnalité, vous pouvez aussi implémenter le `redo`, c'est-à-dire **re-éxécuter** une action qui a été annulée. En gros, le `CTRL+Z` et le `CTRL+Y`
+Si vous êtes en avance, imaginiez et codez une fonctionnalité `undo` permettant **d'annuler** la dernière commande exécutée (et donc, revenir à l'état précédent du document). Si vous arrivez à implémenter cette fonctionnalité, vous pouvez aussi implémenter le `redo`, c'est-à-dire **re-exécuter** une action qui a été annulée. En gros, le `CTRL+Z` et le `CTRL+Y`
 
 ## Conclusion
 
