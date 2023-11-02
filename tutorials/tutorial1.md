@@ -415,7 +415,7 @@ Maintenant, nous allons ajouter une troisième commande ! Là aussi, effectuez p
 
     - Pour extraire une portion d'une chaîne de caractères, servez-vous de la méthode `substring`. 
     - Pour passer l'intégralité d'une chaîne de caractères, on utilise la méthode `toUpperCase`.
-    - Servez-vous de nouveau de la méthode `remplacer`!
+    - Votre code respecte-t-il le principe [DRY](https://fr.wikipedia.org/wiki/Ne_vous_r%C3%A9p%C3%A9tez_pas) ? Pensez à réutiliser la méthode `remplacer`...
 
 2. On souhaite appeler la commande ainsi :
 
@@ -448,7 +448,7 @@ Par exemple, imaginons le scénario suivant :
 Jusqu'ici, vous avez écrit des messages de commits comme bon vous semble. En réalité, les messages des commits doivent respecter des **conventions** et un certain **format** :
 
 ```bash
-git commit -m "<type>[portee (optionnel)]: <description>"
+git commit -m "<type>[portée (optionnel)]: <description>"
 ```
 
 On y retrouve :
