@@ -130,7 +130,7 @@ De l'autre côté, si vous souhaitez récupérer les modifications apportées su
 git pull nom_distant nom_branche
 ```
 
-Cette commande peut générer des **conflits** si la version locale n'est pas compatible avec la version distante. nous y reviendrons.
+Cette commande peut générer des **conflits** si la version locale n'est pas compatible avec la version distante. Nous y reviendrons.
 
 ### Déplacement vers un commit
 
@@ -178,10 +178,10 @@ Au lieu de **cloner** un dépôt distant, on peut aussi en créer un en local pu
 
     ```bash
     git add .
-    git commit -m "Intialisation du dépôt"
+    git commit -m "Initialisation du dépôt"
     ```
 
-5. Et enfin, on fait un **push** vers le respository distant :
+5. Et enfin, on fait un **push** vers le dépôt distant :
 
     ```bash
     git push origin master
@@ -195,7 +195,7 @@ Le but de cette première section est de prendre en main l'application qui vous 
 
 Afin de récupérer les **sources du projet** vous allez réaliser un **fork**.
 
-Cette action consiste à copier un dépôt dans votre espace de travail, ce qui vous permet alors de travailler sur une version dérivée de l'application sans directement affecter le dépôt d'origine (où de tout façon vous n'avez pas les droits, normalement).
+Cette action consiste à copier un dépôt dans votre espace de travail, ce qui vous permet alors de travailler sur une version dérivée de l'application sans directement affecter le dépôt d'origine (où de toute façon, vous n'avez pas les droits, normalement).
 
 À terme, vous pouvez proposer d'intégrer vos ajouts directement au dépôt principal. Ce mécanisme peut s'avérer utile si un développeur externe au projet veut proposer une amélioration ou bien simplement un **bugfix**. Le(s) propriétaire(s) du dépôt pourront intégrer automatiquement (ou refuser) les changements proposés.
 
@@ -305,11 +305,11 @@ Pour le prochain exercice (et pour pouvoir vous montrer quelque chose d'intéres
 
     N'oubliez pas de faire plusieurs commits (comme demandé plus haut) pendant le développement de cette fonctionnalité ! Par exemple, vous pouvez en faire trois en laissant un bug volontairement dans le code du premier commit puis le fixer avec le second commit, et enfin ajouter des commentaires ou de la documentation avec le troisième commit.
 
-4. Enregistrez cette nouvelle commande dans la méthode **createCommand** de `CommandeFactory`, en vous basant sur l'exemple de la commande `ajouter`.
+3. Enregistrez cette nouvelle commande dans la méthode **createCommand** de `CommandeFactory`, en vous basant sur l'exemple de la commande `ajouter`.
 
-5. Testez que votre nouvelle commande fonctionne comme attendu.
+4. Testez que votre nouvelle commande fonctionne comme attendu.
 
-6. Normalement, vous avez effectué plusieurs `commits`. Poussez vos modifications sur le dépôt distant.
+5. Normalement, vous avez effectué plusieurs `commits`. Poussez vos modifications sur le dépôt distant.
 </div>
 
 ### Regrouper des commits (et éventuellement réparer ses bêtises !)
@@ -414,7 +414,7 @@ Maintenant, nous allons ajouter une troisième commande ! Là aussi, effectuez p
     **Astuces** : 
 
     - Pour extraire une portion d'une chaîne de caractères, servez-vous de la méthode `substring`. 
-    - Pour passer l'intégralité d'une chaîne de caractères, on utilise la méthode `toUpper`.
+    - Pour passer l'intégralité d'une chaîne de caractères, on utilise la méthode `toUpperCase`.
     - Servez-vous de nouveau de la méthode `remplacer`!
 
 2. On souhaite appeler la commande ainsi :
@@ -506,7 +506,7 @@ Pour les **branches temporaires**, on peut avoir :
 
 - `bugfix/description_bug` : branche dérivée de `development` et utilisée pour réparer un bug (décrit succinctement par `description_bug`).
 
-- `hotfix/description_bug` : similaire à un **bugfix**, mais fait dans l'urgence car la situation l'exige. Le code n'est pas forcément de qualité, c'est une solution **temporaire**.
+- `hotfix/description_bug` : similaire à un **bugfix**, mais fait dans l'urgence, car la situation l'exige. Le code n'est pas forcément de qualité, c'est une solution **temporaire**.
 
 - `test/description_test` : branche pour essayer des choses, pour expérimenter.
 
