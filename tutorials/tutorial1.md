@@ -640,13 +640,13 @@ Nous allons mettre en application ce que vous avez appris sur les **branches** e
 
     Pensez aussi au principe [DRY](https://fr.wikipedia.org/wiki/Ne_vous_r%C3%A9p%C3%A9tez_pas) (la fonction `effacer` de la classe `Document` devrait être toute petite !).
 
-3. Une fois cette fonctionnalité développée, revenez dans votre branche `development`. On souhaite alors ajouter une commande `clear` qui efface tout le texte. Réappliquez le même processus que pour la question précédente (création d'une nouvelle branche, implémentation). 
+3. Une fois cette fonctionnalité développée, revenez dans votre branche `development`. Fusionnez la branche correspondant à la commande `effacer`. Normalement, il ne devrait pas y avoir de conflits, mais si par malchance, vous en avez créé, pensez à les résoudre.  Vous pouvez faire un **push** de la branche `development`.
+
+4. On souhaite ajouter une commande `clear` qui efface tout le texte. Réappliquez le même processus que pour la question précédente (création d'une nouvelle branche, écriture du code correspondant). 
 
     Cependant, vous **ajouterez un petit bug léger** (qui ne fait pas planter l'application). Par exemple, après avoir effacé le contenu, on ajoute une lettre quelconque dans le texte, ou n'importe quoi. Nous reviendrons sur ce bug plus tard qui nous sera utile lorsque vous travaillerez en équipe.
 
-4. Revenez dans votre branche `development` puis fusionnez d'abord la branche correspondant à la commande `effacer`. Supprimez ensuite la branche ayant servi à développer cette fonctionnalité. Vous pouvez faire un **push**.
-
-5. Faites la même chose pour la commande `clear`.
+5. Comme précédemment, revenez dans votre branche `development` et fusionnez avec la branche correspondant à la commande `clear`. Vous pouvez faire un **push** de la branche `development`.
 
 6. Vérifiez que tout fonctionne bien (sans tenir compte du fait que la commande `clear` soit buguée), puis, faites en sorte d'intégrer vos fonctionnalités à la branche principale `master`. N'oubliez pas de push tout ça !
 
