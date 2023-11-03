@@ -601,6 +601,7 @@ Lors d'un merge, en cas de conflit (si le **merge** automatique échoue) il faut
         <p>Autre chose qui n'a rien à avoir</p>
         >>>>>>> 77976da35a11db4580b80ae27e8d65caf5208086
         ```
+   
    Ici, on a deux versions différentes de la même ligne. La première version est celle de la branche courante (HEAD) et la seconde est celle de la branche à intégrer. Il faut alors choisir la version qui nous intéresse et supprimer le reste. On peut aussi choisir de garder les deux versions et de les fusionner à la main.
 - Éditer ces fichiers pour ne garder que les modifications qui nous intéressent et adapter si besoin.
 
