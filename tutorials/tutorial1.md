@@ -19,7 +19,7 @@ Lors des deux séances, le fil rouge sera une application **JAVA** (déjà exist
 
 ## Rappels
 
-Normalement, vous avez appris à vous servir de **git** (et du [**GitLab** de l'IUT](https://gitlabinfo.iutmontp.univ-montp2.fr/)) depuis l'année dernière. Nous allons revenir rapidement sur les notions élémentaires de base sans trop approfondir. Si vous êtes déjà à l'aise avec **git** vous pouvez survoler cette section, mais il peut être intéressant de la lire pour se remettre dans le bain ou si si n'avez pas touché à git (et GitLab) depuis longtemps !
+Normalement, vous avez appris à vous servir de **git** (et du [**GitLab** de l'IUT](https://gitlabinfo.iutmontp.univ-montp2.fr/)) depuis l'année dernière. Nous allons revenir rapidement sur les notions élémentaires de base sans trop approfondir. Si vous êtes déjà à l'aise avec **git** vous pouvez survoler cette section, mais il peut être intéressant de la lire pour se remettre dans le bain ou si vous n'avez pas touché à git (et GitLab) depuis longtemps !
 
 En complément, vous pouvez aussi aller consulter le [tutoriel d'introduction à git de première année](https://gitlabinfo.iutmontp.univ-montp2.fr/valicov/tutoGit1ereAnnee). Il existe également des nombreux tutoriels en ligne. Nous vous recommandons le [Git-it-electron](https://github.com/jlord/git-it-electron) qui est à la fois interactif et ludique.
 
@@ -88,19 +88,21 @@ Quand on travaille sur un projet avec **git**, les trois commandes "basiques" qu
 
 **Add**
 
-La première commande va vous permettre d'ajouter des fichiers à traquer :
+La première commande va vous permettre d'ajouter des fichiers à versionner :
 
 ```bash
 git add element
 ```
 
-Par défaut, tous les changements de fichiers ne sont pas automatiquement traqués par **git**. Avant d'effectuer un **commit**, il faut dire les fichiers qu'on ajoute. Si on précise un dossier, tous ses fichiers (et sous-dossiers) seront ajoutés, récursivement. Donc, si on souhaite ajouter tous les fichiers, il suffit de faire, depuis la racine du **dépôt** :
+Par défaut, tous les changements de fichiers ne sont pas automatiquement versionnés par **git**. Avant d'effectuer un **commit**, il faut dire les fichiers qu'on ajoute. Si on précise un dossier, tous ses fichiers (et sous-dossiers) seront ajoutés, récursivement. Donc, si on souhaite ajouter tous les fichiers, il suffit de faire, depuis la racine du **dépôt** :
 
 ```bash
 git add .
 ```
 
-En effet, le point "." désigne le dossier courant. On le rappelle encore, il faut systématiquement ajouter les fichiers qui ont subi des changements (si on souhaite toujours les traquer) avant de réaliser un **commit** (de toute façon, si ce n'est pas fait, **git** ne vous laissera pas faire de commit).
+En effet, le point "." désigne le dossier courant. Cette commande ajoute donc tous les fichiers du dossier courant (et de ses sous-dossiers). Attention à ne pas inclure de fichiers indésirables (notamment des fichiers cachés n'apparaissant pas dans le navigateur)!
+
+On le rappelle encore, il faut systématiquement ajouter les fichiers qui ont subi des changements (si on souhaite toujours les versionner) avant de réaliser un **commit** (de toute façon, si aucun fichier n'est ajouté, **git** ne vous laissera pas faire de commit).
 
 **Commit**
 
@@ -146,13 +148,14 @@ Néanmoins, on préférera se déplacer vers une **branche** ou bien un **tag** 
 
 Parfois, dans l'environnement de travail, il y a des éléments (fichiers/dossiers) qu'il n'est pas souhaitable de versionner. Par exemple, les **dépendances** d'un projet (qui sont généralement lourdes et installées de manière externe) ou bien encore, les **fichiers de classes compilées** qui ne font pas partie du code source.
 
-Pour faire en sorte que **git** ne traque pas certains éléments, il suffit de créer un fichier **.gitignore** à la racine du dépôt. On peut alors lui préciser des chemins de fichiers ou des chemins de dossiers à ignorer (chemin depuis la racine du dépôt). Les chemins des dossiers doivent terminer par le séparateur **/**  
+Pour faire en sorte que **git** ne versionne pas certains éléments, il suffit de créer un fichier **.gitignore** à la racine du dépôt. On peut alors lui préciser des chemins de fichiers ou des chemins de dossiers à ignorer (chemin depuis la racine du dépôt). Les chemins des dossiers doivent se terminer par le séparateur **/**. On peut aussi utiliser le symbole **\*** pour filtrer des chaînes de caractères, et par exemple inclure tous les fichiers avec une certaine extension.
 Par exemple :
 
 ```bash
 exemple/a/mon_fichier_inutile.txt
 mon_fichier_inutile2.txt
 exemple/a/dossier_a_ignorer/
+*.class
 ```
 ### Créer et publier un dépôt
 
@@ -195,7 +198,7 @@ Le but de cette première section est de prendre en main l'application qui vous 
 
 Afin de récupérer les **sources du projet** vous allez réaliser un **fork**.
 
-Cette action consiste à copier un dépôt dans votre espace de travail, ce qui vous permet alors de travailler sur une version dérivée de l'application sans directement affecter le dépôt d'origine (où de toute façon, vous n'avez pas les droits, normalement).
+Cette action consiste à copier un dépôt dans votre espace de travail, ce qui vous permet alors de travailler sur une version dérivée de l'application sans directement affecter le dépôt d'origine (où vous n'avez le plus souvent pas les droits).
 
 À terme, vous pouvez proposer d'intégrer vos ajouts directement au dépôt principal. Ce mécanisme peut s'avérer utile si un développeur externe au projet veut proposer une amélioration ou bien simplement un **bugfix**. Le(s) propriétaire(s) du dépôt pourront intégrer automatiquement (ou refuser) les changements proposés.
 
@@ -439,9 +442,9 @@ Par exemple, imaginons le scénario suivant :
 
 3. On a oublié de mettre ce fichier de configuration dans le `.gitignore` ! Et on a fait des commits qu'on a poussés sur le dépôt distant ! N'importe qui peut donc accéder aux identifiants.
 
-4. On fait un nouveau commit où le fichier est ajouté au .gitignore...on exécute la commande `git rm -r --cached .` pour prendre en compte cet ajout tardif, comme ça, le fichier de configuration ne sera plus traqué par git. Mais c'est trop tard, on peut remonter l'historique des commits et retourner à une version où ce fichier est bien là !
+4. On fait un nouveau commit où le fichier est ajouté au .gitignore...on exécute la commande `git rm -r --cached .` pour prendre en compte cet ajout tardif, comme ça, le fichier de configuration ne sera plus versionné par git. Mais c'est trop tard, on peut remonter l'historique des commits et retourner à une version où ce fichier est bien là !
 
-5. Eurêka ! Avec la technique de rebasing, on peut regrouper mon dernier commit "sain" avec le commit précédent. Ainsi, il en résultera un seul commit où ce fichier de configuration n'a jamais été traqué... ! On force le `push`, l'incident est réparé !
+5. Eurêka ! Avec la technique de rebasing, on peut regrouper mon dernier commit "sain" avec le commit précédent. Ainsi, il en résultera un seul commit où ce fichier de configuration n'a jamais été versionné... ! On force le `push`, l'incident est réparé !
 
 ### Conventions pour les commits
 
@@ -463,7 +466,7 @@ On y retrouve :
 
 - La `portée` : paramètre **optionnel**, donne des informations supplémentaires sur le contexte (par exemple "sprint1").
 
-- La `descrption` : Une description rapide de ce qui a changé, ce qu'apporte le commit (presque équivalent aux messages de commits que vous avez écrit jusqu'ici).
+- La `description` : Une description rapide de ce qui a changé, ce qu'apporte le commit (presque équivalent aux messages de commits que vous avez écrit jusqu'ici).
 
 On peut également rajouter (optionnellement) tout un corps au commit, pour donner plus de détails.
 
@@ -512,7 +515,7 @@ Pour les **branches temporaires**, on peut avoir :
 
 Ces branches sont temporaires, car elles ne sont plus utiles une fois fusionnées et intégrées, par exemple. Elles seront donc supprimées après la fusion.
 
-On peut aussi ajouter des identifiants : `feature/1/nom_feature`, etc... 
+On peut aussi ajouter des identifiants : `feature/1/nom_feature`, etc. 
 
 Pour **créer une nouvelle branche** dérivée de la branche sur laquelle vous travaillez actuellement, il suffit d'utiliser la commande suivante :
 
@@ -578,7 +581,7 @@ Et enfin :
 git merge feature/chat
 ```
 
-Si tout va bien et qu'il n'y a pas de **conflits**, la fusion va s'opérer. Sinon, s'il y a des conflits, il faudra les régler ça à la main. Dans tous les cas, une fois la fusion finalisée, il ne faut pas oublier de **push** tout ça !
+Si tout va bien et qu'il n'y a pas de **conflits**, la fusion va s'opérer. Sinon, s'il y a des conflits, il faudra les régler à la main. Dans tous les cas, une fois la fusion finalisée, il ne faut pas oublier de **push** tout ça !
 
 Une fois fusionnée, la branche `feature/chat` n'est plus utile, on peut la supprimer :
 
@@ -639,13 +642,13 @@ Jusqu'ici, vous avez travaillé seul, mais le but de **git** est aussi de pouvoi
 
 Vous et les autres étudiants de votre groupe ont inséré un mini bug lors de l'exercice précédent. Nous nous plaçons alors dans le contexte où vous découvrez cette application et rencontrez ce bug ! (évidemment, le projet n'a pas de tests unitaires, sinon il aurait été détecté plus tôt !).  
 
-Comment faire pour reporter ce bug au développeur ? GitLab propose simplement une rubrique `Issues` (dans le menu de gauche du dépôt) qui va servir à l'ouverture et la fermeture de **tickets**. Ces **tickets** sont souvent des signalements de bug, mais on peut aussi avoir des suggestions de fonctionnalités, etc... Un autre utilisateur peut même réaliser du code solution et le proposer en résolution du ticket, si le propriétaire du dépôt l'accepte !
+Comment faire pour reporter ce bug au développeur ? GitLab propose simplement une rubrique `Issues` (dans le menu de gauche du dépôt) qui va servir à l'ouverture et la fermeture de **tickets**. Ces **tickets** sont souvent des signalements de bug, mais on peut aussi avoir des suggestions de fonctionnalités, etc. Un autre utilisateur peut même réaliser du code solution et le proposer en résolution du ticket, si le propriétaire du dépôt l'accepte !
 
 Pour la suite des exercices, trouvez-vous un binôme qui est au même point que vous. C'est très important, **vous ne pouvez pas faire le reste du TP seul**. Si l'attente est trop longue, vous pouvez directement passer à la section 4 **"Bonus (pour les plus rapides)"**, en attendant. Éventuellement, vous pouvez essayer de vous débrouiller à 3 si un binôme n'est pas possible avec la configuration du groupe.
 
 <div class="exercise">
 
-1. **Clonez** le dépôt d'un collègue qui en est au même point que vous et testez d'exécuter son programme pour trouver le bug qu'il a inséré au niveau de la commande `clear`.
+1. **Clonez** le dépôt d'un collègue qui en est au même point que vous et exécutez son programme pour trouver le bug qu'il a inséré au niveau de la commande `clear`.
 
 2. Sur le dépôt **GitLab** de votre collègue, créez une `issue` et expliquez le bug que vous rencontrez. Une **issue** est en fait un fil de discussion où différentes personnes peuvent intervenir.
 
@@ -698,7 +701,7 @@ Si jamais une `merge request` ne satisfait pas le(s) propriétaire(s) du dépôt
 
 Dans un projet où il y a plusieurs **collaborateurs** le processus de **merge request** est également utilisé et est même primordial : jusqu'ici nous avons réalisé nous-même la fusion des sous-branches de type "features" vers la branche `development`. Néanmoins, dans un projet professionnel (avec plusieurs membres), vous n'êtes pas vraiment autorisé à faire cela seul. Vous devez créer une **merge request** en interne et **l'assigner** à un autre membre du projet.
 
-La personne qui a été assignée à la `merge request` est chargée de revoir le code de celle-ci et de la valider. C'est le moment d'avoir un œil neuf sur votre code. La personne assignée doit notamment vérifier si le code est bien commenté et documenté, s'il respecte les normes de nommage (camel case par exemple ou des normes de l'entreprise), l'indentation... Bref, on vérifie d'abord que le code est propre. Il faut aussi vérifier que, a priori, le code fonctionne, ne contient pas de failles de sécurité potentielles, etc... Cela peut aussi être des problèmes relatifs au placement des fichiers, par exemple.
+La personne qui a été assignée à la `merge request` est chargée d'examiner le code de celle-ci et de la valider. C'est le moment d'avoir un œil neuf sur votre code. La personne assignée doit notamment vérifier si le code est bien commenté et documenté, s'il respecte les normes de nommage (CamelCase par exemple, ou bien des normes de l'entreprise), l'indentation... Bref, on vérifie d'abord que le code est propre. Il faut aussi vérifier que, a priori, le code fonctionne, ne contient pas de failles de sécurité potentielles, etc. Cela peut aussi être des problèmes relatifs au placement des fichiers, par exemple.
 
 S'il y a des choses à corriger, le membre de l'équipe peut laisser plusieurs commentaires ce qui permet à l'auteur de la fonctionnalité de corriger et de faire une nouvelle merge request.
 
@@ -718,7 +721,7 @@ Dans l'exercice précédent, vous avez collaboré avec un collègue mais celui-c
 
 3. Pour le **collaborateur** :
 
-    * Le projet où vous avez été invité devrait apparaitre à la [la racine du gitlab du département](https://gitlabinfo.iutmontp.univ-montp2.fr/).
+    * Le projet où vous avez été invité devrait apparaître à [la racine du gitlab du département](https://gitlabinfo.iutmontp.univ-montp2.fr/).
 
     * Clonez ce dépôt. Vous avez maintenant les droits d'accès et surtout d'écriture.
 
@@ -732,7 +735,7 @@ Dans l'exercice précédent, vous avez collaboré avec un collègue mais celui-c
 
 7. En local, récupérez les mises à jour sur la branche `development` en faisant un **pull**.
 
-8. Jetez un œil à votre code. Malgré que le `merge` ait été réalisé avec succès, il ne devrait plus compiler. Pourquoi ? Choisissez un des membres de votre binôme qui devra corriger les erreurs sur une nouvelle branche (à lui de bien la nommer) puis faire une `merge request` en assignant l'autre membre... L'autre membre fait la revue de code et valide la requête.
+8. Jetez un œil à votre code. Bien que le `merge` ait été réalisé avec succès, il ne devrait plus compiler. Pourquoi ? Choisissez un des membres de votre binôme qui devra corriger les erreurs sur une nouvelle branche (à lui de bien la nommer) puis faire une `merge request` en assignant l'autre membre... L'autre membre fait la revue de code et valide la requête.
 
 </div>
 
@@ -790,7 +793,7 @@ Si vous êtes en avance, imaginiez et codez une fonctionnalité `undo` permettan
 
 ## Conclusion
 
-Si vous avez bien tout suivi et intégré, vous devez maintenant être beaucoup plus compétent dans la gestion d'un projet git de manière qualitative, notamment lorsqu'il s'agit de travailler en équipe. Vous devez maintenant impérativement respecter tout cela dans votre parcours étudiant (dans vos SAEs et pour vos futurs projets) et vous y serez forcément confronté en entreprise, notamment dans les SSII. Il faut que les notions abordées lors de ce TP deviennent des automatismes.
+Si vous avez bien tout suivi et intégré, vous devez maintenant être beaucoup plus compétent dans la bonne gestion d'un projet git, notamment lorsqu'il s'agit de travailler en équipe. Vous devez maintenant impérativement respecter tout cela dans votre parcours étudiant (dans vos SAÉs et pour vos futurs projets) et vous y serez forcément confronté en entreprise, notamment dans les SSII. Il faut que les notions abordées lors de ce TP deviennent des automatismes.
 
 Dans le prochain TP, nous allons étudier les **workflows** permettant d'automatiser certaines tâches sur la plateforme en ligne, comme le **test**, le **déploiement** et la publication des programmes, à partir du dépôt. Pour cela, nous allons changer de plateforme et utiliser **GitHub**.
 
