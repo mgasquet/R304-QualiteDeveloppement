@@ -327,7 +327,8 @@ On utilise pour cela la commande suivante :
 git rebase -i HEAD~N
 ```
 
-Ici, `N` doit être remplacé par le nombre de commits à sélectionner (les `N` derniers commits). Si on souhaite sélectionner jusqu'au premier commit du dépôt, on remplace le `HEAD~N` par `--root`. Une fois la commande exécutée, une interface s'affiche, en console.  
+Ici, `N` doit être remplacé par le nombre de commits à sélectionner (les `N` derniers commits). Si on souhaite sélectionner jusqu'au premier commit du dépôt, on remplace le `HEAD~N` par `--root`. Une fois la commande exécutée, une interface s'affiche, en console ou dans un éditeur de texte, selon votre configuration.
+
 Par exemple :
 
 ```bash
@@ -337,7 +338,9 @@ pick f2ep173 chat fini
 pick t2du1z9 ha non en fait, fix du chat...
 ```
 
-Les commits sélectionnés sont présentés du plus ancien au plus récent. Il suffit alors de remplacer le mot clé `pick` par `s` (pour squash) pour tous les commits qu'on veut **squasher**. Tous les commits labellés par **s** seront alors fusionnés dans le premier commit labellé **pick** au-dessus d'eux. On quitte ensuite cette interface en faisant `Echap` puis `:wq` (écrire et quitter).
+Les commits sélectionnés sont présentés du plus ancien au plus récent. Il suffit alors de remplacer le mot clé `pick` par `s` (pour squash) pour tous les commits qu'on veut **squasher**. Tous les commits libellés par **s** seront alors fusionnés dans le premier commit libellé **pick** au-dessus d'eux. Il faut donc **obligatoirement libeller au moins un commit en pick**. 
+
+Sur nano/vim, on quitte ensuite cette interface en faisant `Echap` puis `:wq` (écrire et quitter). Sur une autre interface type éditeur de texte (par exemple, **gedit**) il suffit de sauvegarder et quitter.
 
 ```bash
 pick 2e5d3fd debut ajout chat
@@ -735,7 +738,9 @@ Dans l'exercice précédent, vous avez collaboré avec un collègue mais celui-c
 
     * Cliquez sur **Invite members** en haut à droite et ajoutez votre collègue en lui donnant le rôle "Owner".
 
-    * Ajoutez une **nouvelle fonctionnalité** permettant d'afficher la description de chaque commande. Il faudra donc commencer par rajouter une méthode dans l'interface `Commande`...! Respectez bien le processus que vous avez jusqu'ici : création d'une sous-branche, commits conventionnels, rebasing, etc. Une fois terminé, ne fusionnez pas la branche de votre fonctionnalité sur `development`.
+    * Ajoutez une **nouvelle fonctionnalité** permettant d'afficher la description de chaque commande. Pour cela, vous allez ajouter une méthode `getDescriptionCommande` dans l'interface `Commande` et donc l'implémenter dans toutes les commandes. Respectez bien le processus que vous avez jusqu'ici : création d'une sous-branche, commits conventionnels, rebasing, etc. 
+    
+    * Une fois terminé, ne fusionnez pas tout de suite la branche de votre fonctionnalité sur `development`.
 
 3. Pour le **collaborateur** :
 
@@ -743,7 +748,9 @@ Dans l'exercice précédent, vous avez collaboré avec un collègue mais celui-c
 
     * Clonez ce dépôt. Vous avez maintenant les droits d'accès et surtout d'écriture.
 
-    * Sur ce dépôt, ajoutez une nouvelle commande `minuscules` similaire à `majuscules` mais pour les minuscules (on utilise `toLowerCase`). Une fois terminé, ne fusionnez pas la branche de votre fonctionnalité sur `development`.
+    * Sur ce dépôt, ajoutez une nouvelle commande `minuscules` similaire à `majuscules`, mais pour les minuscules (on utilise `toLowerCase`). Respectez bien le processus que vous avez jusqu'ici : création d'une sous-branche, commits conventionnels, rebasing, etc. Une fois terminé, ne fusionnez pas tout de suite la branche de votre fonctionnalité sur `development`. 
+    
+    * Une fois terminé, ne fusionnez pas la branche de votre fonctionnalité sur `development`.
 
 4. Pour chacun des 2 membres du projet (**propriétaire** et **collaborateur**) : depuis **GitLab**, créez une **merge request** proposant de fusionner la branche contenant votre **feature** vers `development`. Cette fois, dans la page où vous devez entrer le titre et la description de la requête, précisez votre collègue au niveau du champ `Assignees` et validez.
 
