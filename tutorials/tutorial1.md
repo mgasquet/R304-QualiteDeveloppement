@@ -535,14 +535,20 @@ On peut combiner ces deux opérations ainsi afin de créer une branche et d'imm�
 git checkout -b nom_branche
 ```
 
-Pour connaître la branche sur laquelle on se trouve actuellement, on peut utiliser :
+Il y a plusieurs possibilités pour connaître la branche sur laquelle on se trouve actuellement :
 
-```bash
-git rev-parse --abbrev-ref HEAD
-```
-La commande `git branch` (sans arguments) permet aussi de lister les branches existantes en mettant un `*` à côté de la branche courante.
+   * ```bash
+        git rev-parse --abbrev-ref HEAD
+     ```
+   * ```bash
+        git branch --show-current
+      ```
+   * ```bash
+        git branch
+      ```
+     La commande `git branch` (sans arguments) permet de lister les branches existantes en mettant un `*` à côté de la branche courante.
 
-Mais généralement, votre terminal peut aussi vous l'indiquer à côté du chemin du répertoire courant.
+[//]: # (Mais généralement, votre terminal peut aussi vous l'indiquer à côté du chemin du répertoire courant.)
 
 **Attention**, une fois sur une nouvelle branche, quand vous voudrez réaliser **push**, il faudra bien préciser la branche où vous vous trouvez (et donc pas forcément `master`!) :
 
@@ -631,6 +637,8 @@ Nous allons mettre en application ce que vous avez appris sur les **branches** e
 2. Dans l'éditeur, on souhaite ajouter une commande pour `effacer` une partie du texte (entre deux positions). Depuis `development`, créez et déplacez-vous dans une **nouvelle branche** nommée adéquatement et développez cette fonctionnalité. 
 
     Vous ferez attention aux **messages de commit** qui doivent respecter les conventions qui vous ont été présentées plus tôt (en tout cas, au moins le "dernier" regroupant tous vos commits, s'il y en a plusieurs).
+
+    Pensez aussi au principe [DRY](https://fr.wikipedia.org/wiki/Ne_vous_r%C3%A9p%C3%A9tez_pas) (la fonction `effacer` de la classe `Document` devrait être toute petite !).
 
 3. Une fois cette fonctionnalité développée, revenez dans votre branche `development`. On souhaite alors ajouter une commande `clear` qui efface tout le texte. Réappliquez le même processus que pour la question précédente. 
 
