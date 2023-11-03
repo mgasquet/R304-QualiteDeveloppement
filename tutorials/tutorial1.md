@@ -540,6 +540,7 @@ Pour connaître la branche sur laquelle on se trouve actuellement, on peut utili
 ```bash
 git rev-parse --abbrev-ref HEAD
 ```
+La commande `git branch` (sans arguments) permet aussi de lister les branches existantes en mettant un `*` à côté de la branche courante.
 
 Mais généralement, votre terminal peut aussi vous l'indiquer à côté du chemin du répertoire courant.
 
@@ -591,11 +592,19 @@ git branch -D feature/chat
 
 Lors d'un merge, en cas de conflit (si le **merge** automatique échoue) il faut :
 
-- Ouvrir les fichiers concernés par les conflits. Ils présentent des sections avec la source des conflits (les deux versions qui différent)
-
+- Ouvrir les fichiers concernés par les conflits. Chacun des fichiers présente des sections avec la source des conflits (les deux versions qui différent). Voici un exemple de fichier contenant un conflit :
+    
+        ```bash
+        <<<<<<< HEAD
+        <p>Du texte</p>
+        =======
+        <p>Autre chose qui n'a rien à avoir</p>
+        >>>>>>> 77976da35a11db4580b80ae27e8d65caf5208086
+        ```
+   Ici, on a deux versions différentes de la même ligne. La première version est celle de la branche courante (HEAD) et la seconde est celle de la branche à intégrer. Il faut alors choisir la version qui nous intéresse et supprimer le reste. On peut aussi choisir de garder les deux versions et de les fusionner à la main.
 - Éditer ces fichiers pour ne garder que les modifications qui nous intéressent et adapter si besoin.
 
-- Ajouter les fichiers (`git add .`), faire un `commit` puis un `push`.
+- Ajouter les fichiers (`git add .`), faire un `commit`, et terminer avec un `push`.
 
 Il est aussi tout à fait possible (si besoin) de resynchroniser une sous-branche dérivée de `development` en faisant un `pull` de la branche `development` depuis la sous-branche (si la branche `development` a évoluée entre temps...).
 
