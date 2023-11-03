@@ -640,7 +640,7 @@ Nous allons mettre en application ce que vous avez appris sur les **branches** e
 
     Pensez aussi au principe [DRY](https://fr.wikipedia.org/wiki/Ne_vous_r%C3%A9p%C3%A9tez_pas) (la fonction `effacer` de la classe `Document` devrait être toute petite !).
 
-3. Une fois cette fonctionnalité développée, revenez dans votre branche `development`. On souhaite alors ajouter une commande `clear` qui efface tout le texte. Réappliquez le même processus que pour la question précédente. 
+3. Une fois cette fonctionnalité développée, revenez dans votre branche `development`. On souhaite alors ajouter une commande `clear` qui efface tout le texte. Réappliquez le même processus que pour la question précédente (création d'une nouvelle branche, implémentation). 
 
     Cependant, vous **ajouterez un petit bug léger** (qui ne fait pas planter l'application). Par exemple, après avoir effacé le contenu, on ajoute une lettre quelconque dans le texte, ou n'importe quoi. Nous reviendrons sur ce bug plus tard qui nous sera utile lorsque vous travaillerez en équipe.
 
