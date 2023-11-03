@@ -717,7 +717,7 @@ Si jamais une `merge request` ne satisfait pas le(s) propriétaire(s) du dépôt
 
 ### Travailler en équipe
 
-Dans un projet où il y a plusieurs **collaborateurs** le processus de **merge request** est également utilisé et est même primordial : jusqu'ici nous avons réalisé nous-même la fusion des sous-branches de type "features" vers la branche `development`. Néanmoins, dans un projet professionnel (avec plusieurs membres), vous n'êtes pas vraiment autorisé à faire cela seul. Vous devez créer une **merge request** en interne et **l'assigner** à un autre membre du projet.
+Dans un projet où il y a plusieurs **collaborateurs** le processus de **merge request** est également utilisé et est même primordial : jusqu'ici, nous avons réalisé nous-même la fusion des sous-branches de type "features" vers la branche `development`. Néanmoins, dans un projet professionnel (avec plusieurs membres), vous n'êtes pas vraiment autorisé à faire cela seul. Vous devez créer une **merge request** en interne et **l'assigner** à un autre membre du projet.
 
 La personne qui a été assignée à la `merge request` est chargée d'examiner le code de celle-ci et de la valider. C'est le moment d'avoir un œil neuf sur votre code. La personne assignée doit notamment vérifier si le code est bien commenté et documenté, s'il respecte les normes de nommage (CamelCase par exemple, ou bien des normes de l'entreprise), l'indentation... Bref, on vérifie d'abord que le code est propre. Il faut aussi vérifier que, a priori, le code fonctionne, ne contient pas de failles de sécurité potentielles, etc. Cela peut aussi être des problèmes relatifs au placement des fichiers, par exemple.
 
@@ -745,7 +745,7 @@ Dans l'exercice précédent, vous avez collaboré avec un collègue mais celui-c
 
     * Sur ce dépôt, ajoutez une nouvelle commande `minuscules` similaire à `majuscules` mais pour les minuscules (on utilise `toLowerCase`). Une fois terminé, ne fusionnez pas la branche de votre fonctionnalité sur `development`.
 
-4. Depuis **GitLab**, créez une **merge request** proposant de fusionner la branche contenant votre **feature** vers `development`. Cette fois, dans la page où vous devez entrer le titre et la description de la requête, précisez votre collègue au niveau du champ `Assignees` et validez.
+4. Pour chacun des 2 membres du projet (**propriétaire** et **collaborateur**) : depuis **GitLab**, créez une **merge request** proposant de fusionner la branche contenant votre **feature** vers `development`. Cette fois, dans la page où vous devez entrer le titre et la description de la requête, précisez votre collègue au niveau du champ `Assignees` et validez.
 
 5. À partir de [la page principale du site](https://gitlabinfo.iutmontp.univ-montp2.fr/), cliquez sur la catégorie `Merge Requests` puis `Assigned`. Vous pouvez alors visualiser toutes les `merge requests` qui vous ont été assignées.
 
