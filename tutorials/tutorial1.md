@@ -206,7 +206,7 @@ Pour l'instant, vous allez simplement utiliser un **fork** pour créer votre pro
 
 <div class="exercise">
 
-1. Rendez-vous sur [le dépôt du projet](https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/editeur-de-texte/) puis réalisez un **fork**. Sur GitLab, il s'agit du bouton en haut à droite du dépôt. Au niveau de **Project URL**, dans le champ **Select a namespace** précisez votre nom d'utilisateur (nom + première lettre prénom). Réglez la visibilité du projet sur `public (important pour la suite !).
+1. Rendez-vous sur [le dépôt du projet](https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/editeur-de-texte/) puis réalisez un **fork**. Sur GitLab, il s'agit du bouton en haut à droite du dépôt. Au niveau de **Project URL**, dans le champ **Select a namespace** précisez `qualite-de-developpement-semestre-3/etu/votrelogin` (nom + première lettre du nom). Ce **namespace** va permettre de regrouper vos projets liés à ce cours au même endroit. Enfin, réglez la visibilité du projet sur `public (important pour la suite !).
 
 2. Une fois le **fork** achevé, vous obtenez alors un nouveau dépôt dans votre espace personnel. Sur votre machine, **clonez** ce dépôt (en utilisant la bonne commande git).
 
