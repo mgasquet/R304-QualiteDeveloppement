@@ -736,9 +736,7 @@ Dans l'exercice précédent, vous avez collaboré avec un collègue mais celui-c
 
 2. Pour le **propriétaire** :
     
-    * Dans votre dépôt GitLab (pas celui **forké**, celui original), rendez-vous dans la catégorie **Manage** puis **Members**.
-
-    * Cliquez sur **Invite members** en haut à droite et ajoutez votre collègue en lui donnant le rôle "Owner".
+    * Dans votre dépôt GitLab (pas celui **forké**, celui original), donnez le rôle **Owner** à votre collègue.
 
     * Ajoutez une **nouvelle fonctionnalité** permettant d'afficher la description de chaque commande. Pour cela, vous allez ajouter une méthode `getDescriptionCommande` dans l'interface `Commande` et donc l'implémenter dans toutes les commandes. Respectez bien le processus que vous avez jusqu'ici : création d'une sous-branche, commits conventionnels, rebasing, etc. 
     
