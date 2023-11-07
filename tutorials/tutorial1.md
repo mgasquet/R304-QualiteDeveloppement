@@ -669,13 +669,15 @@ Pour la suite des exercices, trouvez-vous un binôme qui est au même point que 
 
 <div class="exercise">
 
-1. **Clonez** le dépôt d'un collègue qui en est au même point que vous et exécutez son programme pour trouver le bug qu'il a inséré au niveau de la commande `clear`.
+1. Invitez votre collègue en tant que collaborateur de votre dépôt : **Manage** → **Members** → **Invite Members**. Vous pouvez lui donner le rôle de **Developer**, mais tout autre rôle devrait suffire pour ce qui va suivre.
 
-2. Sur le dépôt **GitLab** de votre collègue, créez une `issue` et expliquez le bug que vous rencontrez. Une **issue** est en fait un fil de discussion où différentes personnes peuvent intervenir.
+2. **Clonez** le dépôt d'un collègue qui en est au même point que vous et exécutez son programme pour trouver le bug qu'il a inséré au niveau de la commande `clear`.
 
-3. Lorsque votre collègue a fait de même avec **votre dépôt**, **relevez l'identifiant** (numéro) de l'issue puis retournez dans votre projet et développez un **bugfix**. Il faudra respecter les conventions citées plus tôt pour les branches. Pour le message final du commit, veillez à bien indiquer dans la description le texte suivant : `Closes #numeroIssue` (en remplaçant `numeroIssue`, bien sûr).
+3. Sur le dépôt **GitLab** de votre collègue, créez une `issue` et expliquez le bug que vous rencontrez. Une **issue** est en fait un fil de discussion où différentes personnes peuvent intervenir.
 
-4. Une fois le **bugfix** publié puis ultimement intégré à `master` via la fusion de la branche `development`, retournez voir l'issue sur **GitLab**. Vous constaterez que votre commit a automatiquement été attaché à cette **issue** et qu'elle a même été fermée !
+4. Lorsque votre collègue a fait de même avec **votre dépôt**, **relevez l'identifiant** (numéro) de l'issue puis retournez dans votre projet et développez un **bugfix**. Il faudra respecter les conventions citées plus tôt pour les branches. Pour le message final du commit, veillez à bien indiquer dans la description le texte suivant : `Closes #numeroIssue` (en remplaçant `numeroIssue`, bien sûr).
+
+5. Une fois le **bugfix** publié puis ultimement intégré à `master` via la fusion de la branche `development`, retournez voir l'issue sur **GitLab**. Vous constaterez que votre commit a automatiquement été attaché à cette **issue** et qu'elle a même été fermée !
 
 </div>
 
