@@ -11,13 +11,13 @@ La plupart de ces outils sont aussi disponibles sur les autres plateformes comme
 
 ## Prise en main de Github
 
-Tout d'abord, vous allez devoir vous inscrire à Github (si ce n'est pas déjà fait) puis utiliser une clé (on peut ré-utiliser la même que celle utilisée sur **Gitlab**).
+Tout d'abord, vous allez devoir vous inscrire à Github (si ce n'est pas déjà fait) puis utiliser une clé (on peut réutiliser la même que celle utilisée sur **Gitlab**).
 
 <div class="exercise">
 
 1. Si ce n'est pas déjà fait, créez-vous un compte [Github](https://github.com/signup?ref_cta=Sign+up&ref_loc=header+logged+out&ref_page=%2F&source=header-home).
 
-2. Copiez la clé que vous aviez généré dans votre presse-papier :
+2. Copiez la clé que vous aviez générée dans votre presse-papier :
 
     ```bash
     clip < ~/.ssh/id_rsa.pub
@@ -25,7 +25,7 @@ Tout d'abord, vous allez devoir vous inscrire à Github (si ce n'est pas déjà 
 
 3. Rendez-vous sur [la page de gestion des clés](https://github.com/settings/keys) de votre profil Github. Cliquez sur **"New SSH key"**.
 
-4. Précisez le nom que vous souhaitez puis **collez votre clé publique** (qui doit normalement être dans votre presse-papier). Validez et constatez que votre clé a bien été ajoutée à votre profil **Github**.
+4. Précisez le nom que vous souhaitez, puis **collez votre clé publique** (qui doit normalement être dans votre presse-papier). Validez et constatez que votre clé a bien été ajoutée à votre profil **Github**.
 
 </div>
 
@@ -33,7 +33,7 @@ Tout est prêt pour que vous puissiez travailler !
 
 ## Les pages de Github
 
-Vous l'ignorez peut-être, mais Github met à disposition un outil appelé **Github Pages** qui permet d'héberger un **site web statique** (côté client donc, pas de PHP ou autres technologies serveur...). Des pages HTML/CSS simples, une application JS, un site construit avec une technologie réactive comme Angular, React, etc peuvent donc être hébergés à travers un dépôt et accessibles au monde entier via une URL !
+Vous l'ignorez peut-être, mais Github met à disposition un outil appelé **Github Pages** qui permet d'héberger un **site web statique** (côté client donc, pas de PHP ou autres technologies serveur...). Des pages HTML/CSS simples, une application JS, un site construit avec une technologie réactive comme Angular, React, etc. peuvent donc être hébergés à travers un dépôt et accessibles au monde entier via une URL !
 
 D'ailleurs, le site de TP utilise la technologie **Jekyll** et est hébergé sur Github ! Vous pouvez même cliquer sur **Source** en haut de la page pour accéder au dépôt !
 
@@ -143,7 +143,7 @@ Pour `PHP`, on retrouve [plus ou moins la même chose](https://www.jetbrains.com
 
 2. Faites un **push** et vérifiez que votre projet apparait bien sur le dépôt distant **sur Github**.
 
-3. Ajoutez de la **documentation** à quelques classes et méthodes (pas *tout* le projet, mais quand mêmes quelques suffisamment !)
+3. Ajoutez de la **documentation** à quelques classes et méthodes (pas *tout* le projet, mais quand même quelques suffisamment !)
 
 4. Nous allons ajouter une **tâche** à exécuter afin que le gestionnaire de dépendances et de projet (ici **Maven**) génère le site de la **Javadoc**. Sur IntelliJ IDEA, rendez-vous dans **Run** puis **Edit Configurations**. Appuyez sur `+` et sélectionnez **Maven**. Donnez le nom **"Javadoc"** à votre nouvelle tâche et spécifiez `javadoc::javadoc` dans le champ `Run`. Validez.
 
@@ -169,7 +169,7 @@ Le **workflow** va vous permettre de charger votre projet sur le (ou les) systè
 
 Quand l'élément ciblé par le fichier de **workflow** survient, le script est exécuté. On peut suivre la progression des tâches en direct et, en cas d'échec (par exemple, un test ne passe pas, le programme ne compile pas...) **Github** prévient en ligne qu'il y a eu des erreurs, avec les détails et un mail est aussi envoyé aux collaborateurs du dépôt.
 
-Avec ce système, **Github** pourrait détecter automatiquement s'il y a un soucis quand, par exemple, deux branches sont **fusionnées** avec succès, mais que le code ne compile plus, ou ne passe pas les tests.
+Avec ce système, **Github** pourrait détecter automatiquement s'il y a des soucis quand, par exemple, deux branches sont **fusionnées** avec succès, mais que le code ne compile plus, ou ne passe pas les tests.
 
 Au-delà de ça, le **workflow** peut aussi servir à automatiser certaines tâches comme la mise à jour du site de la documentation, par exemple.
 
@@ -189,10 +189,10 @@ on: evenement #Par exemple, "push"
 jobs: #Un job est un processus qui contient lui-même des étapes
 
   nom-job1: #Nom du job 1
-    runs-on: systeme #Sélection du système d'exploitation où s'éxécute le job
-    steps: #Etapes à réalisé sur le système
+    runs-on: systeme #Sélection du système d'exploitation où s'exécute le job
+    steps: #Etapes à réaliser sur le système
       - name: nom #Nom de l'action 1
-        run: commande #Commande à éxécuter (par exemple, javac, gcc, etc...)
+        run: commande #Commande à exécuter (par exemple, javac, gcc, etc...)
       - name: nom2 #Nom de l'action 2
         uses : exemple/action #Utilisation d'une action externe
         with : #Paramètres de l'action externe (si besoin)
@@ -264,7 +264,7 @@ Dans le workflow, vous aurez besoin d'un **job** pour :
 
 1. Se déplacer dans votre dépôt. Vous pouvez utiliser l'action `actions/checkout@v3` pour cela.
 
-2. Installer et mettre en place `Java` (version 17). Vous pouvez utiliser l'action `actions/setup-java@v1` paramétré (au niveau du `with`) avec `java-version: 17`.
+2. Installer et mettre en place `Java` (version 17). Vous pouvez utiliser l'action `actions/setup-java@v1` paramétrée (au niveau du `with`) avec `java-version: 17`.
 
 3. Exécuter la commande `mvn test` (exécution de tests avec `maven`).
 
@@ -282,7 +282,7 @@ Dans le workflow, vous aurez besoin d'un **job** pour :
 
 ### Gestion automatique de la Javadoc
 
-Maintenant que vous maîtrisez les **workflows**, vous allez pouvoir en créer un qui va automatiquement générer le site de la Javadoc et le mettre en ligne à l'aide de **Github pages**!
+Maintenant que vous maîtrisez les **workflows**, vous allez pouvoir en créer un qui va automatiquement générer le site de la Javadoc et le mettre en ligne à l'aide de **Github pages** !
 
 Pour cela, vous aurez besoin de créer un `job` qui doit :
 
@@ -347,7 +347,7 @@ jobs:
       - name: Upload files on FTP server
         uses: wlixcc/SFTP-Deploy-Action@v1.2.4
         with:
-          # Adresse su serveur
+          # Adresse du serveur
           server: sftp.exemple.com
           # Numéro de port
           port: 22
@@ -436,13 +436,13 @@ Ici, nous avons utilisé l'action **SFTP Deploy** car le serveur de l'IUT utilis
 
 ### Releases
 
-**Github** permet de publier des **releases** de notre application, c'est-à-dire une version fonctionnelle du logiciel, avec les exécutables et les ressources nécessaire.
+**Github** permet de publier des **releases** de notre application, c'est-à-dire une version fonctionnelle du logiciel, avec les exécutables et les ressources nécessaires.
 
 Sur **git** il est possible d'associer un **commit** à un **tag**. Un **tag** est une étiquette nommée. Généralement, on associe une `release` à un **tag**. Il est aussi possible de faire un `checkout` directement sur un tag !
 
-Par convention, les tags s'utilisent donc pour indiquer la version d'un programme sous la forme `vX.Y.Z`. Donc, par exemple `v0.0.1`, `v1.0.0`, etc. `X` désigne les mises à jour majeures (le logiciel change quasi-complétement), `Y` les mises à jour intermédiaires (ajout de nouvelles fonctionnalités, par exemple après un sprint) et `Z` les mises à jour mineures (fixes de bugs par exemple).
+Par convention, les tags s'utilisent donc pour indiquer la version d'un programme sous la forme `vX.Y.Z`. Ainsi, par exemple `v0.0.1`, `v1.0.0`, etc. `X` désigne les mises à jour majeures (le logiciel change quasi-complétement), `Y` les mises à jour intermédiaires (ajout de nouvelles fonctionnalités, par exemple après un sprint) et `Z` les mises à jour mineures (fixes de bugs par exemple).
 
-Pour créer un **tag** on utilise simplement la commande :
+Pour créer un **tag**, on utilise simplement la commande :
 
 ```bash
 git tag vX.Y.Z
@@ -630,7 +630,7 @@ jobs:
 
 3. Pour que votre `workflow` soit autorisé à créer une `release`, donnez-lui la permission `contents: write`.
 
-4. Faites un `commit`, un `push` puis créez un `tag` nommé `v1.0.0` que vous pousserez également sur votre dépôt distant.
+4. Faites un `commit`, un `push`, puis créez un `tag` nommé `v1.0.0` que vous pousserez également sur votre dépôt distant.
 
 5. Observez l'exécution du `workflow` dans l'onglet `Actions` puis vérifiez que la **release** créée contient bien les trois exécutables. 
 
