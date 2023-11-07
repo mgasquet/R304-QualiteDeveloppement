@@ -5,17 +5,17 @@ layout: tutorial
 lang: fr
 ---
 
-Dans ce second (et dernier) TP, nous allons changer de plateforme et étudier diverses fonctionnalités proposées par **Github** notamment des outils de **CI/CD** (continuous integration/continuous delivery). Globalement, il s'agit d'automatiser différentes tâches qui seraient fastidieuses (et chronophages) de faire "à la main" comme le fait de tester l'intégration de différents modules de code, la construction et la mise à disposition de l'exécutable de l'application, sur plusieurs environnements. Si nécessaire, la mise en ligne de la documentation...
+Dans ce second (et dernier) TP, nous allons changer de plateforme et étudier diverses fonctionnalités proposées par **GitHub** notamment des outils de **CI/CD** (continuous integration/continuous delivery). Globalement, il s'agit d'automatiser différentes tâches qui seraient fastidieuses (et chronophages) de faire "à la main" comme le fait de tester l'intégration de différents modules de code, la construction et la mise à disposition de l'exécutable de l'application, sur plusieurs environnements. Si nécessaire, la mise en ligne de la documentation...
 
-La plupart de ces outils sont aussi disponibles sur les autres plateformes comme **Gitlab**, si le bon module est activé.
+La plupart de ces outils sont aussi disponibles sur les autres plateformes comme **GitLab**, si le bon module est activé.
 
-## Prise en main de Github
+## Prise en main de GitHub
 
-Tout d'abord, vous allez devoir vous inscrire à Github (si ce n'est pas déjà fait) puis utiliser une clé (on peut réutiliser la même que celle utilisée sur **Gitlab**).
+Tout d'abord, vous allez devoir vous inscrire à GitHub (si ce n'est pas déjà fait) puis utiliser une clé (on peut réutiliser la même que celle utilisée sur **GitLab**).
 
 <div class="exercise">
 
-1. Si ce n'est pas déjà fait, créez-vous un compte [Github](https://github.com/signup?ref_cta=Sign+up&ref_loc=header+logged+out&ref_page=%2F&source=header-home).
+1. Si ce n'est pas déjà fait, créez-vous un compte [GitHub](https://github.com/signup?ref_cta=Sign+up&ref_loc=header+logged+out&ref_page=%2F&source=header-home).
 
 2. Copiez la clé que vous aviez générée dans votre presse-papier :
 
@@ -23,19 +23,19 @@ Tout d'abord, vous allez devoir vous inscrire à Github (si ce n'est pas déjà 
     clip < ~/.ssh/id_rsa.pub
     ```
 
-3. Rendez-vous sur [la page de gestion des clés](https://github.com/settings/keys) de votre profil Github. Cliquez sur **"New SSH key"**.
+3. Rendez-vous sur [la page de gestion des clés](https://github.com/settings/keys) de votre profil GitHub. Cliquez sur **"New SSH key"**.
 
-4. Précisez le nom que vous souhaitez, puis **collez votre clé publique** (qui doit normalement être dans votre presse-papier). Validez et constatez que votre clé a bien été ajoutée à votre profil **Github**.
+4. Précisez le nom que vous souhaitez, puis **collez votre clé publique** (qui doit normalement être dans votre presse-papier). Validez et constatez que votre clé a bien été ajoutée à votre profil **GitHub**.
 
 </div>
 
 Tout est prêt pour que vous puissiez travailler !
 
-## Les pages de Github
+## Les pages de GitHub
 
-Vous l'ignorez peut-être, mais Github met à disposition un outil appelé **Github Pages** qui permet d'héberger un **site web statique** (côté client donc, pas de PHP ou autres technologies serveur...). Des pages HTML/CSS simples, une application JS, un site construit avec une technologie réactive comme Angular, React, etc. peuvent donc être hébergés à travers un dépôt et accessibles au monde entier via une URL !
+Vous l'ignorez peut-être, mais GitHub met à disposition un outil appelé **GitHub Pages** qui permet d'héberger un **site web statique** (côté client donc, pas de PHP ou autres technologies serveur...). Des pages HTML/CSS simples, une application JS, un site construit avec une technologie réactive comme Angular, React, etc. peuvent donc être hébergés à travers un dépôt et accessibles au monde entier via une URL !
 
-D'ailleurs, le site de TP utilise la technologie **Jekyll** et est hébergé sur Github ! Vous pouvez même cliquer sur **Source** en haut de la page pour accéder au dépôt !
+D'ailleurs, le site de TP utilise la technologie **Jekyll** et est hébergé sur GitHub ! Vous pouvez même cliquer sur **Source** en haut de la page pour accéder au dépôt !
 
 Pour que cela fonctionne, il faut que votre dépôt soit **public**.
 
@@ -49,9 +49,9 @@ Nous allons faire un premier essai d'hébergement d'un site statique simple.
 
 2. Dans le répertoire contenant votre page HTML, **initialisez** un dépôt (`git init`).
 
-3. Sur **Github**, [créez un dépôt](https://github.com/new) avec une visibilité **public** puis reliez-le à votre dépôt en local (`git remote add origin adresse`). L'adresse à utiliser est affichée sur la page du dépôt (zone `Quick Setup`). Enfin, Faites un commit et un push de votre site.
+3. Sur **GitHub**, [créez un dépôt](https://github.com/new) avec une visibilité **public** puis reliez-le à votre dépôt en local (`git remote add origin adresse`). L'adresse à utiliser est affichée sur la page du dépôt (zone `Quick Setup`). Enfin, Faites un commit et un push de votre site.
 
-4. Toujours sur **Github**, dans votre dépôt, rendez-vous dans l'onglet **Settings** puis **Pages** (sur le menu latéral gauche).
+4. Toujours sur **GitHub**, dans votre dépôt, rendez-vous dans l'onglet **Settings** puis **Pages** (sur le menu latéral gauche).
 
 5. Dans la section **branch**, sélectionnez **master**. On vous propose deux dossiers : **root** (la racine du dépôt) ou un éventuel dossier **docs**. Laissez donc le paramétrage à **root**.
 
@@ -63,7 +63,7 @@ Nous allons faire un premier essai d'hébergement d'un site statique simple.
 
 Il est possible d'ajouter de la documentation à divers éléments d'un programme codé en Java : Classes, méthodes, etc. Une fois la documentation écrite, il est alors possible de générer un **site web** permettant d'explorer votre documentation !
 
-Nous allons combiner cela avec les **pages** de Github afin que le dépôt héberge notre Javadoc et qu'elle soit accessible, en ligne.
+Nous allons combiner cela avec les **pages** de GitHub afin que le dépôt héberge notre Javadoc et qu'elle soit accessible, en ligne.
 
 Nous n'allons pas entrer dans le détail des possibilités que nous offre la syntaxe de documentation Java (on peut faire beaucoup de choses !) donc nous allons simplement voir les basiques :
 
@@ -127,9 +127,9 @@ Pour `PHP`, on retrouve [plus ou moins la même chose](https://www.jetbrains.com
 
 <div class="exercise">
 
-1. Créez un nouveau dépôt vierge sur **Github**. Reprenez votre projet **éditeur de texte** (du TP précédent). Nous allons changer l'adresse du dépôt distant. Pour cela :
+1. Créez un nouveau dépôt vierge sur **GitHub**. Reprenez votre projet **éditeur de texte** (du TP précédent). Nous allons changer l'adresse du dépôt distant. Pour cela :
 
-    On supprime **origin** (pointant actuellement sur le dépôt Gitlab) :
+    On supprime **origin** (pointant actuellement sur le dépôt GitLab) :
 
     ```bash
     git remote remove origin
@@ -141,7 +141,7 @@ Pour `PHP`, on retrouve [plus ou moins la même chose](https://www.jetbrains.com
     git remote add origin adresse
     ```
 
-2. Faites un **push** et vérifiez que votre projet apparait bien sur le dépôt distant **sur Github**.
+2. Faites un **push** et vérifiez que votre projet apparait bien sur le dépôt distant **sur GitHub**.
 
 3. Ajoutez de la **documentation** à quelques classes et méthodes (pas *tout* le projet, mais quand même quelques suffisamment !)
 
@@ -151,7 +151,7 @@ Pour `PHP`, on retrouve [plus ou moins la même chose](https://www.jetbrains.com
 
 6. Déplacez le dossier `apidocs` à la racine du dépôt et renommez-le `docs`.
 
-7. Enfin, faites un commit et poussez-le sur votre dépôt distant. Sur **Github**, configurez votre **page** sur la branche **master** et le sous-dossier **docs**. Validez et patientez un peu, votre documentation est alors accessible en ligne ! Toujours à l'adresse [https://votre_pseudo_git.github.io/nom_dépôt/](https://votre_pseudo_git.github.io/nom_dépôt/).
+7. Enfin, faites un commit et poussez-le sur votre dépôt distant. Sur **GitHub**, configurez votre **page** sur la branche **master** et le sous-dossier **docs**. Validez et patientez un peu, votre documentation est alors accessible en ligne ! Toujours à l'adresse [https://votre_pseudo_git.github.io/nom_dépôt/](https://votre_pseudo_git.github.io/nom_dépôt/).
 
 </div>
 
@@ -163,13 +163,13 @@ Pourquoi pas commencer à utiliser cet outil dans vos SAEs ?
 
 ## Découverte des workflows
 
-**Github** propose un outil appelé **Github actions**. Ce système permet de détecter quand un événement survient sur un dépôt (par exemple, un **push** sur une branche spécifique...) et de déclencher un **script** appelé **workflow** en conséquence. C'est un peu similaire aux **triggers** en base de données.
+**GitHub** propose un outil appelé **GitHub actions**. Ce système permet de détecter quand un événement survient sur un dépôt (par exemple, un **push** sur une branche spécifique...) et de déclencher un **script** appelé **workflow** en conséquence. C'est un peu similaire aux **triggers** en base de données.
 
 Le **workflow** va vous permettre de charger votre projet sur le (ou les) systèmes de votre choix et de réaliser des actions dessus (compilation, tests, publication d'un exécutable, et bien d'autres)... On peut même interagir directement avec notre dépôt, les branches, les issues, etc. Les systèmes disponibles sont **ubuntu**, **windows** et **macOs**.
 
-Quand l'élément ciblé par le fichier de **workflow** survient, le script est exécuté. On peut suivre la progression des tâches en direct et, en cas d'échec (par exemple, un test ne passe pas, le programme ne compile pas...) **Github** prévient en ligne qu'il y a eu des erreurs, avec les détails et un mail est aussi envoyé aux collaborateurs du dépôt.
+Quand l'élément ciblé par le fichier de **workflow** survient, le script est exécuté. On peut suivre la progression des tâches en direct et, en cas d'échec (par exemple, un test ne passe pas, le programme ne compile pas...) **GitHub** prévient en ligne qu'il y a eu des erreurs, avec les détails et un mail est aussi envoyé aux collaborateurs du dépôt.
 
-Avec ce système, **Github** pourrait détecter automatiquement s'il y a des soucis quand, par exemple, deux branches sont **fusionnées** avec succès, mais que le code ne compile plus, ou ne passe pas les tests.
+Avec ce système, **GitHub** pourrait détecter automatiquement s'il y a des soucis quand, par exemple, deux branches sont **fusionnées** avec succès, mais que le code ne compile plus, ou ne passe pas les tests.
 
 Au-delà de ça, le **workflow** peut aussi servir à automatiser certaines tâches comme la mise à jour du site de la documentation, par exemple.
 
@@ -213,7 +213,7 @@ Chaque `job` contient une liste de tâches nommées qui s'exécutent dans l'ordr
 
 - Les tâches `run` qui exécutent une commande. Si cette commande échoue (par exemple, échec de compilation) le workflow échoue.
 
-- Les tâches `uses` qui permettent d'appeler une action de workflow **externe**, pour réaliser une action précise. Par exemple, `actions/checkout@v3` est fréquemment utilisé, car elle permet de vous placer dans une copie locale de votre dépôt (dans l'environnement d'exécution) et donc, d'accéder aux fichiers. Certaines actions ont besoin de paramètres qu'on peut préciser avec le bloc `with`. Beaucoup d'actions sont proposées par l'équipe de Github, mais d'autres actions très utiles sont aussi proposées par la communauté !
+- Les tâches `uses` qui permettent d'appeler une action de workflow **externe**, pour réaliser une action précise. Par exemple, `actions/checkout@v3` est fréquemment utilisé, car elle permet de vous placer dans une copie locale de votre dépôt (dans l'environnement d'exécution) et donc, d'accéder aux fichiers. Certaines actions ont besoin de paramètres qu'on peut préciser avec le bloc `with`. Beaucoup d'actions sont proposées par l'équipe de GitHub, mais d'autres actions très utiles sont aussi proposées par la communauté !
 
 On peut donner des `permissions` au robot exécutant le script. Par exemple, si on souhaite que notre `workflow` puisse créer des nouvelles branches ou bien publier des `releases`, il faut lui donner des droits d'écriture en précisant la permission `contents: write`.
 
@@ -240,7 +240,7 @@ on:
 
 À noter qu'un `merge` d'une branche résultera en un `push` à un moment donné, dans la branche qui intègre les changements de la branche fusionnée.
 
-### Automatisation des tests sur Github
+### Automatisation des tests sur GitHub
 
 Pour mettre en pratique, nous allons coder un **workflow** très simple permettant de lancer les **tests unitaires** sur votre application. Mais tout d'abord... il vous faut des tests unitaires ! (comment, vous n'avez pas écrit de tests unitaires depuis le début?!)
 
@@ -258,7 +258,7 @@ Pour mettre en pratique, nous allons coder un **workflow** très simple permetta
 
 </div>
 
-Maintenant que vous avez des tests unitaires prêts et fonctionnels, nous allons faire en sorte que **Github** les exécutent après un **push** sur n'importe quelle branche.
+Maintenant que vous avez des tests unitaires prêts et fonctionnels, nous allons faire en sorte que **GitHub** les exécutent après un **push** sur n'importe quelle branche.
 
 Dans le workflow, vous aurez besoin d'un **job** pour :
 
@@ -274,7 +274,7 @@ Dans le workflow, vous aurez besoin d'un **job** pour :
 
 2. Grâce à ce **workflow**, faites en sorte qu'un **push** (sur n'importe quelle branche) exécute les tests unitaires. Dans le `job` que vous allez mettre en place, utilisez le système `ubuntu-latest`. N'oubliez pas de nommer chaque `step` dans votre `job`.
 
-3. Faites un `commit` et un `push` sur votre branche `development`. Sur `Github`, rendez-vous sur votre dépôt et sélectionnez l'onglet `Actions`. Vous devriez voir votre message de commit et un processus en cours d'exécution. Cliquez dessus puis sur le nom du workflow en train de s'exécuter, pour obtenir plus de détail et suivre le déroulement de chaque étape.
+3. Faites un `commit` et un `push` sur votre branche `development`. Sur `GitHub`, rendez-vous sur votre dépôt et sélectionnez l'onglet `Actions`. Vous devriez voir votre message de commit et un processus en cours d'exécution. Cliquez dessus puis sur le nom du workflow en train de s'exécuter, pour obtenir plus de détail et suivre le déroulement de chaque étape.
 
 4. Maintenant, modifiez légèrement la classe `Document` pour qu'un ou plusieurs tests ne passent plus. Faites un commit et un push et vérifiez que le `workflow` échoue bien. Enfin, remettez tout en ordre.
 
@@ -282,7 +282,7 @@ Dans le workflow, vous aurez besoin d'un **job** pour :
 
 ### Gestion automatique de la Javadoc
 
-Maintenant que vous maîtrisez les **workflows**, vous allez pouvoir en créer un qui va automatiquement générer le site de la Javadoc et le mettre en ligne à l'aide de **Github pages** !
+Maintenant que vous maîtrisez les **workflows**, vous allez pouvoir en créer un qui va automatiquement générer le site de la Javadoc et le mettre en ligne à l'aide de **GitHub pages** !
 
 Pour cela, vous aurez besoin de créer un `job` qui doit :
 
@@ -309,11 +309,11 @@ permissions :
 
 2. Grâce à ce **workflow**, faites en sorte qu'un **push** **sur la branche master** génère la documentation et la publie sur la branche `gh-pages`. Dans le `job` que vous allez mettre en place, utilisez le système `ubuntu-latest`. N'oubliez pas de nommer chaque `step` dans votre `job`.
 
-3. Faites un `commit` et un `push` sur votre branche `development`. Sur `Github`, rendez-vous sur votre dépôt et sélectionnez l'onglet `Actions`. Vérifiez que rien ne se passe (car on n'a pas push sur master !).
+3. Faites un `commit` et un `push` sur votre branche `development`. Sur `GitHub`, rendez-vous sur votre dépôt et sélectionnez l'onglet `Actions`. Vérifiez que rien ne se passe (car on n'a pas push sur master !).
 
 4. Déplacez-vous dans votre branche `master` et réalisez un `merge` de la branche `development`. Faites un `push` et observez le déroulement de votre workflow dans l'onglet `Actions`. À l'issue, vous devriez voir qu'une branche `gh-pages` est créée !
 
-5. Dans la configuration de `Github pages`, précisez la branche `gh-pages` plutôt que `master` et sélectionnez `root`.
+5. Dans la configuration de `GitHub pages`, précisez la branche `gh-pages` plutôt que `master` et sélectionnez `root`.
 
 </div>
 
@@ -365,7 +365,7 @@ Attention, le dossier ciblé par `remote_path` doit déjà exister sur le serveu
 
 Peut-être que vous êtes choqué de voir `password` et même `username` écrits en clair dans ce fichier, et vous savez raison ! Tout le monde peut lire les fichiers de **workflow**. Il est donc totalement exclu d'y placer des informations sensibles ! Alors comment faire ?
 
-Github permet d'associer des **variables secrètes** à notre dépôt et d'y faire référence dans nos **workflows**. Ainsi, à la lecture, personne ne pourra voir le contenu réel de ces données, mais lors de l'exécution, la bonne valeur sera utilisée.
+GitHub permet d'associer des **variables secrètes** à notre dépôt et d'y faire référence dans nos **workflows**. Ainsi, à la lecture, personne ne pourra voir le contenu réel de ces données, mais lors de l'exécution, la bonne valeur sera utilisée.
 
 Pour créer une **variable secrète** à partir de la page du dépôt, on se rend dans `Settings`, `Secrets and Variables` et `Actions`. Ensuite, il faut appuyer sur le bouton `New repository secret`. On donne alors un nom (qui sera celui utilisé dans le **workflow**) puis on place la valeur réelle de la variable (le mot de passe en clair, par exemple).
 
@@ -406,11 +406,11 @@ Concernant les informations pour se connecter au serveur FTP de l'IUT :
 
 1. Téléchargez le fichier [index.php]({{site.baseurl}}/assets/TP2/index.php) et placez-le dans un nouveau dossier de projet. Il s'agit d'une simple page web affichant "Hello world".
 
-2. Initialisez le dépôt git ce projet en local, puis sur Github, créez un nouveau dépôt vierge et associez-le à votre dépôt local.
+2. Initialisez le dépôt git ce projet en local, puis sur GitHub, créez un nouveau dépôt vierge et associez-le à votre dépôt local.
 
 3. Sur votre machine, rendez-vous dans le dossier `~/public_html` et créez un dossier `hello_world_site`.
 
-4. Sur votre dépôt Github, créez deux nouvelles variables **secrètes**. Un pour le nom d'utilisateur et un pour le mot de passe. Il s'agit de vos identifiants SFTP qui sont les mêmes que vous utilisez pour vous connecter sur vos machines, à Gitlab, etc...
+4. Sur votre dépôt GitHub, créez deux nouvelles variables **secrètes**. Un pour le nom d'utilisateur et un pour le mot de passe. Il s'agit de vos identifiants SFTP qui sont les mêmes que vous utilisez pour vous connecter sur vos machines, à GitLab, etc...
 
 5. Créez un fichier `deploy.yml` dans un nouveau dossier `.github/workflows` placé dans votre dépôt.
 
@@ -432,11 +432,11 @@ Concernant les informations pour se connecter au serveur FTP de l'IUT :
 
 Vous pouvez maintenant déployer vos projets web sur leur serveur de destination avec un simple **push** sur une branche !
 
-Ici, nous avons utilisé l'action **SFTP Deploy** car le serveur de l'IUT utilise SFTP. Pour un serveur utilisant seulement **FTP** on utilisera plutôt l'action [FTP Deploy](https://github.com/marketplace/actions/ftp-deploy).
+Ici, nous avons utilisé l'action **SFTP Deploy** car le serveur de l'IUT utilise SFTP. Pour un serveur utilisant seulement **FTP**, on utilisera plutôt l'action [FTP Deploy](https://github.com/marketplace/actions/ftp-deploy).
 
 ### Releases
 
-**Github** permet de publier des **releases** de notre application, c'est-à-dire une version fonctionnelle du logiciel, avec les exécutables et les ressources nécessaires.
+**GitHub** permet de publier des **releases** de notre application, c'est-à-dire une version fonctionnelle du logiciel, avec les exécutables et les ressources nécessaires.
 
 Sur **git** il est possible d'associer un **commit** à un **tag**. Un **tag** est une étiquette nommée. Généralement, on associe une `release` à un **tag**. Il est aussi possible de faire un `checkout` directement sur un tag !
 
@@ -462,7 +462,7 @@ git tag -d vX.Y.Z
 
 ### Déploiement de l'application d'édition de texte
 
-Nous allons faire en sorte que, dès qu'un **tag** est **push** sur le dépôt distant, le code de l'application soit compilé et qu'une **release** contenant notre exécutable (ici le fichier `.jar`) soit publié. Ainsi, dès qu'une nouvelle version est prête, il suffit de créer un **tag** et **Github** se charge alors du reste.
+Nous allons faire en sorte que, dès qu'un **tag** est **push** sur le dépôt distant, le code de l'application soit compilé et qu'une **release** contenant notre exécutable (ici le fichier `.jar`) soit publié. Ainsi, dès qu'une nouvelle version est prête, il suffit de créer un **tag** et **GitHub** se charge alors du reste.
 
 Dans une **release**, il est possible d'uploader différents types de fichiers. Par défaut, le code source de l'application est mis à disposition. Dans notre cas, nous allons seulement ajouter l'exécutable `.jar` de l'application, mais dans l'absolu, il est tout à fait possible d'inclure d'autres fichiers.
 
@@ -506,7 +506,7 @@ Là aussi, il faut donner la permission
 
 4. Créez un **tag** nommé `v0.0.1` puis, poussez-le sur le dépôt distant.
 
-5. Sur `Github`, rendez-vous sur votre dépôt et sélectionnez l'onglet `Actions`. Suivez l'avancement de la création de votre `release`.
+5. Sur `GitHub`, rendez-vous sur votre dépôt et sélectionnez l'onglet `Actions`. Suivez l'avancement de la création de votre `release`.
 
 6. Une fois le `workflow` achevé, rendez-vous sur la page principale de votre `dépôt` puis cliquez sur `Releases` dans le menu latéral droit. Vous devriez voir votre `release` et le fichier `.jar` qu'elle contient !
 
@@ -534,7 +534,7 @@ On doit utiliser une nouvelle fois `${{ github.ref_name }}` pour le chemin du fi
 
 </div>
 
-### Déploiement d'un programme multiplateformes
+### Déploiement d'un programme multiplateforme
 
 Pour un programme développé avec un langage interprété (comme `python`) ou pour un langage utilisant une machine virtuelle (comme `Java`), le fichier du programme ou l'exécutable généré est compatible avec n'importe quel système d'exploitation. En effet, si vous compilez un programme java sur `windows`, il pourra être directement exécuté sur un système tournant sur `macOS`, par exemple.
 
@@ -552,7 +552,7 @@ Nous allons tester ce système sur un petit programme très simple, codé en `C`
 
 3. Créez un dépôt contenant seulement le fichier `puissance.c`.
 
-4. Sur `Github`, créez un nouveau dépôt puis reliez-le à votre dépôt local. Faites ensuite votre premier `commit` ainsi que votre premier `push`.
+4. Sur `GitHub`, créez un nouveau dépôt puis reliez-le à votre dépôt local. Faites ensuite votre premier `commit` ainsi que votre premier `push`.
 
 </div>
 
@@ -583,7 +583,7 @@ Voici donc un `job` que l'on pourrait utiliser pour compiler le programme pour u
 
 Vous avez maintenant trois **jobs** qui permettent de compiler votre programme de puissance dans chaque système. Cependant, pour créer la `release`, nous avons besoin de récupérer ces trois exécutables ! Et cela pose problème, car on ne peut pas y accéder directement (car chaque `job` s'exécute sur un environnement différent).
 
-Pour résoudre ce problème, nous allons utiliser le système `artifact`. Il s'agit d'une action qui permet d'uploader un fichier depuis un `job` (avec un nom associé) vers un espace spécial sur `Github` puis de le télécharger dans un autre `job`.
+Pour résoudre ce problème, nous allons utiliser le système `artifact`. Il s'agit d'une action qui permet d'uploader un fichier depuis un `job` (avec un nom associé) vers un espace spécial sur `GitHub` puis de le télécharger dans un autre `job`.
 
 Les `artifacts` s'utilisent au travers de **deux actions** :
 
@@ -638,13 +638,13 @@ jobs:
 
 Bravo ! Vous pouvez maintenant déployer votre programme aisément, sur toutes les 3 plateformes. Cependant, pour les langages compilés et notamment pour le `C`, certaines librairies ne sont pas forcément les mêmes selon le système (par exemple, certaines librairies sur les `sockets`). C'est toute la problématique de la **portabilité**. 
 
-Dans ce cas, il faut donc, par exemple, avoir un code source (ou une partie) pour `ubuntu`, un pour `windows` et faire l'adaptation. Les `workflows` de **Github** peuvent toujours être utilisés en compilant les fichiers spécifiques, selon le système, mais également pour tester qu'un programme fonctionne comme attendu dans un des systèmes cibles (il serait fastidieux de tester les trois systèmes à la main après chaque mise à jour !)
+Dans ce cas, il faut donc, par exemple, avoir un code source (ou une partie) pour `ubuntu`, un pour `windows` et faire l'adaptation. Les `workflows` de **GitHub** peuvent toujours être utilisés en compilant les fichiers spécifiques, selon le système, mais également pour tester qu'un programme fonctionne comme attendu dans un des systèmes cibles (il serait fastidieux de tester les trois systèmes à la main après chaque mise à jour !)
 
 Vous aurez peut-être noté que certaines actions que nous réalisons dans les trois `jobs` pour compiler le programme sont assez redondantes. Nous pourrions optimiser cela avec des `matrices` qui permettraient d'exécuter le contenu d'un `job` sur les trois systèmes, en faisant de légères adaptations (pour les noms des exécutables produits).  
 Si le temps le permet, allez consulter la [documentation](https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs) à ce propos et essayez donc de rendre votre `workflow` plus léger.
 
 ## Conclusion
 
-À travers ce dernier TP, vous avez donc appris à vous servir de certaines fonctionnalités plus poussées de la plateforme **Github**.
+À travers ce dernier TP, vous avez donc appris à vous servir de certaines fonctionnalités plus poussées de la plateforme **GitHub**.
 
 Comme vous l'avez constaté, les techniques de `CI/CD` présentent beaucoup d'avantages dans le cadre du développement d'un projet. Dans ce TP, nous avons étudié seulement quelques exemples, mais il est possible de faire bien plus ! Les `actions` mises à disposition par la communauté ainsi que les événements permettant de déclencher les `workflows` sont très nombreux.
