@@ -292,7 +292,7 @@ Pour cela, vous aurez besoin de créer un `job` qui doit :
 
 3. Publier le contenu du site sur une branche dédiée. Pour cela, vous pouvez utiliser l'action `peaceiris/actions-gh-pages@v3`. Cette action nécessite deux paramètres :
 
-    - `github_token` : permet de vous identifier pour autoriser le robot exécutant le script à pousser sur votre branche. Ce "token" est déjà disponible, il suffit de le préciser avec `${{ secrets.GITHUB_TOKEN }}`.
+    - `github_token` : permet de vous identifier pour autoriser le robot exécutant le script à pousser sur votre branche. Ce "token" est déjà disponible, il suffit de le préciser avec {% raw %}`${{ secrets.GITHUB_TOKEN }}`{% endraw %}.
 
     - `publish_dir` : le chemin du dossier contenant les fichiers à publier. En fait, cette action va créer une branche `gh-pages` contenant les fichiers du dossier précisé par le chemin `publish_dir`. Dans notre cas le site de la `javadoc` est généré dans le dossier `./target/site/apidocs/`.
 
@@ -375,8 +375,9 @@ Il faut respecter quelques règles de nommage :
 
 * Les noms ne doivent pas commencer par un chiffre.
 
-Ensuite, pour l'utiliser dans un **workflow**, on utilise ce format : `${{ secrets.nom_variable }}`. Par exemple :
+Ensuite, pour l'utiliser dans un **workflow**, on utilise ce format : {% raw %}`${{ secrets.nom_variable }}`{% endraw %}. Par exemple :
 
+{% raw %}
 ```yml
 jobs:
 
@@ -391,6 +392,7 @@ jobs:
           ...
           password: ${{ secrets.mdp }}
 ```
+{% endraw %}
 
 Concernant les informations pour se connecter au serveur FTP de l'IUT :
 
@@ -520,9 +522,9 @@ Dans votre `workflow`, vous pouvez donc intégrer l'exécution de la commande su
 mvn versions:set -DnewVersion=nouvelle_version -DgenerateBackupPoms=false
 ```
 
-À la place de `nouvelle_version` vous pouvez utiliser `${{ github.ref_name }}` qui permet d'obtenir, via le `workflow` le nom de l'élément en train d'être poussé sur le dépôt. Pour un commit, il s'agirait de son identifiant, et pour un tag, il s'agit simplement de son nom. Ainsi, lors de la construction du `.jar`, si le **tag** se nomme `v0.0.2`, le fichier généré sera `EditeurDeTexte-v0.0.2.jar`.
+À la place de `nouvelle_version` vous pouvez utiliser {% raw %}`${{ github.ref_name }}`{% endraw %} qui permet d'obtenir, via le `workflow` le nom de l'élément en train d'être poussé sur le dépôt. Pour un commit, il s'agirait de son identifiant, et pour un tag, il s'agit simplement de son nom. Ainsi, lors de la construction du `.jar`, si le **tag** se nomme `v0.0.2`, le fichier généré sera `EditeurDeTexte-v0.0.2.jar`.
 
-On doit utiliser une nouvelle fois `${{ github.ref_name }}` pour le chemin du fichier à inclure dans le paramètre `files` de l'action `softprops/action-gh-release@v1`.
+On doit utiliser une nouvelle fois {% raw %}`${{ github.ref_name }}`{% endraw %} pour le chemin du fichier à inclure dans le paramètre `files` de l'action `softprops/action-gh-release@v1`.
 
 <div class="exercise">
 
