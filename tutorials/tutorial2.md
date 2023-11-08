@@ -311,7 +311,7 @@ permissions :
 
 3. Faites un `commit` et un `push` sur votre branche `development`. Sur `GitHub`, rendez-vous sur votre dépôt et sélectionnez l'onglet `Actions`. Vérifiez que rien ne se passe (car on n'a pas push sur master !).
 
-4. Déplacez-vous dans votre branche `master` et réalisez un `merge` de la branche `development`. Faites un `push` et observez le déroulement de votre workflow dans l'onglet `Actions`. À l'issue, vous devriez voir qu'une branche `gh-pages` est créée !
+4. Dans votre terminal, déplacez-vous dans votre branche `master` et réalisez un `merge` de la branche `development`. Faites un `push` de la branche `master` et observez le déroulement de votre workflow dans l'onglet `Actions`. À l'issue, vous devriez voir qu'une branche `gh-pages` est créée !
 
 5. Dans la configuration de `GitHub pages`, précisez la branche `gh-pages` plutôt que `master` et sélectionnez `root`.
 
@@ -319,7 +319,7 @@ permissions :
 
 Et voilà ! Maintenant, dès qu'un push sera effectué sur la branche de **production** `master`, le site de la `javadoc` de votre application sera automatiquement mis à jour sans actions supplémentaires de votre part !
 
-## Deploiement
+## Déploiement
 
 Avec les `workflows`, nous pouvons automatiser le processus de **déploiement** d'une application, c'est-à-dire sa **mise en production** afin qu'elle soit utilisable et exploitable par les utilisateurs. Il s'agit de la partie `CD` (continous delivery) où l'application est déployée / délivrée de manière continue.
 
