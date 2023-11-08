@@ -248,7 +248,7 @@ Pour mettre en pratique, nous allons coder un **workflow** très simple permetta
 
 1. Placez-vous dans votre branche `development`.
 
-2. Dans le dossier `test/java` créez un **package** `fr.iutmontpellier.tests`.
+2. Créez le dossier de tests `src/test/java` (s'il n'existe pas encore, parce que vous n'avez écrit aucun test... :disappointed:). Pour le créer, depuis IntelliJ le plus simple est de cliquer droit sur le répertoire `src` → **New** → **Directory**. Par convention, la couleur verte indique qu'il s'agit du répertoire contenant le code source des tests. Créez un **package** `fr.iutmontpellier.tests`.
 
 3. Créez une classe `DocumentTest` et faites lui étendre la classe `TestCase`.
 
