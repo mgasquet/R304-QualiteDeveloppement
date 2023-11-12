@@ -23,7 +23,7 @@ L'ingénieur doit avoir une vision à long terme et prendre en compte que son pr
 
 Les **frameworks** sont des outils qui englobent différents **design patterns** et "forcent" le développeur (de par leur structure) à respecter un certain niveau de qualité dans la conception (parfois, sans qu'il s'en rende compte). Nous allons étudier plusieurs **frameworks** l'année prochaine.
 
-Bref, dans ce cours, nous allons commencer par nous intéresser aux **principes SOLID** qui constituent la porte d'entrée vers un programme bien conçu. Nous allons également commencer à parler de **design patterns** mais nous allons les étudier plus en détail dans un prochain TP.
+Bref, dans ce cours, nous allons commencer par nous intéresser aux **principes SOLID** qui constituent la porte d'entrée vers un programme bien conçu. Nous allons également commencer à parler de **design patterns** (nous allons en introduire 2) mais nous les étudierons plus en détail dans les prochains TP.
 
 ## Les principes SOLID
 
@@ -427,15 +427,19 @@ Le principe de responsabilités unique n'est pas respecté. Pour le `toString`, 
 
 3. Testez que tout fonctionne, essayez plusieurs méthodes de tri sur le paquet, notamment. Normalement, vous ne devez jamais éditer la classe `Paquet` si vous changez le tri utilisé.
 
+4. Réalisez un diagramme de classes de conception votre application (sans la classe Main).
+
 </div>
 
-Les principes **SOLID** se combinent naturellement entre-eux. D'ailleurs, si vous avez refactoré proprement le dernier exercice, vous avez même déjà utilisé le principe **d'inversion des dépendances** dont nous parlerons plus tard ! 
+Les principes **SOLID** se combinent naturellement entre eux. D'ailleurs, si vous avez refactoré proprement le dernier exercice, vous avez même déjà utilisé le principe **d'inversion des dépendances** dont nous parlerons plus tard ! 
 
 Encore mieux, vous venez d'utiliser votre premier **design pattern** au niveau des tris : **Stratégie**. Ce pattern permet **d'injecter** un comportement spécifique dans une classe sans en modifier le code source (et éventuellement, le modifier plus tard). Ce pattern s'appui sur **ouvert/fermé**, **l'inversion des dépendances** et aide à renforcer **responsabilité unique**. C'est exactement ce que vous venez de faire : la méthode de tri du paquet est modulable et on peut même en ajouter des nouvelles dans le futur ! Et tout cela, sans modifier `Paquet`.
 
+À partir du diagramme de classes de conception que vous venez de réaliser, vous devriez être en mesure de généraliser le pattern **stratégie** à tout type de problème.
+
 ### Principe de substitution de Liskov (Liskov substitution)
 
-Le principe de **substitution de Liskov** a été introduit par **Barbara Liskov** et énonce qu'un **objet** d'une super-classe donnée doit pouvoir être remplacée par une de ses **sous-classes** sans casser le fonctionnement du programme. Une méthode provenant à l'origine d'une super-classe et appelée sur la sous-classe devrait produire le même résultat que si elle avait été appelée sur la super-classe.
+Le principe de **substitution de Liskov** a été introduit par **Barbara Liskov** et énonce qu'un **objet** d'une superclasse donnée doit pouvoir être remplacée par une de ses **sous-classes** sans casser le fonctionnement du programme. Une méthode provenant à l'origine d'une superclasse et appelée sur la sous-classe devrait produire le même résultat que si elle avait été appelée sur la superclasse.
 
 Certains développeurs abusent de l'**héritage** par facilité au lieu d'utiliser d'autres solutions comme la **composition** d'objets. Un "mauvais" héritage est un héritage où il n'existe pas vraiment de relation de spécialisation entre la superclasse et la sous-classe. La sous-classe ne représente alors pas le même concept que sa classe mère, ce n'est pas vraiment une spécialisation.
 
@@ -815,11 +819,431 @@ Bref, conceptuellement, une `Pile` n'est pas un `Vector` spécial, mais bien une
 
 Eh oui, même les concepteurs de `Java` ont fait quelques bêtises lors du développement du langage. Et il n'est plus possible de supprimer cette classe après coup pour ne pas causer de problèmes de compatibilité. La seule chose à faire est de déprécier cette classe et de conseiller une nouvelle solution mieux conçue. D'où l'importance de bien penser sa conception !
 
+### Héritage, composition et principe ouvert-fermé
 
+Maintenant, voyons un nouveau problème que vous devriez pouvoir résoudre en utilisant judicieusement la **composition** à la place de l'héritage, comme nous l'avons vu en étudiant le principe de substitution de Liskov. Cette fois-ci, il s'agit d'un problème plutôt lié au principe **ouvert/fermé**.
+
+<div class="exercise">
+
+1. Ouvrez le paquetage `ocp3`. Dans ce projet, il y a une classe `Produit` permettant de gérer des produits et leurs prix. Ensuite, on a souhaité définir une classe `ProduitAvecReduction`, car certains produits proposent des réductions. Tout fonctionne pour le moment, comme vous pouvez le constater dans le `Main`.
+
+2. On souhaite maintenant ajouter un nouveau type de produit : les produits avec une date de péremption proche. Sur un tel produit, le prix est calculé en faisant une réduction de 50% sur le prix d'origine. Implémentez donc une classe `ProduitAvecDatePeremptionProche` héritant de `Produit` et réécrivez la méthode `getPrix`. Testez que votre nouveau type de produit a bien le comportement attendu en testant dans le `Main` (ou encore mieux, avec des tests unitaires !)
+
+3. Maintenant nous voulons qu'un produit puisse à la fois être un produit qui périme bientôt et un produit avec une réduction. Est-il possible de créer une telle classe ou un tel comportement..?
+</div>
+
+Avec l'architecture actuelle, il est impossible d'avoir un même produit possédant ces deux fonctionnalités à la fois. Avec un héritage multiple, il y aurait pu y avoir une solution, mais nous avons vu qu'il est déconseillé de faire cela et de toute façon, dans la plupart des langages et en Java, ce n'est pas possible.
+
+Heureusement, la composition nous permet de faire cela assez facilement ! Tout en respectant le **principe ouvert/fermé**. Il existe une méthode pour construire un `Produit` possédant autant de comportement mixte que nous souhaitons.
+
+Illustrons le problème et sa solution :
+
+```java
+class Salarie {
+
+  private double salaire;
+
+  public Salarie(double salaire) {
+    this.salaire = salaire:
+  }
+
+  public double getSalaire() {
+    return salaire;
+  }
+
+}
+
+class ChefProjet extends Salarie {
+
+  private int nombreProjetsGeres;
+
+  public ChefProjet(int nombreProjetsGeres) {
+    super();
+    this.nombreProjetsGeres = nombreProjetsGeres;
+  }
+
+  @Override
+  public double getSalaire() {
+    return super.getSalaire() + 100 * (nombreProjetsGeres);
+  }
+
+}
+
+class ResponsableDeStagiaires extends Salarie {
+
+  private int nombreStagiairesGeres;
+
+  public ResponsableDeStagiaires(int nombreStagiairesGeres) {
+    super();
+    this.nombreStagiairesGeres = nombreStagiairesGeres;
+  }
+
+  @Override
+  public double getSalaire() {
+    return super.getSalaire() + 50 * (nombreStagiairesGeres);
+  }
+}
+```
+
+Ici, même problème que pour les produits, si je veux un salarié qui est à la fois chef de projet et responsable de stagiaire, cela est impossible !
+
+Comme souvent, l'héritage est le problème ici. Au lieu de faire hériter nos classes, nous pourrions utiliser des **compositions** sur les sous-types et créer ainsi des salariés incluant des salariés, incluant des salariés...ce qui permet de combiner la logique de chaque type ! 
+
+```java
+interface I_Salarie {
+  double getSalaire();
+}
+
+
+class Salarie implements I_Salarie {
+
+  private double salaire;
+
+  public Salarie(double salaire) {
+    this.salaire = salaire:
+  }
+
+  public double getSalaire() {
+    return salaire;
+  }
+
+}
+
+class ChefProjet implements I_Salarie {
+
+  private I_Salarie salarie;
+
+  private int nombreProjetsGeres;
+
+  public ChefProjet(I_Salarie salarie, int nombreProjetsGeres) {
+    this.salarie = salarie;
+    this.nombreProjetsGeres = nombreProjetsGeres;
+  }
+
+  @Override
+  public double getSalaire() {
+    return salarie.getSalaire() + 100 * (nombreProjetsGeres);
+  }
+
+}
+
+class ResponsableDeStagiaires implements I_Salarie {
+
+  private I_Salarie salarie;
+
+  private int nombreStagiairesGeres;
+
+  public ResponsableDeStagiaires(I_Salarie salarie, int nombreStagiairesGeres) {
+    this.salarie = salarie;
+    this.nombreStagiairesGeres = nombreStagiairesGeres;
+  }
+
+  @Override
+  public double getSalaire() {
+    return salarie.getSalaire() + 50 * (nombreStagiairesGeres);
+  }
+}
+```
+
+Avec cette nouvelle architecture, nous pouvons créer des salariés qui sont chefs de projet et responsables de stagiaires :
+
+```java
+//Salarié qui est chef de projet gérant 3 projets et aussi responsable de stagiaires gérant 5 stagiaires
+I_Salarie salarie = new ResponsableStagiaires(new ChefProjet(new Salarie(2000), 3), 5);
+salarie.getSalaire(); //Renvoie 2550
+```
+
+Il est important de noter que la classe composée est `I_Salarie` et non pas `Salarie`! Sinon on ne pourrait pas combiner `ChefProjet` avec `ResponsableStagiaires`.
+
+Aussi, le salarie n'est pas instancié dans la classe, il est **injecté** (autrement, cela ne fonctionnerait pas), comme ce que vous avez fait, par exemple, avec l'exercice sur le paquet de carte et les différentes méthodes de tri. Sur un diagramme de classes de conception, cela pourrait être représenté par une **agrégation blanche**.
+
+<div class="exercise">
+
+1. Refactorez votre code afin de pouvoir créer un produit qui possède une réduction et qui a aussi une date de péremption proche.
+
+2. Créez un **Twix** avec pour prix de base 3€, qui périme bientôt et qui a une réduction de 50 centimes. Testez que la valeur obtenue pour le prix est bien la bonne.
+
+3. Inversez l'ordre de création du produit (le produit avec réduction est composé d'un produit avec une date de péremption proche ou l'inverse selon ce que vous avez fait à la question précédente). Est-ce que le prix obtenu est le même qu'à l'étape précédente ?
+
+</div>
+
+Attention, même si nous pouvons maintenant rajouter un nouveau type de produit et le combiner aux autres pour calculer le prix adéquat, quand on instancie l'objet, il faut faire attention à l'ordre de combinaison des objets.
+
+Bon, tout fonctionne bien, mais le code est encore un peu redondant : A priori, tous nos produits "dérivés" vont posséder un objet `I_Produit`. Il est alors possible de factoriser cela avec une **classe abstraite** dont vont hériter tous les sous-produits.
+
+Par exemple, pour l'exemple des salariés :
+
+```java
+//Nous reviendrons sur le nom "decorator" plus tard.
+abstract class SalarieDecorator implements I_Salarie {
+  protected I_Salarie salrie;
+
+  public SalarieDecorator(I_Salarie salarie) {
+    this.salarie = salarie;
+  }
+}
+
+class ResponsableDeStagiaires extends SalarieDecorator implements I_Salarie {
+
+  private int nombreStagiairesGeres;
+
+  public ResponsableDeStagiaires(I_Salarie salarie, int nombreStagiairesGeres) {
+    super(salarie);
+    this.nombreStagiairesGeres = nombreStagiairesGeres;
+  }
+
+  //Reste du code
+
+}
+```
+
+<div class="exercise">
+
+1. Réfactorez votre code pour introduire une classe abstraite et réduire la redondance et la répétition de code au niveau des sous-classes (`ProduitAvecReduction` et `ProduitAvecDatePeremptionProche`).
+
+2. Testez que tout fonctionne comme auparavant.
+
+3. Dessinez le **diagramme de classes de conception** (hors `Main`) de cette application.
+
+</div>
+
+Dans le futur, si nous ajoutons un nouveau type de **produit**, il suffira alors de rajouter une nouvelle classe et lui faire étendre votre classe abstraite. Avec une telle architecture, le principe ouvert/fermé est respecté et nous avons tiré profit de manière avantageuse du mécanisme de composition au lieu de se reposer sur l'héritage qui ne nous permettait pas d'arriver à nos fins.
+
+En fait, ce modèle est réutilisable et adaptable à d'autres situations (nous l'avons vu avec les salariés). C'est en fait un autre **design pattern** nommé **décorateur** d'où le nom de la classe abstraite dans l'exemple. 
+
+À partir du diagramme de classes que vous avez réalisé, vous devriez être capable de produire un modèle général fonctionnant pour vous.
 
 ### Principe de ségrégation des interfaces (Interface segregation)
 
+Le quatrième principe **SOLID** est le **principe de ségrégation des interfaces**.
+
+Un objet ne doit pas être forcé de dépendre de méthodes qu'il n'utilise pas. Globalement, il ne faut pas qu'une **interface** définisse dans son contrat des méthodes qui ne seront voir ne pourront pas être implémentées par la classe implémentant l'interface.
+
+Nous en avons déjà parlé, mais une interface est un **contrat**. Une classe qui implémente une interface est forcé d'implémenter toutes les méthodes de l'interface. Mais une classe ne devrait pas être forcée à implémenter un bout de contrat qu'elle ne peut pas remplir.
+
+Voyons comment ne pas respecter ce principe peut devenir très fastidieux au fur et à mesure que le projet grossit.
+
+<div class="exercise">
+
+1. Ouvrez le paquetage `isp`. Ce projet modélise un système de jeu où certaines créatures sont des **montures** toutes les montures du même type ont les mêmes caractéristiques type (vitesse, endurance...). Au début, le développeur a modélisé une créature `Cheval`. Pour cette monture, on veut connaître :
+
+  * Le nom de la monture.
+
+  * La vitesse.
+
+  * L'endurance.
+
+  Pour prévoir le futur dans le cas où il y aurait besoin d'ajouter d'autres montures, le développeur a ajouté une interface `Monture`.
+
+  Il a ensuite ajouté un autre type de monture, le **Tigre**.
+
+2. Ajoutez une classe `Rhinoceros` implémentant la classe `Monture`. Pour un `Rhinoceros` on a une vitesse de 30 et une endurance de 100.
+
+3. Ajoutez une classe `Dauphin` étendant `Creature` et implémentant l'interface `Monture`. Cette monture a une vitesse de 45. Cependant, contrairement aux autres montures, cette monture est une monture aquatique. Elle ne possède pas d'endurance et on veut connaître son **temps de respiration sous l'eau** qui est de 15.
+
+  Concernant l'endurance, que faut-il renvoyer ? On ne peut pas renvoyer 0 ou un nombre négatif, cela n'aurait pas beaucoup de sens. A la place, on peut lever une erreur :
+
+  ```java
+  public double getEnduranceMonture() {
+      throw new Error("Une monture aquatique n'a pas d'endurance!");
+  }
+  ```
+
+3. Dans le cas où il y aurait besoin d'ajouter d'autres montures aquatiques dans le futur, ajoutez la méthode permettant d'obtenir le temps de respiration dans l'interface `Monture`.
+
+4. Les classes `Cheval` et `Tigre` ne compilent plus ! C'est parce qu'il faut implémenter la méthode permettant d'obtenir le temps de respiration sous l'eau...Or ces montures n'ont pas de temps de respiration ! On va donc procéder comme pour `Dauphin` en soulevant une erreur :
+
+  ```java
+  throw new Error("Cette monture ne peut pas respirer sous l'eau!");
+  ```
+
+5. Ajoutez une classe `Griffon` étendant `Creature` et implémentant l'interface `Monture`. Cette monture a une vitesse de 300. Cependant, contrairement aux autres montures, cette monture est une monture volante. Elle ne possède pas d'endurance et ne respire pas sous l'eau non plus. Par contre, on veut connaître son **temps maximum de vol** qui est de 40. Adaptez votre classe en conséquence.
+
+6. Mettez à jour l'interface `Monture` avec la méthode pour le temps de vol au cas où il y ait d'autres types de montures volantes ajoutées et corrigez les erreurs de compilation.
+
+7. Ajoutez une classe `Dragon` étendant `Creature` et implémentant l'interface `Monture`. Cette monture a une vitesse de 400. Elle possède aussi un temps de vol maximum de 120 (car c'est une monture volante). Elle ne possède pas d'endurance et ne respire pas sous l'eau non plus. Par contre, on veut connaître sa **puissance de feu** qui est de 200. Adaptez votre classe en conséquence.
+
+8. Mettez à jour l'interface `Monture` avec la méthode pour la puissance de feu au cas où il y ait d'autres types de dragons ajoutés dans le futur et corrigez les erreurs de compilation.
+
+9. Enfin, ajoutez une classe `LicorneAilee` étendant `Creature` et implémentant l'interface `Monture`. Cette monture a une vitesse de 75. Elle possède aussi un temps de vol maximum de 20 (car c'est une monture volante) et une endurance de 50 (car c'est aussi une monture terrestre !). Par contre, elle ne respire pas sous l'eau et n'a pas de puissance de feu non plus.
+
+</div>
+
+C'était pénible, n'est-ce pas ? C'est normal, cette solution est très mauvaise et fastidieuse. À chaque nouvel ajout de type de monture avec ses spécificités, on doit modifier tous les autres types et les forcer à implémenter des méthodes qui ne les concernent pas...Le fait de lever tant d'erreurs indique une très mauvaise conception.
+
+Si le développeur avait bien raison de vouloir faire une interface lors de la création de la première monture, il a voulu regrouper trop de chose dans une seule et même interface : les méthodes communes à toutes les montures (nom, vitesse) et la méthode concernant l'endurance, spécifique aux montures terrestres. Par la suite, on a continué dans cette mauvaise logique. Il aurait dû dès le départ diviser cela en **deux interfaces** et on aurait dû créer plus d'interfaces à chaque nouveau type de monture ayant ses spécificités. 
+
+On rappelle qu'une **interface** peut hériter d'une autre interface ! Et qu'une classe peut implémenter autant d'interfaces qu'elle le désire.
+
+Imaginons l'exemple suivant :
+
+```java
+interface I_Exemple {
+  void operationGlobale();
+  void operationA();
+  void operationB();
+  void operationC();
+}
+
+class A implements I_Exemple {
+  public void operationGlobale() {
+    //Code...
+  }
+
+  public void operationA() {
+    //Code...
+  }
+
+  public void operationB() {
+    throw new Error("Impossible d'implémenter cette méthode.");
+  }
+
+  public void operationC() {
+    throw new Error("Impossible d'implémenter cette méthode.");
+  }
+}
+
+class B implements I_Exemple {
+  public void operationGlobale() {
+    //Code...
+  }
+
+  public void operationA() {
+    throw new Error("Impossible d'implémenter cette méthode.");
+  }
+
+  public void operationB() {
+    //Code
+  }
+
+  public void operationC() {
+    throw new Error("Impossible d'implémenter cette méthode.");
+  }
+}
+
+class C implements I_Exemple {
+  public void operationGlobale() {
+    //Code...
+  }
+
+  public void operationA() {
+    throw new Error("Impossible d'implémenter cette méthode.");
+  }
+
+  public void operationB() {
+    throw new Error("Impossible d'implémenter cette méthode.");
+  }
+
+  public void operationC() {
+    //Code
+  }
+}
+
+class D implements I_Exemple {
+  public void operationGlobale() {
+    //Code...
+  }
+
+  public void operationA() {
+    throw new Error("Impossible d'implémenter cette méthode.");
+  }
+
+  public void operationB() {
+    //Code
+  }
+
+  public void operationC() {
+    //Code
+  }
+}
+```
+
+Tout cela peut être refactoré bien plus élégamment ainsi :
+
+```java
+interface I_Exemple {
+  void operationGlobale();
+}
+
+interface I_A extends I_Exemple {
+  void operationA();
+}
+
+interface I_B extends I_Exemple {
+  void operationB();
+}
+
+interface I_C extends I_Exemple {
+  void operationC();
+}
+
+class A implements I_A {
+  public void operationGlobale() {
+    //Code...
+  }
+
+  public void operationA() {
+    //Code...
+  }
+}
+
+class B implements I_B {
+  public void operationGlobale() {
+    //Code...
+  }
+
+  public void operationB() {
+    //Code...
+  }
+}
+
+class C implements I_C {
+  public void operationGlobale() {
+    //Code...
+  }
+
+  public void operationC() {
+    //Code...
+  }
+}
+
+class D implements I_B, I_C {
+  public void operationGlobale() {
+    //Code...
+  }
+
+  public void operationB() {
+    //Code
+  }
+
+  public void operationC() {
+    //Code
+  }  
+}
+```
+
+Comme vous le constatez, plus aucune classe n'est forcée à implémenter des méthodes qu'elle ne peut pas définir, tout en conservant ses spécificités. Plus aucune erreur n'a besoin d'être levée.
+
+Bref, cela est en partie un mix entre le **principe de responsabilité unique** et une visualisation **hiérarchique** du problème. On note quand même le cas intéressant de la classe `D` qui permet à la fois d'avoir le type `I_Exemple`, `I_B` et `I_C` !
+
+<div class="exercise">
+
+Refactorez votre code pour respecter le **principe de ségrégation des interfaces**. On veut garder les spécificités de chaque type de monture, mais éliminer toutes les levées d'erreurs. Soyez vigilant pour le dragon et la licorne ailée.
+
+</div>
+
 ### Principe d'inversion des dépendances (Dependency inversion)
 
+Enfin, il reste le **principe d'inversion des dépendances**. Ce principe dit que :
 
+* Les différentes classes ne doivent pas dépendre d'implémentations concrètes, mais d'abstractions (classes abstraites/interfaces).
 
+* Les abstractions ne doivent pas dépendre des détails (les implémentations, les classes filles) mais les détails (les classes concrètes) doivent dépendre des abstractions. Nous l'avons bien vu avec l'exercice sur les **pokémons** lorsque nous étudions le principe **ouvert/fermé**.
+
+Ce principe permet d'obtenir une très forte **modularité** du programme. Si on couple cela avec la technique **d'injection des dépendances** et des **design patterns créateurs** tels que des **fabriques abstraites** ou bien des **conteneurs de dépendances** on obtient un logiciel dont on peut moduler le fonctionnement sans toucher au code source, simplement en ajoutant de nouvelles classes et/ou en éditant des fichiers de configuration. Les différents **frameworks** mettent en place une architecture favorisant l'inversion des dépendances.
+
+En fait, ce principe découle de la bonne application des autres principes et notamment du principe **ouvert/fermé** et de la **substitution de Liskov**.
+
+Nous verrons aussi qu'il est essentiel de bien respecter ce principe quand on réalise des tests unitaires.
+
+Tout d'abord, illustrons ce principe avec un exemple. 
