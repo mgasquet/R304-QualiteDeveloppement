@@ -49,7 +49,7 @@ Nous allons faire un premier essai d'hébergement d'un site statique simple.
 
 2. Dans le répertoire contenant votre page HTML, **initialisez** un dépôt (`git init`).
 
-3. Sur **GitHub**, [créez un dépôt](https://github.com/new) avec une visibilité **public** puis reliez-le à votre dépôt en local (`git remote add origin adresse`). L'adresse à utiliser est affichée sur la page du dépôt (zone `Quick Setup`). Enfin, Faites un commit et un push de votre site.
+3. Sur **GitHub**, [créez un dépôt](https://github.com/new) avec une visibilité **public** (c'est important) puis reliez-le à votre dépôt en local (`git remote add origin adresse`). L'adresse à utiliser est affichée sur la page du dépôt (zone `Quick Setup`). Enfin, Faites un commit et un push de votre site.
 
 4. Toujours sur **GitHub**, dans votre dépôt, rendez-vous dans l'onglet **Settings** puis **Pages** (sur le menu latéral gauche).
 
@@ -213,7 +213,27 @@ Chaque `job` contient une liste de tâches nommées qui s'exécutent dans l'ordr
 
 - Les tâches `run` qui exécutent une commande. Si cette commande échoue (par exemple, échec de compilation) le workflow échoue.
 
-- Les tâches `uses` qui permettent d'appeler une action de workflow **externe**, pour réaliser une action précise. Par exemple, `actions/checkout@v3` est fréquemment utilisé, car elle permet de vous placer dans une copie locale de votre dépôt (dans l'environnement d'exécution) et donc, d'accéder aux fichiers. Certaines actions ont besoin de paramètres qu'on peut préciser avec le bloc `with`. Beaucoup d'actions sont proposées par l'équipe de GitHub, mais d'autres actions très utiles sont aussi proposées par la communauté !
+- Les tâches `uses` qui permettent d'appeler une action de workflow **externe**, pour réaliser une action précise. Par exemple, `actions/checkout@v3` est fréquemment utilisé comme première étape, car elle permet de déplacer la machine virtuelle dans une copie locale de votre dépôt (dans l'environnement d'exécution) et donc, d'accéder aux fichiers. Certaines actions ont besoin de paramètres qu'on peut préciser avec le bloc `with`. Beaucoup d'actions sont proposées par l'équipe de GitHub, mais d'autres actions très utiles sont aussi proposées par la communauté !
+
+Bref, tous vos **jobs** auront donc cette allure :
+
+```yml
+name : nom_custom_workflow
+
+on: evenement #Par exemple, "push"
+
+jobs:
+
+  job1:
+    runs-on: ubuntu-latest #Tourne sur une VM ubuntu
+    steps: #Etapes à réaliser sur le système
+      #On se place dans le dépôt...
+      - name: Checkout
+        uses: actions/checkout@v3
+      #Suite des actions...
+      - name: ...
+        uses: ...
+```
 
 On peut donner des `permissions` au robot exécutant le script. Par exemple, si on souhaite que notre `workflow` puisse créer des nouvelles branches ou bien publier des `releases`, il faut lui donner des droits d'écriture en précisant la permission `contents: write`.
 
@@ -225,6 +245,9 @@ name : nom_custom_workflow
 
 on: push
 
+jobs:
+  job1:
+    ...
 ```
 
 ```yml
@@ -236,6 +259,9 @@ on:
     branches:
       - development
 
+jobs:
+  job1:
+    ...
 ```
 
 À noter qu'un `merge` d'une branche résultera en un `push` à un moment donné, dans la branche qui intègre les changements de la branche fusionnée.
@@ -250,7 +276,7 @@ Pour mettre en pratique, nous allons coder un **workflow** très simple permetta
 
 2. Créez le dossier de tests `src/test/java` (s'il n'existe pas encore, parce que vous n'avez écrit aucun test...). Pour le créer, depuis IntelliJ le plus simple est de cliquer droit sur le répertoire `src` → **New** → **Directory** → Choisissez `test/java`. Par convention, la couleur verte indique qu'il s'agit du répertoire contenant le code source des tests. Créez un **package** `fr.iutmontpellier.tests`.
 
-3. Créez une classe `DocumentTest` et faites lui étendre la classe `TestCase`.
+3. Créez un paquetage `fr.iut.editeur.document` dans `src/test/` puis, à l'intérieur, créez la classe `DocumentTest` et faites lui étendre la classe `TestCase`.
 
 4. Écrire quelques méthodes pour tester les méthodes de la classe `Document`.
 
