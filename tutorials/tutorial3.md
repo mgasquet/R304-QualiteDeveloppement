@@ -240,7 +240,7 @@ Pour vous mettre dans le bain et vous montrer la problématique derrière tout c
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `oc1`. Dans ce projet, une classe `Animal` permet de gérer différents types d'animaux et leur cri, selon l'attribut `type` de l'objet.
+1. Ouvrez le paquetage `ocp1`. Dans ce projet, une classe `Animal` permet de gérer différents types d'animaux et leur cri, selon l'attribut `type` de l'objet.
 
 2. On aimerait prendre en charge les chiens et les poules. Modifiez la classe `Animal` en conséquence et testez dans le `Main`.
 
@@ -262,7 +262,7 @@ De même, dans la classe `Pokemon`, pour que le pokémon puisse se présenter av
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `oc2`. Explorez les classes. Etudiez notamment la classe `SimulateurCombat`.
+1. Ouvrez le paquetage `oc2`. Explorez les classes. Étudiez notamment la classe `SimulateurCombat`.
 
 2. On souhaite ajouter un nouveau type de pokémon : le pokémon type **électricité**. Son attaque est **Eclair** et il fait entre 20 et 100 dégâts. Faites en sorte de prendre en charge ce nouveau type.
 
@@ -359,17 +359,17 @@ L'ajout d'une nouvelle figure nécessite donc simplement l'ajout d'une nouvelle 
 
 Comme `FigureGeometrique` ne contient aucun attribut (qui pourraient être communs à toutes les figures) et définit simplement des méthodes `abstraites`, il serait plus judicieux d'utiliser une `interface` ! Par contre, si la classe abstraite possède des attributs et/ou définit un bout de comportement commun à toutes les sous-classes, on utilisera bien une classe abstraite.
 
-Ceci devrait vous permettre de refactorer le code du paquetage `oc1` (animaux). Pour `oc2` (pokémons) cela peut sembler un peu plus dur (car il y a déjà un système d'héritage), mais cela ne devrait pas être trop dur à adapter.
+Ceci devrait vous permettre de refactorer le code du paquetage `ocp1` (animaux). Pour `ocp2` (pokémons) cela peut sembler un peu plus dur (car il y a déjà un système d'héritage), mais cela ne devrait pas être trop dur à adapter.
 
 <div class="exercise">
 
-1. Refactorez le code du paquetage `oc1` afin de respecter le principe ouvert/fermé. Adaptez le `Main` en conséquence et vérifiez que tout fonctionne. Il ne doit plus être possible de gérer des animaux inconnus, et c'est bien normal !
+1. Refactorez le code du paquetage `ocp1` afin de respecter le principe ouvert/fermé. Adaptez le `Main` en conséquence et vérifiez que tout fonctionne. Il ne doit plus être possible de gérer des animaux inconnus, et c'est bien normal !
 
-2. Réaliser un diagramme de classes de l'application du paquetage `oc2` (avant refactoring). Indiquez bien les **dépendances**.
+2. Réaliser un diagramme de classes de l'application du paquetage `ocp2` (avant refactoring). Indiquez bien les **dépendances**.
 
-3. Refactorez le code du paquetage `oc2` afin de respecter le principe ouvert/fermé. Adaptez le `Main` en conséquence et vérifiez que tout fonctionne.
+3. Refactorez le code du paquetage `ocp2` afin de respecter le principe ouvert/fermé. Adaptez le `Main` en conséquence et vérifiez que tout fonctionne.
 
-4. Réaliser un diagramme de classes de l'application du paquetage `oc2` (après refactoring). Indiquez bien les **dépendances**.
+4. Réaliser un diagramme de classes de l'application du paquetage `ocp2` (après refactoring). Indiquez bien les **dépendances**.
 
 </div>
 
@@ -377,9 +377,443 @@ En comparant vos deux diagrammes de classes, on peut facilement voir ce qui diff
 
 Dans un code de qualité **les abstractions ne dépendent pas des implémentations**. En d'autres termes, une superclasse ne devrait pas dépendre de ses sous-classes. Seules les sous-classes peuvent dépendre de leurs parents (et on verra que parfois, là aussi il faut faire attention qu'on utilise l'héritage.). Sur votre premier diagramme, il est clair que ce principe n'est pas respecté, car `Pokemon` dépendait de ses différentes sous-classes, ce qui n'est plus les cas sur le deuxième diagramme.
 
+Nous allons mettre à l'épreuve votre compréhension des deux principes (`S` et `O`) avec un nouvel exercice un peu différent de ce que vous venez de voir, dans sa forme.
 
+<div class="exercise">
+
+1. Ouvrez le paquetage `oc3`. Ce projet permet de gérer un paquet de 52 cartes, de le trier, de le mélanger... Exécutez le programme pour observer le rendu. Deux méthodes de tri sont possibles. On définit la méthode de tri utilisée quand on construit l'objet et on peut la changer à tout moment avec un `setter`.
+
+2. On aimerait ajouter une nouvelle méthode de tri par **bulles**. Voici cet algorithme illustré sur un simple tableau d'entiers :
+
+  ```java
+  //Soit t, un tableau contenant des entiers
+  for(int i=t.length-1;i>=0;i--) {
+    for(int j=0; j < i; j++) {
+      if(t[j] > t[j+1]) {
+        int temp = t[j];
+        t[j] = t[j+1];
+        t[j+1] = temp;
+      }
+    }
+  }
+  ```
+  Faites en sorte que la classe `Paquet` puisse effectuer un tri à bulles. 
+  
+  Pour vous aider, vous pourrez utiliser la méthode `compareTo` qui permet de comparer deux cartes. Cette méthode renvoie un nombre négatif si la première carte est strictement inférieure à la seconde, 0 si elles sont égales et un nombre positif si la première carte est strictement supérieure à la seconde.
+
+3. Testez que votre algorithme fonctionne bien en changeant la méthode de tri du paquet dans le `Main`.
+
+4. À votre avis, en quoi les principes de responsabilité unique et ouvert/fermé ne sont pas respectés ?
+
+</div>
+
+Comme vous l'avez sans doute déduit, dans un premier temps, le principe **ouvert/fermé** n'est pas respecté : ajouter un nouveau tri demande de modifier le code source de la classe `Paquet` et notamment la méthode `trier`.
+
+Dans un second temps, on remarque aussi que la classe `Paquet` a peut-être un peut trop de responsabilités : cela ne devrait pas être à elle de trier les cartes ! On pourrait aussi dire la même chose pour le mélange, et peut-être pour l'affichage ! La vérification peut se faire facilement :
+
+* Si la méthode de tri change, la classe `Paquet` doit être modifiée.
+
+* Si la méthode de mélange change, la classe `Paquet` doit être modifiée.
+
+* Si le format d'affichage du paquet change, la classe `Paquet` doit être modifiée.
+
+Le principe de responsabilités unique n'est pas respecté. Pour le `toString`, cela peut encore se discuter, mais cela est clair pour le **tri** et le **mélange**.
+
+<div class="exercise">
+
+1. Refactorez le code afin de respecter le **principe ouvert/fermé** au niveau des **tris**. On souhaite tout de même garder la possibilité de changer de tri avec un `setter` et aussi de définir le tri utilisé via le `constructeur`. Peut-être qu'utiliser une interface vous aiderait...?
+
+2. Refactorez le code concernant le **mélange** afin de respecter le **principe de responsabilité unique**. Prévoyez aussi le cas où d'autres méthodes de mélanges pourraient être ajoutées. Comme pour le tri, on souhaite pouvoir définir la méthode de mélange dans le constructeur et la modifier via un setter.
+
+3. Testez que tout fonctionne, essayez plusieurs méthodes de tri sur le paquet, notamment. Normalement, vous ne devez jamais éditer la classe `Paquet` si vous changez le tri utilisé.
+
+</div>
+
+Les principes **SOLID** se combinent naturellement entre-eux. D'ailleurs, si vous avez refactoré proprement le dernier exercice, vous avez même déjà utilisé le principe **d'inversion des dépendances** dont nous parlerons plus tard ! 
+
+Encore mieux, vous venez d'utiliser votre premier **design pattern** au niveau des tris : **Stratégie**. Ce pattern permet **d'injecter** un comportement spécifique dans une classe sans en modifier le code source (et éventuellement, le modifier plus tard). Ce pattern s'appui sur **ouvert/fermé**, **l'inversion des dépendances** et aide à renforcer **responsabilité unique**. C'est exactement ce que vous venez de faire : la méthode de tri du paquet est modulable et on peut même en ajouter des nouvelles dans le futur ! Et tout cela, sans modifier `Paquet`.
 
 ### Principe de substitution de Liskov (Liskov substitution)
+
+Le principe de **substitution de Liskov** a été introduit par **Barbara Liskov** et énonce qu'un **objet** d'une super-classe donnée doit pouvoir être remplacée par une de ses **sous-classes** sans casser le fonctionnement du programme. Une méthode provenant à l'origine d'une super-classe et appelée sur la sous-classe devrait produire le même résultat que si elle avait été appelée sur la super-classe.
+
+Certains développeurs abusent de l'**héritage** par facilité au lieu d'utiliser d'autres solutions comme la **composition** d'objets. Un "mauvais" héritage est un héritage où il n'existe pas vraiment de relation de spécialisation entre la superclasse et la sous-classe. La sous-classe ne représente alors pas le même concept que sa classe mère, ce n'est pas vraiment une spécialisation.
+
+Tout cela occasionne des bugs parfois inattendus.
+
+<div class="exercise">
+
+1. Ouvrez le paquetage `lsp1`. Dans ce programme, on gère des **comptes bancaires**. La première classe `CompteBancaire` permet d'effectuer des opérations et de gérer un **solde**. La deuxième classe `CompteBancaireAvecHistorique` permet de gérer l'**historique** de toutes les opérations réalisées. Il semble s'agir d'un compte bancaire spécialisé, on lui fait donc étendre la classe `CompteBancaire`.
+
+2. Une classe de test unitaire est présente dans `test/java/lsp1`. Lisez les tests et exécutez-les. Tout devrait bien se passer.
+
+3. Le développeur à l'origine de la classe `CompteBancaire` souhaite revoir sa classe et légèrement la réfactorer afin d'éviter la duplication de code. Dans la méthode `effectuerTransactions`, il souhaite donc plutôt appeler la méthode `effectuerTransaction` au lieu de dupliquer la ligne de code ajoutant le montant au solde. Faites cette modification.
+
+4. Relancez les tests unitaires...Le second ne passe plus. Pourquoi ?
+
+</div>
+
+Ici, le principe de substitution de Liskov n'est pas respecté, car, selon l'implémentation interne de `CompteBancaire`, l'appel de `ajoutOperations` sur une classe fille provoque un bug (historique des opérations enregistrées en double).
+
+Tout cela peut être réglé en utilisant de la **composition** au lieu d'un **héritage**. L'idée est que la classe "fille" n'hérite pas de la classe mère, mais possède à la place un attribut stockant une instance de cette classe et l'utilise. Si on a besoin que les deux classes soient du même type, on utilise une **interface**.
+
+Considérons l'exemple suivant :
+
+```java
+
+class A {
+
+  public void operation() {
+    //Code de l'opération...
+  }
+
+  //Execute operation n fois
+  public void operations(int n) {
+    for(int i = 0 ; i < n; i++) {
+      operation();
+    }
+  }
+
+}
+
+class B extends A {
+
+  @Override
+  public void operation() {
+      super.operation();
+      System.out.println("Execution d'une opération");
+  }
+
+  @Override
+  public void operations(int n) {
+    super.operations(n);
+    for(int i = 0 ; i < n; i++) {
+      System.out.println("Execution d'une opération");
+    }
+  }
+
+}
+```
+
+Ici, selon le code de la méthode `operations` de la classe `A`, on aura des résultats étranges. Ici, si on éxécute `operations(n)` sur une classe de type `B`, on aura `n*2` affichage de `Execution d'une opération`. Si on change le code de `A`, on aura peut-être plus ce bug...(si le code est dupliqué).
+
+Bref, cela n'est pas bon. Pour éviter cela, on peut à la place définir une `interface` pour les méthodes utilisées dans `A` et `B` et mettre en place de la **composition** :
+
+```java
+
+interface Operateur {
+  void operation();
+  void operations(int n);
+}
+
+class A implements Operateur {
+
+  @Override
+  public void operation() {
+    //Code de l'opération...
+  }
+
+  //Execute operation n fois
+  @Override
+  public void operations(int n) {
+    for(int i = 0 ; i < n; i++) {
+      operation();
+    }
+  }
+
+}
+
+class B implements Operateur {
+
+  private Operateur operateurParent;
+
+  public B(Operateur operateurParent) {
+    this.operateurParent = operateurParent;
+  }
+
+  //Ou bien, si on veut faire une véritable composition (et qu'on connait la classe mère précise)
+  public B() {
+    this.operateurParent = new A();
+  }
+
+  @Override
+  public void operation() {
+      operateurParent.operation();
+  }
+
+  @Override
+  public void operations(int n) {
+    operateurParent.operations(n);
+    for(int i = 0 ; i < n; i++) {
+      System.out.println("Execution d'une opération");
+    }
+  }
+
+}
+```
+
+Maintenant, peu importe l'implémentation de `A`, il n'y aura plus jamais aucun bug de duplication des affichages.
+
+<div class="exercise">
+
+1. Définissez une interface `I_CompteBancaire` regroupant les signatures des méthodes `ajouterTransaction` et `ajouterTransactions`.
+
+2. Refactorez votre code en utilisant votre nouvelle interface et en remplaçant l'héritage par une **composition**.
+
+3. Adaptez les tests unitaires et vérifiez qu'ils passent.
+
+4. Remplacez l'appel à `ajotuerTransaction` par une incrémentation du solde dans `ajouterTransactions` de la classe `CompteBancaire` (comme c'était le cas à l'origine). Vérifiez que les tests passent toujours.
+
+</div>
+
+Le fait d'utiliser de la composition au lieu de l'hértiage est une bonne pratique et n'est pas nécessairement lié à la substitution de Liskov. Attention cependant, l'héritage peut parfois avoir un véritable intérêt quand il existe un lien fort entre la classe mère et les classes filles, comme c'était le cas avec les pokémons, par exemple.
+
+Une autre illustration plus précise de principe de substitution de Liskov est le suivant : on possède une classe `Rectangle`. On veut modéliser une classe `Carre`. En géométrie, un carré est un sous-type de rectangle. On implémente donc le code suivant :
+
+```java
+class Rectangle {
+
+  private int hauteur;
+
+  private int largeur;
+
+  public Rectangle(int hauteur, int largeur) {
+    this.hauteur = hauteur;
+    this.largeur = largeur;
+  }
+
+  public int getHauteur() {
+    return hauteur;
+  }
+
+  public int getLargeur() {
+    return largeur:
+  }
+
+  public void setHauteur(int hauteur) {
+    this.hauteur = hauteur;
+  }
+
+  public void setLargeur(int largeur) {
+    this.largeur = largeur;
+  }
+
+  public int aire() {
+    return hauteur*largeur;
+  }
+
+}
+
+class Carre extends Rectangle {
+
+  public Carre(int tailleCote) {
+    super(tailleCote, tailleCote);
+  }
+
+}
+```
+
+Si à première vue l'implémentation semble correcte, le fait que le carre soit un rectangle pose problème : on peut changer sa largeur et sa hauteur indépendamment. Or, un carré a la même largeur et la même hauteur !
+
+```java
+Carre c = new Carre(5);
+c.aire() //Renvoie 25, OK
+c.setHauteur(10);
+c.aire() // Renvoie 50, Pas OK!
+```
+
+Pour régler cela, on pourrait réécrire les méthodes `setHauteur` et `setLargeur` dans `Carre` :
+
+```java
+class Carre extends Rectangle {
+
+  public Carre(int tailleCote) {
+    super(tailleCote, tailleCote);
+  }
+
+  @Override
+  public void setHauteur(int hauteur) {
+    this.hauteur = hauteur;
+    this.largeur = hauteur;
+  }
+
+  @Override
+  public void setLargeur(int largeur) {
+    this.largeur = largeur;
+    this.hauteur = largeur;
+  }
+
+}
+```
+
+Cependant, le principe de substitution de Liskov n'est plus respecté ! En effet, si on utilise `Carre` comme un `Rectangle`, des bugs étranges vont survenir !
+
+Imaginons la méthode suivante :
+
+```java
+public static void agrandirRectangle(Rectangle r, int facteur) {
+  r.setHauteur(r.getHauteur() * facteur);
+  r.setLargeur(r.getLatgeur() * facteur);
+}
+```
+
+Tout va bien se passer si j'exécute cette méthode sur un rectangle, mais pas sur un rectangle spécialisé carré !
+
+```java
+Rectangle r = new Rectangle(5,5);
+r.aire() //Renvoie 25
+Rectangle c = new Carre(5);
+c.aire() //Renvoie 25
+agrandirRectangle(r, 2);
+r.aire() //Renvoie 100
+agrandirRectangle(c, 2);
+c.aire() //Renvoie 400! Pourquoi ???
+```
+
+Bref, cet héritage est une très mauvaise idée! En fait, conceptuellement, en programmation, un carré n'est pas un rectangle spécialisé, car les règles pour la hauteur et la largeur sont différentes...cela peut être un peu dur à accepter.
+
+Si on souhaite quand même utiliser un rectangle dans un carré (pour ne pas dupliquer le calcul de l'aire ou des autres méthodes, par exemple) on peut utiliser une **composition** comme nous l'avons vu dans l'exercice précédent, en interdisant à un `Carre` de redéfinir sa hauteur et sa largeur.
+
+```java
+interface I_Rectangle {
+  int aire();
+  int getHauteur();
+  int getLargeur();
+}
+
+class Rectangle implements I_Rectangle {
+
+  private int hauteur;
+
+  private int largeur;
+
+  public Rectangle(int hauteur, int largeur) {
+    this.hauteur = hauteur;
+    this.largeur = largeur;
+  }
+
+  @Override
+  public int getHauteur() {
+    return hauteur;
+  }
+
+  @Override
+  public int getLargeur() {
+    return largeur:
+  }
+
+  public void setHauteur(int hauteur) {
+    this.hauteur = hauteur;
+  }
+
+  public void setLargeur(int largeur) {
+    this.largeur = largeur;
+  }
+
+  @Override
+  public int aire() {
+    return hauteur*largeur;
+  }
+
+}
+
+class Carre implements I_Rectangle {
+
+  private Rectangle rectangle;
+
+  public Carre(int tailleCote) {
+    rectangle = new Rectangle(tailleCote, tailleCote);
+  }
+
+  public void setTailleCote(int tailleCote) {
+    rectangle.setHauteur(tailleCote);
+    rectangle.setLargeur(tailleCote);
+  }
+
+  @Override
+  public int getHauteur() {
+    return rectangle.getHauteur();
+  }
+
+  @Override
+  public int getLargeur() {
+    return rectangle.getLargeur();:
+  }
+
+  @Override
+  public int aire() {
+    return rectangle.aire();
+  }
+
+}
+```
+
+Mettons vos nouvelles connaissances en pratique avec un nouvel exercice.
+
+<div class="exercise">
+
+1. Ouvrez le paquetage `lsp2`. On souhaite implémenter le fonctionnement d'une `Pile`. Une `Pile` est une structure de données `LIFO` (last in, first out) qui fonctionne comme une pile d'assiette. On peut globalement réaliser **quatre opérations** sur une pile :
+
+  * Vérifier si elle est vide.
+
+  * Obtenir la valeur au sommet de la pile.
+
+  * Empiler un élément (l'ajouter au sommet de la pile)
+
+  * Dépiler un élément (le retirer du sommet de la pile et le renvoyer).
+
+  La classe `Pile` que nous allons implémenter possède un paramètre de type **générique**. Cela permet de créer des piles contenant un type de donné paramétré, comme quand vous créez un objet de type `List<Double>` par exemple.
+
+  Afin de ne pas avoir à définir la structure stockant les données nous même, nous allons étendre la classe `Vector` qui permet de gérer une structure de données ordonnée. Diverses méthodes de la super-classe vont vous être utiles :
+
+  * `isEmpty` → permet de vérifier si la structure est vide.
+
+  * `get(index)` → permet de récupérer la valeur située à la position ciblée par l'index.
+
+  * `remove(index)` → permet de supprimer la valeur située à la position ciblée par l'index.
+
+  * `add(index, valeur)` → permet d'insérer une valeur à la position ciblée par l'index.
+
+2. Ouvrez la classe de tests unitaires placée dans `test/java/lsp2`. Exécutez les tests. Rien ne passe, c'est normal ! Vous n'avez pas encore implémenté le code de la classe `Pile` qui contient du code par défaut...Vous êtes donc en mode **TDD** (test driven development).
+
+3. Implémentez les méthodes de la classe `Pile` afin que les tests passent.
+
+4. Ajoutez le test unitaire suivant et exécutez le :
+
+  ```java
+  @Test
+  public void testSupprimerIndex() {
+      Pile<Integer> pile = new Pile<>();
+      pile.empiler(5);
+      pile.empiler(9);
+      pile.empiler(10);
+      pile.remove(1);
+      pile.depiler();
+      assertEquals(9, pile.sommetPile());
+  }
+  ```
+
+</div>
+
+Le denrier test n'est pas mal rédigé, car, selon le **contrat** de `Pile`, seules les opérations `estVide`, `empiler`, `depiler` et `sommetPile` doivent produire un effet. Or, comme `Pile` hérite de `Vector`, on a accès à toutes les opérations réalisables sur une liste classique...Donc, dans la logique, même s'il est possible d'appeler `remove` sur notre `Pile`, cela ne doit produire aucun effet ! Or, ce n'est pas le cas ici.
+
+On pourrait redéfinir la méthode `remove` (et toutes les méthodes de `Vector` !) pour qu'elles ne fassent rien, mais le principe de substitution de Liskov ne serait alors plus respecté ! On ne pourrait pas substituer un `Vector` par une `Pile`.
+
+Bref, conceptuellement, une `Pile` n'est pas un `Vector` spécial, mais bien une structure indépendante... Néanmoins, il est possible d'utiliser une **composition** pour utiliser un `Vector` comme attribut, dans notre classe `Pile`.
+
+<div class="exercise">
+
+1. Refactorez le code de la classe `Pile` en enlevant l'héritage et en utilisant une **composition** avec un `Vector` à la place.
+
+2. Le dernier test ajouté ne compile plus, c'est normal ! La pile n'est pas un `Vector`, on ne peut pas appeler `remove` dessus (et c'est tant mieux). Supprimez donc ce test.
+
+3. Relancez les tests et vérifiez que tout passe.
+
+4. Quelque part dans votre code, définissez une variable de type `Stack` qui est une classe de `Java` permettant de gérer une pile. Allez observer le code source de cette classe (`CTRL+B` sur **IntelliJ** en cliquant sur le nom de la classe). Que remarquez-vous au niveau de sa déclaration ? Cette classe est aujourd'hui dépréciée, pourquoi ?
+
+</div>
+
+Eh oui, même les concepteurs de `Java` ont fait quelques bêtises lors du développement du langage. Et il n'est plus possible de supprimer cette classe après coup pour ne pas causer de problèmes de compatibilité. La seule chose à faire est de déprécier cette classe et de conseiller une nouvelle solution mieux conçue. D'où l'importance de bien penser sa conception !
 
 
 
