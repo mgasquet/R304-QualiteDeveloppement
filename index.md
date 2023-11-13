@@ -23,7 +23,7 @@ Les documents relatifs au cours et aux travaux dirigés sont disponibles sur [Mo
 
 ### Qualité du code et de la conception
 
-À venir.
+1. [TP3](tutorials/tutorial3) -- Qualité du code -- Les principes SOLID
 
 ### Les design patterns
 

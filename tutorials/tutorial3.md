@@ -52,13 +52,17 @@ Dans ce TP, nous allons étudier chaque principe et nous allons vous fournir du 
 * Des bugs parfois assez inattendus peuvent survenir.
 * Les tests unitaires sont difficiles à gérer.
 
-Ensuite, nous allons voir comme un des principes **SOLID** permet de régler cela.
+Ensuite, nous allons voir comme un des principes **SOLID** permet de régler cela, et vous allez donc devoir **refactorer** les différentes applications. **Refactorer** du code (ou réusiner du code en français) signfit retravailler le code source du programme sans pour autant ajouter de nouvelles fonctionnalités à l'application. Il s'agit d'améliorer la qualité du code.
 
 <div class="exercise">
 
-1. Pour commencer, forkez [le dépôt gitlab suivant]() en le plaçant dans le namespace `qualite-de-developpement/votrelogin`.
+1. Pour commencer, forkez [le dépôt gitlab suivant](https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/tp3-etudiants) en le plaçant dans le namespace `qualite-de-developpement/votrelogin`.
 
 2. Clonez votre nouveau dépôt en local. Ouvre le projet avec `IntelliJ` et vérifiez qu'il n'y a pas d'erreur.
+
+3. Pendant ce TP, on vous demandera de créer des **diagrammes UML** de conception (classes, séquences). Vous déposerez vos diagrammes dans un dossier `uml` (en image ou bien avec le fichier du projet **.mdj** si vous utilisez **StarUML**) que vous devrez créer à la racine du dépôt.
+
+4. À la fin de chaque séance, n'oubliez pas de faire un **push** vers votre dépôt distant sur **Gitlab**.
 
 </div>
 
@@ -156,6 +160,8 @@ class Main {
 }
 ```
 
+
+
 Ici, chaque classe à **une responsabilité unique** : si la logique pour envoyer un mail change, la classe **Email** n'est pas impactée.
 
 Le principe de responsabilité unique s'applique également aux **paquetages** : chaque paquetage est lié à une responsabilité du programme. Par exemple, sur le TP JDBC que vous faites en bases de données, chaque paquetage à un rôle (et donc une responsabilité) précis : IHM, controllers, services, stockage... (et on pourrait (même *devrait*) aller plus en détail).
@@ -170,11 +176,15 @@ Ce principe semble assez facile à mettre en place, mais dans la réalité, on r
 
 3. Assurez-vous qu'en effectuant les changements suivants, vous ne modifiez jamais la même classe deux fois :
 
-  * On veut que le calcul effectué soit une soustraction.
+    * On veut que le calcul effectué soit une soustraction.
 
-  * On veut que l'affichage final soit "Résultat : valeur".
+    * On veut que l'affichage final soit "Résultat : valeur".
 
-  * Pour la saisie, on veut plutôt utiliser un `Scanner` et la méthode `nextInt` au lieu d'un `BufferedReader` (il faudra enlever le **catch** de `IOException` et les `parseInt`).
+    * Pour la saisie, on veut plutôt utiliser un `Scanner` et la méthode `nextInt` au lieu d'un `BufferedReader` (il faudra enlever le **catch** de `IOException` et les `parseInt`). Pour rappel, pour définir un `Scanner` :
+
+    ```java
+    Scanner scanner = new Scanner(System.in);
+    ```
 
 </div>
 
@@ -188,33 +198,33 @@ Voyons maintenant un autre exemple.
 
 2. Une application graphique souhaite pouvoir afficher les **rectangles**. Une première idée est d'utiliser la classe `JFrame`, ce qui permettra de l'afficher :
 
-  * Faites étendre la classe `JFrame` à `Rectangle`.
+    * Faites étendre la classe `JFrame` à `Rectangle`.
 
-  * Dans le constructeur, ajoutez le code suivant qui permettra de configurer la fenêtre affichant le rectangle :
+    * Dans le constructeur, ajoutez le code suivant qui permettra de configurer la fenêtre affichant le rectangle :
 
-  ```java
-  setSize(largeur * 2, hauteur * 2);
-  setTitle("Rectangle");
-  setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-  ```
+      ```java
+      setSize(largeur * 2, hauteur * 2);
+      setTitle("Rectangle");
+      setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      ```
 
-  * Réécrivez la méthode suivante :
+    * Réécrivez la méthode suivante :
 
-  ```java
-  @Override
-  public void paint(Graphics g) {
-      g.drawRect(largeur/2, hauteur/2, largeur, hauteur);
-  }
-  ```
+      ```java
+      @Override
+      public void paint(Graphics g) {
+          g.drawRect(largeur/2, hauteur/2, largeur, hauteur);
+      }
+      ```
 
-  * Pour afficher votre rectangle dans le `main`, utilisez simplement la méthode suivante :
+    * Pour afficher votre rectangle dans le `main`, utilisez simplement la méthode suivante :
 
-  ```java
-  //Affiche une fenêtre contenant le rectangle.
-  rectangle.setVisible(true);
-  ```
+      ```java
+      //Affiche une fenêtre contenant le rectangle.
+      rectangle.setVisible(true);
+      ```
 
-  * Testez.
+    * Testez.
 
 3. Certaines applications aimeraient aussi utiliser simplement la classe `Rectangle` pour faire des calculs géométriques sans pour autant avoir besoin de l'afficher. A ce stade, vous avez sans doute clairement identifié que la classe `Rectangle` possède trop de responsabilités : la gestion de la forme géométrique et de ses propriétés (aire, peut-être plus tard périmètre, etc...) et l'affichage graphique. La classe peut changer si on ajoute de nouvelles opérations ou si l'affichage graphique change. Le principe de responsabilité unique n'est pas respecté.
 
@@ -242,7 +252,7 @@ Pour vous mettre dans le bain et vous montrer la problématique derrière tout c
 
 1. Ouvrez le paquetage `ocp1`. Dans ce projet, une classe `Animal` permet de gérer différents types d'animaux et leur cri, selon l'attribut `type` de l'objet.
 
-2. On aimerait prendre en charge les chiens et les poules. Modifiez la classe `Animal` en conséquence et testez dans le `Main`.
+2. On aimerait prendre en charge les **chiens** et les **poules**. Modifiez la classe `Animal` en conséquence et testez dans le `Main`.
 
 3. Que se passe-t-il si vous essayez de créer un animal qui n'existe pas et d'afficher son cri ? Pour régler cela, ajoutez une clause `default` dans le `switch` affichant simplement "Animal inconnu".
 
@@ -262,7 +272,7 @@ De même, dans la classe `Pokemon`, pour que le pokémon puisse se présenter av
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `oc2`. Explorez les classes. Étudiez notamment la classe `SimulateurCombat`.
+1. Ouvrez le paquetage `ocp2`. Explorez les classes. Étudiez notamment la classe `SimulateurCombat`.
 
 2. On souhaite ajouter un nouveau type de pokémon : le pokémon type **électricité**. Son attaque est **Eclair** et il fait entre 20 et 100 dégâts. Faites en sorte de prendre en charge ce nouveau type.
 
@@ -354,6 +364,9 @@ class Triangle extends FigureGeometrique {
   }
 }
 ```
+<div style="text-align:center">
+![Open-close 1]({{site.baseurl}}/assets/TP3/OCP1.svg){: width="25%" }
+</div>
 
 L'ajout d'une nouvelle figure nécessite donc simplement l'ajout d'une nouvelle classe correspondant à la figure et l'implémentation des méthodes requises (ici, dessiner la figure). Aucune autre classe est modifiée. L'extension est possible (ajout de nouvelles figures) sans modification du code source déjà présent. Par ailleurs, il est maintenant impossible de créer des figures géométriques qui n'existent pas au préalable dans notre programme (c'est une bonne chose !).
 
@@ -365,11 +378,11 @@ Ceci devrait vous permettre de refactorer le code du paquetage `ocp1` (animaux).
 
 1. Refactorez le code du paquetage `ocp1` afin de respecter le principe ouvert/fermé. Adaptez le `Main` en conséquence et vérifiez que tout fonctionne. Il ne doit plus être possible de gérer des animaux inconnus, et c'est bien normal !
 
-2. Réaliser un diagramme de classes de l'application du paquetage `ocp2` (avant refactoring). Indiquez bien les **dépendances**.
+2. Réaliser un **diagramme de classes de conception** (hors Main) de l'application du paquetage `ocp2` (avant refactoring). Indiquez bien les **dépendances**.
 
 3. Refactorez le code du paquetage `ocp2` afin de respecter le principe ouvert/fermé. Adaptez le `Main` en conséquence et vérifiez que tout fonctionne.
 
-4. Réaliser un diagramme de classes de l'application du paquetage `ocp2` (après refactoring). Indiquez bien les **dépendances**.
+4. Réaliser un **diagramme de classes de conception** (hors Main) de l'application du paquetage `ocp2` (après refactoring). Indiquez bien les **dépendances**.
 
 </div>
 
@@ -381,25 +394,26 @@ Nous allons mettre à l'épreuve votre compréhension des deux principes (`S` et
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `oc3`. Ce projet permet de gérer un paquet de 52 cartes, de le trier, de le mélanger... Exécutez le programme pour observer le rendu. Deux méthodes de tri sont possibles. On définit la méthode de tri utilisée quand on construit l'objet et on peut la changer à tout moment avec un `setter`.
+1. Ouvrez le paquetage `ocp3`. Ce projet permet de gérer un paquet de 52 cartes, de le trier, de le mélanger... Exécutez le programme pour observer le rendu. Deux méthodes de tri sont possibles. On définit la méthode de tri utilisée quand on construit l'objet et on peut la changer à tout moment avec un `setter`.
 
 2. On aimerait ajouter une nouvelle méthode de tri par **bulles**. Voici cet algorithme illustré sur un simple tableau d'entiers :
 
-  ```java
-  //Soit t, un tableau contenant des entiers
-  for(int i=t.length-1;i>=0;i--) {
-    for(int j=0; j < i; j++) {
-      if(t[j] > t[j+1]) {
-        int temp = t[j];
-        t[j] = t[j+1];
-        t[j+1] = temp;
+    ```java
+    //Soit t, un tableau contenant des entiers
+    for(int i=t.length-1;i>=0;i--) {
+      for(int j=0; j < i; j++) {
+        if(t[j] > t[j+1]) {
+          int temp = t[j];
+          t[j] = t[j+1];
+          t[j+1] = temp;
+        }
       }
     }
-  }
-  ```
-  Faites en sorte que la classe `Paquet` puisse effectuer un tri à bulles. 
-  
-  Pour vous aider, vous pourrez utiliser la méthode `compareTo` qui permet de comparer deux cartes. Cette méthode renvoie un nombre négatif si la première carte est strictement inférieure à la seconde, 0 si elles sont égales et un nombre positif si la première carte est strictement supérieure à la seconde.
+    ```
+
+    Faites en sorte que la classe `Paquet` puisse effectuer un tri à bulles. 
+    
+    Pour vous aider, vous pourrez utiliser la méthode `compareTo` qui permet de comparer deux cartes. Cette méthode renvoie un nombre négatif si la première carte est strictement inférieure à la seconde, 0 si elles sont égales et un nombre positif si la première carte est strictement supérieure à la seconde.
 
 3. Testez que votre algorithme fonctionne bien en changeant la méthode de tri du paquet dans le `Main`.
 
@@ -409,7 +423,7 @@ Nous allons mettre à l'épreuve votre compréhension des deux principes (`S` et
 
 Comme vous l'avez sans doute déduit, dans un premier temps, le principe **ouvert/fermé** n'est pas respecté : ajouter un nouveau tri demande de modifier le code source de la classe `Paquet` et notamment la méthode `trier`.
 
-Dans un second temps, on remarque aussi que la classe `Paquet` a peut-être un peut trop de responsabilités : cela ne devrait pas être à elle de trier les cartes ! On pourrait aussi dire la même chose pour le mélange, et peut-être pour l'affichage ! La vérification peut se faire facilement :
+Dans un second temps, on remarque aussi que la classe `Paquet` a peut-être un peut trop de responsabilités : cela ne devrait pas être à elle de trier les cartes ! On pourrait aussi dire la même chose pour le mélange, et peut-être même pour l'affichage ! La vérification peut se faire facilement :
 
 * Si la méthode de tri change, la classe `Paquet` doit être modifiée.
 
@@ -423,11 +437,11 @@ Le principe de responsabilités unique n'est pas respecté. Pour le `toString`, 
 
 1. Refactorez le code afin de respecter le **principe ouvert/fermé** au niveau des **tris**. On souhaite tout de même garder la possibilité de changer de tri avec un `setter` et aussi de définir le tri utilisé via le `constructeur`. Quelques indices :
 
-  * Isolez le code de chaque méthode de tri dans des classes dédiées.
+    * Isolez le code de chaque méthode de tri dans des classes dédiées.
 
-  * Généralisez le tout avec une interface.
+    * Généralisez le tout avec une interface.
 
-  * Utilisez cette interface dans la classe `Paquet`, à la place de `typeTri`.
+    * Utilisez cette interface dans la classe `Paquet`, à la place de `typeTri`.
 
 2. Refactorez le code concernant le **mélange** afin de respecter le **principe de responsabilité unique**. Prévoyez aussi le cas où d'autres méthodes de mélanges pourraient être ajoutées. Comme pour le tri, on souhaite pouvoir définir la méthode de mélange dans le constructeur et la modifier via un setter.
 
@@ -505,7 +519,7 @@ class B extends A {
 }
 ```
 
-Ici, selon le code de la méthode `operations` de la classe `A`, on aura des résultats étranges. Ici, si on éxécute `operations(n)` sur une classe de type `B`, on aura `n*2` affichage de `Execution d'une opération`. Si on change le code de `A`, on aura peut-être plus ce bug...(si le code est dupliqué).
+Ici, selon le code de la méthode `operations` de la classe `A`, on aura des résultats étranges. Ici, si on exécute `operations(n)` sur une classe de type `B`, on aura `n*2` affichage de `Execution d'une opération`. Si on change le code de `A`, on aura peut-être plus ce bug...(si le code est dupliqué).
 
 Bref, cela n'est pas bon. Pour éviter cela, on peut à la place définir une `interface` pour les méthodes utilisées dans `A` et `B` et mettre en place de la **composition** :
 
@@ -562,6 +576,10 @@ class B implements Operateur {
 }
 ```
 
+<div style="text-align:center">
+![Liskov substitution 1]({{site.baseurl}}/assets/TP3/LSP1.svg){: width="25%" }
+</div>
+
 Maintenant, peu importe l'implémentation de `A`, il n'y aura plus jamais aucun bug de duplication des affichages.
 
 <div class="exercise">
@@ -572,11 +590,11 @@ Maintenant, peu importe l'implémentation de `A`, il n'y aura plus jamais aucun 
 
 3. Adaptez les tests unitaires et vérifiez qu'ils passent.
 
-4. Remplacez l'appel à `ajotuerTransaction` par une incrémentation du solde dans `ajouterTransactions` de la classe `CompteBancaire` (comme c'était le cas à l'origine). Vérifiez que les tests passent toujours.
+4. Remplacez l'appel à `ajouterTransaction` par une incrémentation du solde dans `ajouterTransactions` de la classe `CompteBancaire` (comme c'était le cas à l'origine). Vérifiez que les tests passent toujours.
 
 </div>
 
-Le fait d'utiliser de la composition au lieu de l'hértiage est une bonne pratique et n'est pas nécessairement lié à la substitution de Liskov. Attention cependant, l'héritage peut parfois avoir un véritable intérêt quand il existe un lien fort entre la classe mère et les classes filles, comme c'était le cas avec les pokémons, par exemple.
+Le fait d'utiliser de la composition au lieu de l'héritage est une bonne pratique et n'est pas nécessairement lié à la substitution de Liskov. Attention cependant, l'héritage peut parfois avoir un véritable intérêt quand il existe un lien fort entre la classe mère et les classes filles, comme c'était le cas avec les pokémons, par exemple.
 
 Une autre illustration plus précise de principe de substitution de Liskov est le suivant : on possède une classe `Rectangle`. On veut modéliser une classe `Carre`. En géométrie, un carré est un sous-type de rectangle. On implémente donc le code suivant :
 
@@ -682,16 +700,16 @@ c.aire() //Renvoie 400! Pourquoi ???
 
 Bref, cet héritage est une très mauvaise idée! En fait, conceptuellement, en programmation, un carré n'est pas un rectangle spécialisé, car les règles pour la hauteur et la largeur sont différentes...cela peut être un peu dur à accepter.
 
-Si on souhaite quand même utiliser un rectangle dans un carré (pour ne pas dupliquer le calcul de l'aire ou des autres méthodes, par exemple) on peut utiliser une **composition** comme nous l'avons vu dans l'exercice précédent, en interdisant à un `Carre` de redéfinir sa hauteur et sa largeur.
+Si on souhaite quand même utiliser un rectangle dans un carré (pour ne pas dupliquer le calcul de l'aire ou des autres méthodes, par exemple) on peut éventuellement utiliser une **composition** comme nous l'avons vu dans l'exercice précédent, en interdisant à un `Carre` de redéfinir sa hauteur et sa largeur.
 
 ```java
-interface I_Rectangle {
+interface FigureRectangulaire {
   int aire();
   int getHauteur();
   int getLargeur();
 }
 
-class Rectangle implements I_Rectangle {
+class Rectangle implements FigureRectangulaire {
 
   private int hauteur;
 
@@ -727,7 +745,7 @@ class Rectangle implements I_Rectangle {
 
 }
 
-class Carre implements I_Rectangle {
+class Carre implements FigureRectangulaire {
 
   private Rectangle rectangle;
 
@@ -758,54 +776,58 @@ class Carre implements I_Rectangle {
 }
 ```
 
+<div style="text-align:center">
+![Liskov substitution 2]({{site.baseurl}}/assets/TP3/LSP2.svg){: width="50%" }
+</div>
+
 Mettons vos nouvelles connaissances en pratique avec un nouvel exercice.
 
 <div class="exercise">
 
 1. Ouvrez le paquetage `lsp2`. On souhaite implémenter le fonctionnement d'une `Pile`. Une `Pile` est une structure de données `LIFO` (last in, first out) qui fonctionne comme une pile d'assiette. On peut globalement réaliser **quatre opérations** sur une pile :
 
-  * Vérifier si elle est vide.
+    * Vérifier si elle est vide.
 
-  * Obtenir la valeur au sommet de la pile.
+    * Obtenir la valeur au sommet de la pile.
 
-  * Empiler un élément (l'ajouter au sommet de la pile)
+    * Empiler un élément (l'ajouter au sommet de la pile)
 
-  * Dépiler un élément (le retirer du sommet de la pile et le renvoyer).
+    * Dépiler un élément (le retirer du sommet de la pile et le renvoyer).
 
-  La classe `Pile` que nous allons implémenter possède un paramètre de type **générique**. Cela permet de créer des piles contenant un type de donné paramétré, comme quand vous créez un objet de type `List<Double>` par exemple.
+    La classe `Pile` que nous allons implémenter possède un paramètre de type **générique**. Cela permet de créer des piles contenant un type de donné paramétré, comme quand vous créez un objet de type `List<Double>` par exemple.
 
-  Afin de ne pas avoir à définir la structure stockant les données nous même, nous allons étendre la classe `Vector` qui permet de gérer une structure de données ordonnée. Diverses méthodes de la super-classe vont vous être utiles :
+    Afin de ne pas avoir à définir la structure stockant les données nous même, nous allons étendre la classe `Vector` qui permet de gérer une structure de données ordonnée. Diverses méthodes de la super-classe vont vous être utiles :
 
-  * `isEmpty` → permet de vérifier si la structure est vide.
+    * `isEmpty` → permet de vérifier si la structure est vide.
 
-  * `get(index)` → permet de récupérer la valeur située à la position ciblée par l'index.
+    * `get(index)` → permet de récupérer la valeur située à la position ciblée par l'index.
 
-  * `remove(index)` → permet de supprimer la valeur située à la position ciblée par l'index.
+    * `remove(index)` → permet de supprimer la valeur située à la position ciblée par l'index.
 
-  * `add(index, valeur)` → permet d'insérer une valeur à la position ciblée par l'index.
+    * `add(index, valeur)` → permet d'insérer une valeur à la position ciblée par l'index.
 
 2. Ouvrez la classe de tests unitaires placée dans `test/java/lsp2`. Exécutez les tests. Rien ne passe, c'est normal ! Vous n'avez pas encore implémenté le code de la classe `Pile` qui contient du code par défaut...Vous êtes donc en mode **TDD** (test driven development).
 
 3. Implémentez les méthodes de la classe `Pile` afin que les tests passent.
 
-4. Ajoutez le test unitaire suivant et exécutez le :
+4. Ajoutez le test unitaire suivant et exécutez-le :
 
-  ```java
-  @Test
-  public void testSupprimerIndex() {
-      Pile<Integer> pile = new Pile<>();
-      pile.empiler(5);
-      pile.empiler(9);
-      pile.empiler(10);
-      pile.remove(1);
-      pile.depiler();
-      assertEquals(9, pile.sommetPile());
-  }
-  ```
+    ```java
+    @Test
+    public void testSupprimerIndex() {
+        Pile<Integer> pile = new Pile<>();
+        pile.empiler(5);
+        pile.empiler(9);
+        pile.empiler(10);
+        pile.remove(1);
+        pile.depiler();
+        assertEquals(9, pile.sommetPile());
+    }
+    ```
 
 </div>
 
-Le denrier test n'est pas mal rédigé, car, selon le **contrat** de `Pile`, seules les opérations `estVide`, `empiler`, `depiler` et `sommetPile` doivent produire un effet. Or, comme `Pile` hérite de `Vector`, on a accès à toutes les opérations réalisables sur une liste classique...Donc, dans la logique, même s'il est possible d'appeler `remove` sur notre `Pile`, cela ne doit produire aucun effet ! Or, ce n'est pas le cas ici.
+Le dernier test n'est pas mal rédigé, car, selon le **contrat** de `Pile`, seules les opérations `estVide`, `empiler`, `depiler` et `sommetPile` doivent produire un effet. Or, comme `Pile` hérite de `Vector`, on a accès à toutes les opérations réalisables sur une liste classique...Donc, dans la logique, même s'il est possible d'appeler `remove` sur notre `Pile`, cela ne doit produire aucun effet ! Or, ce n'est pas le cas ici.
 
 On pourrait redéfinir la méthode `remove` (et toutes les méthodes de `Vector` !) pour qu'elles ne fassent rien, mais le principe de substitution de Liskov ne serait alors plus respecté ! On ne pourrait pas substituer un `Vector` par une `Pile`.
 
@@ -831,7 +853,7 @@ Maintenant, voyons un nouveau problème que vous devriez pouvoir résoudre en ut
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `ocp3`. Dans ce projet, il y a une classe `Produit` permettant de gérer des produits et leurs prix. Ensuite, on a souhaité définir une classe `ProduitAvecReduction`, car certains produits proposent des réductions. Tout fonctionne pour le moment, comme vous pouvez le constater dans le `Main`.
+1. Ouvrez le paquetage `ocp4`. Dans ce projet, il y a une classe `Produit` permettant de gérer des produits et leurs prix. Ensuite, on a souhaité définir une classe `ProduitAvecReduction`, car certains produits proposent des réductions. Tout fonctionne pour le moment, comme vous pouvez le constater dans le `Main`.
 
 2. On souhaite maintenant ajouter un nouveau type de produit : les produits avec une date de péremption proche. Sur un tel produit, le prix est calculé en faisant une réduction de 50% sur le prix d'origine. Implémentez donc une classe `ProduitAvecDatePeremptionProche` héritant de `Produit` et réécrivez la méthode `getPrix`. Testez que votre nouveau type de produit a bien le comportement attendu en testant dans le `Main` (ou encore mieux, avec des tests unitaires !)
 
@@ -951,6 +973,10 @@ class ResponsableDeStagiaires implements I_Salarie {
 }
 ```
 
+<div style="text-align:center">
+![Open close 2]({{site.baseurl}}/assets/TP3/OCP2.svg){: width="80%" }
+</div>
+
 Avec cette nouvelle architecture, nous pouvons créer des salariés qui sont chefs de projet et responsables de stagiaires :
 
 ```java
@@ -1003,6 +1029,10 @@ class ResponsableDeStagiaires extends SalarieDecorator implements I_Salarie {
 }
 ```
 
+<div style="text-align:center">
+![Open close 3]({{site.baseurl}}/assets/TP3/OCP3.svg){: width="80%" }
+</div>
+
 <div class="exercise">
 
 1. Réfactorez votre code pour introduire une classe abstraite et réduire la redondance et la répétition de code au niveau des sous-classes (`ProduitAvecReduction` et `ProduitAvecDatePeremptionProche`).
@@ -1033,35 +1063,35 @@ Voyons comment ne pas respecter ce principe peut devenir très fastidieux au fur
 
 1. Ouvrez le paquetage `isp`. Ce projet modélise un système de jeu où certaines créatures sont des **montures** toutes les montures du même type ont les mêmes caractéristiques type (vitesse, endurance...). Au début, le développeur a modélisé une créature `Cheval`. Pour cette monture, on veut connaître :
 
-  * Le nom de la monture.
+    * Le nom de la monture.
 
-  * La vitesse.
+    * La vitesse.
 
-  * L'endurance.
+    * L'endurance.
 
-  Pour prévoir le futur dans le cas où il y aurait besoin d'ajouter d'autres montures, le développeur a ajouté une interface `Monture`.
+    Pour prévoir le futur dans le cas où il y aurait besoin d'ajouter d'autres montures, le développeur a ajouté une interface `Monture`.
 
-  Il a ensuite ajouté un autre type de monture, le **Tigre**.
+    Il a ensuite ajouté un autre type de monture, le **Tigre**.
 
 2. Ajoutez une classe `Rhinoceros` implémentant la classe `Monture`. Pour un `Rhinoceros` on a une vitesse de 30 et une endurance de 100.
 
 3. Ajoutez une classe `Dauphin` étendant `Creature` et implémentant l'interface `Monture`. Cette monture a une vitesse de 45. Cependant, contrairement aux autres montures, cette monture est une monture aquatique. Elle ne possède pas d'endurance et on veut connaître son **temps de respiration sous l'eau** qui est de 15.
 
-  Concernant l'endurance, que faut-il renvoyer ? On ne peut pas renvoyer 0 ou un nombre négatif, cela n'aurait pas beaucoup de sens. A la place, on peut lever une erreur :
+    Concernant l'endurance, que faut-il renvoyer ? On ne peut pas renvoyer 0 ou un nombre négatif, cela n'aurait pas beaucoup de sens. A la place, on peut lever une erreur :
 
-  ```java
-  public double getEnduranceMonture() {
-      throw new Error("Une monture aquatique n'a pas d'endurance!");
-  }
-  ```
+    ```java
+    public double getEnduranceMonture() {
+        throw new Error("Une monture aquatique n'a pas d'endurance!");
+    }
+    ```
 
 3. Dans le cas où il y aurait besoin d'ajouter d'autres montures aquatiques dans le futur, ajoutez la méthode permettant d'obtenir le temps de respiration dans l'interface `Monture`.
 
 4. Les classes `Cheval` et `Tigre` ne compilent plus ! C'est parce qu'il faut implémenter la méthode permettant d'obtenir le temps de respiration sous l'eau...Or ces montures n'ont pas de temps de respiration ! On va donc procéder comme pour `Dauphin` en soulevant une erreur :
 
-  ```java
-  throw new Error("Cette monture ne peut pas respirer sous l'eau!");
-  ```
+    ```java
+    throw new Error("Cette monture ne peut pas respirer sous l'eau!");
+    ```
 
 5. Ajoutez une classe `Griffon` étendant `Creature` et implémentant l'interface `Monture`. Cette monture a une vitesse de 300. Cependant, contrairement aux autres montures, cette monture est une monture volante. Elle ne possède pas d'endurance et ne respire pas sous l'eau non plus. Par contre, on veut connaître son **temps maximum de vol** qui est de 40. Adaptez votre classe en conséquence.
 
@@ -1164,6 +1194,10 @@ class D implements I_Exemple {
 }
 ```
 
+<div style="text-align:center">
+![Interface segregation 1]({{site.baseurl}}/assets/TP3/ISP1.svg){: width="50%" }
+</div>
+
 Tout cela peut être refactoré bien plus élégamment ainsi :
 
 ```java
@@ -1228,6 +1262,10 @@ class D implements I_B, I_C {
 }
 ```
 
+<div style="text-align:center">
+![Interface segregation 2]({{site.baseurl}}/assets/TP3/ISP2.svg){: width="50%" }
+</div>
+
 Comme vous le constatez, plus aucune classe n'est forcée à implémenter des méthodes qu'elle ne peut pas définir, tout en conservant ses spécificités. Plus aucune erreur n'a besoin d'être levée.
 
 Bref, cela est en partie un mix entre le **principe de responsabilité unique** et une visualisation **hiérarchique** du problème. On note quand même le cas intéressant de la classe `D` qui permet à la fois d'avoir le type `I_Exemple`, `I_B` et `I_C` !
@@ -1256,7 +1294,7 @@ Tout d'abord, illustrons ce principe avec un exemple.
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `di1`. Dans ce projet, il y a une classe `Etudiant` et une classe `CompteUniversitaire`. Un compte universitaire est détenu par un étudiant. On utilise son nom et son prénom pour générer un login.
+1. Ouvrez le paquetage `dip1`. Dans ce projet, il y a une classe `Etudiant` et une classe `CompteUniversitaire`. Un compte universitaire est détenu par un étudiant. On utilise son nom et son prénom pour générer un login.
 
 2. Ajoutez une classe **Enseignant** qui possède un nom, un prénom et définit des **getters** pour ces deux attributs.
 
@@ -1380,6 +1418,10 @@ class Main {
 }
 ```
 
+<div style="text-align:center">
+![Dependency inversion 1]({{site.baseurl}}/assets/TP3/DIP1.svg){: width="50%" }
+</div>
+
 De cette manière, **l'inversion des dépendances** est respectée. La classe `Service` ne dépend plus d'aucun service concret, mais d'**abstractions**.
 
 <div class="exercise">
@@ -1390,15 +1432,15 @@ De cette manière, **l'inversion des dépendances** est respectée. La classe `S
 
 3. On souhaite pouvoir utiliser différentes méthodes pour générer le login dans `CompteUniversitaire`. La première méthode est celle déjà présente qui combine le nom + la première lettre du prénom. On souhaite aussi pouvoir disposer d'une méthode qui mélange les caractères du nom avec cet algorithme :
 
-  ```java
-  List<String> nomList = Arrays.asList(nom.split(""));
-  Collections.shuffle(nomList);
-  StringBuilder builder = new StringBuilder();
-  for(String letter : nomList) {
-    builder.append(letter);
-  }
-  String login = builder.toString();
-  ```
+    ```java
+    List<String> nomList = Arrays.asList(nom.split(""));
+    Collections.shuffle(nomList);
+    StringBuilder builder = new StringBuilder();
+    for(String letter : nomList) {
+      builder.append(letter);
+    }
+    String login = builder.toString();
+    ```
 
 4. En utilisant votre connaissance du pattern **stratégie** et de **l'injection de dépendances** faites en sorte qu'on puisse choisir si `CompteUniversitaire` utilise la génération de login "simple" (nom + première lettre prénom) ou par mélange.
 
@@ -1411,19 +1453,19 @@ Vous allez voir qu'en plus de rendre notre projet modulable, utiliser **l'invers
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `di2`. Cette application peremt de créer de sutilisateurs, de hacher leur mot de passe, de se connecter...Il y a aussi un système de gestion de diverses erreurs. Prenez le temps d'examiner l'architecture, la répartition des classes. Exécutez le programme avec le `Main`.
+1. Ouvrez le paquetage `dip2`. Cette application peremt de créer de sutilisateurs, de hacher leur mot de passe, de se connecter...Il y a aussi un système de gestion de diverses erreurs. Prenez le temps d'examiner l'architecture, la répartition des classes. Exécutez le programme avec le `Main`.
 
 2. Réalisez un **diagramme de classes de conception** de l'application (hors `Main`). Cela nous permettra de faire une comparaison après **refactoring**.
 
-3. Une classe contenant des **tests unitaires** est présente dans `src/test/java/di2`. Lancez les tests deux fois, tout devrait bien se passer.
+3. Une classe contenant des **tests unitaires** est présente dans `src/test/java/dip2`. Lancez les tests deux fois, tout devrait bien se passer.
 
 4. On aimerait effectuer quelques changements dans le programme, notamment au niveau de `ServiceUtilisateur` :
 
-  * Hasher le mot de passe avec `SHA256` au lieu de `MD5`.
+    * Hasher le mot de passe avec `SHA256` au lieu de `MD5`.
 
-  * Utiliser la classe `StockageUtilisateurFichier` pour gérer le stockage des utilisateurs. Contrairement à `StockageUtilisateurMemoire` qui stocke les données de manière volatile, ici, les utilisateurs seront stockés dans un fichier de manière persistante (que sera généré à la racine du projet).
+    * Utiliser la classe `StockageUtilisateurFichier` pour gérer le stockage des utilisateurs. Contrairement à `StockageUtilisateurMemoire` qui stocke les données de manière volatile, ici, les utilisateurs seront stockés dans un fichier de manière persistante (que sera généré à la racine du projet).
 
-  Effectuer ces changements, relancez le programme (`Main`) pour vérifier que tout fonctionne.
+    Effectuez ces changements, relancez le programme (`Main`) pour vérifier que tout fonctionne.
 
 5. Lancez maintenant les tests unitaires **2 fois de suite**. Il y a une erreur ! Trouvez la raison de cette erreur.
 </div>
@@ -1458,4 +1500,32 @@ Cependant, comment faire pour garder le stockage avec fichier pur l'exécution "
 
 </div>
 
-Il reste maintenant le problème des "mails réellement envoyés" quand on exécute les tests. On aimerait également que différentes autres dépendances soient modulables dans le programme.
+Il reste maintenant le problème des "mails envoyés" quand on exécute les tests. On aimerait également que plusieurs autres dépendances soient modulables dans le programme :
+
+* L'envoi des mails. On veut pouvoir utiliser une autre classe et surtout une classe n'envoyant rien (un "Fake mailer") pour les tests.
+
+* Le système de hachage du mot de passe. On veut pouvoir changer entre MD5 et SHA256. Et pour économiser du temps de calcul pour les tests, on voudrait un "Fake Hasher" qui ne hache rien et renvoie le mot de passe en clair.
+
+* La classe `ServiceUtilisateur` elle-même, qui doit pouvoir être remplacée par autre chose dans le `ControllerUtilisateur`. Cela pourrait notamment être utile si on veut tester le controller indépendamment du code de `ServiceUtilisateur`.
+
+<div class="exercise">
+
+1. Refactorez votre code pour appliquer **l'inversion de dépendances** par rapport aux modules cités (mails, hasher, service utilisateur...). Il faudra créer de nouvelles interfaces et modifier des classes existantes (les hashers, le mailer...) et aussi créer deux classes de **stub** pour les tests : `FakeMailer` et `FakeHasher`.
+
+2. Adaptez l'instanciation de `ServiceUtilisateur` dans vos tests unitaires et vérifiez qu'ils passent toujours. Vous ne devez plus constater aucun message "mail envoyé".
+
+3. Vérifiez que le programme fonctionne toujours comme attendu.
+
+4. Réalisez un **diagramme de classes de conception** de l'application (après refactoring donc) et comparez-le avec le premier diagramme que vous aviez réalisé.
+
+5. Réalisez un **diagramme de séquence des interactions** du scénario nominal (le scénario où tout se passe bien et il n'y a pas d'erreur) du cas d'utilisation "Créer un nouvel utilisateur".
+
+</div>
+
+## Conclusion
+
+Voilà, maintenant, vous savez tout des principes **SOLID** ! Vous êtes donc plus proche d'un ingénieur logiciel qu'un codeur.
+
+Dorénavant, pour vos futurs projets (ou ceux actuels, comme la SAE) il faut systématiquement vous poser et réfléchir à la conception de votre programme **à long terme**. Il n'est jamais trop tard pour faire du **refactoring**, mais ne pas avoir besoin d'en faire en respectant une certaine qualité logicielle d'entrée de jeu est encore mieux.
+
+Dans les prochains TPs, nous allons donc nous concentrer sur les **design patterns** (nous en avons déjà vu deux dans ce TP) qui permettront de vous donner des outils pour résoudre des problèmes de conception connus tout en mettant en facilitant le respect et la mise en ouvre les principes SOLID.
