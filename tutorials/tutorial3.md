@@ -421,7 +421,13 @@ Le principe de responsabilités unique n'est pas respecté. Pour le `toString`, 
 
 <div class="exercise">
 
-1. Refactorez le code afin de respecter le **principe ouvert/fermé** au niveau des **tris**. On souhaite tout de même garder la possibilité de changer de tri avec un `setter` et aussi de définir le tri utilisé via le `constructeur`. Peut-être qu'utiliser une interface vous aiderait...?
+1. Refactorez le code afin de respecter le **principe ouvert/fermé** au niveau des **tris**. On souhaite tout de même garder la possibilité de changer de tri avec un `setter` et aussi de définir le tri utilisé via le `constructeur`. Quelques indices :
+
+  * Isolez le code de chaque méthode de tri dans des classes dédiées.
+
+  * Généralisez le tout avec une interface.
+
+  * Utilisez cette interface dans la classe `Paquet`, à la place de `typeTri`.
 
 2. Refactorez le code concernant le **mélange** afin de respecter le **principe de responsabilité unique**. Prévoyez aussi le cas où d'autres méthodes de mélanges pourraient être ajoutées. Comme pour le tri, on souhaite pouvoir définir la méthode de mélange dans le constructeur et la modifier via un setter.
 
@@ -1247,3 +1253,209 @@ En fait, ce principe découle de la bonne application des autres principes et no
 Nous verrons aussi qu'il est essentiel de bien respecter ce principe quand on réalise des tests unitaires.
 
 Tout d'abord, illustrons ce principe avec un exemple. 
+
+<div class="exercise">
+
+1. Ouvrez le paquetage `di1`. Dans ce projet, il y a une classe `Etudiant` et une classe `CompteUniversitaire`. Un compte universitaire est détenu par un étudiant. On utilise son nom et son prénom pour générer un login.
+
+2. Ajoutez une classe **Enseignant** qui possède un nom, un prénom et définit des **getters** pour ces deux attributs.
+
+3. La logique pour créer un compte universitaire pour un enseignant est la même que pour un étudiant. On souhaite donc logiquement réutiliser la classe `CompteUniversitaire`. Mais ce n'est pas possible, car un enseignant n'est pas un étudiant !
+
+</div>
+
+Le problème souligné ici est qu'on a utilisé une classe concrète (`Etudiant`) à la place d'une classe abstraite ou d'une interface, ce qui empêche son utilisation pour d'autres types de classes (ici, Enseignant).
+
+Illustrons ce problème avec un exemple :
+
+```java
+class A {
+
+  public void methodeA() {
+    //Code...
+  }
+
+}
+
+class B {
+
+  public void methodeB() {
+    //Code
+  }
+
+}
+
+class Service {
+
+  private A dependance;
+
+  public Service() {
+    dependance = new A();
+  }
+
+  public void action() {
+    a.methodeA();
+  }
+}
+```
+
+Ici, nous avons un problème similaire : la classe `Service` dépend directement d'une implémentation concrète `A` ce qui le rend peut modulable. Si je veux utiliser `B` à la place de `A`, je dois récrire le code source de `Service`.
+
+Pour régler cela, nous allons tout d'abord commencer par définir et utiliser une **interface** :
+
+```java
+interface I_Exemple {
+  void methodeExemple();
+}
+
+class A implements I_Exemple {
+
+  public void methodeA() {
+    //Code...
+  }
+
+  @Override
+  public void methodeExemple() {
+    methodeA();
+  }
+
+}
+
+class B implements I_Exemple {
+
+  public void methodeB() {
+    //Code
+  }
+
+  @Override
+  public void methodeExemple() {
+    methodeB();
+  }
+}
+```
+
+Bien, je peux maintenant utiliser un `I_Exemple` dans `Service` au lieu de `A` ou `B`... Mais il reste un problème ! Dans l'exemple d'origine, `A` était instancié dans le constructeur. Hors, on ne peut pas instancier une interface ou une classe abstraite (seulement une classe concrète) :
+
+```java
+class Service {
+
+  private I_Exemple dependance;
+
+  public Service() {
+    dependance = new ???;
+  }
+
+  public void action() {
+    dependance.methodeExemple();
+  }
+}
+```
+
+Pour palier à ce problème, on utilise **l'injection de dépendance**. La classe concrète est injectée via le constructeur, au moment de l'instanciation de l'objet, mais la classe ne connait que le type abstrait. Cela permet une modularité de la classe qui peut alors être utilisée avec n'importe quel service concret dérivé du type abstrait. Et on peut en ajouter dans le futur. C'est exactement ce que nous avions fait avec le paquet de cartes et les tris avec le pattern **stratégie**, mais également avec le **décorateur** dans l'exercice avec les produits. L'injection de dépendance est partout !
+
+```java
+class Service {
+
+  private I_Exemple dependance;
+
+  public Service(I_Exemple dependance) {
+    this.dependance = dependance;
+  }
+
+  public void action() {
+    dependance.methodeExemple();
+  }
+}
+
+class Main {
+
+  public static void main(String[]args) {
+    //Utilise "methodeA" dans "action"
+    Service s1 = new Service(new A());
+
+    //Utilise "methodeB" dans "action"
+    Service s2 = new Service(new B());
+  }
+
+}
+```
+
+De cette manière, **l'inversion des dépendances** est respectée. La classe `Service` ne dépend plus d'aucun service concret, mais d'**abstractions**.
+
+<div class="exercise">
+
+1. Réfactorez votre code pour pouvoir utiliser `CompteUniversitaire` aussi bien avec un objet de type `Etudiant` qu'un objet de type `Enseignant`. Il faudra normalement adapter le code dans le `Main`.
+
+2. Testez de créer un compte universitaire pour l'enseignante "Bricot Judas".
+
+3. On souhaite pouvoir utiliser différentes méthodes pour générer le login dans `CompteUniversitaire`. La première méthode est celle déjà présente qui combine le nom + la première lettre du prénom. On souhaite aussi pouvoir disposer d'une méthode qui mélange les caractères du nom avec cet algorithme :
+
+  ```java
+  List<String> nomList = Arrays.asList(nom.split(""));
+  Collections.shuffle(nomList);
+  StringBuilder builder = new StringBuilder();
+  for(String letter : nomList) {
+    builder.append(letter);
+  }
+  String login = builder.toString();
+  ```
+
+4. En utilisant votre connaissance du pattern **stratégie** et de **l'injection de dépendances** faites en sorte qu'on puisse choisir si `CompteUniversitaire` utilise la génération de login "simple" (nom + première lettre prénom) ou par mélange.
+
+5. Le compte de "Tarembois Guy" doit être généré en utilisant le générateur de login simple et celui de "Bricot Judas" avec le générateur par mélange. Testez.
+</div>
+
+Pour finir, nous allons travailler sur un exercice un poil plus conséquent divisé en différentes **couches** (cf partie architecture logicielle du cours sur les DSI).
+
+Vous allez voir qu'en plus de rendre notre projet modulable, utiliser **l'inversion de dépendances** et globalement **ne pas dépendre d'implémentations concrètes** est plus qu'important, car une architecture ne respectant pas ce principe peut occasionner des effets de bords indésirables lors des **tests unitaires**.
+
+<div class="exercise">
+
+1. Ouvrez le paquetage `di2`. Cette application peremt de créer de sutilisateurs, de hacher leur mot de passe, de se connecter...Il y a aussi un système de gestion de diverses erreurs. Prenez le temps d'examiner l'architecture, la répartition des classes. Exécutez le programme avec le `Main`.
+
+2. Réalisez un **diagramme de classes de conception** de l'application (hors `Main`). Cela nous permettra de faire une comparaison après **refactoring**.
+
+3. Une classe contenant des **tests unitaires** est présente dans `src/test/java/di2`. Lancez les tests deux fois, tout devrait bien se passer.
+
+4. On aimerait effectuer quelques changements dans le programme, notamment au niveau de `ServiceUtilisateur` :
+
+  * Hasher le mot de passe avec `SHA256` au lieu de `MD5`.
+
+  * Utiliser la classe `StockageUtilisateurFichier` pour gérer le stockage des utilisateurs. Contrairement à `StockageUtilisateurMemoire` qui stocke les données de manière volatile, ici, les utilisateurs seront stockés dans un fichier de manière persistante (que sera généré à la racine du projet).
+
+  Effectuer ces changements, relancez le programme (`Main`) pour vérifier que tout fonctionne.
+
+5. Lancez maintenant les tests unitaires **2 fois de suite**. Il y a une erreur ! Trouvez la raison de cette erreur.
+</div>
+
+Comme dans l'exercice précédent, l'architecture proposée ne respecte pas le principe d'inversion des dépendances, car la classe `ServiceUtilisateur` possède des dépendances vers des classes **concrètes** qui, de plus, ne sont pas injectées.
+
+On se rend compte que cela pose un véritable problème au niveau des **tests unitaire**. Un test **unitaire**, comme son nom l'indique, teste le fonctionnement d'**une classe**, une **unité**. Or, quand on exécute les tests sur `ServiceUtilisateur`, les méthodes des dépendances concrètes utilisées sont aussi appelées ! Ce qui déclenche donc réellement l'enregistrement de l'utilisateur créé pour les tests dans la base de donnée, alors qu'on souhaitait simplement vérifier la méthode `creerUtilisateur`. Quand les tests sont exécutés une seconde fois, une erreur est détectée car l'utilisateur existe déjà.
+
+Imaginez-vous dans un contexte plus concret, par exemple, dans un projet web : avec une telle conception, vos tests unitaires déclencheraient l'enregistrement d'utilisateurs de test sur votre base de données réelle ! Ce n'est pas envisageable.
+
+Les tests unitaires **ne doivent pas dépendre de l'environnement de production**. Ils doivent pouvoir être lancé seulement à partir du code de la classe testée, sans dépendre de rien d'autre.
+
+Vous avez sans doute constaté des messages **mail envoyé** lors de l'exécution des tests unitaires. Bien sûr, cela n'est pas vraiment le cas, mais de même, dans un cas concret, avec la conception actuelle, des mails seraient véritablement envoyés lors du test du programme (après création d'un utilisateur). C'est problématique.
+
+Pour palier à cela, les testeurs mettent en place des **stubs**. Il s'agit de classes **bouchons** qui ne réalisent pas vraiment l'action demandée, ou alors pas de manière persistante. Aucun effet de bord est produit.
+
+Plus tard, dans l'année, vous découvrirez les **mocks** qui permettent de créer de "fausses" classes destinées aux tests dont on peut facilement éditer les méthodes.
+
+Ici, la classe `StockageUtilisateurMemoire` agit comme un **stub** qu'on peut utiliser pour les tests sans risque. Dans un environnement réel, on utiliserait un stockage avec une base de données dédiée aux tests, comme `SQLite`, qu'on viderait ensuite.
+
+Cependant, comment faire pour garder le stockage avec fichier pur l'exécution "normale" du programme, et le stockage en mémoire pour les tests ? Devons-nous éditer le code source de la classe `ServiceUtilisateur` avant les tests, puis la remettre en ordre ensuite ? Bien sûr que non ! Il suffit de mettre en pratique le **principe d'inversion de dépendance** que vous connaissez.
+
+<div class="exercise">
+
+1. Refactorez les classes du paquetage **stockage** puis le code de `ServiceUtilisateur` afin de respecter le principe d'inversion des dépendances en utilisant des **abstractions** et surtout **l'injection de dépendances**.
+
+2. Mettez à jour le code de `ControllerUtilisateur` afin que celui-ci utilise `ServiceUtilisateur` avec `StockageUtilisateurFichier`.
+
+3. Mettez à jour le code de vos tests unitaires pour utiliser que l'objet de type `ServiceUtilisateur` utilisé dans les tests utilise `StockageUtilisateurMemoire`.
+
+4. Vérifiez que votre programme fonctionne toujours correctement et vérifiez que vos tests unitaires passent plusieurs fois sans problèmes.
+
+</div>
+
+Il reste maintenant le problème des "mails réellement envoyés" quand on exécute les tests. On aimerait également que différentes autres dépendances soient modulables dans le programme.
