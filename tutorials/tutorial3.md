@@ -74,7 +74,7 @@ Pour mener à bien le déroulement d'une fonctionnalité, le programme va faire 
 
 Le principe de **responsabilité unique** indique qu'une classe ne doit pas posséder plus d'une responsabilité. Une responsabilité concerne des **opérations** (traitement, méthodes) de **même nature**. Nous avions déjà abordé cela plus tôt dans le cours sur les diagrammes de séquences en parlant d'architecture centralisée et distribuée. Nous avions vu qu'une **distribution** du traitement (et donc des responsabilités) était plus conseillée. C'est un peu le même principe ici.
 
-**Robert C. Martin** dit : "Si une classe a plus d’une responsabilité, alors ces responsabilités deviennent couplées. Des modifications apportées à l’une des responsabilités peuvent porter atteinte ou inhiber la capacité de la classe de remplir les autres. Ce genre de couplage amène à des architectures fragiles qui dysfonctionnent de façon inattendue lorsqu’elles sont modifiées."
+**Robert C. Martin** dit : "_Si une classe a plus d’une responsabilité, alors ces responsabilités deviennent couplées. Des modifications apportées à l’une des responsabilités peuvent porter atteinte ou inhiber la capacité de la classe de remplir les autres. Ce genre de couplage amène à des architectures fragiles qui dysfonctionnent de façon inattendue lorsqu’elles sont modifiées._"
 
 En bref, **une classe ne doit changer que pour une seule raison**. Si diverses raisons liées à des responsabilités différentes impliquent de modifier la classe, le principe de responsabilité unique n'est donc pas respecté.
 
@@ -83,36 +83,38 @@ Par exemple, considérons le code suivant :
 ```java
 class Email {
 
-  private String sujet;
+   private String sujet;
 
-  private String[] destinataires;
+   private String[] destinataires;
 
-  private String contenu;
+   private String contenu;
 
-  public Email(String sujet, String[]destinataires, String contenu) {
-    this.sujet = sujet;
-    this.destinataires = destinataires;
-    this.contenu = contenu;
-  }
+   public Email(String sujet, String[] destinataires, String contenu) {
+      this.sujet = sujet;
+      this.destinataires = destinataires;
+      this.contenu = contenu;
+   }
 
-  public String getSujet() {return sujet;}
+   public String getSujet() {
+      return sujet;
+   }
 
-  public String[] getDestinataires() {return destinataires;}
+   public String[] getDestinataires() {
+      return destinataires;
+   }
 
-  public String getSujet() {return sujet;}
-
-  public void envoyerMail() {
-    //Code complexe pour envoyer un mail...
-  }
+   public void envoyer() {
+      //Code complexe pour envoyer un mail...
+   }
 
 }
 
 class Main {
 
-  public static void main(String[]args) {
-    Mail m = new Mail("Hello", new String[]{"test@example.com"}, "Hello world!");
-    m.envoyer();
-  }
+   public static void main(String[]args) {
+      Email m = new Email("Hello", new String[]{"test@example.com"}, "Hello world!");
+      m.envoyer();
+   }
 
 }
 ```
@@ -122,23 +124,22 @@ Ici, la classe **Mail** a deux responsabilités clairement identifiables : **sto
 ```java
 class Email {
 
-  private String sujet;
+   private String sujet;
 
-  private String[] destinataires;
+   private String[] destinataires;
 
-  private String contenu;
+   private String contenu;
 
-  public Email(String sujet, String[]destinataires, String contenu) {
-    this.sujet = sujet;
-    this.destinataires = destinataires;
-    this.contenu = contenu;
-  }
+   public Email(String sujet, String[]destinataires, String contenu) {
+      this.sujet = sujet;
+      this.destinataires = destinataires;
+      this.contenu = contenu;
+   }
 
-  public String getSujet() {return sujet;}
+   public String getSujet() {return sujet;}
 
-  public String[] getDestinataires() {return destinataires;}
+   public String[] getDestinataires() {return destinataires;}
 
-  public String getSujet() {return sujet;}
 }
 
 class ServeurMail {
@@ -151,11 +152,11 @@ class ServeurMail {
 
 class Main {
 
-  public static void main(String[]args) {
-    Mail m = new Mail("Hello", new String[]{"test@example.com"}, "Hello world!");
-    ServeurMail serveur = new ServeurMail();
-    serveur.envoyerMail(m);
-  }
+   public static void main(String[]args) {
+      Email e = new Email("Hello", new String[]{"test@example.com"}, "Hello world!");
+      ServeurMail serveur = new ServeurMail();
+      serveur.envoyerMail(e);
+   }
 
 }
 ```
