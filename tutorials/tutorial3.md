@@ -15,7 +15,7 @@ De manière générale, les principes liés à la qualité du développement s'a
 
 Tout cela est difficile à mettre en place au premier abord, car il peut parfois être bien plus rapide et facile de développer une solution peu qualitative, mais qui fonctionne. Néanmoins, le code produit ne tiendra pas au fur et à mesure que l'application va grossir ce qui conduira finalement à la réécriture d'une partie voir de la totalité du code ou pire, l'abandon du projet.
 
-C'est un phénomène qui touche beaucoup d'entreprises du monde du développement. Face au besoin de délivrer une solution rapidement, l'aspect qualité est parfois négligé. Au bout de plusieurs années, il est très compliqué d'ajouter de nouvelles fonctionnalités et d'éviter les bugs. Une nouvelle personne rentrant dans le projet ne comprend rien au code. Le client n'est plus satisfait, car les nouvelles fonctionnalités sont délivrées moins fréquemment et de plus en plus de bugs apparaissent. C'est une barque qui prend l'eau sur lequel on place du sparadrad pour boucher les trous. Mais à chaque fois qu'un trou est bouché, deux nouveaux apparaissent. Le client transfère le projet à une autre entreprise, qui ne comprend rien à ce qu'elle récupère...
+C'est un phénomène qui touche beaucoup d'entreprises du monde du développement. Face au besoin de délivrer une solution rapidement, l'aspect qualité est parfois négligé. Au bout de plusieurs années, il est très compliqué d'ajouter de nouvelles fonctionnalités et d'éviter les bugs. Une nouvelle personne rentrant dans le projet ne comprend rien au code. Le client n'est plus satisfait, car les nouvelles fonctionnalités sont délivrées moins fréquemment et de plus en plus de bugs apparaissent. C'est une barque qui prend l'eau sur lequel on place du sparadrap pour boucher les trous. Mais à chaque fois qu'un trou est bouché, deux nouveaux apparaissent. Le client transfère le projet à une autre entreprise, qui ne comprend rien à ce qu'elle récupère...
 
 Tout cela est aussi dur pour le développeur. Travailler dans un tel environnement est très désagréable et peut même dégoûter du développement. Jusqu'ici, vous avez travaillé sur des projets relativement petits (même pour vos SAEs) mais vous devriez être plus conscients de cette problématique après votre période de stage (ou d'alternance pour certains !).
 
@@ -333,7 +333,9 @@ class FigureGeometrique {
 
 L'ajout d'une nouvelle figure géométrique (par exemple, un carré) nécessite la modification de la classe `FigureGeometrique` et de la méthode `dessiner`. Le principe ouvert/fermé n'est pas respecté. De plus, un bug (à l'exécution) se produira si on essaie de traiter une figure géométrique qui n'existe pas !
 
-Pour régler ce problème, l'idée est de se reposer sur un système d'héritage et d'abstraction : `FigureGeometirque` est une classe abstraite, car on a besoin de savoir dans quel type de figure géométrique on se trouve pour pouvoir effectuer le dessin. Chaque type figure géométrique donnera donc lieu à une classe spécialisée et on laisse tomber l'attribut `type` dans `FigureGeometrique` :
+Pour régler ce problème, l'idée est de se reposer sur un système d'héritage et d'abstraction :
+* `FigureGeometrique` est une classe abstraite, qui permet d'imposer un comportement uniforme aux figures (méthode abstraite `dessiner`)
+* Chaque type de figure géométrique donnera donc lieu à une classe spécialisée et l'attribut `type` de `FigureGeometrique` perd son utilité :
 
 ```java
 
@@ -520,7 +522,7 @@ class B extends A {
 }
 ```
 
-Ici, selon le code de la méthode `operations` de la classe `A`, on aura des résultats étranges. Ici, si on exécute `operations(n)` sur une classe de type `B`, on aura `n*2` affichage de `Execution d'une opération`. Si on change le code de `A`, on aura peut-être plus ce bug...(si le code est dupliqué).
+Ici, selon le code de la méthode `operations` de la classe `A`, on aura des résultats étranges. Ici, si on exécute `operations(n)` sur une classe de type `B`, on aura `n*2` affichage de `Execution d'une opération`. Si on change le code de `A`, on n'aura peut-être plus ce bug... (si le code est dupliqué).
 
 Bref, cela n'est pas bon. Pour éviter cela, on peut à la place définir une `interface` pour les méthodes utilisées dans `A` et `B` et mettre en place de la **composition** :
 
@@ -559,7 +561,7 @@ class B implements Operateur {
 
    //Ou bien, si on veut faire une véritable composition (et qu'on connait la classe mère précise)
    public B() {
-      this.operateurParent = new A();
+      operateurParent = new A();
    }
 
    @Override
@@ -1079,7 +1081,7 @@ Voyons comment ne pas respecter ce principe peut devenir très fastidieux au fur
 
 3. Ajoutez une classe `Dauphin` étendant `Creature` et implémentant l'interface `Monture`. Cette monture a une vitesse de 45. Cependant, contrairement aux autres montures, cette monture est une monture aquatique. Elle ne possède pas d'endurance et on veut connaître son **temps de respiration sous l'eau** qui est de 15.
 
-    Concernant l'endurance, que faut-il renvoyer ? On ne peut pas renvoyer 0 ou un nombre négatif, cela n'aurait pas beaucoup de sens. A la place, on peut lever une erreur :
+    Concernant l'endurance, que faut-il renvoyer ? On ne peut pas renvoyer 0 ou un nombre négatif, cela n'aurait pas beaucoup de sens. À la place, on peut lever une erreur :
 
     ```java
     public double getEnduranceMonture() {
@@ -1089,7 +1091,7 @@ Voyons comment ne pas respecter ce principe peut devenir très fastidieux au fur
 
 4. Dans le cas où il y aurait besoin d'ajouter d'autres montures aquatiques dans le futur, ajoutez la méthode permettant d'obtenir le temps de respiration dans l'interface `Monture`.
 
-5. Les classes `Cheval` et `Tigre` ne compilent plus ! C'est parce qu'il faut implémenter la méthode permettant d'obtenir le temps de respiration sous l'eau...Or ces montures n'ont pas de temps de respiration ! On va donc procéder comme pour `Dauphin` en soulevant une erreur :
+5. Les classes `Cheval` et `Tigre` ne compilent plus ! C'est parce qu'il faut implémenter la méthode permettant d'obtenir le temps de respiration sous l'eau... Or, ces montures n'ont pas de temps de respiration ! On va donc procéder comme pour `Dauphin` en soulevant une erreur :
 
     ```java
     throw new Error("Cette monture ne peut pas respirer sous l'eau!");
@@ -1286,7 +1288,7 @@ Enfin, il reste le **principe d'inversion des dépendances**. Ce principe dit qu
 
 * Les abstractions ne doivent pas dépendre des détails (les implémentations, les classes filles) mais les détails (les classes concrètes) doivent dépendre des abstractions. Nous l'avons bien vu avec l'exercice sur les **pokémons** lorsque nous étudions le principe **ouvert/fermé**.
 
-Ce principe permet d'obtenir une très forte **modularité** du programme. Si on couple cela avec la technique **d'injection des dépendances** et des **design patterns créateurs** tels que des **fabriques abstraites** ou bien des **conteneurs de dépendances** on obtient un logiciel dont on peut moduler le fonctionnement sans toucher au code source, simplement en ajoutant de nouvelles classes et/ou en éditant des fichiers de configuration. Les différents **frameworks** mettent en place une architecture favorisant l'inversion des dépendances.
+Ce principe permet d'obtenir une très forte **modularité** du programme. Si on couple cela avec la technique **d'injection des dépendances** et des **design patterns créateurs**, tels que des **fabriques abstraites**, ou bien des **conteneurs de dépendances**, on obtient un logiciel dont on peut moduler le fonctionnement sans toucher au code source, simplement en ajoutant de nouvelles classes et/ou en éditant des fichiers de configuration. Les différents **frameworks** mettent en place une architecture favorisant l'inversion des dépendances.
 
 En fait, ce principe découle de la bonne application des autres principes et notamment du principe **ouvert/fermé** et de la **substitution de Liskov**.
 
@@ -1430,7 +1432,7 @@ De cette manière, **l'inversion des dépendances** est respectée. La classe `S
 
 1. Réfactorez votre code pour pouvoir utiliser `CompteUniversitaire` aussi bien avec un objet de type `Etudiant` qu'un objet de type `Enseignant`. Il faudra normalement adapter le code dans le `Main`.
 
-2. Testez de créer un compte universitaire pour l'enseignante "Bricot Judas".
+2. Testez de créer un compte universitaire pour l'enseignante "_Bricot Judas_".
 
 3. On souhaite pouvoir utiliser différentes méthodes pour générer le login dans `CompteUniversitaire`. La première méthode est celle déjà présente qui combine le nom + la première lettre du prénom. On souhaite aussi pouvoir disposer d'une méthode qui mélange les caractères du nom avec cet algorithme :
 
@@ -1446,7 +1448,7 @@ De cette manière, **l'inversion des dépendances** est respectée. La classe `S
 
 4. En utilisant votre connaissance du pattern **stratégie** et de **l'injection de dépendances** faites en sorte qu'on puisse choisir si `CompteUniversitaire` utilise la génération de login "simple" (nom + première lettre prénom) ou par mélange.
 
-5. Le compte de "Tarembois Guy" doit être généré en utilisant le générateur de login simple et celui de "Bricot Judas" avec le générateur par mélange. Testez.
+5. Le compte de "_Tarembois Guy_" doit être généré en utilisant le générateur de login simple et celui de "_Bricot Judas_" avec le générateur par mélange. Testez.
 </div>
 
 Pour finir, nous allons travailler sur un exercice un poil plus conséquent divisé en différentes **couches** (cf. partie architecture logicielle du cours sur les DSI).
