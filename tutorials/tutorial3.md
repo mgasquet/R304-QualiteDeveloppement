@@ -226,9 +226,9 @@ Voyons maintenant un autre exemple.
 
     * Testez.
 
-3. Certaines applications aimeraient aussi utiliser simplement la classe `Rectangle` pour faire des calculs géométriques sans pour autant avoir besoin de l'afficher. A ce stade, vous avez sans doute clairement identifié que la classe `Rectangle` possède trop de responsabilités : la gestion de la forme géométrique et de ses propriétés (aire, peut-être plus tard périmètre, etc...) et l'affichage graphique. La classe peut changer si on ajoute de nouvelles opérations ou si l'affichage graphique change. Le principe de responsabilité unique n'est pas respecté.
+3. Certaines applications aimeraient aussi utiliser simplement la classe `Rectangle` pour faire des calculs géométriques sans pour autant avoir besoin de l'afficher. À ce stade, vous avez sans doute clairement identifié que la classe `Rectangle` possède trop de responsabilités : la gestion de la forme géométrique et de ses propriétés (aire, peut-être plus tard périmètre, etc.) et l'affichage graphique. La classe peut changer si on ajoute de nouvelles opérations ou si l'affichage graphique change. Le principe de responsabilité unique n'est pas respecté.
 
-4. L'idée est d'avoir deux classes : une première gérant la forme rectangle et l'autre permettant de l'afficher. Mais pour autant, il ne faut pas dupliquer de code ! Refactorez votre code en conséquence afin de mettre en place cette nouvelle conception.
+4. L'idée est d'avoir deux classes : une première, gérant la forme rectangle et l'autre permettant de l'afficher. Mais pour autant, il ne faut pas dupliquer de code ! Refactorez votre code en conséquence afin de mettre en place cette nouvelle conception.
 
 5. Assurez-vous que tout fonctionne (il faudra sans doute adapter la `main`) et qu'il est bien possible d'avoir de créer des rectangles ne contenant aucune logique d'affichage et des rectangles qu'il est possible d'afficher.
 
@@ -280,7 +280,7 @@ De même, dans la classe `Pokemon`, pour que le pokémon puisse se présenter av
 
 4. Modifiez le `Main` pour faire combattre un pokémon possédant le type **électrique** contre un pokémon possédant le type **psy**.
 
-5. Ajoutez encore un nouveau pokémon (avec le type, l'attaque et les dégats de votre choix...)
+5. Ajoutez encore un nouveau pokémon (avec le type, l'attaque et les dégâts de votre choix...)
 
 </div>
 
@@ -330,7 +330,7 @@ class FigureGeometrique {
 }
 ```
 
-L'ajout d'une nouvelle figure géométrique (par exemple, un carré) nécessite la modification de la classe `FigureGeometrique` et de la méthode `dessiner`. Le principe ouvert/fermé n'est pas respecté. De plus, un bug (à l'exécution) se produira si on essaie de traiter une figure géométrique qui n'existe pas!
+L'ajout d'une nouvelle figure géométrique (par exemple, un carré) nécessite la modification de la classe `FigureGeometrique` et de la méthode `dessiner`. Le principe ouvert/fermé n'est pas respecté. De plus, un bug (à l'exécution) se produira si on essaie de traiter une figure géométrique qui n'existe pas !
 
 Pour régler ce problème, l'idée est de se reposer sur un système d'héritage et d'abstraction : `FigureGeometirque` est une classe abstraite, car on a besoin de savoir dans quel type de figure géométrique on se trouve pour pouvoir effectuer le dessin. Chaque type figure géométrique donnera donc lieu à une classe spécialisée et on laisse tomber l'attribut `type` dans `FigureGeometrique` :
 
@@ -453,7 +453,7 @@ Le principe de responsabilités unique n'est pas respecté. Pour le `toString`, 
 
 Les principes **SOLID** se combinent naturellement entre eux. D'ailleurs, si vous avez refactoré proprement le dernier exercice, vous avez même déjà utilisé le principe **d'inversion des dépendances** dont nous parlerons plus tard ! 
 
-Encore mieux, vous venez d'utiliser votre premier **design pattern** au niveau des tris : **Stratégie**. Ce pattern permet **d'injecter** un comportement spécifique dans une classe sans en modifier le code source (et éventuellement, le modifier plus tard). Ce pattern s'appui sur **ouvert/fermé**, **l'inversion des dépendances** et aide à renforcer **responsabilité unique**. C'est exactement ce que vous venez de faire : la méthode de tri du paquet est modulable et on peut même en ajouter des nouvelles dans le futur ! Et tout cela, sans modifier `Paquet`.
+Encore mieux, vous venez d'utiliser votre premier **design pattern** au niveau des tris : **Stratégie**. Ce pattern permet **d'injecter** un comportement spécifique dans une classe sans en modifier le code source (et éventuellement, le modifier plus tard). Ce pattern s'appuie sur **ouvert/fermé**, **l'inversion des dépendances** et aide à renforcer **responsabilité unique**. C'est exactement ce que vous venez de faire : la méthode de tri du paquet est modulable et on peut même en ajouter des nouvelles dans le futur ! Et tout cela, sans modifier `Paquet`.
 
 À partir du diagramme de classes de conception que vous venez de réaliser, vous devriez être en mesure de généraliser le pattern **stratégie** à tout type de problème.
 
@@ -473,7 +473,7 @@ Tout cela occasionne des bugs parfois inattendus.
 
 3. Le développeur à l'origine de la classe `CompteBancaire` souhaite revoir sa classe et légèrement la réfactorer afin d'éviter la duplication de code. Dans la méthode `effectuerTransactions`, il souhaite donc plutôt appeler la méthode `effectuerTransaction` au lieu de dupliquer la ligne de code ajoutant le montant au solde. Faites cette modification.
 
-4. Relancez les tests unitaires...Le second ne passe plus. Pourquoi ?
+4. Relancez les tests unitaires... Le second ne passe plus. Pourquoi ?
 
 </div>
 
@@ -641,7 +641,7 @@ class Carre extends Rectangle {
 }
 ```
 
-Si à première vue l'implémentation semble correcte, le fait que le carre soit un rectangle pose problème : on peut changer sa largeur et sa hauteur indépendamment. Or, un carré a la même largeur et la même hauteur !
+Si à première vue l'implémentation semble correcte, le fait que le carré soit un rectangle pose problème : on peut changer sa largeur et sa hauteur indépendamment. Or, un carré a la même largeur et la même hauteur !
 
 ```java
 Carre c = new Carre(5);
@@ -727,7 +727,7 @@ class Rectangle implements FigureRectangulaire {
 
   @Override
   public int getLargeur() {
-    return largeur:
+    return largeur;
   }
 
   public void setHauteur(int hauteur) {
@@ -806,7 +806,7 @@ Mettons vos nouvelles connaissances en pratique avec un nouvel exercice.
 
     * `add(index, valeur)` → permet d'insérer une valeur à la position ciblée par l'index.
 
-2. Ouvrez la classe de tests unitaires placée dans `test/java/lsp2`. Exécutez les tests. Rien ne passe, c'est normal ! Vous n'avez pas encore implémenté le code de la classe `Pile` qui contient du code par défaut...Vous êtes donc en mode **TDD** (test driven development).
+2. Ouvrez la classe de tests unitaires placée dans `test/java/lsp2`. Exécutez les tests. Rien ne passe, c'est normal ! Vous n'avez pas encore implémenté le code de la classe `Pile` qui contient du code par défaut... Vous êtes donc en mode **TDD** (test driven development).
 
 3. Implémentez les méthodes de la classe `Pile` afin que les tests passent.
 
@@ -827,7 +827,7 @@ Mettons vos nouvelles connaissances en pratique avec un nouvel exercice.
 
 </div>
 
-Le dernier test n'est pas mal rédigé, car, selon le **contrat** de `Pile`, seules les opérations `estVide`, `empiler`, `depiler` et `sommetPile` doivent produire un effet. Or, comme `Pile` hérite de `Vector`, on a accès à toutes les opérations réalisables sur une liste classique...Donc, dans la logique, même s'il est possible d'appeler `remove` sur notre `Pile`, cela ne doit produire aucun effet ! Or, ce n'est pas le cas ici.
+Le dernier test n'est pas mal rédigé, car, selon le **contrat** de `Pile`, seules les opérations `estVide`, `empiler`, `depiler` et `sommetPile` doivent produire un effet. Or, comme `Pile` hérite de `Vector`, on a accès à toutes les opérations réalisables sur une liste classique... Donc, dans la logique, même s'il est possible d'appeler `remove` sur notre `Pile`, cela ne doit produire aucun effet ! Or, ce n'est pas le cas ici.
 
 On pourrait redéfinir la méthode `remove` (et toutes les méthodes de `Vector` !) pour qu'elles ne fassent rien, mais le principe de substitution de Liskov ne serait alors plus respecté ! On ne pourrait pas substituer un `Vector` par une `Pile`.
 
@@ -857,7 +857,7 @@ Maintenant, voyons un nouveau problème que vous devriez pouvoir résoudre en ut
 
 2. On souhaite maintenant ajouter un nouveau type de produit : les produits avec une date de péremption proche. Sur un tel produit, le prix est calculé en faisant une réduction de 50% sur le prix d'origine. Implémentez donc une classe `ProduitAvecDatePeremptionProche` héritant de `Produit` et réécrivez la méthode `getPrix`. Testez que votre nouveau type de produit a bien le comportement attendu en testant dans le `Main` (ou encore mieux, avec des tests unitaires !)
 
-3. Maintenant nous voulons qu'un produit puisse à la fois être un produit qui périme bientôt et un produit avec une réduction. Est-il possible de créer une telle classe ou un tel comportement..?
+3. Maintenant, nous voulons qu'un produit puisse à la fois être un produit qui périme bientôt et un produit avec une réduction. Est-il possible de créer une telle classe ou un tel comportement ?
 </div>
 
 Avec l'architecture actuelle, il est impossible d'avoir un même produit possédant ces deux fonctionnalités à la fois. Avec un héritage multiple, il y aurait pu y avoir une solution, mais nous avons vu qu'il est déconseillé de faire cela et de toute façon, dans la plupart des langages et en Java, ce n'est pas possible.
@@ -872,7 +872,7 @@ class Salarie {
   private double salaire;
 
   public Salarie(double salaire) {
-    this.salaire = salaire:
+    this.salaire = salaire;
   }
 
   public double getSalaire() {
@@ -928,7 +928,7 @@ class Salarie implements I_Salarie {
   private double salaire;
 
   public Salarie(double salaire) {
-    this.salaire = salaire:
+    this.salaire = salaire;
   }
 
   public double getSalaire() {
@@ -985,7 +985,7 @@ I_Salarie salarie = new ResponsableStagiaires(new ChefProjet(new Salarie(2000), 
 salarie.getSalaire(); //Renvoie 2550
 ```
 
-Il est important de noter que la classe composée est `I_Salarie` et non pas `Salarie`! Sinon on ne pourrait pas combiner `ChefProjet` avec `ResponsableStagiaires`.
+Il est important de noter que la classe composée est `I_Salarie` et non pas `Salarie`! Sinon, on ne pourrait pas combiner `ChefProjet` avec `ResponsableStagiaires`.
 
 Aussi, le salarie n'est pas instancié dans la classe, il est **injecté** (autrement, cela ne fonctionnerait pas), comme ce que vous avez fait, par exemple, avec l'exercice sur le paquet de carte et les différentes méthodes de tri. Sur un diagramme de classes de conception, cela pourrait être représenté par une **agrégation blanche**.
 
@@ -1085,27 +1085,27 @@ Voyons comment ne pas respecter ce principe peut devenir très fastidieux au fur
     }
     ```
 
-3. Dans le cas où il y aurait besoin d'ajouter d'autres montures aquatiques dans le futur, ajoutez la méthode permettant d'obtenir le temps de respiration dans l'interface `Monture`.
+4. Dans le cas où il y aurait besoin d'ajouter d'autres montures aquatiques dans le futur, ajoutez la méthode permettant d'obtenir le temps de respiration dans l'interface `Monture`.
 
-4. Les classes `Cheval` et `Tigre` ne compilent plus ! C'est parce qu'il faut implémenter la méthode permettant d'obtenir le temps de respiration sous l'eau...Or ces montures n'ont pas de temps de respiration ! On va donc procéder comme pour `Dauphin` en soulevant une erreur :
+5. Les classes `Cheval` et `Tigre` ne compilent plus ! C'est parce qu'il faut implémenter la méthode permettant d'obtenir le temps de respiration sous l'eau...Or ces montures n'ont pas de temps de respiration ! On va donc procéder comme pour `Dauphin` en soulevant une erreur :
 
     ```java
     throw new Error("Cette monture ne peut pas respirer sous l'eau!");
     ```
 
-5. Ajoutez une classe `Griffon` étendant `Creature` et implémentant l'interface `Monture`. Cette monture a une vitesse de 300. Cependant, contrairement aux autres montures, cette monture est une monture volante. Elle ne possède pas d'endurance et ne respire pas sous l'eau non plus. Par contre, on veut connaître son **temps maximum de vol** qui est de 40. Adaptez votre classe en conséquence.
+6. Ajoutez une classe `Griffon` étendant `Creature` et implémentant l'interface `Monture`. Cette monture a une vitesse de 300. Cependant, contrairement aux autres montures, cette monture est une monture volante. Elle ne possède pas d'endurance et ne respire pas sous l'eau non plus. Par contre, on veut connaître son **temps maximum de vol** qui est de 40. Adaptez votre classe en conséquence.
 
-6. Mettez à jour l'interface `Monture` avec la méthode pour le temps de vol au cas où il y ait d'autres types de montures volantes ajoutées et corrigez les erreurs de compilation.
+7. Mettez à jour l'interface `Monture` avec la méthode pour le temps de vol au cas où il y ait d'autres types de montures volantes ajoutées et corrigez les erreurs de compilation.
 
-7. Ajoutez une classe `Dragon` étendant `Creature` et implémentant l'interface `Monture`. Cette monture a une vitesse de 400. Elle possède aussi un temps de vol maximum de 120 (car c'est une monture volante). Elle ne possède pas d'endurance et ne respire pas sous l'eau non plus. Par contre, on veut connaître sa **puissance de feu** qui est de 200. Adaptez votre classe en conséquence.
+8. Ajoutez une classe `Dragon` étendant `Creature` et implémentant l'interface `Monture`. Cette monture a une vitesse de 400. Elle possède aussi un temps de vol maximum de 120 (car c'est une monture volante). Elle ne possède pas d'endurance et ne respire pas sous l'eau non plus. Par contre, on veut connaître sa **puissance de feu** qui est de 200. Adaptez votre classe en conséquence.
 
-8. Mettez à jour l'interface `Monture` avec la méthode pour la puissance de feu au cas où il y ait d'autres types de dragons ajoutés dans le futur et corrigez les erreurs de compilation.
+9. Mettez à jour l'interface `Monture` avec la méthode pour la puissance de feu au cas où il y ait d'autres types de dragons ajoutés dans le futur et corrigez les erreurs de compilation.
 
-9. Enfin, ajoutez une classe `LicorneAilee` étendant `Creature` et implémentant l'interface `Monture`. Cette monture a une vitesse de 75. Elle possède aussi un temps de vol maximum de 20 (car c'est une monture volante) et une endurance de 50 (car c'est aussi une monture terrestre !). Par contre, elle ne respire pas sous l'eau et n'a pas de puissance de feu non plus.
+10. Enfin, ajoutez une classe `LicorneAilee` étendant `Creature` et implémentant l'interface `Monture`. Cette monture a une vitesse de 75. Elle possède aussi un temps de vol maximum de 20 (car c'est une monture volante) et une endurance de 50 (car c'est aussi une monture terrestre !). Par contre, elle ne respire pas sous l'eau et n'a pas de puissance de feu non plus.
 
 </div>
 
-C'était pénible, n'est-ce pas ? C'est normal, cette solution est très mauvaise et fastidieuse. À chaque nouvel ajout de type de monture avec ses spécificités, on doit modifier tous les autres types et les forcer à implémenter des méthodes qui ne les concernent pas...Le fait de lever tant d'erreurs indique une très mauvaise conception.
+C'était pénible, n'est-ce pas ? C'est normal, cette solution est très mauvaise et fastidieuse. À chaque nouvel ajout de type de monture avec ses spécificités, on doit modifier tous les autres types et les forcer à implémenter des méthodes qui ne les concernent pas... Le fait de lever tant d'erreurs indique une très mauvaise conception.
 
 Si le développeur avait bien raison de vouloir faire une interface lors de la création de la première monture, il a voulu regrouper trop de chose dans une seule et même interface : les méthodes communes à toutes les montures (nom, vitesse) et la méthode concernant l'endurance, spécifique aux montures terrestres. Par la suite, on a continué dans cette mauvaise logique. Il aurait dû dès le départ diviser cela en **deux interfaces** et on aurait dû créer plus d'interfaces à chaque nouveau type de monture ayant ses spécificités. 
 
@@ -1453,7 +1453,7 @@ Vous allez voir qu'en plus de rendre notre projet modulable, utiliser **l'invers
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `dip2`. Cette application peremt de créer de sutilisateurs, de hacher leur mot de passe, de se connecter...Il y a aussi un système de gestion de diverses erreurs. Prenez le temps d'examiner l'architecture, la répartition des classes. Exécutez le programme avec le `Main`.
+1. Ouvrez le paquetage `dip2`. Cette application permet de créer des tilisateurs, de hacher leur mot de passe, de se connecter...Il y a aussi un système de gestion de diverses erreurs. Prenez le temps d'examiner l'architecture, la répartition des classes. Exécutez le programme avec le `Main`.
 
 2. Réalisez un **diagramme de classes de conception** de l'application (hors `Main`). Cela nous permettra de faire une comparaison après **refactoring**.
 
