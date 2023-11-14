@@ -1339,7 +1339,7 @@ class Service {
 }
 ```
 
-Ici, nous avons un problème similaire : la classe `Service` dépend directement d'une implémentation concrète `A` ce qui le rend peut modulable. Si je veux utiliser `B` à la place de `A`, je dois récrire le code source de `Service`.
+Ici, nous avons un problème similaire : la classe `Service` dépend directement d'une implémentation concrète `A` ce qui le rend peu modulable. Si je veux utiliser `B` à la place de `A`, je dois récrire le code source de `Service`.
 
 Pour régler cela, nous allons tout d'abord commencer par définir et utiliser une **interface** :
 
@@ -1449,13 +1449,13 @@ De cette manière, **l'inversion des dépendances** est respectée. La classe `S
 5. Le compte de "Tarembois Guy" doit être généré en utilisant le générateur de login simple et celui de "Bricot Judas" avec le générateur par mélange. Testez.
 </div>
 
-Pour finir, nous allons travailler sur un exercice un poil plus conséquent divisé en différentes **couches** (cf partie architecture logicielle du cours sur les DSI).
+Pour finir, nous allons travailler sur un exercice un poil plus conséquent divisé en différentes **couches** (cf. partie architecture logicielle du cours sur les DSI).
 
 Vous allez voir qu'en plus de rendre notre projet modulable, utiliser **l'inversion de dépendances** et globalement **ne pas dépendre d'implémentations concrètes** est plus qu'important, car une architecture ne respectant pas ce principe peut occasionner des effets de bords indésirables lors des **tests unitaires**.
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `dip2`. Cette application permet de créer des tilisateurs, de hacher leur mot de passe, de se connecter...Il y a aussi un système de gestion de diverses erreurs. Prenez le temps d'examiner l'architecture, la répartition des classes. Exécutez le programme avec le `Main`.
+1. Ouvrez le paquetage `dip2`. Cette application permet de créer des utilisateurs, de hacher leur mot de passe, de se connecter... Il y a aussi un système de gestion de diverses erreurs. Prenez le temps d'examiner l'architecture, la répartition des classes. Exécutez le programme avec le `Main`.
 
 2. Réalisez un **diagramme de classes de conception** de l'application (hors `Main`). Cela nous permettra de faire une comparaison après **refactoring**.
 
@@ -1474,7 +1474,7 @@ Vous allez voir qu'en plus de rendre notre projet modulable, utiliser **l'invers
 
 Comme dans l'exercice précédent, l'architecture proposée ne respecte pas le principe d'inversion des dépendances, car la classe `ServiceUtilisateur` possède des dépendances vers des classes **concrètes** qui, de plus, ne sont pas injectées.
 
-On se rend compte que cela pose un véritable problème au niveau des **tests unitaire**. Un test **unitaire**, comme son nom l'indique, teste le fonctionnement d'**une classe**, une **unité**. Or, quand on exécute les tests sur `ServiceUtilisateur`, les méthodes des dépendances concrètes utilisées sont aussi appelées ! Ce qui déclenche donc réellement l'enregistrement de l'utilisateur créé pour les tests dans la base de donnée, alors qu'on souhaitait simplement vérifier la méthode `creerUtilisateur`. Quand les tests sont exécutés une seconde fois, une erreur est détectée car l'utilisateur existe déjà.
+On se rend compte que cela pose un véritable problème au niveau des **tests unitaire**. Un test **unitaire**, comme son nom l'indique, teste le fonctionnement d'**une classe**, une **unité**. Or, quand on exécute les tests sur `ServiceUtilisateur`, les méthodes des dépendances concrètes utilisées sont aussi appelées ! Ce qui déclenche donc réellement l'enregistrement de l'utilisateur créé pour les tests dans la base de donnée, alors qu'on souhaitait simplement vérifier la méthode `creerUtilisateur`. Quand les tests sont exécutés une seconde fois, une erreur est détectée, car l'utilisateur existe déjà.
 
 Imaginez-vous dans un contexte plus concret, par exemple, dans un projet web : avec une telle conception, vos tests unitaires déclencheraient l'enregistrement d'utilisateurs de test sur votre base de données réelle ! Ce n'est pas envisageable.
 
@@ -1498,7 +1498,7 @@ Cependant, comment faire pour garder le stockage avec fichier pur l'exécution "
 
 3. Mettez à jour le code de vos tests unitaires pour utiliser que l'objet de type `ServiceUtilisateur` utilisé dans les tests utilise `StockageUtilisateurMemoire`.
 
-4. Vérifiez que votre programme fonctionne toujours correctement et vérifiez que vos tests unitaires passent plusieurs fois sans problèmes.
+4. Vérifiez que votre programme fonctionne toujours correctement et vérifiez que vos tests unitaires passent plusieurs fois sans problème.
 
 </div>
 
