@@ -305,28 +305,28 @@ Considérons l'exemple suivant, similaire à ce que vous venez de faire :
 
 class FigureGeometrique {
 
-  private String typeFigure;
+   private String typeFigure;
 
-  public FigureGeometrique(String typeFigure) {
-    this.typeFigure = typeFigure;
-  }
+   public FigureGeometrique(String typeFigure) {
+      this.typeFigure = typeFigure;
+   }
 
-  public void dessiner() {
-    if(typeFigure == "rectangle") {
-      dessinerRectangle();
-    }
-    else if(typeFigure == "triangle") {
-      dessinerTriangle();
-    }
-  }
+   public void dessiner() {
+      if(typeFigure == "rectangle") {
+         dessinerRectangle();
+      }
+      else if(typeFigure == "triangle") {
+         dessinerTriangle();
+      }
+   }
 
-  private void dessinerRectangle() {
-    //Code pour dessiner un rectangle...
-  }
+   private void dessinerRectangle() {
+      //Code pour dessiner un rectangle...
+   }
 
-  private void dessinerTriangle() {
-    //Code pour dessiner un triangle...
-  }
+   private void dessinerTriangle() {
+      //Code pour dessiner un triangle...
+   }
 
 }
 ```
@@ -424,7 +424,7 @@ Nous allons mettre à l'épreuve votre compréhension des deux principes (`S` et
 
 Comme vous l'avez sans doute déduit, dans un premier temps, le principe **ouvert/fermé** n'est pas respecté : ajouter un nouveau tri demande de modifier le code source de la classe `Paquet` et notamment la méthode `trier`.
 
-Dans un second temps, on remarque aussi que la classe `Paquet` a peut-être un peut trop de responsabilités : cela ne devrait pas être à elle de trier les cartes ! On pourrait aussi dire la même chose pour le mélange, et peut-être même pour l'affichage ! La vérification peut se faire facilement :
+Dans un second temps, on remarque aussi que la classe `Paquet` a peut-être un peu trop de responsabilités : cela ne devrait pas être à elle de trier les cartes ! On pourrait aussi dire la même chose pour le mélange, et peut-être même pour l'affichage ! La vérification peut se faire facilement :
 
 * Si la méthode de tri change, la classe `Paquet` doit être modifiée.
 
@@ -526,53 +526,54 @@ Bref, cela n'est pas bon. Pour éviter cela, on peut à la place définir une `i
 
 ```java
 
-interface Operateur {
-  void operation();
-  void operations(int n);
+public interface Operateur {
+   void operation();
+
+   void operations(int n);
 }
 
 class A implements Operateur {
 
-  @Override
-  public void operation() {
-    //Code de l'opération...
-  }
+   @Override
+   public void operation() {
+      //Code de l'opération...
+   }
 
-  //Execute operation n fois
-  @Override
-  public void operations(int n) {
-    for(int i = 0 ; i < n; i++) {
-      operation();
-    }
-  }
+   //Execute operation n fois
+   @Override
+   public void operations(int n) {
+      for(int i = 0 ; i < n; i++) {
+         operation();
+      }
+   }
 
 }
 
 class B implements Operateur {
 
-  private Operateur operateurParent;
+   private Operateur operateurParent;
 
-  public B(Operateur operateurParent) {
-    this.operateurParent = operateurParent;
-  }
+   public B(Operateur operateurParent) {
+      this.operateurParent = operateurParent;
+   }
 
-  //Ou bien, si on veut faire une véritable composition (et qu'on connait la classe mère précise)
-  public B() {
-    this.operateurParent = new A();
-  }
+   //Ou bien, si on veut faire une véritable composition (et qu'on connait la classe mère précise)
+   public B() {
+      this.operateurParent = new A();
+   }
 
-  @Override
-  public void operation() {
+   @Override
+   public void operation() {
       operateurParent.operation();
-  }
+   }
 
-  @Override
-  public void operations(int n) {
-    operateurParent.operations(n);
-    for(int i = 0 ; i < n; i++) {
-      System.out.println("Execution d'une opération");
-    }
-  }
+   @Override
+   public void operations(int n) {
+      operateurParent.operations(n);
+      for(int i = 0 ; i < n; i++) {
+         System.out.println("Execution d'une opération");
+      }
+   }
 
 }
 ```
@@ -699,7 +700,7 @@ agrandirRectangle(c, 2);
 c.aire() //Renvoie 400! Pourquoi ???
 ```
 
-Bref, cet héritage est une très mauvaise idée! En fait, conceptuellement, en programmation, un carré n'est pas un rectangle spécialisé, car les règles pour la hauteur et la largeur sont différentes...cela peut être un peu dur à accepter.
+Bref, cet héritage est une très mauvaise idée ! En fait, conceptuellement, en programmation, un carré n'est pas un rectangle spécialisé, car les règles pour la hauteur et la largeur sont différentes...cela peut être un peu dur à accepter.
 
 Si on souhaite quand même utiliser un rectangle dans un carré (pour ne pas dupliquer le calcul de l'aire ou des autres méthodes, par exemple) on peut éventuellement utiliser une **composition** comme nous l'avons vu dans l'exercice précédent, en interdisant à un `Carre` de redéfinir sa hauteur et sa largeur.
 
@@ -795,7 +796,7 @@ Mettons vos nouvelles connaissances en pratique avec un nouvel exercice.
 
     * Dépiler un élément (le retirer du sommet de la pile et le renvoyer).
 
-    La classe `Pile` que nous allons implémenter possède un paramètre de type **générique**. Cela permet de créer des piles contenant un type de donné paramétré, comme quand vous créez un objet de type `List<Double>` par exemple.
+    La classe `Pile` que nous allons implémenter possède un paramètre de type **générique**. Cela permet de créer des piles contenant un type de données paramétré, comme quand vous créez un objet de type `List<Double>` par exemple.
 
     Afin de ne pas avoir à définir la structure stockant les données nous même, nous allons étendre la classe `Vector` qui permet de gérer une structure de données ordonnée. Diverses méthodes de la super-classe vont vous être utiles :
 
@@ -870,47 +871,47 @@ Illustrons le problème et sa solution :
 ```java
 class Salarie {
 
-  private double salaire;
+   private double salaire;
 
-  public Salarie(double salaire) {
-    this.salaire = salaire;
-  }
+   public Salarie(double salaire) {
+      this.salaire = salaire;
+   }
 
-  public double getSalaire() {
-    return salaire;
-  }
+   public double getSalaire() {
+      return salaire;
+   }
 
 }
 
 class ChefProjet extends Salarie {
 
-  private int nombreProjetsGeres;
+   private int nombreProjetsGeres;
 
-  public ChefProjet(int nombreProjetsGeres) {
-    super();
-    this.nombreProjetsGeres = nombreProjetsGeres;
-  }
+   public ChefProjet(double salaire, int nombreProjetsGeres) {
+      super(salaire);
+      this.nombreProjetsGeres = nombreProjetsGeres;
+   }
 
-  @Override
-  public double getSalaire() {
-    return super.getSalaire() + 100 * (nombreProjetsGeres);
-  }
+   @Override
+   public double getSalaire() {
+      return super.getSalaire() + 100 * (nombreProjetsGeres);
+   }
 
 }
 
 class ResponsableDeStagiaires extends Salarie {
 
-  private int nombreStagiairesGeres;
+   private int nombreStagiairesGeres;
 
-  public ResponsableDeStagiaires(int nombreStagiairesGeres) {
-    super();
-    this.nombreStagiairesGeres = nombreStagiairesGeres;
-  }
+   public ResponsableDeStagiaires(double salaire, int nombreStagiairesGeres) {
+      super(salaire);
+      this.nombreStagiairesGeres = nombreStagiairesGeres;
+   }
 
-  @Override
-  public double getSalaire() {
-    return super.getSalaire() + 50 * (nombreStagiairesGeres);
-  }
+   @Override
+   public double getSalaire() {
+      return super.getSalaire() + 50 * (nombreStagiairesGeres);
+   }
 }
 ```
 
@@ -1009,23 +1010,23 @@ Par exemple, pour l'exemple des salariés :
 ```java
 //Nous reviendrons sur le nom "decorator" plus tard.
 abstract class SalarieDecorator implements I_Salarie {
-  protected I_Salarie salrie;
+   protected I_Salarie salarie;
 
-  public SalarieDecorator(I_Salarie salarie) {
-    this.salarie = salarie;
-  }
+   public SalarieDecorator(I_Salarie salarie) {
+      this.salarie = salarie;
+   }
 }
 
 class ResponsableDeStagiaires extends SalarieDecorator implements I_Salarie {
 
-  private int nombreStagiairesGeres;
+   private int nombreStagiairesGeres;
 
-  public ResponsableDeStagiaires(I_Salarie salarie, int nombreStagiairesGeres) {
-    super(salarie);
-    this.nombreStagiairesGeres = nombreStagiairesGeres;
-  }
+   public ResponsableDeStagiaires(I_Salarie salarie, int nombreStagiairesGeres) {
+      super(salarie);
+      this.nombreStagiairesGeres = nombreStagiairesGeres;
+   }
 
-  //Reste du code
+   //Reste du code
 
 }
 ```
