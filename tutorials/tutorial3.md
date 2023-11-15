@@ -56,7 +56,7 @@ Ensuite, nous allons voir comme un des principes **SOLID** permet de régler cel
 
 <div class="exercise">
 
-1. Pour commencer, forkez [le dépôt gitlab suivant](https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/tp3-etudiants) en le plaçant dans le namespace `qualite-de-developpement-semestre-3/etu/votrelogin`.
+1. Pour commencer, forkez [le dépôt gitlab suivant](https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/tp3) en le plaçant dans le namespace `qualite-de-developpement-semestre-3/etu/votrelogin`.
 
 2. Clonez votre nouveau dépôt en local. Ouvre le projet avec `IntelliJ` et vérifiez qu'il n'y a pas d'erreur.
 
