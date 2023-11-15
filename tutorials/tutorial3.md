@@ -197,7 +197,7 @@ Voyons maintenant un autre exemple.
 
 1. Ouvrez le paquetage `srp2`. Il contient une classe `Rectangle` qui permet de créer des rectangles et de calculer leur aire.
 
-2. Une application graphique souhaite pouvoir afficher les **rectangles**. Une première idée est d'utiliser la classe `JFrame`, ce qui permettra de l'afficher :
+2. Une application graphique souhaite pouvoir afficher les **rectangles**. Une première idée est d'utiliser la classe `JFrame` (de la librairie _Java Swing_), ce qui permettra de l'afficher :
 
     * Faites étendre la classe `JFrame` à `Rectangle`.
 
@@ -209,7 +209,7 @@ Voyons maintenant un autre exemple.
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       ```
 
-    * Réécrivez la méthode suivante :
+    * Redéfinissez la méthode `paint(Graphics g)` de la classe `JFrame` de la façon suivante :
 
       ```java
       @Override
