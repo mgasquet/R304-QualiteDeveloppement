@@ -247,7 +247,7 @@ Ce principe est un pilier fondamental de qualité de code. Avec ce principe, mê
 
 Malheureusement, dans de nombreux projets, on rencontre fréquemment des classes violant ce principe, car mal conçues. Les symptômes sont généralement :
 * l'utilisation d'un énorme bloc `if/else if/else` ou d'un `switch case` qui grossit au fur et à mesure qu'on ajoute de nouvelles choses. Avec l'utilisation de `classes` et de l'héritage, on va en plus certainement se retrouver à utiliser des instructions `instanceof` (pour vérifier le type de l'objet) et de `cast` pour pouvoir utiliser des méthodes précises.
-* nécessité de dupliquer code pour ajouter une nouvelle fonctionnalité (non-respec du principe [_DRY_](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself)).
+* nécessité de dupliquer du code pour ajouter une nouvelle fonctionnalité (non-respect du principe [_DRY_](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself)).
 
 Pour vous mettre dans le bain et vous montrer la problématique derrière tout cela, vous allez ajouter de nouvelles fonctionnalités à des projets existants qui ne respectent pas le principe ouvert/fermé.
 
