@@ -245,7 +245,9 @@ En d'autres termes, il doit être possible d'étendre les fonctionnalités/le co
 
 Ce principe est un pilier fondamental de qualité de code. Avec ce principe, même une classe ou une librairie compilée (non modifiable) autorise le développeur à étendre les fonctionnalités proposées.
 
-Malheureusement, dans de nombreux projets, on rencontre fréquemment des classes violant ce principe, car mal conçues. Les symptômes sont généralement l'utilisation d'un énorme bloc `if/else if/else` ou d'un `switch case` qui grossit au fur et à mesure qu'on ajoute de nouvelles choses. Avec l'utilisation de `classes` et de l'héritage, on va en plus certainement se retrouver à utiliser des instructions `instanceof` (pour vérifier le type de l'objet) et de `cast` pour pouvoir utiliser des méthodes précises.
+Malheureusement, dans de nombreux projets, on rencontre fréquemment des classes violant ce principe, car mal conçues. Les symptômes sont généralement :
+* l'utilisation d'un énorme bloc `if/else if/else` ou d'un `switch case` qui grossit au fur et à mesure qu'on ajoute de nouvelles choses. Avec l'utilisation de `classes` et de l'héritage, on va en plus certainement se retrouver à utiliser des instructions `instanceof` (pour vérifier le type de l'objet) et de `cast` pour pouvoir utiliser des méthodes précises.
+* nécessité de dupliquer code pour ajouter une nouvelle fonctionnalité (non-respec du principe [_DRY_](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself)).
 
 Pour vous mettre dans le bain et vous montrer la problématique derrière tout cela, vous allez ajouter de nouvelles fonctionnalités à des projets existants qui ne respectent pas le principe ouvert/fermé.
 
@@ -275,11 +277,11 @@ De même, dans la classe `Pokemon`, pour que le pokémon puisse se présenter av
 
 1. Ouvrez le paquetage `ocp2`. Explorez les classes. Étudiez notamment la classe `SimulateurCombat`.
 
-2. On souhaite ajouter un nouveau type de pokémon : le pokémon type **électricité**. Son attaque est **Eclair** et il fait entre 20 et 100 dégâts. Faites en sorte de prendre en charge ce nouveau type.
+2. On souhaite ajouter un nouveau type de pokémon : le pokémon type **électricité**. Son attaque est **Eclair** et il fait entre 20 et 100 dégâts. Faites en sorte de prendre en charge ce nouveau type, **sans modifier la structure du code existant**.
 
-3. On souhaite ajouter un nouveau type de pokémon : le pokémon type **psy**. Son attaque est **Choc mental** et il fait précisément 60 dégâts. Faites en sorte de prendre en charge ce nouveau type.
+3. On souhaite ajouter un nouveau type de pokémon : le pokémon type **psy**. Son attaque est **Choc mental** et il fait précisément 60 dégâts. Faites en sorte de prendre en charge ce nouveau type, **sans modifier la structure du code existant**.
 
-4. Modifiez le `Main` pour faire combattre un pokémon possédant le type **électrique** contre un pokémon possédant le type **psy**.
+4. Modifiez le `Main` pour faire combattre un pokémon possédant le type **électrique** contre un pokémon possédant le type **psy**. **Attention**, il ne faut pas modifier les autres classes créées auparavant !
 
 5. Ajoutez encore un nouveau pokémon (avec le type, l'attaque et les dégâts de votre choix...)
 
@@ -600,7 +602,7 @@ Maintenant, peu importe l'implémentation de `A`, il n'y aura plus jamais aucun 
 
 Le fait d'utiliser de la composition au lieu de l'héritage est une bonne pratique et n'est pas nécessairement lié à la substitution de Liskov. Attention cependant, l'héritage peut parfois avoir un véritable intérêt quand il existe un lien fort entre la classe mère et les classes filles, comme c'était le cas avec les pokémons, par exemple.
 
-Une autre illustration plus précise de principe de substitution de Liskov est le suivant : on possède une classe `Rectangle`. On veut modéliser une classe `Carre`. En géométrie, un carré est un sous-type de rectangle. On implémente donc le code suivant :
+Une autre illustration plus précise de principe de substitution de Liskov est le suivant : on possède une classe `Rectangle`. On veut modéliser une classe `Carre`. En géométrie, un carré est une sorte de rectangle. On implémente donc le code suivant :
 
 ```java
 class Rectangle {
@@ -701,6 +703,32 @@ r.aire() // Renvoie 100
 agrandirRectangle(c, 2);
 c.aire() // Renvoie 400 ! Pourquoi ???
 ```
+
+Un autre "patch" possible serait d'ajouter une fonction `setTailleCote` dans `Carre` et redéfinition des fonctions `setHauteur` et `setLargeur` dans `Rectangle` de façon à ce qu'elles ne fassent rien :
+
+```java
+class Carre extends Rectangle {
+
+  public Carre(int tailleCote) {
+    super(tailleCote, tailleCote);
+  }
+
+  public void setTailleCote(int tailleCote) {
+    this.hauteur = tailleCote;
+    this.largeur = tailleCote;
+  }
+   public void setHauteur(int hauteur) {
+   }
+
+   public void setLargeur(int largeur) {
+   }
+  
+}
+```
+
+Mais dans ce cas, on ne peut plus utiliser `Carre` comme un `Rectangle` et en plus :
+* on crée des méthodes qui ne font rien et qui polluent le code
+* on duplique le code de `setHauteur` et `setLargeur` dans `Carre` dans `setTailleCote` !
 
 Bref, cet héritage est une très mauvaise idée ! En fait, conceptuellement, en programmation, un carré n'est pas un rectangle spécialisé, car les règles pour la hauteur et la largeur sont différentes...cela peut être un peu dur à accepter.
 
