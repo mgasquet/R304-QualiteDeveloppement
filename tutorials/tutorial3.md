@@ -462,9 +462,7 @@ Encore mieux, vous venez d'utiliser votre premier **design pattern** au niveau d
 
 À partir du diagramme de classes de conception que vous venez de réaliser, vous devriez être en mesure de généraliser le pattern **stratégie** à tout type de problème.
 
-### Principe de substitution de Liskov (Liskov substitution)
-
-Le principe de **substitution de Liskov** a été introduit par **Barbara Liskov** et énonce qu'un **objet** d'une superclasse donnée doit pouvoir être remplacée par une de ses **sous-classes** sans casser le fonctionnement du programme. Une méthode provenant à l'origine d'une superclasse et appelée sur la sous-classe devrait produire le même résultat que si elle avait été appelée sur la superclasse.
+### Héritage, composition et principe ouvert-fermé
 
 Certains développeurs abusent de l'**héritage** par facilité au lieu d'utiliser d'autres solutions comme la **composition** d'objets. Un "mauvais" héritage est un héritage où il n'existe pas vraiment de relation de spécialisation entre la superclasse et la sous-classe. La sous-classe ne représente alors pas le même concept que sa classe mère, ce n'est pas vraiment une spécialisation.
 
@@ -472,9 +470,9 @@ Tout cela occasionne des bugs parfois inattendus.
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `lsp1`. Dans ce programme, on gère des **comptes bancaires**. La première classe `CompteBancaire` permet d'effectuer des opérations et de gérer un **solde**. La deuxième classe `CompteBancaireAvecHistorique` permet de gérer l'**historique** de toutes les opérations réalisées. Il semble s'agir d'un compte bancaire spécialisé, on lui fait donc étendre la classe `CompteBancaire`.
+1. Ouvrez le paquetage `heritage`. Dans ce programme, on gère des **comptes bancaires**. La première classe `CompteBancaire` permet d'effectuer des opérations et de gérer un **solde**. La deuxième classe `CompteBancaireAvecHistorique` permet de gérer l'**historique** de toutes les opérations réalisées. Il semble s'agir d'un compte bancaire spécialisé, on lui fait donc étendre la classe `CompteBancaire`.
 
-2. Une classe de test unitaire est présente dans `test/java/lsp1`. Lisez les tests et exécutez-les. Tout devrait bien se passer.
+2. Une classe de test unitaire est présente dans `test/java/heritage`. Lisez les tests et exécutez-les. Tout devrait bien se passer.
 
 3. Le développeur à l'origine de la classe `CompteBancaire` souhaite revoir sa classe et légèrement la réfactorer afin d'éviter la duplication de code. Dans la méthode `effectuerTransactions`, il souhaite donc plutôt appeler la méthode `effectuerTransaction` au lieu de dupliquer la ligne de code ajoutant le montant au solde. Faites cette modification.
 
@@ -482,7 +480,7 @@ Tout cela occasionne des bugs parfois inattendus.
 
 </div>
 
-Ici, le principe de substitution de Liskov n'est pas respecté, car, selon l'implémentation interne de `CompteBancaire`, l'appel de `ajoutOperations` sur une classe fille provoque un bug (historique des opérations enregistrées en double).
+Selon l'implémentation interne de `CompteBancaire`, l'appel de `ajoutOperations` sur une classe fille provoque un bug (historique des opérations enregistrées en double).
 
 Tout cela peut être réglé en utilisant de la **composition** au lieu d'un **héritage**. L'idée est que la classe "fille" n'hérite pas de la classe mère, mais possède à la place un attribut stockant une instance de cette classe et l'utilise. Si on a besoin que les deux classes soient du même type, on utilise une **interface**.
 
@@ -583,7 +581,7 @@ class B implements Operateur {
 ```
 
 <div style="text-align:center">
-![Liskov substitution 1]({{site.baseurl}}/assets/TP3/LSP1.svg){: width="25%" }
+![Heritage 1]({{site.baseurl}}/assets/TP3/Heritage1.svg){: width="25%" }
 </div>
 
 Maintenant, peu importe l'implémentation de `A`, il n'y aura plus jamais aucun bug de duplication des affichages.
@@ -600,288 +598,9 @@ Maintenant, peu importe l'implémentation de `A`, il n'y aura plus jamais aucun 
 
 </div>
 
-Le fait d'utiliser de la composition au lieu de l'héritage est une bonne pratique et n'est pas nécessairement lié à la substitution de Liskov. Attention cependant, l'héritage peut parfois avoir un véritable intérêt quand il existe un lien fort entre la classe mère et les classes filles, comme c'était le cas avec les pokémons, par exemple.
+Le fait d'utiliser de la composition au lieu de l'héritage est *généralement* une bonne pratique. Attention cependant, l'héritage peut parfois avoir un véritable intérêt quand il existe un lien fort entre la classe mère et les classes filles, comme c'était le cas avec les pokémons, par exemple.
 
-Une autre illustration plus précise de principe de substitution de Liskov est le suivant : on possède une classe `Rectangle`. On veut modéliser une classe `Carre`. En géométrie, un carré est une sorte de rectangle. On implémente donc le code suivant :
-
-```java
-class Rectangle {
-
-  private int hauteur;
-
-  private int largeur;
-
-  public Rectangle(int hauteur, int largeur) {
-    this.hauteur = hauteur;
-    this.largeur = largeur;
-  }
-
-  public int getHauteur() {
-    return hauteur;
-  }
-
-  public int getLargeur() {
-    return largeur;
-  }
-
-  public void setHauteur(int hauteur) {
-    this.hauteur = hauteur;
-  }
-
-  public void setLargeur(int largeur) {
-    this.largeur = largeur;
-  }
-
-  public int aire() {
-    return hauteur*largeur;
-  }
-
-}
-
-class Carre extends Rectangle {
-
-  public Carre(int tailleCote) {
-    super(tailleCote, tailleCote);
-  }
-
-}
-```
-
-Si à première vue l'implémentation semble correcte, le fait que le carré soit un rectangle pose problème : on peut changer sa largeur et sa hauteur indépendamment. Or, un carré a la même largeur et la même hauteur !
-
-```java
-Carre c = new Carre(5);
-c.aire() //Renvoie 25, OK
-c.setHauteur(10);
-c.aire() // Renvoie 50, Pas OK!
-```
-
-Pour régler cela, on pourrait réécrire les méthodes `setHauteur` et `setLargeur` dans `Carre` :
-
-```java
-class Carre extends Rectangle {
-
-  public Carre(int tailleCote) {
-    super(tailleCote, tailleCote);
-  }
-
-  @Override
-  public void setHauteur(int hauteur) {
-    this.hauteur = hauteur;
-    this.largeur = hauteur;
-  }
-
-  @Override
-  public void setLargeur(int largeur) {
-    this.largeur = largeur;
-    this.hauteur = largeur;
-  }
-
-}
-```
-
-Cependant, le principe de substitution de Liskov n'est plus respecté ! En effet, si on utilise `Carre` comme un `Rectangle`, des bugs étranges vont survenir !
-
-Imaginons la méthode suivante :
-
-```java
-public static void agrandirRectangle(Rectangle r, int facteur) {
-  r.setHauteur(r.getHauteur() * facteur);
-  r.setLargeur(r.getLatgeur() * facteur);
-}
-```
-
-Tout va bien se passer si j'exécute cette méthode sur un rectangle, mais pas sur un rectangle spécialisé carré !
-
-```java
-Rectangle r = new Rectangle(5,5);
-r.aire() // Renvoie 25
-Rectangle c = new Carre(5);
-c.aire() // Renvoie 25
-agrandirRectangle(r, 2);
-r.aire() // Renvoie 100
-agrandirRectangle(c, 2);
-c.aire() // Renvoie 400 ! Pourquoi ???
-```
-
-Un autre "patch" possible serait d'ajouter une fonction `setTailleCote` dans `Carre` et redéfinition des fonctions `setHauteur` et `setLargeur` dans `Rectangle` de façon à ce qu'elles ne fassent rien :
-
-```java
-class Carre extends Rectangle {
-
-  public Carre(int tailleCote) {
-    super(tailleCote, tailleCote);
-  }
-
-  public void setTailleCote(int tailleCote) {
-    this.hauteur = tailleCote;
-    this.largeur = tailleCote;
-  }
-   public void setHauteur(int hauteur) {
-   }
-
-   public void setLargeur(int largeur) {
-   }
-  
-}
-```
-
-Mais dans ce cas, on ne peut plus utiliser `Carre` comme un `Rectangle` et en plus :
-* on crée des méthodes qui ne font rien et qui polluent le code
-* on duplique le code de `setHauteur` et `setLargeur` dans `Carre` dans `setTailleCote` !
-
-Bref, cet héritage est une très mauvaise idée ! En fait, conceptuellement, en programmation, un carré n'est pas un rectangle spécialisé, car les règles pour la hauteur et la largeur sont différentes...cela peut être un peu dur à accepter.
-
-Si on souhaite quand même utiliser un rectangle dans un carré (pour ne pas dupliquer le calcul de l'aire ou des autres méthodes, par exemple) on peut éventuellement utiliser une **composition** comme nous l'avons vu dans l'exercice précédent, en interdisant à un `Carre` de redéfinir sa hauteur et sa largeur.
-
-```java
-interface FigureRectangulaire {
-  int aire();
-  int getHauteur();
-  int getLargeur();
-}
-
-class Rectangle implements FigureRectangulaire {
-
-  private int hauteur;
-
-  private int largeur;
-
-  public Rectangle(int hauteur, int largeur) {
-    this.hauteur = hauteur;
-    this.largeur = largeur;
-  }
-
-  @Override
-  public int getHauteur() {
-    return hauteur;
-  }
-
-  @Override
-  public int getLargeur() {
-    return largeur;
-  }
-
-  public void setHauteur(int hauteur) {
-    this.hauteur = hauteur;
-  }
-
-  public void setLargeur(int largeur) {
-    this.largeur = largeur;
-  }
-
-  @Override
-  public int aire() {
-    return hauteur * largeur;
-  }
-
-}
-
-class Carre implements FigureRectangulaire {
-
-  private Rectangle rectangle;
-
-  public Carre(int tailleCote) {
-    rectangle = new Rectangle(tailleCote, tailleCote);
-  }
-
-  public void setTailleCote(int tailleCote) {
-    rectangle.setHauteur(tailleCote);
-    rectangle.setLargeur(tailleCote);
-  }
-
-  @Override
-  public int getHauteur() {
-    return rectangle.getHauteur();
-  }
-
-  @Override
-  public int getLargeur() {
-    return rectangle.getLargeur();
-  }
-
-  @Override
-  public int aire() {
-    return rectangle.aire();
-  }
-
-}
-```
-
-<div style="text-align:center">
-![Liskov substitution 2]({{site.baseurl}}/assets/TP3/LSP2.svg){: width="50%" }
-</div>
-
-Mettons vos nouvelles connaissances en pratique avec un nouvel exercice.
-
-<div class="exercise">
-
-1. Ouvrez le paquetage `lsp2`. On souhaite implémenter le fonctionnement d'une `Pile`. Une `Pile` est une structure de données `LIFO` (last in, first out) qui fonctionne comme une pile d'assiette. On peut globalement réaliser **quatre opérations** sur une pile :
-
-    * Vérifier si elle est vide.
-
-    * Obtenir la valeur au sommet de la pile.
-
-    * Empiler un élément (l'ajouter au sommet de la pile)
-
-    * Dépiler un élément (le retirer du sommet de la pile et le renvoyer).
-
-    La classe `Pile` que nous allons implémenter possède un paramètre de type **générique**. Cela permet de créer des piles contenant un type de données paramétré, comme quand vous créez un objet de type `List<Double>` par exemple.
-
-    Afin de ne pas avoir à définir la structure stockant les données nous même, nous allons étendre la classe `Vector` qui permet de gérer une structure de données ordonnée. Diverses méthodes de la super-classe vont vous être utiles :
-
-    * `isEmpty` → permet de vérifier si la structure est vide.
-
-    * `get(index)` → permet de récupérer la valeur située à la position ciblée par l'index.
-
-    * `remove(index)` → permet de supprimer la valeur située à la position ciblée par l'index.
-
-    * `add(index, valeur)` → permet d'insérer une valeur à la position ciblée par l'index.
-
-2. Ouvrez la classe de tests unitaires placée dans `test/java/lsp2`. Exécutez les tests. Rien ne passe, c'est normal ! Vous n'avez pas encore implémenté le code de la classe `Pile` qui contient du code par défaut... Vous êtes donc en mode **TDD** (test driven development).
-
-3. Implémentez les méthodes de la classe `Pile` afin que les tests passent.
-
-4. Ajoutez le test unitaire suivant et exécutez-le :
-
-    ```java
-    @Test
-    public void testSupprimerIndex() {
-        Pile<Integer> pile = new Pile<>();
-        pile.empiler(5);
-        pile.empiler(9);
-        pile.empiler(10);
-        pile.remove(1);
-        pile.depiler();
-        assertEquals(9, pile.sommetPile());
-    }
-    ```
-
-</div>
-
-Le dernier test n'est pas mal rédigé, car, selon le **contrat** de `Pile`, seules les opérations `estVide`, `empiler`, `depiler` et `sommetPile` doivent produire un effet. Or, comme `Pile` hérite de `Vector`, on a accès à toutes les opérations réalisables sur une liste classique... Donc, dans la logique, même s'il est possible d'appeler `remove` sur notre `Pile`, cela ne doit produire aucun effet ! Or, ce n'est pas le cas ici.
-
-On pourrait redéfinir la méthode `remove` (et toutes les méthodes de `Vector` !) pour qu'elles ne fassent rien, mais le principe de substitution de Liskov ne serait alors plus respecté ! On ne pourrait pas substituer un `Vector` par une `Pile`.
-
-Bref, conceptuellement, une `Pile` n'est pas un `Vector` spécial, mais bien une structure indépendante... Néanmoins, il est possible d'utiliser une **composition** pour utiliser un `Vector` comme attribut, dans notre classe `Pile`.
-
-<div class="exercise">
-
-1. Refactorez le code de la classe `Pile` en enlevant l'héritage et en utilisant une **composition** avec un `Vector` à la place.
-
-2. Le dernier test ajouté ne compile plus, c'est normal ! La pile n'est pas un `Vector`, on ne peut pas appeler `remove` dessus (et c'est tant mieux). Supprimez donc ce test.
-
-3. Relancez les tests et vérifiez que tout passe.
-
-4. Quelque part dans votre code, définissez une variable de type `Stack` qui est une classe de `Java` permettant de gérer une pile. Allez observer le code source de cette classe (`CTRL+B` sur **IntelliJ** en cliquant sur le nom de la classe). Que remarquez-vous au niveau de sa déclaration ? Cette classe est aujourd'hui dépréciée, pourquoi ?
-
-</div>
-
-Eh oui, même les concepteurs de `Java` ont fait quelques bêtises lors du développement du langage. Et il n'est plus possible de supprimer cette classe après coup pour ne pas causer de problèmes de compatibilité. La seule chose à faire est de déprécier cette classe et de conseiller une nouvelle solution mieux conçue. D'où l'importance de bien penser sa conception !
-
-### Héritage, composition et principe ouvert-fermé
-
-Maintenant, voyons un nouveau problème que vous devriez pouvoir résoudre en utilisant judicieusement la **composition** à la place de l'héritage, comme nous l'avons vu en étudiant le principe de substitution de Liskov. Cette fois-ci, il s'agit d'un problème plutôt lié au principe **ouvert/fermé**.
+Maintenant, voyons un nouveau problème que vous devriez pouvoir résoudre en utilisant judicieusement la **composition** à la place de l'héritage. Cette fois-ci, il s'agit d'un problème plutôt lié au principe **ouvert/fermé**.
 
 <div class="exercise">
 
@@ -1025,7 +744,7 @@ Aussi, le salarie n'est pas instancié dans la classe, il est **injecté** (autr
 
 1. Refactorez votre code afin de pouvoir créer un produit qui possède une réduction et qui a aussi une date de péremption proche.
 
-2. Créez un **Twix** avec pour prix de base 3€, qui périme bientôt et qui a une réduction de 50 centimes. Testez que la valeur obtenue pour le prix est bien la bonne.
+2. Créez un **Twix** avec pour prix de base **3€**, qui périme bientôt et qui a une réduction de 50 centimes. Testez que la valeur obtenue pour le prix est bien la bonne.
 
 3. Inversez l'ordre de création du produit (le produit avec réduction est composé d'un produit avec une date de péremption proche ou l'inverse selon ce que vous avez fait à la question précédente). Est-ce que le prix obtenu est le même qu'à l'étape précédente ?
 
@@ -1080,6 +799,173 @@ Dans le futur, si nous ajoutons un nouveau type de **produit**, il suffira alors
 En fait, ce modèle est réutilisable et adaptable à d'autres situations (nous l'avons vu avec les salariés). C'est en fait un autre **design pattern** nommé **décorateur** d'où le nom de la classe abstraite dans l'exemple. 
 
 À partir du diagramme de classes que vous avez réalisé, vous devriez être capable de produire un modèle général fonctionnant pour vous.
+
+### Principe de substitution de Liskov (Liskov substitution)
+
+Le principe de **substitution de Liskov** a été introduit par **Barbara Liskov** et énonce qu'un **objet** d'une superclasse donnée doit pouvoir être remplacée par une de ses **sous-classes** sans casser le fonctionnement du programme. Une méthode provenant à l'origine d'une superclasse et appelée sur la sous-classe devrait produire le même résultat que si elle avait été appelée sur la superclasse.
+
+L'utilisation d'un héritage peut amener à ne pas respecter ce principe. La solution est alors, comme nous l'avons vu dans la section précédente, d'utiliser de la composition.
+
+Une autre illustration plus précise de principe de substitution de Liskov est le suivant : on possède une classe `Rectangle`. On veut modéliser une classe `Carre`. En géométrie, un carré est une sorte de rectangle.
+
+<div class="exercise">
+
+1. Ouvrez le paquetage `lsp1` et observez les classes mises à disposition. Dans cette application, nous avons considéré qu'un `Carre` est une spécialisation d'un `Rectangle`. Cependant, un carré possède une caractéristique particulière : **sa hauteur et sa largeur sont toujours identiques**. Bref, si on change la hauteur d'un carré, sa largeur change aussi. Ou plutôt, on ne devrait pas pouvoir changer la largeur d'un rectangle indépendamment de sa hauteur et vice-versa.
+
+2. Dans le paquetage `lsp1` dans `src/test/java` vous trouverez deux classes de tests unitaires pour tester le rectangle et le carré. Lancez-les. Essayez de comprendre pourquoi les tests ne passent pas.
+
+3. Les tests écrits sont bien valides. Si on change la hauteur d'un carré, alors sa largeur doit aussi changer. Une première solution peut donc être de récrire les méthodes `setLargeur` et `setHauteur` dans la classe `Carre` afin que quand on modifie la largeur, la hauteur soit mise à la même valeur et inversement. Faites cette modification (les attributs `hauteur` et `largeur` sont accessibles dans `Carre` car en `protected` dans la classe `Rectangle`).
+
+4. Relancez les tests unitaires. Un autre test ne passe plus ! Essayez de comprendre pourquoi.
+
+</div>
+
+Avec cette modification, le principe de substitution de Liskov n'est toujours pas respecté ! En effet, si on utilise `Carre` comme un `Rectangle`, des bugs étranges surviennent quand on utilise une méthode prévue pour un `Rectangle` (ici, la méthode **agrandirRectangle**). On ne peut pas substituer le rectangle par un carré sans produire de bugs logiques.
+
+Un autre "patch" possible serait d'ajouter une fonction `setTailleCote` dans `Carre` et redéfinition des fonctions `setHauteur` et `setLargeur` dans `Rectangle` de façon à ce qu'elles ne fassent rien :
+
+```java
+class Carre extends Rectangle {
+
+  public Carre(int tailleCote) {
+    super(tailleCote, tailleCote);
+  }
+
+  public void setTailleCote(int tailleCote) {
+    this.hauteur = tailleCote;
+    this.largeur = tailleCote;
+  }
+
+  @Override
+  public void setHauteur(int hauteur) {}
+
+  @Override
+  public void setLargeur(int largeur) {}
+  
+}
+```
+
+Mais dans ce cas, on ne peut plus utiliser `Carre` comme un `Rectangle` et en plus :
+* on crée des méthodes qui ne font rien et qui polluent le code
+* on duplique le code de `setHauteur` et `setLargeur` dans `Carre` dans `setTailleCote` !
+
+Bref, cet héritage est une très mauvaise idée ! En fait, conceptuellement, en programmation, un carré n'est pas un rectangle spécialisé, car les règles pour la hauteur et la largeur sont différentes...cela peut être un peu dur à accepter.
+
+Si on souhaite quand même utiliser un rectangle dans un carré (pour ne pas dupliquer le calcul de l'aire ou des autres méthodes, par exemple) on peut éventuellement utiliser une **composition** comme nous l'avons vu dans l'exercice sur les comptes bancaires, en interdisant à un `Carre` de redéfinir sa hauteur et sa largeur.
+
+<div class="exercise">
+
+1. Créez l'interface `FigureRectangulaire` suivante :
+
+    ```java
+    public interface FigureRectangulaire {
+      int getHauteur();
+      int getLargeur();
+      int aire();
+    }
+    ```
+
+2. Modifiez la classe `Carre` afin qu'elle n'étende plus la classe `Rectangle` mais implémente l'interface `FigureRectangulaire` et utilise plutôt une **composition** avec un objet de type `Rectangle` (en attribut de la classe) :
+
+    * On utilise une composition avec un rectangle, donc il n'y a pas besoin d'attribut `tailleCote` dans la classe. Cela est stocké au niveau du rectangle.
+
+    * La signature du **constructeur** ne change pas. L'attribut de type `Rectangle` est directement initialisé dans le constructeur (agrégation noire sur un diagramme de classes).
+
+    * On n'a plus besoin des méthodes `setHauteur` et `setLargeur` (on ne modifie pas indépendamment la largeur et la hauteur d'un carré).
+
+    * Les méthodes `getLargeur` et `getHauteur`et `aire` sont **déléguées** au `Rectangle`.
+
+    * Une nouvelle méthode `setTailleCote` permet de changer la taille du côté du carré (en utilisant le rectangle).
+
+3. Faites aussi implémenter l'interface `FigureRectangulaire` à `Rectangle`.
+
+4. Modifiez les **tests unitaires** portants sur `Carre` :
+
+    * Les méthodes `setLargeur` et `setHauteur` n'existent plus. On utilise à la place `setTailleCote`.
+
+    * Le test `testAireAgrandirCarre` n'a plus lieu d'être, car la méthode `agrandirRectangle` porte sur un `Rectangle` et dorénavant, un `Carre` n'est plus un `Rectangle`. Supprimez donc ce test.
+
+5. Lancez les tests, vérifiez que tout fonctionne.
+
+</div>
+
+Après **refactoring**, le diagramme de classes de votre application devrait donner quelque-chose comme ça :
+
+<div style="text-align:center">
+![Liskov substitution 2]({{site.baseurl}}/assets/TP3/LSP2.svg){: width="50%" }
+</div>
+
+L'**agrégation noire** indique une composition forte entre `Carre` et `Rectangle` (initialisé dans `Carre` et n'en sort pas). Cela est en opposition avec l'**agrégation blanche** qui indique aussi une composition mais dans laquelle la dépendance est injectée (comme avec les **décorateurs** dans l'exercice des produits).
+
+Bien sûr, nous aurions pu quand même conserver la logique d'agrandissement d'une `FigureRectangulaire`. À ce moment-là, il faudrait rajouter une méthode `agrandir(int facteur)` dans l'interface `FigureRectangulaire` et implémenter les méthodes dans `Rectangle` et `Carre`.
+
+Mettons vos nouvelles connaissances en pratique avec un autre exercice.
+
+<div class="exercise">
+
+1. Ouvrez le paquetage `lsp2`. On souhaite implémenter le fonctionnement d'une `Pile`. Une `Pile` est une structure de données `LIFO` (last in, first out) qui fonctionne comme une pile d'assiette. On peut globalement réaliser **quatre opérations** sur une pile :
+
+    * Vérifier si elle est vide.
+
+    * Obtenir la valeur au sommet de la pile.
+
+    * Empiler un élément (l'ajouter au sommet de la pile)
+
+    * Dépiler un élément (le retirer du sommet de la pile et le renvoyer).
+
+    La classe `Pile` que nous allons implémenter possède un paramètre de type **générique**. Cela permet de créer des piles contenant un type de données paramétré, comme quand vous créez un objet de type `List<Double>` par exemple.
+
+    Afin de ne pas avoir à définir la structure stockant les données nous même, nous allons étendre la classe `Vector` qui permet de gérer une structure de données ordonnée. Diverses méthodes de la super-classe vont vous être utiles :
+
+    * `isEmpty` → permet de vérifier si la structure est vide.
+
+    * `get(index)` → permet de récupérer la valeur située à la position ciblée par l'index.
+
+    * `remove(index)` → permet de supprimer la valeur située à la position ciblée par l'index.
+
+    * `add(index, valeur)` → permet d'insérer une valeur à la position ciblée par l'index.
+
+2. Ouvrez la classe de tests unitaires placée dans `test/java/lsp2`. Exécutez les tests. Rien ne passe, c'est normal ! Vous n'avez pas encore implémenté le code de la classe `Pile` qui contient du code par défaut... Vous êtes donc en mode **TDD** (test driven development).
+
+3. Implémentez les méthodes de la classe `Pile` afin que les tests passent.
+
+4. Ajoutez le test unitaire suivant et exécutez-le :
+
+    ```java
+    @Test
+    public void testSupprimerIndex() {
+        Pile<Integer> pile = new Pile<>();
+        pile.empiler(5);
+        pile.empiler(9);
+        pile.empiler(10);
+        pile.remove(1);
+        pile.depiler();
+        assertEquals(9, pile.sommetPile());
+    }
+    ```
+
+</div>
+
+Le dernier test n'est pas mal rédigé, car, selon le **contrat** de `Pile`, seules les opérations `estVide`, `empiler`, `depiler` et `sommetPile` doivent produire un effet. Or, comme `Pile` hérite de `Vector`, on a accès à toutes les opérations réalisables sur une liste classique... Donc, dans la logique, même s'il est possible d'appeler `remove` sur notre `Pile`, cela ne doit produire aucun effet ! Or, ce n'est pas le cas ici.
+
+On pourrait redéfinir la méthode `remove` (et toutes les méthodes de `Vector` !) pour qu'elles ne fassent rien, mais le principe de substitution de Liskov ne serait alors plus respecté ! On ne pourrait pas substituer un `Vector` par une `Pile`.
+
+Bref, conceptuellement, une `Pile` n'est pas un `Vector` spécial, mais bien une structure indépendante... Néanmoins, il est possible d'utiliser une **composition** pour utiliser un `Vector` comme attribut, dans notre classe `Pile`.
+
+<div class="exercise">
+
+1. Refactorez le code de la classe `Pile` en enlevant l'héritage et en utilisant une **composition** avec un `Vector` à la place.
+
+2. Le dernier test ajouté ne compile plus, c'est normal ! La pile n'est pas un `Vector`, on ne peut pas appeler `remove` dessus (et c'est tant mieux). Supprimez donc ce test.
+
+3. Relancez les tests et vérifiez que tout passe.
+
+4. Quelque part dans votre code, définissez une variable de type `Stack` qui est une classe de `Java` permettant de gérer une pile. Allez observer le code source de cette classe (`CTRL+B` sur **IntelliJ** en cliquant sur le nom de la classe). Que remarquez-vous au niveau de sa déclaration ? Cette classe est aujourd'hui dépréciée, pourquoi ?
+
+</div>
+
+Eh oui, même les concepteurs de `Java` ont fait quelques bêtises lors du développement du langage. Et il n'est plus possible de supprimer cette classe après coup pour ne pas causer de problèmes de compatibilité. La seule chose à faire est de déprécier cette classe et de conseiller une nouvelle solution mieux conçue. D'où l'importance de bien penser sa conception !
+
 
 ### Principe de ségrégation des interfaces (Interface segregation)
 
