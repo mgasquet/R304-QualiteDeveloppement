@@ -5,6 +5,15 @@ layout: tutorial
 lang: fr
 ---
 
+**Attention, si vous aviez déjà commencé ce TP lors de votre dernière séance, il faut mettre à jour votre dépôt local avec les dernières modifications du dépôt d'origine !** :
+
+```bash
+# Depuis le dossier de votre dépôt, en local.
+git remote add upstream git@gitlabinfo.iutmontp.univ-montp2.fr:qualite-de-developpement-semestre-3/tp3.git
+git fetch upstream
+git merge upstream/master master
+```
+
 Dans la première partie de cette ressource, nous avons parlé de **conception logicielle** et notamment comment modéliser cela à l'aide de **diagrammes de classes de conception** et de **diagrammes de séquences des interactions**.
 
 Cependant, savoir modéliser la conception ne garantit en rien la qualité de celle-ci. Un plan de construction d'un bâtiment peut être tout à fait valide d'un point de vue technique, mais donnera potentiellement une bâtisse qui s'écroulera dans quelques années si elle a été mal pensée.
