@@ -358,20 +358,12 @@ abstract class FigureGeometrique {
 
 class Rectangle extends FigureGeometrique {
 
-  public Rectangle() {
-    super();
-  }
-
   public void dessiner() {
     //Code pour dessiner un rectangle...
   }
 }
 
 class Triangle extends FigureGeometrique {
-
-  public Rectangle() {
-    super();
-  }
 
   public void dessiner() {
     //Code pour dessiner un triangle...
