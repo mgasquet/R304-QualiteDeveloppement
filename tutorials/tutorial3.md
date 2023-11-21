@@ -775,7 +775,7 @@ abstract class SalarieDecorator implements I_Salarie {
    }
 }
 
-class ResponsableDeStagiaires extends SalarieDecorator implements I_Salarie {
+class ResponsableDeStagiaires extends SalarieDecorator {
 
    private int nombreStagiairesGeres;
 
