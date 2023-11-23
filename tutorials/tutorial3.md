@@ -617,7 +617,7 @@ Maintenant, voyons une nouvelle situation, où les choses risquent d'être plus 
 
 Si vous vous êtes contenté uniquement de faire hériter `ProduitAvecDatePeremptionProche` de `Produit`, vous remarquerez qu'il est impossible d'avoir un même produit possédant ces deux fonctionnalités à la fois. Avec un héritage multiple, il y aurait pu y avoir une solution (moche), mais nous avons vu qu'il est déconseillé de faire cela et de toute façon, dans beaucoup de langages (dont Java), ce n'est pas possible.
 
-Tout en respectant le **principe ouvert/fermé**. Il existe une méthode pour construire un `Produit` possédant autant de comportements mixtes que nous souhaitons. On peut le régler en [favorisant la **composition** au lieu d'un **héritage**](https://en.wikipedia.org/wiki/Composition_over_inheritance#:~:text=Composition%20over%20inheritance%20(or%20composite,from%20a%20base%20or%20parent). L'idée est que la classe "fille" n'hérite pas de la classe mère en redéfinissant simplement les fonctions, mais possède à la place un attribut stockant une instance de cette classe et l'utilise. Si on a besoin que les deux classes soient du même type, on utilise une **interface**.
+Tout en respectant le **principe ouvert/fermé**, il existe une méthode pour construire un `Produit` possédant autant de comportements mixtes que nous souhaitons. On peut le régler en [favorisant la **composition** au lieu d'un **héritage**](https://en.wikipedia.org/wiki/Composition_over_inheritance). L'idée est que la classe "fille" n'hérite pas de la classe mère en redéfinissant simplement les fonctions, mais possède à la place un attribut stockant une instance de cette classe et l'utilise. Si en plus, on a besoin que les deux classes soient du même type, alors on utilise une **interface**.
 
 
 Illustrons le problème et sa solution :
@@ -671,7 +671,7 @@ class ResponsableDeStagiaires extends Salarie {
 
 Ici, même problème que pour les produits, si je veux un salarié qui est à la fois chef de projet et responsable de stagiaire, cela est impossible !
 
-Comme souvent, l'héritage est le problème ici. Au lieu de faire un simple héritage entre les classes, nous pourrions plutôt utiliser des **compositions** sur les sous-types et créer ainsi des salariés incluant des salariés, incluant des salariés...ce qui permet de combiner la logique de chaque type ! 
+Comme souvent, l'héritage est le problème ici. Au lieu de faire un simple héritage entre les classes, nous pourrions plutôt utiliser des **compositions** sur les sous-types et créer ainsi des salariés incluant des salariés, incluant des salariés... ce qui permet de combiner la logique de chaque type ! 
 
 ```java
 interface I_Salarie {
@@ -899,7 +899,7 @@ Après **refactoring**, le diagramme de classes de votre application devrait don
 ![Liskov substitution 2]({{site.baseurl}}/assets/TP3/LSP2.svg){: width="50%" }
 </div>
 
-L'**agrégation noire** indique une composition forte entre `Carre` et `Rectangle` (initialisé dans `Carre` et n'en sort pas). Cela est en opposition avec l'**agrégation blanche** qui indique aussi une composition mais dans laquelle la dépendance est injectée (comme avec les **décorateurs** dans l'exercice des produits).
+La **composition forte** entre `Carre` et `Rectangle` (initialisé dans `Carre` et n'en sort pas) est en opposition avec la **composition faible**, qui indique aussi une composition, mais dans laquelle la dépendance est injectée (comme avec les **décorateurs** dans l'exercice des produits).
 
 Bien sûr, nous aurions pu quand même conserver la logique d'agrandissement d'une `FigureRectangulaire`. À ce moment-là, il faudrait rajouter une méthode `agrandir(int facteur)` dans l'interface `FigureRectangulaire` et implémenter les méthodes dans `Rectangle` et `Carre`.
 
