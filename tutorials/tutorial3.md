@@ -475,15 +475,17 @@ Tout cela occasionne des bugs parfois inattendus.
 
 2. Une classe de test unitaire est présente dans `test/java/heritage`. Lisez les tests et exécutez-les. Tout devrait bien se passer.
 
-3. Le développeur à l'origine de la classe `CompteBancaire` souhaite revoir sa classe et légèrement la réfactorer afin d'éviter la duplication de code. Dans la méthode `effectuerTransactions`, il souhaite donc plutôt appeler la méthode `effectuerTransaction` au lieu de dupliquer la ligne de code ajoutant le montant au solde. Faites cette modification.
+3. Le développeur à l'origine de la classe `CompteBancaire` souhaite revoir sa classe et résoudre la duplication de code. Pour cela, il va légèrement réfactorer afin d'éviter la duplication de code. Dans la méthode `effectuerTransactions` de  `CompteBancaire`, il souhaite donc plutôt appeler la méthode `effectuerTransaction`. Faites cette modification.
 
 4. Relancez les tests unitaires... Le second ne passe plus. Pourquoi ?
 
+5. Selon l'implémentation interne de `CompteBancaire`, l'appel de `effectuerTransactions` sur une classe fille provoque un bug (historique des opérations enregistrées en double). C'est là que vous pouvez remarquer qu'avoir un héritage impose une vigilance accrue : en refactorisant correctement le code de la classe mère, il se peut qu'on ait altéré le bon fonctionnement d'une de ses classes filles. Prudence donc... Heureusement, dans notre exemple le problème peut être facilement résolu en supprimant la duplication de code dans la classe `CompteBancaireAvecHistorique`. Faites-le !
+
 </div>
 
-Selon l'implémentation interne de `CompteBancaire`, l'appel de `ajoutOperations` sur une classe fille provoque un bug (historique des opérations enregistrées en double).
+Nous venons de voir que l'héritage impose une vigilance accrue lors du refactoring.
 
-Tout cela peut être réglé en utilisant de la **composition** au lieu d'un **héritage**. L'idée est que la classe "fille" n'hérite pas de la classe mère, mais possède à la place un attribut stockant une instance de cette classe et l'utilise. Si on a besoin que les deux classes soient du même type, on utilise une **interface**.
+<!-- Tout cela peut être réglé en utilisant de la **composition** au lieu d'un **héritage**. L'idée est que la classe "fille" n'hérite pas de la classe mère, mais possède à la place un attribut stockant une instance de cette classe et l'utilise. Si on a besoin que les deux classes soient du même type, on utilise une **interface**.
 
 Considérons l'exemple suivant :
 
@@ -600,8 +602,9 @@ Maintenant, peu importe l'implémentation de `A`, il n'y aura plus jamais aucun 
 </div>
 
 Le fait d'utiliser de la composition au lieu de l'héritage est *généralement* une bonne pratique. Attention cependant, l'héritage peut parfois avoir un véritable intérêt quand il existe un lien fort entre la classe mère et les classes filles, comme c'était le cas avec les pokémons, par exemple.
+-->
 
-Maintenant, voyons un nouveau problème que vous devriez pouvoir résoudre en utilisant judicieusement la **composition** à la place de l'héritage. Cette fois-ci, il s'agit d'un problème plutôt lié au principe **ouvert/fermé**.
+Maintenant, voyons une nouvelle situation, où les choses risquent d'être plus compliquées notamment vis-à-vis du respect du principe **ouvert/fermé** !
 
 <div class="exercise">
 
@@ -612,9 +615,10 @@ Maintenant, voyons un nouveau problème que vous devriez pouvoir résoudre en ut
 3. Maintenant, nous voulons qu'un produit puisse à la fois être un produit qui périme bientôt et un produit avec une réduction. Est-il possible de créer une telle classe ou un tel comportement ?
 </div>
 
-Avec l'architecture actuelle, il est impossible d'avoir un même produit possédant ces deux fonctionnalités à la fois. Avec un héritage multiple, il y aurait pu y avoir une solution, mais nous avons vu qu'il est déconseillé de faire cela et de toute façon, dans la plupart des langages et en Java, ce n'est pas possible.
+Si vous vous êtes contenté uniquement de faire hériter `ProduitAvecDatePeremptionProche` de `Produit`, vous remarquerez qu'il est impossible d'avoir un même produit possédant ces deux fonctionnalités à la fois. Avec un héritage multiple, il y aurait pu y avoir une solution (moche), mais nous avons vu qu'il est déconseillé de faire cela et de toute façon, dans beaucoup de langages (dont Java), ce n'est pas possible.
 
-Heureusement, la composition nous permet de faire cela assez facilement ! Tout en respectant le **principe ouvert/fermé**. Il existe une méthode pour construire un `Produit` possédant autant de comportement mixte que nous souhaitons.
+Tout en respectant le **principe ouvert/fermé**. Il existe une méthode pour construire un `Produit` possédant autant de comportements mixtes que nous souhaitons. On peut le régler en [favorisant la **composition** au lieu d'un **héritage**](https://en.wikipedia.org/wiki/Composition_over_inheritance#:~:text=Composition%20over%20inheritance%20(or%20composite,from%20a%20base%20or%20parent). L'idée est que la classe "fille" n'hérite pas de la classe mère en redéfinissant simplement les fonctions, mais possède à la place un attribut stockant une instance de cette classe et l'utilise. Si on a besoin que les deux classes soient du même type, on utilise une **interface**.
+
 
 Illustrons le problème et sa solution :
 
@@ -667,7 +671,7 @@ class ResponsableDeStagiaires extends Salarie {
 
 Ici, même problème que pour les produits, si je veux un salarié qui est à la fois chef de projet et responsable de stagiaire, cela est impossible !
 
-Comme souvent, l'héritage est le problème ici. Au lieu de faire hériter nos classes, nous pourrions utiliser des **compositions** sur les sous-types et créer ainsi des salariés incluant des salariés, incluant des salariés...ce qui permet de combiner la logique de chaque type ! 
+Comme souvent, l'héritage est le problème ici. Au lieu de faire un simple héritage entre les classes, nous pourrions plutôt utiliser des **compositions** sur les sous-types et créer ainsi des salariés incluant des salariés, incluant des salariés...ce qui permet de combiner la logique de chaque type ! 
 
 ```java
 interface I_Salarie {
