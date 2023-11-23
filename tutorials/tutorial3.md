@@ -805,9 +805,8 @@ En fait, ce modèle est réutilisable et adaptable à d'autres situations (nous 
 
 Le principe de **substitution de Liskov** a été introduit par **Barbara Liskov** et énonce qu'un **objet** d'une superclasse donnée doit pouvoir être remplacée par une de ses **sous-classes** sans casser le fonctionnement du programme. Une méthode provenant à l'origine d'une superclasse et appelée sur la sous-classe devrait produire le même résultat que si elle avait été appelée sur la superclasse.
 
-L'utilisation d'un héritage peut amener à ne pas respecter ce principe. La solution est alors, comme nous l'avons vu dans la section précédente, d'utiliser de la composition.
-
-Une autre illustration plus précise de principe de substitution de Liskov est le suivant : on possède une classe `Rectangle`. On veut modéliser une classe `Carre`. En géométrie, un carré est une sorte de rectangle.
+L'utilisation inappropriée de l'héritage peut amener au non-respect de ce principe.
+Voici un scénario illustrant le problème de non-respect du principe de substitution de Liskov : on possède une classe `Rectangle` et on souhaite modéliser une classe `Carre`. D'ailleurs, en géométrie, un carré est une sorte de rectangle...
 
 <div class="exercise">
 
