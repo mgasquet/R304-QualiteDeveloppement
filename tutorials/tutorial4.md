@@ -11,7 +11,7 @@ Quand on parle de **design patterns** on fait généralement référence aux pat
 
 Pour rappel, un **design pattern** est une solution ré-utilisable et adaptable vis-à-vis d'un problème de conception logicielle assez récurent. Un pattern est généralement présenté via un diagramme de classes de conception et un exemple d'implémentation. Un pattern a pour but est d'être applicable et adaptable à n'importe quel projet ou contexte.
 
-Il existe d'autres types de design patterns (par exemple, les patterns GRASP) mais les plus connus et les plus utilisés sont ceux du **GoF** que nous allons explorer dans ce cours. Tous ces **patterns** permettent de renforcer l'application des principes **SOLID**.
+Il existe d'autres types de design patterns (par exemple, les patterns GRASP) mais les plus connus et les plus utilisés sont ceux du **GoF** que nous allons explorer dans ce cours. Tous ces **patterns** permettent de renforcer l'application des principes **SOLID**. Par ailleurs, certains langages comme `Java` proposent (dans leurs librairies de base) des **classes** et **interfaces** permettant d'implémenter certains patterns **GoF** comme **observateur**, **itérateur**, **prototype**...
 
 Les design patterns **GoF** se divisent en trois catégories :
 
@@ -100,6 +100,10 @@ public class ClasseExemple {
 
 ```
 
+<div style="text-align:center">
+![Singleton 1]({{site.baseurl}}/assets/TP4/Singleton1.svg){: width="40%" }
+</div>
+
 Dans cet exemple, nous voyons qu'il y a au moins deux instances de la classe **Service** qui sont générées. Une dans `Client` et une autre dans `ClasseExemple`. S'il n'y a aucun intérêt à avoir plusieurs instances de la classe `Service`, nous pouvons alors la transformer en **Singleton** afin que toutes les classes qui souhaitent utiliser passent par la même instance.
 
 Pour cela, il y a trois changements à réaliser dans la classe qu'on veut transformer en **Sungleton** :
@@ -174,6 +178,10 @@ public class ClasseExemple {
 }
 
 ```
+
+<div style="text-align:center">
+![Singleton 2]({{site.baseurl}}/assets/TP4/Singleton2.svg){: width="40%" }
+</div>
 
 Ici, on a la garantie que la classe `Client` et la classe `ClasseExemple` utilisent la même instance de `Service`.
 
@@ -306,19 +314,19 @@ Si cette méthode pourrait paraître plus "facile" à mettre en place et à util
 
 4. Nous avions apporté une solution à ce même problème dans le TP précédent en utilisant **l'injection de dépendances**. Au lieu d'instancier directement le service "mail" dans la classe qui en a besoin, nous l'avions **injecté** via le constructeur. L'idée serait alors de :
 
-  * Créer une interface `ServiceMailInterface` avec la signature la méthode `envoyerMail`.
+    * Créer une interface `ServiceMailInterface` avec la signature la méthode `envoyerMail`.
 
-  * Faire implémenter cette interface à `ServiceMail`.
+    * Faire implémenter cette interface à `ServiceMail`.
 
-  * Créer une classe `FakeMailer` qui implémente `ServiceMailInterface` et qui ne fait rien (ou quelque chose relatif aux tests) dans `envoyerMail`.
+    * Créer une classe `FakeMailer` qui implémente `ServiceMailInterface` et qui ne fait rien (ou quelque chose relatif aux tests) dans `envoyerMail`.
 
-  * Faire en sorte que `ServiceUtilisateur` et `ServiceCommande` possèdent un attribut de type `ServiceMailInterface` qui sera injecté via le constructeur et l'utilisent à la place de l'instance concrète `ServiceMail`.
+    * Faire en sorte que `ServiceUtilisateur` et `ServiceCommande` possèdent un attribut de type `ServiceMailInterface` qui sera injecté via le constructeur et l'utilisent à la place de l'instance concrète `ServiceMail`.
 
-  * Injecter le `ServiceMail` quand on instancie `ServiceUtilisateur` et `ServiceCommande` dans l'application.
+    * Injecter le `ServiceMail` quand on instancie `ServiceUtilisateur` et `ServiceCommande` dans l'application.
 
-  * Injecter le `FakeServiceMail` quand on instancie `ServiceUtilisateur` et `ServiceCommande` dans nos tests unitaires.
+    * Injecter le `FakeServiceMail` quand on instancie `ServiceUtilisateur` et `ServiceCommande` dans nos tests unitaires.
 
-  Un tel refactoring est-il possible ici...? Essayez de réfactorer et relevez les problèmes que vous rencontrez.
+    Un tel refactoring est-il possible ici...? Essayez de réfactorer et relevez les problèmes que vous rencontrez.
 
 </div>
 
@@ -396,6 +404,8 @@ class Main {
 
 6. Adaptez aussi les tests pour utiliser `FakeServiceMail`. Vérifiez que l'exécution des tests ne déclenche plus l'envoi (fictif) de mails.
 
+7. Réalisez le **daigramme de classes de cocneption** de l'applciation.
+
 </div>
 
 ### Avertissement
@@ -428,27 +438,27 @@ Ce pattern permet de résoudre le problème de création d'un objet qui a beauco
 
 1. Ouvrez le paquetage `builder1`. Dans cette application, nous voulons construire des **burgers**. Dans le restaurant, le client peut composer son burger. Un **Burger** est obligatoirement composé d'un nom (donné par le client) et d'un type de pain (oui, s'il veut, un client peut avoir un burger juste avec du pain). Le client peut ensuite décider d'ajouter une viande, ou des tomates, ou les deux.
 
-  À ce stade, il y a donc quatre types de burger possibles (même si les types de pains et de viandes diffèrent) :
+    À ce stade, il y a donc quatre types de burger possibles (même si les types de pains et de viandes diffèrent) :
 
-  * Un burger avec du pain.
+    * Un burger avec du pain.
 
-  * Un burger avec du pain et une viande.
+    * Un burger avec du pain et une viande.
 
-  * Un burger avec du pain et des tomates.
+    * Un burger avec du pain et des tomates.
 
-  * Un burger avec du pain, de la viande et des tomates.
+    * Un burger avec du pain, de la viande et des tomates.
 
-  Pour gérer tout cela, nous avons donc créé une classe `Burger` avec quatre constructeurs, pour gérer chaque cas. Cela fonctionne.
+    Pour gérer tout cela, nous avons donc créé une classe `Burger` avec quatre constructeurs, pour gérer chaque cas. Cela fonctionne.
 
 2. Le restaurant ajoute de nouvelles **options** : 
 
-  * L'ajout d'un certain type de fromage dans le burger.
+    * L'ajout d'un certain type de fromage dans le burger.
 
-  * L'ajout de salade dans le burger.
+    * L'ajout de salade dans le burger.
 
-  Le fromage sera géré par un attribut `typeFromage` de type `Fromage` dans la classe `Burger` et la salade par un **booléen** (comme pour les tomates).
+    Le fromage sera géré par un attribut `typeFromage` de type `Fromage` dans la classe `Burger` et la salade par un **booléen** (comme pour les tomates).
 
-  Ajoutez ces nouveaux attributs à la classe `Burger`.
+    Ajoutez ces nouveaux attributs à la classe `Burger`.
 
 3. Maintenant que nous avons ajouté ces deux options, quels sont tous les types de burgers qu'il est possible de créer ? Ajoutez de nouveaux **constructeurs** pour gérer tous les cas... Si vous bloquez à un moment, c'est normal ! Comprenez-vous pourquoi il n'est pas possible de poursuivre la conception actuelle...?
 
@@ -544,6 +554,7 @@ class Exemple {
   private double optionC;
   private boolean optionD;
 
+  //On rend le constructeur privé pour obliger à passer par le Builder
   private Exemple() {}
 
   public void setData(String data) {
@@ -616,6 +627,12 @@ public class Main {
 }
 ```
 
+<div style="text-align:center">
+![Builder 1]({{site.baseurl}}/assets/TP4/Builder1.svg){: width="50%" }
+</div>
+
+Sur **StarUML** le fait qu'une classe soit incluse dans une autre classe est représenté par la relation "Containment" qu'on trouve dans la section "Packages" dans la boîte à outil.
+
 Comme annoncé précédemment, on pourrait adapter le `Builder` pour le passer en paramètre au constructeur à la place :
 
 ```java
@@ -655,21 +672,192 @@ class Exemple {
 
 2. Vérifiez que vous pouvez bien ajouter les burgers suivants :
 
-  * Burger avec du pain moisi, avec de la salade et du poulet.
+    * Burger avec du pain moisi, avec de la salade et du poulet.
 
-  * Burger avec du pain sésames, avec des tomates, de la salade.
+    * Burger avec du pain sésames, avec des tomates, de la salade.
 
-  * Burger avec du pain classique, avec de la salade, des tomates, de la viande de bœuf et du cheddar.
+    * Burger avec du pain classique, avec de la salade, des tomates, de la viande de bœuf et du cheddar.
+
+3. Réalisez le **diagramme de classes de conception** de votre application.
 
 </div>
 
 ## Le pattern Prototype
 
+Nous allons directement présenter le principe et l'intérêt du pattern **prototype** à travers un exercice.
 
+<div class="exercise">
+
+1. Ouvrez le paquetage `protoype1` et consultez les classes mises à disposition. Il s'agit d'une mini application bancaire permettant de gérer des comptes. Pour le moment, la classe `Banque` permet de gérer des **comtpes courants**. C'est elle qui gère intégralement ces comptes bancaires : leur création et le changement de solde (créditer/débiter). Elle est donc **composée des comptes bancaires** (ce qui se trasuirait par une **agrégation noire** sur un diagramme de classes de conception).
+
+2. Le développeur a pensé qu'il serait utile qu'un objet extérieur puisse récupérer un `CompteCourant` depuis la banque pour consulter le solde (ou autre). Il a donc créé une méthode `getInformationsCompteNumero`. Expérimentez dans le `Main` en créditant le compte d'un objet récupéré par cette méthode puis récupérez de nouveau ce compte depuis la banque et affichez son solde. Le solde du compte t-il était modifié ? Lancez le test unitaire situé dans la classe dans `src/test/java/prototype1`. Il ne passe pas... Comprenez-vous pourquoi ?
+
+</div>
+
+Le test unitaire n'est pas mal écrit. En fait, comme la banque gère exclusivement les différents **comtpes bancaires**, il ne doit pas être possible qu'une autre classe puisse récupérer et modifier les objets que contient la banque. C'est toute la sémantique derrière la **composition** sur un diagramme de classe (l'agrégation noire). Le "composant" est créé dans la classe (c'est le cas) et ne doit pas en sortir (ce n'est pas le cas ici).
+
+Une première solution pourrait être d'ajouter une méthode `double recupererSolde(int numeroCompte)` dans la classe `Banque`. Mais dans certains cas, on a vraiment besoin d'obtenir l'objet `ComtpeCourant` cible, sans pour autant modifier l'original... alors comment faire ?
+
+L'idée est de renvoyer une **copie** complète de l'objet ! Toutes les valeurs des attributs de l'objet copié seront identiques dans le nouvel objet, mais s'il est modifié, l'objet original (stocké dans `Banque`) ne sera pas impacté. L'objet renvoyé par `getInformationsCompteNumero` est alors un nouvel objet identique qu compte, mais ce n'est pas l'objet original. Le principe de la composition est alors respecté.
+
+Mais alors, qui doit faire cette copie ?
+
+* Est-ce que `Banque` est habilité à faire cela ? Cela ne semble pas trop **Single responsability** friendly ! De plus, est-ce que `Banque` a la capacité de copier `CompteCourant` ? A priori, il n'a pas accès aux attributs privés ou protégés comme `solde`, alors que `CompteCourant`, oui.
+
+* À la place, on peut définir un **constructeur par copie** dans `CompteCourant`. L'objectif d'un tel constructeur est de prendre un objet du même type et d'initialiser ses propres attributs avec les valeurs des attributs de l'autre objet. Vous avez sans doutes utilisé de tels constructeurs en première année (notamment dans le cours d'initiation au développement) :
+
+  ```java
+  class Date {
+
+    private int jour;
+
+    private int mois;
+
+    private int annee;
+
+    //Constructeur de base
+    public Date(int jour, int mois, int annee) {
+      this.jour = jour;
+      this.mois = mois;
+      this.annee = annee;
+    }
+
+    //Constructeur par copie
+    public Date(Date dateACopier) {
+      this(dateACopier.jour, dateACopier.mois, dateACopier.annee);
+    }
+  }
+  ```
+
+<div class="exercise">
+
+1. Réfactorez votre code afin que `Banque` renvoie une **copie** du compte courant sélectionné. Attention au **solde** ! Il faut qu'il soit identique au compte copié. Vérifiez que cela fonctionne en lançant le test unitaire. Il devrait maintenant passer.
+
+2. On aimerait maintenant que la `Banque` gère aussi des **comptes épargne**. En fait, il faut qu'elle puisse gérer des **CompteBancaire** et pas seulement des **comptes courants**. Réfactorez le code de la classe `Banque` pour rendre cela possible (en utilisant plutôt la classe abstraite `ComtpeBancaire` plutôt que `CompteCourant`). 
+
+    Vous devrez néanmoins conserver `ouvrirCompteCourant` tel quel car elle ouvre spécifiquement un compte courant. Vous devrez aussi ajouter une méthode `ouvrierCompteEpargne` (tout cela ne respecte pas énormément le principe ouvert/fermé, mais nous allons nous en contenter pour cet exercice). 
+    
+    Vous n'avez pas à ajouter de nouveaux attributs ou d'autres méthodes en dehors de `ouvrierCompteEpargne`. (Notamment, interdiction de faire une deuxième liste séparée gérant les comptes épargnes).
+
+    Normalement, vous avez une erreur sur la méthode `getInformationsCompteNumero`. C'est normal.
+
+3. Comprenez-vous pourquoi l'implémentation de `getInformationsCompteNumero` provoque des erreurs ?
+
+</div>
+
+Notre solution à base de copie semblait bonne, mais elle tombe à l'eau dès lors qu'on manipule des abstractions et plus des classes concrètes ! `Banque` ne peut plus utiliser le constructeur par copie de `CompteCourant`, car elle gère une liste de `CompteBancaire` abstraits (qui peuvent être des comptes courants, des comptes épargnes ou autre...).
+
+Le pattern **prototype** permet de résoudre ce problème en précisant que :
+
+  * Une méthode `cloner` doit être définie au niveau de l'entité abstraite (dans l'interface ou dans la classe abstraite). Cette méthode renvoie un objet du même type que la classe mère.
+
+  * Chaque enfant implémente la méthode `cloner` qui renvoie une copie de lui-même.
+
+  * Dans la signature de la méthode, l'enfant peut éventuellement remplacer le type abstrait par son propre type.
+
+```java
+interface Exemple {
+
+  public void action();
+
+  public Exemple cloner();
+}
+
+class A implements Exemple {
+
+  private int data;
+
+  public A(int data) {
+    this.data = data;
+  }
+
+  public A(A objetACopier) {
+    this(objetACopier.data);
+  }
+
+  @Override
+  public void action() {
+    //...
+  }
+
+  @Override
+  public A cloner() {
+    //Appel de son propre constructeur par copie
+    return new A(this);
+  }
+
+}
+
+class B implements Exemple {
+
+  private boolean attribut;
+
+  public B(boolean attribut) {
+    this.attribut = attribut;
+  }
+
+  public B(B objetACopier) {
+    this(objetACopier.attribut);
+  }
+
+  @Override
+  public void action() {
+    //...
+  }
+
+  @Override
+  public B cloner() {
+    //Appel de son propre constructeur par copie
+    return new B(this);
+  }
+
+}
+```
+
+Avec cette nouvelle architecture, il suffit alors d'utiliser la méthode `cloner` sur l'objet abstrait :
+
+```java
+class Service {
+
+  private Exemple ex;
+
+  public Exemple getExemple() {
+    return ex.cloner();
+  }
+
+}
+```
+
+<div style="text-align:center">
+![Prototype 1]({{site.baseurl}}/assets/TP4/Prototype1.svg){: width="50%" }
+</div>
+
+
+<div class="exercise">
+
+1. Réfactorez votre code en appliquant le pattern **prototype** sur vos comptes bancaires. Adaptez aussi le code de `getInformationsCompteNumero` en conséquence.
+
+2. Vérifiez que le test unitaire passe toujours.
+
+3. Réalisez le **diagramme de séquence des interactions** permettant de modéliser ce qu'il se passe lors de l'éxécutin du code suivant :
+
+    ```java
+    Banque banque = new Banque();
+    int numeroCompte = banque.ouvrirCompteCourant("Test", Formule.ADULTE);
+    banque.crediterCompte(numeroCompte, 50);
+    CompteBancaire compte = banque.getInformationsCompteNumero(numeroCompte);
+    compte.crediter(100);
+    ```
+
+</div>
+
+L'objectif du pattern **prototype** est donc de déifnir un moyen d'obtenir des **copies** d'un objet, notamment dans un contexte où vos classes manipulent des abstractions (comme c'est souvent le cas quad on applique les principes **SOLID** et les **design patterns**). Si on souhaite pouvoir copier un objet abstrait manipulé, chaque classe concrète de la hiérarchie doit définir sa propre logique de copie via la méthode `cloner`.
+
+**Java** permet aussi d'implémenter ce pattern en étendant l'interface `Cloneable` (et la méthode `clone`) !
 
 ## Le pattern Fabrique
 
-Le pattern **fabrique** va permettre de centraliser l'instanciation d'une famille de classes dans une classe spécialisée. Les classes ayant besoin d'instancier des objets de cette famille ne vont plus faire elle-même des **new** mais votn plutôt passer par la fabrique.
+Le pattern **fabrique** va permettre de centraliser l'instanciation d'une famille de classes dans une classe spécialisée. Les classes ayant besoin d'instancier des objets de cette famille ne vont plus faire elle-même des **new** mais vont plutôt passer par la fabrique.
 
 La fabrique connaît les différents types concrets à instancier, mais elle va généralement déclarer renvoyer des abstractions (classes abstraites/interfaces) pour que les classes ayant besoin de créer des objets ne dépendent plus du tout d'un objet concret, mais plutôt de son abstraction. Ainsi, l'impact du changement diminue (si on veut changer la classe concrète utilisée) ce qui renforce notamment le principe ouvert/fermé.
 
@@ -770,12 +958,12 @@ public class CercleSimple implements Cercle {
 
 }
 
-public class CercleGraphique implements FigureGeometrique {
+public class CercleGraphique implements Cercle {
 
   //Composition
   private Cercle cercle;
 
-  public CercleSimple(int rayon) {
+  public CercleGraphique(int rayon) {
     cercle = new CercleSimple(rayon);
   }
 
@@ -820,9 +1008,13 @@ public class ServiceB {
 }
 ```
 
+<div style="text-align:center">
+![Fabrique 1]({{site.baseurl}}/assets/TP4/Fabrique1.svg){: width="80%" }
+</div>
+
 Dans cet exemple, `ServiceA` et `ServiceB` sont fortement dépendants de `CarreSimple` et `CercleSimple`. Et on ne peut pas simplement injecter les dépendances, car ces services ont besoin d'instancier ces classes dans leurs méthodes ! Si nous devons changer pour utiliser des `CarreGraphique` et des `CercleGraphique`, il faut modifier ces deux classes !
 
-Nous pouvons mettre en place une **fabrique** pour règle ce problème :
+Nous pouvons mettre en place une **fabrique** pour règler ce problème :
 
 ```java
 
@@ -930,17 +1122,21 @@ public class Main {
 }
 ```
 
+<div style="text-align:center">
+![Fabrique 2]({{site.baseurl}}/assets/TP4/Fabrique2.svg){: width="80%" }
+</div>
+
 <div class="exercise">
 
 1. Ouvrez le paquetage `fabrique1`. Il s'agit de l'application avec des **animaux** que vous aviez développés lors du dernier TP. La nouveauté est qu'il y a aussi des **aniamux normaux** et des **animaux robots** (qui ont seulement en plus une voix robotique quand ils font un cri...).
 
 2. Actuellement, si je veux changer mes animaux pour utiliser des animaux robotiques dans le `Main`, je suis obligé de changer tout le code du `Main`. Il faut vous imaginer cela pour plusieurs classes : si je veux changer mes animaux pour des animaux robotiques, je dois changer le code de toutes les classes qui créent des animaux ! Pour permettre plus de flexibilité, vous devez :
 
-  * Mettre en place une fabrique `AnimalFactory` créant des animaux "normaux" pour le moment.
+    * Mettre en place une fabrique `AnimalFactory` créant des animaux "normaux" pour le moment.
 
-  * Faire en sorte que cette fabrique soit un **singleton**.
+    * Faire en sorte que cette fabrique soit un **singleton**.
 
-  * Utiliser cette fabrique dans `Main` au lieu de faire directement des `new`.
+    * Utiliser cette fabrique dans `Main` au lieu de faire directement des `new`.
 
 3. Si votre implémentation est bonne, vous devriez être capable d'utiliser des animaux robots seulement en changeant le code de votre fabrique. Vérifiez que cela est bien possible.
 
@@ -988,37 +1184,37 @@ Attaquons tout de suite par un exercice :
 
 1. Ouvrez le paquetage `fabrique2`. Cette application permet de construire des **donjons** pour un jeu-vidéo. Un **donjon** est constitué de différentes pièces (des pièces avec des coffres, des pièces avec des ennemis, des pièces avec des énigmes, des pièces avec des boss...). Une pièce peut être complétée par le joueur ou non. Chaque donjon possède un algorithme de génération qui créé les salles dans un ordre précis (avec un peu d'alétoire). Il est constitué de "pièces normales", de "pièces spéciales" et d'une "pièce finale" dans cet ordre :
 
-  * Une salle normale
+    * Une salle normale
 
-  * Cinq salles spéciales
+    * Cinq salles spéciales
 
-  * Une salle normale
+    * Une salle normale
 
-  * Une salle spéciale
+    * Une salle spéciale
 
-  * Une salle normale
+    * Une salle normale
 
-  * Une salle finale
+    * Une salle finale
 
-  Pour l'instant, dans sa configuration actuelle on a les correspondances suivantes :
+    Pour l'instant, dans sa configuration actuelle on a les correspondances suivantes :
 
-  * Salle normale : Une salle avec un coffre
+    * Salle normale : Une salle avec un coffre
 
-  * Salle spéciale : Une salle contenant entre 1 et 5 ennemis ou bien une salle avec une énigme (une chance sur deux)
+    * Salle spéciale : Une salle contenant entre 1 et 5 ennemis ou bien une salle avec une énigme (une chance sur deux)
 
-  * Salle finale : Une salle avec un Boss avec un niveau entre 1 à 10.
+    * Salle finale : Une salle avec un Boss avec un niveau entre 1 à 10.
 
 2. Mettez en place une **fabrique** pour que le `Donjon` n'ait pas à instancier les salles lui-même. Il y aura donc trois méthodes dans cette fabrique : `creerSalleNormale`, `creerSalleSpeciale` et `creerSalleFinale`. Pour cet exercice, il n'y a pas besoin de créer de sous-classes ou d'interfaces `SalleSpeciale`, `SalleFinale`, etc... La fabrique renverra simplement des objets `Salle` pour chaque méthode. Transformez également cette fabrique en **Singleton**. Adaptez le code de `Donjon` et de `Main` en conséquence.
 
 3. La configuration actuelle du Donjon est un mode "facile". On aimerait introduire le mode "difficile" où on a les correspondances suivantes :
 
-  * Salle normale : Une salle contenant entre 20 et 40 ennemis.
+    * Salle normale : Une salle contenant entre 20 et 40 ennemis.
 
-  * Salle spéciale : Une salle avec une énigme (20% de chances) ou bien une salle avec un boss avec un niveau entre 30 à 50 (80% de chances).
+    * Salle spéciale : Une salle avec une énigme (20% de chances) ou bien une salle avec un boss avec un niveau entre 30 à 50 (80% de chances).
 
-  * Salle finale : Une salle avec un Boss de niveau 80.
+    * Salle finale : Une salle avec un Boss de niveau 80.
 
-  Comment pourriez-vous faire pour pouvoir facilement construire à la fois des donjons "faciles" et des donjons "difficiles" dans le programme ? Tout en respectant les principes SOLID ?
+    Comment pourriez-vous faire pour pouvoir facilement construire à la fois des donjons "faciles" et des donjons "difficiles" dans le programme ? Tout en respectant les principes SOLID ?
 
 </div>
 
@@ -1113,6 +1309,10 @@ public class Main {
 }
 ```
 
+<div style="text-align:center">
+![Fabrique 3]({{site.baseurl}}/assets/TP4/Fabrique3.svg){: width="80%" }
+</div>
+
 Comme vous pouvez le constater, après refactoring, il est très facile de changer de famille utilisée dans le service, sans avoir besoin de changer le code de notre fabrique. De plus, on respecte ainsi le principe ouvert/fermé, car si on souhaite créer une nouvelle famille de classes, on a juste à ajouter une nouvelle fabrique.
 
 <div class="exercise">
@@ -1123,7 +1323,7 @@ Comme vous pouvez le constater, après refactoring, il est très facile de chang
 
 3. La méthode `getInfosSalle` doit permettre de récupérer les informations d'une salle du donjon "à l'extérieur". Cependant, son implémentation est problématique... Par exemple, que pourriez-vous faire comme action indésirable en récupérant une salle d'un `Donjon` dans le `Main` (indice : seul le donjon devrait avoir le droit de modifier l'état de ses salles) ? Quel pattern que nous avons vu pendant ce TP pourriez-vous appliquer pour régler ce problème ? Refactorez votre code dans ce sens.
 
-4. Réalisez le diagramme de classes de conception de votre application.
+4. Réalisez le **diagramme de classes de conception** de votre application.
 
 </div>
 
@@ -1265,6 +1465,11 @@ public abstract class AbstractFigureGeometriqueFactory {
 }
 ```
 
+
+<div style="text-align:center">
+![Fabrique 4]({{site.baseurl}}/assets/TP4/Fabrique4.svg){: width="80%" }
+</div>
+
 La fabrique abstraite vise un fichier qui se situe dans `src/main/resources/config/figure_factory_config.txt` qui contient simplement une chaîne de caractères. Par exemple : `simple`.
 
 <div class="exercise">
@@ -1274,6 +1479,8 @@ La fabrique abstraite vise un fichier qui se situe dans `src/main/resources/conf
 2. Refactorez le code de l'application afin qu'il soit possible d'utiliser soit les pokémons, soit les digimons en changeant simplement le contenu du fichier de configuration.
 
 3. Testez les deux versions !
+
+4. Réalisez le **diagramme de classes de conception** de votre application.
 
 </div>
 
@@ -1289,7 +1496,7 @@ Vous ne pouvez pas modifier le code source de cette classe, mais vous pouvez ét
 public class ComplexSquare {
 
   //Construit le carré en précisant la taille d'un côté
-  public ComplexSquare(double size) {
+  public ComplexSquare(int size) {
     ...
   }
 
@@ -1313,7 +1520,7 @@ public class ComplexSquare {
 public class ComplexCircle {
 
   //Construit le cercle en précisant son rayon
-  public ComplexCircle(double radius) {
+  public ComplexCircle(int radius) {
     ...
   }
 
@@ -1435,6 +1642,10 @@ public class FigureGeometriqueComplexeFactory extends AbstractFigureGeometriqueF
 }
 ```
 
+<div style="text-align:center">
+![Adaptateur 1]({{site.baseurl}}/assets/TP4/Adaptateur1.svg){: width="80%" }
+</div>
+
 Maintenant, revenons à nos petits monstres...
 
 <div class="exercise">
@@ -1443,11 +1654,11 @@ Maintenant, revenons à nos petits monstres...
 
 2. Comme vous pouvez le constater, cette librairie définie de nouveaux monstres "Pattermons" qu'on souhaite maintenant intégrer à notre système de simulation de combat. Comme vous l'avez deviné, nous allons donc devoir mettre en place un `Adaptateur` ! Cependant, comme il y a une hiérarchie de classes ici, la mise en place va être un poil plus complexe que sur notre exemple, donc nous allons le faire pas à pas :
 
-  * Commencez par implémenter une classe abstraite `PattermonAdapter` qui permet d'adapter la classe abstraite `Patternmon`. Normalement, vous ne devriez pas trop avoir de difficulté, c'est quasiment comme dans l'exemple.
+    * Commencez par implémenter une classe abstraite `PattermonAdapter` qui permet d'adapter la classe abstraite `Patternmon`. Normalement, vous ne devriez pas trop avoir de difficulté, c'est quasiment comme dans l'exemple.
 
-  * `Pattermon` est une classe abstraite et nous avons besoin de pouvoir adapter ses classes filles concrètes (correspondant à `MonstreEau`, `MonstreFeu`, etc...). Il faut créer un adaptateur par classe fille ! Cet adaptateur devra **étendre** votre adaptateur abstrait `PattermonAdapter` et implémenter l'interface `MonstreX` correspondante (`MonstreEau` pour l'adaptation de `WaterPatternmon` par exemple).
-  
-  * Commencez par tenter d'adapter `WaterPatternmon`. Vous allez sans doute rencontrer une difficulté lorsque vous allez essayer d'implémenter les méthodes propres à l'interface. Dans un premier temps, essayez de résoudre cela par vous-même, puis, après quelques essais, lisez la prochaine section.
+    * `Pattermon` est une classe abstraite et nous avons besoin de pouvoir adapter ses classes filles concrètes (correspondant à `MonstreEau`, `MonstreFeu`, etc...). Il faut créer un adaptateur par classe fille ! Cet adaptateur devra **étendre** votre adaptateur abstrait `PattermonAdapter` et implémenter l'interface `MonstreX` correspondante (`MonstreEau` pour l'adaptation de `WaterPatternmon` par exemple).
+    
+    * Commencez par tenter d'adapter `WaterPatternmon`. Vous allez sans doute rencontrer une difficulté lorsque vous allez essayer d'implémenter les méthodes propres à l'interface. Dans un premier temps, essayez de résoudre cela par vous-même, puis, après quelques essais, lisez la prochaine section.
 
 </div>
 
@@ -1685,6 +1896,10 @@ public class Main {
 }
 ```
 
+<div style="text-align:center">
+![Fabrique 5]({{site.baseurl}}/assets/TP4/Fabrique5.svg){: width="40%" }
+</div>
+
 Dans l'exemple ci-dessus, un simple changement dans le fichier de configuration permet de changer les services concrets utilisés pour `ServiceA` et `ServiceB`. Contrairement aux exercices précédents, dans le cas d'un service, il n'est pas utile (voir, il ne faut pas) le ré-instancier chaque fois. Par exemple, dans le cas d'une classe "repository" permettant de faire des requêtes sur une base de données.
 
 C'est un peu comme ci toutes les dépendances stockées dans ces fabriques étaient de singletons, car on ne manipule qu'une seule instance de ces objets dans le programme. Mais cela est encore mieux qu'un singleton, car ces classes (`ServiceA1`, `ServiceB1`, etc...) ne sont pas construits comme des singletons ! Elles sont donc beaucoup plus adaptées aux tests unitaires. Comme mentionné dans la section "Avertissement" sur les singletons, nous préférerons utiliser des fabriques plutôt que de multiplier les singletons dans l'application.
@@ -1701,19 +1916,19 @@ Pour le moment, revenons à nos moutons et appliquons ce que nous avons appris s
 
 2. Actuellement, si nous voulons changer la méthode de stockage (en mémoire ou dans un fichier) il faut éditer à la main `IHMUtilisateur` pour remplacer les paramètres injectés lors de la création de `ServiceUtilisateur`. On souhaite rendre cela plus modulable. Refactorez le code pour mettre en place et utiliser une **fabrique abstraite** et des **fabriques** pour gérer les deux types de méthodes stockage disponibles dans l'application. La configuration du type stockage utilisé devra se faire via un fichier de configuration textuel simple. Aussi, vos fabriques doivent stocker les **dépendances** qu'elles gèrent et ne pas les ré-instancier à chaque fois qu'on en a besoin. 
 
-  Normalement, vous n'avez pas besoin de toucher la classe `ServcieUtilisateur`, mais il faudra probablement adapter le code de `IHMUtilisateur`.
+    Normalement, vous n'avez pas besoin de toucher la classe `ServcieUtilisateur`, mais il faudra probablement adapter le code de `IHMUtilisateur`.
 
 3. Testez que tout fonctionne en alternant entre les deux méthodes de stockage via votre fichier de configuration.
 
 4. Il existe divers autres services que nous utilisons fréquemment dans l'application : le service permettant d'envoyer des mails (mailer) et le service de chiffrement (hasheur). On voudrait définir deux configurations correspondantes à ces deux "familles" de services :
 
-  * Une configuration "basique" utilisant `ServiceMailerBasique` et `HasheurMD5`.
+    * Une configuration "basique" utilisant `ServiceMailerBasique` et `HasheurMD5`.
 
-  * Une configuration "sécurisée" utilisant `ServiceMailerChiffre` et `HasheurSHA256`.
+    * Une configuration "sécurisée" utilisant `ServiceMailerChiffre` et `HasheurSHA256`.
 
-  Là aussi, on veut pouvoir facilement switcher entre ces deux configurations sans changer le code, mais en éditant simplement un fichier de configuration.
+    Là aussi, on veut pouvoir facilement switcher entre ces deux configurations sans changer le code, mais en éditant simplement un fichier de configuration.
 
-  Mettez en place un système pour pouvoir gérer ces deux configurations. Encore une fois, vous ne devriez pas avoir besoin d'éditer d'autre classes que `IHMUtilisateur` après la mise en place de votre système.
+    Mettez en place un système pour pouvoir gérer ces deux configurations. Encore une fois, vous ne devriez pas avoir besoin d'éditer d'autre classes que `IHMUtilisateur` après la mise en place de votre système.
 
 5. Vérifiez que tout fonctionne en alternant entre les deux configurations.
 
@@ -1733,36 +1948,36 @@ Vous allez maintenant mettre en application ce que vous avez appris sur une appl
 
 3. Pour rappel, ce programme peut se connecter à une base de données par deux moyens : en utilisant l'API `JDBC` en "brut" ou bien en passant par l'ORM `Hibernate`. Vous n'avez pas nécessairement besoin d'avoir fini ce TP dans son intégralité en base de données pour pouvoir faire cet exercice. Il y a un peu de configuration à faire pour que vous puissiez vous connecter à votre BDD par JDBC et Hibernate :
 
-  * Dans la classe `stockage/jdbc/JDBCUtils`, remplacez les valeurs `aCompleter` par vos identifiants d'accès à la base de données `Oracle` de l'IUT.
+    * Dans la classe `stockage/jdbc/JDBCUtils`, remplacez les valeurs `aCompleter` par vos identifiants d'accès à la base de données `Oracle` de l'IUT.
 
-  * Faites de même dans le fichier `hibernate.cfg.xml` dans `src/main/java/resources`.
+    * Faites de même dans le fichier `hibernate.cfg.xml` dans `src/main/java/resources`.
 
-  Lancez l'application et vérifiez que tout fonctionne.
+    Lancez l'application et vérifiez que tout fonctionne.
 
 4. De base cette application est configurée pour utiliser `JDBC` et pas `Hibernate`. Si on souhaite changer la méthode de stockage en BDD utilisée, il faut changer le code sources des classes `RessourceService`, `EtudiantService` et `NoteService`. On aimerait pouvoir plus facilement switcher entre `JDBC` et `Hibernate` en utilisant un simple **fichier de configuration**. On vous demande donc de **refactorer** le code afin de mettre en place un tel système (avec une **fabrique abstraite** gérant des dépendances, comme dans l'exercice précédent). Quelques commentaires :
 
-  * L'interface **Stockage** (dans le paquetage `stockage`) permet de définir un repository. Vous pouvez notamment aller jeter un œil aux repositories **concrets** qui utilisent `JDBC` et implémentent cette interface dans `stockage/jdbc`.
+    * L'interface **Stockage** (dans le paquetage `stockage`) permet de définir un repository. Vous pouvez notamment aller jeter un œil aux repositories **concrets** qui utilisent `JDBC` et implémentent cette interface dans `stockage/jdbc`.
 
-  * Il faudra utiliser votre fabrique abstraite directement dans la méthode `getInstance` des trois services. Comme vous pouvez le constater, ces services sont des **singletons**. Ils sont donc difficilement testables...mais nous allons régler ce problème dans le prochain TP !
+    * Il faudra utiliser votre fabrique abstraite directement dans la méthode `getInstance` des trois services. Comme vous pouvez le constater, ces services sont des **singletons**. Ils sont donc difficilement testables...mais nous allons régler ce problème dans le prochain TP !
 
-  * Dans les trois services, vous avez des exemples d'instanciation des repositories JDBC simples (définis dans l'application).
+    * Dans les trois services, vous avez des exemples d'instanciation des repositories JDBC simples (définis dans l'application).
 
-  * On accède aux repositories issus de `Hibernate` différemment. Pour rappel, ils sont fournis via une **librairie externe** nommée `HbernateRepositories`. Vous n'avez donc pas la main dessus ! De plus, les noms des méthodes différents de celle de votre interface `Stockage`... Quel pattern allez-vous utiliser pour résoudre ce problème ? Vous l'avez vu pendant ce TP. On rappelle comment manipuler les repositories de `Hibernate` (vous n'étiez peut-être pas allé jusque-là dans le TP) :
+    * On accède aux repositories issus de `Hibernate` différemment. Pour rappel, ils sont fournis via une **librairie externe** nommée `HbernateRepositories`. Vous n'avez donc pas la main dessus ! De plus, les noms des méthodes différents de celle de votre interface `Stockage`... Quel pattern allez-vous utiliser pour résoudre ce problème ? Vous l'avez vu pendant ce TP. On rappelle comment manipuler les repositories de `Hibernate` (vous n'étiez peut-être pas allé jusque-là dans le TP) :
 
-    * La classe `EntityRepository<T>` permet de gérer un repository correspondant à une entité `T` (paramètre générique, qui peut être remplacé, par exemple par `EntityRepository<Ressource>`).
+      * La classe `EntityRepository<T>` permet de gérer un repository correspondant à une entité `T` (paramètre générique, qui peut être remplacé, par exemple par `EntityRepository<Ressource>`).
 
-    * Les méthodes qu'on peut utiliser sur un tel **repository** sont : `create`, `update`, `deleteById`, `findById`, `findAll` qui sont similaires aux méthodes définies dans l'interface `Stockage`.
+      * Les méthodes qu'on peut utiliser sur un tel **repository** sont : `create`, `update`, `deleteById`, `findById`, `findAll` qui sont similaires aux méthodes définies dans l'interface `Stockage`.
 
-    * On n'instancie pas directement ces repositories, on les récupère via l'instruction suivante :
+      * On n'instancie pas directement ces repositories, on les récupère via l'instruction suivante :
 
-    ```java
-    EntityRepository<MonEntite> repository = RepositoryManager.getRepository(MonEntite.class);
+      ```java
+      EntityRepository<MonEntite> repository = RepositoryManager.getRepository(MonEntite.class);
 
-    //Par exemple :
-    EntityRepository<Ressource> repository = RepositoryManager.getRepository(Ressource.class);
-    ```
+      //Par exemple :
+      EntityRepository<Ressource> repository = RepositoryManager.getRepository(Ressource.class);
+      ```
 
-    * Si vous gérez bien le concept de **généricité** adapter les `EntityRepository` à votre architecture ne devrait demander qu'une seule classe (peut-être un peu dure à trouver si vous n'êtes pas encore trop à l'aise avec cette notion). Sinon, il y a aussi une solution plus basique utilisant trois classes.
+      * Si vous gérez bien le concept de **généricité** adapter les `EntityRepository` à votre architecture ne devrait demander qu'une seule classe (peut-être un peu dure à trouver si vous n'êtes pas encore trop à l'aise avec cette notion). Sinon, il y a aussi une solution plus basique utilisant trois classes.
 
 5. Une fois le refactoring terminé, vérifiez que tout fonctionne en alternant entre `JDBC` et `Hibernate` en modifiant votre fichier de configuration. Comme les deux systèmes utilisent la même base, cela n'est pas forcément évident de repérer quand l'un ou l'autre est utilisé. au démarrage, `Hibernate` va vous mettre divers messages d'informations dans la console contrairement à `JDBC`. Sinon, essayez de mettre un mauvais mot de passe dans une des configurations (dans `JDBCUtils` ou bien le fichier de configuration d'Hibernate) et alternez entre les deux méthodes. L'application ne devrait pas fonctionner seulement dans un cas sur deux.
 
@@ -1967,17 +2182,17 @@ Et si nous essayons de combiner plus de patterns ? Nous avons l'application idé
 
 1. Nous aimerions maintenant que les différentes salles puissent être combinées afin de créer une "super-salle". Par exemple, on aimerait avoir des salles avec des coffres et 20 ennemis. Une salle avec une énigme et un boss. Une salle avec tout à la fois...! Quel design pattern pouvez-vous utiliser pour mettre en place une telle fonctionnalité ? La seule méthode qui nous intéresse est `toString`. À l'affichage, on doit avoir les informations de toutes les salles qui composent une salle. Après vos refactoring, vous devrez logiquement adapter le code de vos deux **fabriques**. Pour la configuration **difficile** on souhaite faire des changements supplémentaires :
 
-  * Une salle normale est une salle avec un coffre et entre 20 et 40 ennemis.
+    * Une salle normale est une salle avec un coffre et entre 20 et 40 ennemis.
 
-  * Une salle spéciale est soit une salle avec un coffre et 20 ennemis (une chance sur cinq) ou bien une salle avec un boss avec un niveau entre 30 et 50.
+    * Une salle spéciale est soit une salle avec un coffre et 20 ennemis (une chance sur cinq) ou bien une salle avec un boss avec un niveau entre 30 et 50.
 
-  * La salle finale est une salle avec une énigme, un boss de niveau 80 et 30 ennemis.
+    * La salle finale est une salle avec une énigme, un boss de niveau 80 et 30 ennemis.
 
 2. On aimerait améliorer la création des **salles** composées. Par exemple, avec un **Builder**...?
 
 3. Testez que tout fonctionne.
 
-4. Réalisez le diagramme de classes de conception de votre application.
+4. Mettez à jour le diagramme de classes de conception que vous aviez initialement produit pour cette application.
 </div>
 
 ## Conclusion
