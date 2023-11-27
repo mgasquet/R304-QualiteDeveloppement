@@ -666,6 +666,7 @@ class Exemple {
 ## Le pattern Prototype
 
 
+
 ## Le pattern Fabrique
 
 Le pattern **fabrique** va permettre de centraliser l'instanciation d'une famille de classes dans une classe spécialisée. Les classes ayant besoin d'instancier des objets de cette famille ne vont plus faire elle-même des **new** mais votn plutôt passer par la fabrique.
@@ -685,12 +686,25 @@ public interface FigureGeometrique {
 
 }
 
-public class CarreSimple implements FigureGeometrique {
+public interface Carre extends FigureGeometrique {
+  int getTailleCote();
+}
+
+public interface Cercle extends FigureGeometrique {
+  int getDiametre();
+}
+
+public class CarreSimple implements Carre {
 
   private int tailleCote;
 
   public CarreSimple(int tailleCote) {
     this.tailleCote = tailleCote;
+  }
+
+  @Override
+  public int getTailleCote() {
+    return tailleCote;
   }
 
   @Override
@@ -705,13 +719,18 @@ public class CarreSimple implements FigureGeometrique {
 
 }
 
-public class CarreGraphique implements FigureGeometrique {
+public class CarreGraphique implements Carre {
 
   //Composition
   private CarreSimple carre;
 
   public CarreGraphique(int tailleCote) {
     carre = new CarreSimple(tailleCote);
+  }
+
+  @Override
+  public int getTailleCote() {
+    return carre.getTailleCote();
   }
 
   @Override
@@ -726,12 +745,17 @@ public class CarreGraphique implements FigureGeometrique {
 
 }
 
-public class CercleSimple implements FigureGeometrique {
+public class CercleSimple implements Cercle {
 
   private int rayon;
 
   public CercleSimple(int rayon) {
     this.rayon = rayon;
+  }
+
+  @Override
+  public int getDiametre() {
+    return rayon*2;
   }
 
   @Override
@@ -756,6 +780,11 @@ public class CercleGraphique implements FigureGeometrique {
   }
 
   @Override
+  public int getDiametre() {
+    return cercle.getDiametre();
+  }
+
+  @Override
   public int getAire() {
     return cercle.getAire();
   }
@@ -770,7 +799,7 @@ public class CercleGraphique implements FigureGeometrique {
 public class ServiceA {
 
   public void action() {
-    FigureGeometrique c = new Cercle(10);
+    Cercle c = new CercleSimple(10);
     c.afficherFigure();
   }
 
@@ -779,10 +808,10 @@ public class ServiceA {
 public class ServiceB {
 
   public void action() {
-    FigureGeometrique c1 = new Carre(10);
+    Carre c1 = new CarreSimple(10);
     c1.afficherFigure();
 
-    FigureGeometrique c2 = new Cercle(5);
+    Cercle c2 = new CercleSimple(5);
     c2.afficherFigure();
 
     Sytem.out.println(c2.getAire());
@@ -799,11 +828,11 @@ Nous pouvons mettre en place une **fabrique** pour règle ce problème :
 
 public class FigureGeometriqueFactory {
 
-  public FigureGeometrique creerCarre(int tailleCote) {
+  public Carre creerCarre(int tailleCote) {
     return new CarreSimple(tailleCote);
   }
 
-  public FigureGeometrique creerCercle(int rayon) {
+  public Cercle creerCercle(int rayon) {
     return new CercleSimple(rayon);
   }
 
@@ -814,7 +843,7 @@ public class ServiceA {
   private FigureGeometriqueFactory factory = new FigureGeometriqueFactory();
 
   public void action() {
-    FigureGeometrique c = factory.creerCercle(10);
+    Cercle c = factory.creerCercle(10);
     c.afficherFigure();
   }
 
@@ -825,10 +854,10 @@ public class ServiceB {
   private FigureGeometriqueFactory factory = new FigureGeometriqueFactory();
 
   public void action() {
-    FigureGeometrique c1 = factory.creerCarre(10);
+    Carre c1 = factory.creerCarre(10);
     c1.afficherFigure();
 
-    FigureGeometrique c2 = factory.creerCercle(5);
+    Cercle c2 = factory.creerCercle(5);
     c2.afficherFigure();
 
     Sytem.out.println(c2.getAire());
@@ -857,11 +886,11 @@ public class FigureGeometriqueFactory {
     return INSTANCE;
   }
 
-  public FigureGeometrique creerCarre(int tailleCote) {
+  public Carre creerCarre(int tailleCote) {
     return new CarreSimple(tailleCote);
   }
 
-  public FigureGeometrique creerCercle(int rayon) {
+  public Cercle creerCercle(int rayon) {
     return new CercleSimple(rayon);
   }
 
@@ -903,7 +932,7 @@ public class Main {
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `fabrique1`. Il s'agit de l'application avec des **animaux** que vous aviez développés lors du dernier TP. La nouveauté est qu'il y a aussi des **animaux robots** (qui ont seulement en plus une voix robotique quand ils font un cri...).
+1. Ouvrez le paquetage `fabrique1`. Il s'agit de l'application avec des **animaux** que vous aviez développés lors du dernier TP. La nouveauté est qu'il y a aussi des **aniamux normaux** et des **animaux robots** (qui ont seulement en plus une voix robotique quand ils font un cri...).
 
 2. Actuellement, si je veux changer mes animaux pour utiliser des animaux robotiques dans le `Main`, je suis obligé de changer tout le code du `Main`. Il faut vous imaginer cela pour plusieurs classes : si je veux changer mes animaux pour des animaux robotiques, je dois changer le code de toutes les classes qui créent des animaux ! Pour permettre plus de flexibilité, vous devez :
 
@@ -937,6 +966,8 @@ public class AnimalFactory {
 
 Néanmoins, cette solution n'est pas forcément conseillée car :
 
+* On est obligé de retourner une classe abstraite/interface plus générale (pas de `I_Chien`, `I_Chat`...).
+
 * Elle implique que toutes les classes concrètes instanciées ont les mêmes paramètres (ce qui n'est pas toujours le cas, par exemple, si nous avions eu une figure `Rectangle` dans l'exemple des figures géométriques...)
 
 * Il faut gérer le cas où `type` n'est pas un type connu. cCe qui ne peut pas arriver si on sépare les instanciations en différentes méthodes (et évite les bugs style faute de frappe...).
@@ -947,10 +978,1012 @@ Pour l'instant, si nous voulons changer de "famille" de classes utilisée (anima
 
 ## Le pattern Fabrique abstraite
 
+Le pattern **fabrique abstraite** peut être vu comme une extension du pattern **fabrique** et va notamment permettre d'interchanger différentes fabriques qui instancient différentes familles de classes concrètes. Ainsi, au lieu de changer le code de la fabrique quand on veut changer de familles de classes, on ne va plus devoir changer le code de notre fabrique, mais plutôt changer l'instance de la fabrique conctrète utilisée par le programme ou une classe en particulier.
+
+### Construction de donjons
+
+Attaquons tout de suite par un exercice :
+
+<div class="exercise">
+
+1. Ouvrez le paquetage `fabrique2`. Cette application permet de construire des **donjons** pour un jeu-vidéo. Un **donjon** est constitué de différentes pièces (des pièces avec des coffres, des pièces avec des ennemis, des pièces avec des énigmes, des pièces avec des boss...). Une pièce peut être complétée par le joueur ou non. Chaque donjon possède un algorithme de génération qui créé les salles dans un ordre précis (avec un peu d'alétoire). Il est constitué de "pièces normales", de "pièces spéciales" et d'une "pièce finale" dans cet ordre :
+
+  * Une salle normale
+
+  * Cinq salles spéciales
+
+  * Une salle normale
+
+  * Une salle spéciale
+
+  * Une salle normale
+
+  * Une salle finale
+
+  Pour l'instant, dans sa configuration actuelle on a les correspondances suivantes :
+
+  * Salle normale : Une salle avec un coffre
+
+  * Salle spéciale : Une salle contenant entre 1 et 5 ennemis ou bien une salle avec une énigme (une chance sur deux)
+
+  * Salle finale : Une salle avec un Boss avec un niveau entre 1 à 10.
+
+2. Mettez en place une **fabrique** pour que le `Donjon` n'ait pas à instancier les salles lui-même. Il y aura donc trois méthodes dans cette fabrique : `creerSalleNormale`, `creerSalleSpeciale` et `creerSalleFinale`. Pour cet exercice, il n'y a pas besoin de créer de sous-classes ou d'interfaces `SalleSpeciale`, `SalleFinale`, etc... La fabrique renverra simplement des objets `Salle` pour chaque méthode. Transformez également cette fabrique en **Singleton**. Adaptez le code de `Donjon` et de `Main` en conséquence.
+
+3. La configuration actuelle du Donjon est un mode "facile". On aimerait introduire le mode "difficile" où on a les correspondances suivantes :
+
+  * Salle normale : Une salle contenant entre 20 et 40 ennemis.
+
+  * Salle spéciale : Une salle avec une énigme (20% de chances) ou bien une salle avec un boss avec un niveau entre 30 à 50 (80% de chances).
+
+  * Salle finale : Une salle avec un Boss de niveau 80.
+
+  Comment pourriez-vous faire pour pouvoir facilement construire à la fois des donjons "faciles" et des donjons "difficiles" dans le programme ? Tout en respectant les principes SOLID ?
+
+</div>
+
+Vous avez peut-être trouvé la solution par vous-même avec la dernière question, mais si vous connaissez à maîtriser les bonnes pratiques de conception logicielle, il y a un concept qui revuebt souvent dans les patterns et lorsqu'on applique les principes SOLID : l'abstraction.
+
+L'idée du pattern **fabrique abstraite** est donc de disposer d'une abstraction (classe abstraite ou interface) qui définie le contrat que doivent remplir les fabriques concrètes. Pour chaque famille de classes, on crée une fabrique concrète qui implémente de cette interface ou étend cette classe abstraite. Ensuite, toutes les classes qui souhaitent utiliser cette fabrique doivent dépendre de la **fabrique abstraite** et non plus d'une fabrique concrète. Couplé à de l'injection de dépendances, il est très facile de complétement changer le comportement d'une classe. C'est globalement l'idée du pattern **Stratégie** que vous avez déjà vu lors du dernier TP, mais appliqué pour des fabriques !
+
+Reprenons l'exemple des figures géométriques :
+
+```java
+
+public interface AbstractFigureGeometriqueFactory {
+
+  Carre creerCarre(int tailleCote);
+
+  Cercle creerCercle(int rayon);
+
+}
+
+public class FigureGeometriqueSimpleFactory implements AbstractFigureGeometriqueFactory {
+
+  private static FigureGeometriqueSimpleFactory INSTANCE;
+
+  private FigureGeometriqueSimpleFactory() {}
+
+  public synchronized static FigureGeometriqueSimpleFactory getInstance() {
+    if(INSTANCE == null) {
+      INSTANCE = new FigureGeometriqueSimpleFactory();
+    }
+    return INSTANCE;
+  }
+
+  public Carre creerCarre(int tailleCote) {
+    return new CarreSimple(tailleCote);
+  }
+
+  public Cercle creerCercle(int rayon) {
+    return new CercleSimple(rayon);
+  }
+
+}
+
+public class FigureGeometriqueGraphiqueFactory implements AbstractFigureGeometriqueFactory {
+
+  private static FigureGeometriqueGraphiqueFactory INSTANCE;
+
+  private FigureGeometriqueGraphiqueFactory() {}
+
+  public synchronized static FigureGeometriqueGraphiqueFactory getInstance() {
+    if(INSTANCE == null) {
+      INSTANCE = new FigureGeometriqueGraphiqueFactory();
+    }
+    return INSTANCE;
+  }
+
+  public Carre creerCarre(int tailleCote) {
+    return new CarreGraphique(tailleCote);
+  }
+
+  public Cercle creerCercle(int rayon) {
+    return new CercleGraphique(rayon);
+  }
+
+}
+
+public class ServiceA {
+
+  private AbstractFigureGeometriqueFactory factory;
+
+  public ServiceA(AbstractFigureGeometriqueFactory factory) {
+    this.factory = factory;
+  }
+
+  public void action() {
+    Cercle c = factory.creerCercle(10);
+    System.out.println(c.getAire());
+    c.afficherFigure();
+  }
+
+}
+
+public class Main {
+
+  public static void main(String[]args) {
+    //Le service utilise des figures géométriques simples
+    ServiceA s1 = new ServiceA(FigureGeometriqueSimpleFactory.getInstance());
+
+    //Le service utilise des figures géométriques graphiques
+    ServiceA s2 = new ServiceA(FigureGeometriqueGraphiqueFactory.getInstance());
+  }
+
+}
+```
+
+Comme vous pouvez le constater, après refactoring, il est très facile de changer de famille utilisée dans le service, sans avoir besoin de changer le code de notre fabrique. De plus, on respecte ainsi le principe ouvert/fermé, car si on souhaite créer une nouvelle famille de classes, on a juste à ajouter une nouvelle fabrique.
+
+<div class="exercise">
+
+1. Refactorez votre code afin d'introduire une nouvelle fabrique permettant de construire des donjons "difficiles" en appliquant le pattern **fabrique abstraite**. Vous devez aussi logiquement légèrement adapter le code de la classe `Donjon`.
+
+2. Dans le `Main`, construisez des donjons difficiles et des donjons faciles.
+
+3. La méthode `getInfosSalle` doit permettre de récupérer les informations d'une salle du donjon "à l'extérieur". Cependant, son implémentation est problématique... Par exemple, que pourriez-vous faire comme action indésirable en récupérant une salle d'un `Donjon` dans le `Main` (indice : seul le donjon devrait avoir le droit de modifier l'état de ses salles) ? Quel pattern que nous avons vu pendant ce TP pourriez-vous appliquer pour régler ce problème ? Refactorez votre code dans ce sens.
+
+4. Réalisez le diagramme de classes de conception de votre application.
+
+</div>
+
+Parfois, il n'est pas nécessairement souhaitable d'avoir la possibilité d'utiliser toutes les fabriques en même temps (on doit alors pointer l'instance de la fabrique qu'on souhaite utiliser). Il faut donc trouver un moyen d'en sélectionner une seule, mais aussi de pouvoir facilement changer la fabrique concrète utilisée. Nous allons voir cela dans le prochain exercice.
+
+### Combats de monstres
+
+<div class="exercise">
+
+1. Ouvrez le paquetage `fabrique3`. C'est le retour des **pokémons** ! Mais il y a également une nouvelle famille de monstres : **les digimons** qui ont un fonctionnement similaire aux pokémons mais on en plus un système d'énergie. En tout cas, ils se créent de la même manière que les pokémons ou plus généralement, qu'un "monstre".
+
+2. Actuellement, dans le `Main`, on crée des pokémons et on utilise le simulateur de combat pour en faire combattre deux. À la place des pokémons, on voudrait parfois utiliser des digimons. Maintenant que vous connaissez le pattern **fabrique abstraite** réfactorez le code afin de pouvoir facilement switcher entre des combats avec divers pokémons et des combats avec divers digimons. Si vous rencontrez quelques petits problèmes, regardez les méthodes de `Digimon`...ne serait-il pas judicieux de lui faire implémenter une certaine interface ? Et pour les différentes sous-classes de `Digimon` ? (`DigimonEau`, `DigimonFeu`...). Vous devrez aussi adapter le `Main` et `SimulateurCombat`.
+
+3. Contrairement à l'exercice précédent sur les **donjons**, on ne veut pas que les deux fabriques cohabitent à un instant t du programme. On veut que l'application fonctionne exclusivement avec des pokémons ou bien fonctionne exclusivement avec des digimons. Mais on ne veut pas changer manuellement l'instance de la fabrique utilisée partout dans le code source. Il faut imaginer que cette fabrique est probablement utilisée à divers endroits et surtout, qu'on ne souhaite pas recompiler le code source à chaque changement. Comment pourrions-nous faire ?
+
+</div>
+
+Nous sommes dans un cas particulier où tout le programme va utiliser une seule et même instance d'une fabrique donnée, même s'il y a en a plusieurs à disposition. Par exemple, imaginons qu'une application utilise des fabriques pour gérer la connexion à une source de données afin de stocker les données du programme. Une première fabrique permet de stocker les informations dans une base de données, une deuxième dans un fichier XML. Pendant que le programme tournera, on utilisera qu'une seule source de données, mais pas les deux à la fois. Néanmoins, on utilise quand même une fabrique abstraite pour pouvoir changer facilement de source de stockage à l'avenir (par exemple, avec une configuration "test" utilisant une base de données en mémoire...)
+
+Mais comment faire cela sans modifier l'instance concrète utilisée un peu partout ? (car elle est surement injectée à différentes classes). La réponse est simple : il faut regrouper la logique qui instancie la classe concrètement utilisée à un seul endroit. On peut ensuite mettre un système de paramétrage qui permet de changer la fabrique utilisée facilement. Les classes qui ont besoin de cette fabrique iront donc appeler une méthode de cette classe afin de récupérer la fabrique concrète à utiliser.
+
+La question est de savoir : où placer ce bout de code ? Il n'y a pas vraiment de réponse officielle à cette question. Cela pourrait être dans une classe indépendante avec une méthode statique. Cependant, dans la pratique, on retrouve parfois ce bout de code directement dans la **fabrique abstraite** qu'on mélange à un **Singleton** :
+
+```java
+
+public abstract class AbstractFigureGeometriqueFactory {
+
+  private static AbstractFigureGeometriqueFactory INSTANCE;
+
+  private String fabriqueSelectionee = "graphique";
+
+  public synchronized static AbstractFigureGeometriqueFactory getInstance() {
+    if(INSTANCE == null) {
+      if(fabriqueSelectionee.equals("simple")) {
+        INSTANCE = new FigureGeometriqueSimpleFactory();
+      }
+      else if(fabriqueSelectionee.equals("graphique")) {
+        INSTANCE = new FigureGeometriqueGraphiqueFactory();
+      }
+      else {
+        throw new RuntimeException("Fabrique inconnue.");
+      }
+    }
+    return INSTANCE;
+  }
+
+  public abstract Carre creerCarre(int tailleCote);
+
+  public abstract Cercle creerCercle(int rayon);
+
+}
+
+public class FigureGeometriqueSimpleFactory extends AbstractFigureGeometriqueFactory {
+
+  public Carre creerCarre(int tailleCote) {
+    return new CarreSimple(tailleCote);
+  }
+
+  public Cercle creerCercle(int rayon) {
+    return new CercleSimple(rayon);
+  }
+
+}
+
+public class FigureGeometriqueGraphiqueFactory extends AbstractFigureGeometriqueFactory {
+
+  public Carre creerCarre(int tailleCote) {
+    return new CarreGraphique(tailleCote);
+  }
+
+  public Cercle creerCercle(int rayon) {
+    return new CercleGraphique(rayon);
+  }
+
+}
+
+public class ServiceA {
+
+  private AbstractFigureGeometriqueFactory factory;
+
+  public ServiceA(AbstractFigureGeometriqueFactory factory) {
+    this.factory = factory;
+  }
+
+}
 
 
-## Mise en pratique sur une application plus large
+public class Main {
 
-## Bonus
+  public static void main(String[]args) {
+    ServiceA s = new ServiceA(AbstractFigureGeometriqueFactory.getInstance());
+  }
+
+}
+```
+
+Avec cette nouvelle implémentation, il n'y a plus qu'à changer le paramètre `fabriqueSelectionee` dans la fabrique abstraite pour changer la fabrique concrète manipulée dans tout le programme. On notera qu'il n'y a plus besoin que les sous-classes soient des **singletons**, car elles sont instanciées par la fabrique abstraite.
+
+Encore mieux : dans les faits, il faut (légèrement) changer le code source de la fabrique abstraite pour changer de fabrique... Donc il faut recompiler. Pour éliminer ce dernier problème, on peut plutôt utiliser un **fichier de configuration** : lors de son initialisation, la fabrique abstraite va lire dans ce fichier pour déterminer quelle fabrique instancier.
+
+```java
+
+public abstract class AbstractFigureGeometriqueFactory {
+
+  private static AbstractFigureGeometriqueFactory INSTANCE;
+
+  private String fabriqueSelectionee = "graphique";
+
+  public synchronized static AbstractFigureGeometriqueFactory getInstance() {
+      if(INSTANCE == null) {
+          try {
+              InputStream stream = ClassLoader.getSystemResourceAsStream("config/figure_factory_config.txt");
+              if(stream == null) {
+                  throw new RuntimeException("Fichier de configuration manquant.");
+              }
+              BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+              String config = reader.readLine();
+              if(config.equals("simple")) {
+                  INSTANCE = new FigureGeometriqueSimpleFactory();
+              }
+              else if(config.equals("graphique")) {
+                  INSTANCE = new FigureGeometriqueGraphiqueFactory();
+              }
+              else {
+                  throw new RuntimeException("Fabrique inconnue.");
+              }
+
+          } catch (IOException e) {
+              throw new RuntimeException("Fichier de configuration corrompu.");
+          }
+      }
+      return INSTANCE;
+  }
+
+  public abstract Carre creerCarre(int tailleCote);
+
+  public abstract Cercle creerCercle(int rayon);
+
+}
+```
+
+La fabrique abstraite vise un fichier qui se situe dans `src/main/resources/config/figure_factory_config.txt` qui contient simplement une chaîne de caractères. Par exemple : `simple`.
+
+<div class="exercise">
+
+1. Créez un dossier `config` dans `src/main/resources/` puis, à l'intérieur de ce nouveau répertoire, un fichier `monstres_factory_config.txt`.
+
+2. Refactorez le code de l'application afin qu'il soit possible d'utiliser soit les pokémons, soit les digimons en changeant simplement le contenu du fichier de configuration.
+
+3. Testez les deux versions !
+
+</div>
+
+### Intégrer une librairie externe
+
+Les pokémons et les digimons sont des classes qui ont été crées par le développeur de ce projet et où il est donc possible de réarranger le code pour que tout fonctionne. Mais que se passerait-il si nous voulions intégrer à notre système du code sur lequel nous n'avons pas la main (dont nous ne pouvons pas éditer le code source). Par exemple, des classes compilées qui proviennent d'une librairie.
+
+Pour illustrer ce problème, reprenons notre exemple de figures géométriques. Imaginons que vous souhaitez pouvoir afficher des carrés et des cercles de manière "complexe" (à voir ce que "complexe" veut dire dans ce contexte). Au lieu de ré-inventer la roue, vous avez trouvé une librairie `FiguresComplexes` qui fait cela pour vous ! Via `Maven`, vous installez cette librairie sur votre projet.
+
+Vous ne pouvez pas modifier le code source de cette classe, mais vous pouvez étudier leur documentation. Vous êtes notamment intéressés par les deux classes suivantes :
+
+```java
+public class ComplexSquare {
+
+  //Construit le carré en précisant la taille d'un côté
+  public ComplexSquare(double size) {
+    ...
+  }
+
+  //Retourne la taille du côté du carré complexe
+  public int getSize() {
+    ...
+  }
+
+  //Renvoie l'aire du carré
+  public int calculateArea() {
+    ...
+  }
+
+  //Affichage du carré
+  public void displaySquare() {
+
+  }
+
+}
+
+public class ComplexCircle {
+
+  //Construit le cercle en précisant son rayon
+  public ComplexCircle(double radius) {
+    ...
+  }
+
+  //Retourne le diamètre du cercle complexe
+  public int getDiameter() {
+    ...
+  }
+
+  //Renvoie l'aire du cercle
+  public int calculateArea() {
+    ...
+  }
+
+  //Affichage du cercle
+  public void displayCircle() {
+
+  }
+
+}
+```
+
+Ces deux classes répondent à tous les besoins...mais, de prime abord, il semble impossible de les intégrer dans notre système de fabrique :
+
+* Les noms des méthodes ne sont pas les mêmes.
+
+* On ne peut pas faire implémenter à ces classes `Carre` ou `Circle`...
+
+* On ne peut pas modifier le code source de ces classes...
+
+Cela semble compromis ! Mais pas de panique, un design pattern résout ce problème : `Adaptateur`.
+
+L'objectif de ce pattern est de faire en sorte qu'une classe "incompatible" avec notre architecture puisse tout de même être utilisée en passant par une classe dîte *adaptateur** qui fait le pont entre votre architecture et cette classe grâce à de la **composition** (encore et toujours !). C'est un peu comme quand vous voyagez en Angleterre par exemple. Les prises électriques ne sont pas compatibles avec la prise de votre chargeur de téléphone. Vous devez alors utiliser un adaptateur entre la prise de votre chargeur et celle Anglaise.
+
+Ici, la "prise du chargeur" est votre architecture, les interfaces, les abstractions, l'adaptateur la classe qui va être amenée par le pattern et la prise Anglaise la classe "externe" que vous souhaitez utiliser.
+
+Voici comment appliquer ce pattern :
+
+1. Créer une classe dite "Adapter" qui possède un attribut du type de la classe à adapter. Cet attribut peut être injecté via le constructeur ou bien, dans certains cas, directement construit dans la classe Adapter.
+
+2. Faire implémenter à notre Adapter l'interface souhaitée ou lui faire étendre la classe abstraite souhaitée.
+
+3. L'implémentation de chaque méthode abstraite se fera par **délégation** en appelant la méthode d'origine sur la classe cible.
+
+Mettons cela en application sur notre exemple :
+
+```java
+public class ComplexSquareAdapter implements Carre {
+
+  private ComplexSquare complexSquare;
+
+  public ComplexSquareAdapter(ComplexSquare complexSquare) {
+    this.complexSquare = complexSquare;
+  }
+
+  //Ou bien
+  /*
+  public ComplexSquareAdapter(int tailleCote) {
+    this.complexSquare = new ComplexSquare(tailleCote);
+  }*/
+
+  @Override
+  public int getSize() {
+    return complexSquare.getSize();
+  }
+
+  @Override
+  public int getAire() {
+    return complexSquare.getArea();
+  }
+
+  @Override
+  public void afficherFigure() {
+    complexSquare.displaySquare();
+  }
+
+}
+
+public class ComplexCircleAdapter implements Cercle {
+
+  private ComplexCircle complexCircle;
+
+  public ComplexCircleAdapter(ComplexCircle complexCircle) {
+    this.complexCircle = complexCircle;
+  }
+
+  //Ou bien
+  /*
+  public ComplexCircleAdapter(int rayon) {
+    this.complexCircle = new ComplexCircle(rayon);
+  }*/
+
+  @Override
+  public int getDiametre() {
+    return complexCircle.getDiameter();
+  }
+
+  @Override
+  public int getAire() {
+    return complexCircle.getArea();
+  }
+
+  @Override
+  public void afficherFigure() {
+    complexCircle.displayCircle();
+  }
+
+}
+
+public class FigureGeometriqueComplexeFactory extends AbstractFigureGeometriqueFactory {
+
+  public Carre creerCarre(int tailleCote) {
+    return new ComplexSquareAdapter(new ComplexSquare(tailleCote));
+  }
+
+  public Cercle creerCercle(int rayon) {
+    return new ComplexCircleAdapter(new ComplexCircle(rayon));
+  }
+
+}
+```
+
+Maintenant, revenons à nos petits monstres...
+
+<div class="exercise">
+
+1. Une librairie nommée `Pattermon` est importée dans le projet ! Explorez ses classes en allant dans `src/main/resources/libs/Pattermons.jar` (normalement, l'IDE vous permet de voir les classes contenues dans le `.jar`).
+
+2. Comme vous pouvez le constater, cette librairie définie de nouveaux monstres "Pattermons" qu'on souhaite maintenant intégrer à notre système de simulation de combat. Comme vous l'avez deviné, nous allons donc devoir mettre en place un `Adaptateur` ! Cependant, comme il y a une hiérarchie de classes ici, la mise en place va être un poil plus complexe que sur notre exemple, donc nous allons le faire pas à pas :
+
+  * Commencez par implémenter une classe abstraite `PattermonAdapter` qui permet d'adapter la classe abstraite `Patternmon`. Normalement, vous ne devriez pas trop avoir de difficulté, c'est quasiment comme dans l'exemple.
+
+  * `Pattermon` est une classe abstraite et nous avons besoin de pouvoir adapter ses classes filles concrètes (correspondant à `MonstreEau`, `MonstreFeu`, etc...). Il faut créer un adaptateur par classe fille ! Cet adaptateur devra **étendre** votre adaptateur abstrait `PattermonAdapter` et implémenter l'interface `MonstreX` correspondante (`MonstreEau` pour l'adaptation de `WaterPatternmon` par exemple).
+  
+  * Commencez par tenter d'adapter `WaterPatternmon`. Vous allez sans doute rencontrer une difficulté lorsque vous allez essayer d'implémenter les méthodes propres à l'interface. Dans un premier temps, essayez de résoudre cela par vous-même, puis, après quelques essais, lisez la prochaine section.
+
+</div>
+
+Le problème que vous avez dû rencontrer est le suivant : dans un de vos adaptateurs concrets, vous n'aviez pas accès au `patternmon` passé à la classe parente. Une solution que vous avez peut-être mis en place et de changer la visibilité de cet attribut en `protected`, mais même là, vous aviez sans doutes des erreurs ! 
+
+Voyons un peu tout ça :
+
+```java 
+public abstract class PatternmonAdapter implements Monstre {
+
+    protected Pattermon patternmon;
+
+    //...
+
+}
+
+public class PattermonEauAdapter extends PatternmonAdapter implements MonstreEau {
+
+    //Prend un WaterPattermon en pramètre et pas un Patternmon !
+    public PattermonEauAdapter(WaterPatternmon patternmon) {
+        super(patternmon);
+    }
+
+    @Override
+    public int getDureeRespiration() {
+        //Erreur !
+        return this.patternmon.getBreathingTime();
+    }
+
+}
+```
+
+Si vous avez bien une implémentation similaire (faites les changements nécessaires si ce n'est pas le cas) vous obtenez une erreur au niveau de la méthode `getDureeRespiration`. Cela est dû au fait que dans la classe mère, l'attribut `patternmon` est du type abstrait `Patternmon` et pas un `Waterpattermon` ! Donc, dans la classe fille, impossible d'utiliser `getBreathingTime`.
+
+La première solution "simple" serait de **caster** le patternmon. Normalement, comme on est sûr d'avoir passé au constructeur parent un `WaterPattermon`, c'est un **cast** sans risques :
+
+```java 
+@Override
+public int getDureeRespiration() {
+    return ((WaterPattermon) this.patternmon).getBreathingTime();
+}
+```
+
+Mais cette solution n'est pas élégante et il en existe une bien meilleure : la **généricité**. Dans la classe mère, il est possible de définir un (ou plusieurs) "type paramétré" qu'on peut par exemple nommer `T`. On peut imposer des restrictions, par exemple, que `T` soit une classe qui descende d'une autre classe spécifique.
+
+Quand une classe enfant étend la classe mère, elle peut alors préciser la classe concrète utilisée à la place de `T`. Ainsi, la classe mère est configurée pour utiliser ce type.
+
+Petite démonstration sur `PattermonAdapter` et `PattermonEauAdapter` :
+
+```java 
+//On définit le paramètre générique T lors de la déclaration de la classe
+//Je suis assuré que T est un objet qui étend la classe Patternmon
+public abstract class PatternmonAdapter<T extends Pattermon> implements Monstre {
+
+    //Peut être n'importe quel pattermon.
+    //Je peut appeller les méthodes de "Pattermon" sur cet objet
+    protected T patternmon;
+
+    public PatternmonAdapter(T pattermon) {
+      this.pattermon = pattermon;
+    }
+
+    //...
+
+}
+
+//Quand on étend PatternmonAdapter, on précise la classe cocnrète utilisée (ici, WatterPattermon)
+//Il faut imaginer que dans la classe mère, le "T" est remplacé par WatterPattermon.
+public class PattermonEauAdapter extends PatternmonAdapter<WaterPattermon> implements MonstreEau {
+
+    //Prend un WaterPattermon en pramètre et pas un Patternmon !
+    //Maintenant, on est "forcé" d'utiliser ce constructeur.
+    public PattermonEauAdapter(WaterPatternmon patternmon) {
+        super(patternmon);
+    }
+
+    @Override
+    public int getDureeRespiration() {
+        //Plus d'erreurs, car l'attribut "pattermon" dans la classe mère est un WaterPattermon !
+        return this.patternmon.getBreathingTime();
+    }
+
+}
+```
+
+Si vous n'avez pas tout compris, n'hésitez pas à en parler avec votre enseignant.
+
+<div class="exercise">
+
+1. Adaptez votre code pour introduire la généricité comme dans l'exemple ci-dessus puis implémentez les classes restantes : `PatternmonElectriqueAdapter`, `PatternmonPsyAdapter`, `PattermonFeuAdapter` et `PattermonPlanteAdapter`.
+
+2. Créez une nouvelle fabrique permettant de créer des `Pattermons`.
+
+3. Adaptez le code de votre **fabrique abstraite** afin de pouvoir gérer votre nouvelle fabrique.
+
+4. Un simple changement dans le fichier de configuration doit suffire pour utiliser les pattermons. Testez et vérifiez que tout marche bien (les attaques des monstres devraient avoir des noms anglais).
+
+</div>
+
+### Gestion des dépendances
+
+Jusqu'ici nous avons vu des fabriques qui instancient systématiquement un objet à chaque appel d'une méthode type `creer...`. Cependant, ce fonctionnement n'est pas obligatoire. Par exemple on pourrait avoir une fabrique qui **instancie** et stocke certains objets lors de son initialisation puis renvoie une référence vers ces objets lorsqu'on la solicite.
+
+Avec un tel fonctionnement, une **fabrique** permet alors de gérer les **dépendances** d'un programme. Elle pourrait par exemple stocker différentes instances de **services**  concrets de l'application. Couplé avec le pattern **fabrique abstraite**, cela nous permet de rendre les dépendances de notre programme fortement modulables !
+
+```java
+interface ServiceA {
+  void actionA();
+}
+
+interface ServiceB {
+  void actionB();
+}
+
+public class ServiceA1 implements ServiceA {
+
+  public void actionA() {
+    //...
+  }
+
+}
+
+public class ServiceA2 implements ServiceA {
+
+  public void actionA() {
+    //...
+  }
+
+}
+
+public class ServiceB1 implements ServiceB {
+
+  public void actionB() {
+    //...
+  }
+
+}
+
+public class ServiceB2 implements ServiceB {
+
+  public void actionB() {
+    //...
+  }
+
+}
+
+public class ServiceV1Factory extends AbstractServiceFactory {
+
+  private ServiceA serviceA;
+
+  private ServiceB serviceB;
+
+  public ServiceV1Factory() {
+    this.serviceA = new ServiceA1();
+    this.serviceB = new ServiceB1();
+  }
+
+  public ServiceA getServiceA() {
+    return serviceA;
+  }
+
+  public ServiceB getServiceB() {
+    return serviceB;
+  }
+
+}
+
+public class ServiceV2Factory extends AbstractServiceFactory {
+
+  private ServiceA serviceA;
+
+  private ServiceB serviceB;
+
+  public ServiceV2Factory() {
+    this.serviceA = new ServiceA2();
+    this.serviceB = new ServiceB2();
+  }
+
+  public ServiceA getServiceA() {
+    return serviceA;
+  }
+
+  public ServiceB getServiceB() {
+    return serviceB;
+  }
+
+}
+
+public abstract class AbstractServiceFactory {
+
+  public abstract ServiceA getServiceA();
+
+  public abstract ServiceB getServiceB();
+
+  private static AbstractServiceFactory INSTANCE;
+
+  public synchronized static AbstractServiceFactory getInstance() {
+      if(INSTANCE == null) {
+          try {
+              InputStream stream = ClassLoader.getSystemResourceAsStream("config/services.txt");
+              if(stream == null) {
+                  throw new RuntimeException("Fichier de configuration manquant.");
+              }
+              BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+              String config = reader.readLine();
+              if(config.equals("V1")) {
+                  INSTANCE = new ServiceV1Factory();
+              }
+              else if(config.equals("V2")) {
+                  INSTANCE = new ServiceV2Factory();
+              }
+              else {
+                  throw new RuntimeException("Fabrique inconnue.");
+              }
+
+          } catch (IOException e) {
+              throw new RuntimeException("Fichier de configuration corrompu.");
+          }
+      }
+      return INSTANCE;
+  }
+
+}
+
+public class Main {
+
+  public static void main(String[]args) {
+    ServiceA s1 = AbstractServiceFactory.getInstance().getServiceA();
+    s1.action();
+
+    ServiceB s2 = AbstractServiceFactory.getInstance().getServiceB();
+    s2.action();
+  }
+
+}
+```
+
+Dans l'exemple ci-dessus, un simple changement dans le fichier de configuration permet de changer les services concrets utilisés pour `ServiceA` et `ServiceB`. Contrairement aux exercices précédents, dans le cas d'un service, il n'est pas utile (voir, il ne faut pas) le ré-instancier chaque fois. Par exemple, dans le cas d'une classe "repository" permettant de faire des requêtes sur une base de données.
+
+C'est un peu comme ci toutes les dépendances stockées dans ces fabriques étaient de singletons, car on ne manipule qu'une seule instance de ces objets dans le programme. Mais cela est encore mieux qu'un singleton, car ces classes (`ServiceA1`, `ServiceB1`, etc...) ne sont pas construits comme des singletons ! Elles sont donc beaucoup plus adaptées aux tests unitaires. Comme mentionné dans la section "Avertissement" sur les singletons, nous préférerons utiliser des fabriques plutôt que de multiplier les singletons dans l'application.
+
+Il est toléré d'avoir un **singleton** pour les classes telles que les fabriques abstraites ou leurs sous-classes, car elles n'ont pas vraiment pour but d'être testées (unitairement). Mais sur les services qui contiennent du code métier, il faut éviter le **singleton** quand cela est possible. Les fabriques et les fabriques abstraites répondent à ce problème.
+
+Dans le prochain TP, nous verrons un outil encore plus puissant pour gérer les dépendances : le **conteneur IoC**.
+
+Pour le moment, revenons à nos moutons et appliquons ce que nous avons appris sur un nouvel exercice.
+
+<div class="exercise">
+
+1. Ouvrez le paquetage `fabrique4`. Il s'agit de la dernière application que vous aviez refactoré lors du dernier TP permettant de simuler l'inscription et la connexion d'un utilisateur. L'application est fonctionnelle. Lancez-la et explorer aussi les différentes classes mises à disposition si vous ne vous souvenez pas bien de son fonctionnement.
+
+2. Actuellement, si nous voulons changer la méthode de stockage (en mémoire ou dans un fichier) il faut éditer à la main `IHMUtilisateur` pour remplacer les paramètres injectés lors de la création de `ServiceUtilisateur`. On souhaite rendre cela plus modulable. Refactorez le code pour mettre en place et utiliser une **fabrique abstraite** et des **fabriques** pour gérer les deux types de méthodes stockage disponibles dans l'application. La configuration du type stockage utilisé devra se faire via un fichier de configuration textuel simple. Aussi, vos fabriques doivent stocker les **dépendances** qu'elles gèrent et ne pas les ré-instancier à chaque fois qu'on en a besoin. 
+
+  Normalement, vous n'avez pas besoin de toucher la classe `ServcieUtilisateur`, mais il faudra probablement adapter le code de `IHMUtilisateur`.
+
+3. Testez que tout fonctionne en alternant entre les deux méthodes de stockage via votre fichier de configuration.
+
+4. Il existe divers autres services que nous utilisons fréquemment dans l'application : le service permettant d'envoyer des mails (mailer) et le service de chiffrement (hasheur). On voudrait définir deux configurations correspondantes à ces deux "familles" de services :
+
+  * Une configuration "basique" utilisant `ServiceMailerBasique` et `HasheurMD5`.
+
+  * Une configuration "sécurisée" utilisant `ServiceMailerChiffre` et `HasheurSHA256`.
+
+  Là aussi, on veut pouvoir facilement switcher entre ces deux configurations sans changer le code, mais en éditant simplement un fichier de configuration.
+
+  Mettez en place un système pour pouvoir gérer ces deux configurations. Encore une fois, vous ne devriez pas avoir besoin d'éditer d'autre classes que `IHMUtilisateur` après la mise en place de votre système.
+
+5. Vérifiez que tout fonctionne en alternant entre les deux configurations.
+
+</div>
+
+Le **conteneur IoC** que nous allons utiliser dans le prochain TP permet de ne pas multiplier les fabriques pour gérer les différentes dépendances en centralisant le tout. C'est une sorte de super-fabrique hautement configurable gérant des dépendances (mais avec un objectif assez différent des fabriques que vous avez vues avant comme avec les figures géométriques, les pokémons ou les donjons).
+
+### Mise en pratique sur une application plus large
+
+Vous allez maintenant mettre en application ce que vous avez appris sur une application un peu plus large : l'application de gestion des étudiants (OGE) sur laquelle vous avez travaillé dans le cours de base de données !
+
+<div class="exercise">
+
+1. Forkez [le dépôt gitlab suivant](https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/tp4-qualite-oge) en le plaçant dans le namespace `qualite-de-developpement-semestre-3/etu/votrelogin`.
+
+2. Clonez votre nouveau dépôt en local. Ouvre le projet avec `IntelliJ` et vérifiez qu'il n'y a pas d'erreur. Si vous exécutez le programme, il y aura une erreur, c'est normal pour le moment.
+
+3. Pour rappel, ce programme peut se connecter à une base de données par deux moyens : en utilisant l'API `JDBC` en "brut" ou bien en passant par l'ORM `Hibernate`. Vous n'avez pas nécessairement besoin d'avoir fini ce TP dans son intégralité en base de données pour pouvoir faire cet exercice. Il y a un peu de configuration à faire pour que vous puissiez vous connecter à votre BDD par JDBC et Hibernate :
+
+  * Dans la classe `stockage/jdbc/JDBCUtils`, remplacez les valeurs `aCompleter` par vos identifiants d'accès à la base de données `Oracle` de l'IUT.
+
+  * Faites de même dans le fichier `hibernate.cfg.xml` dans `src/main/java/resources`.
+
+  Lancez l'application et vérifiez que tout fonctionne.
+
+4. De base cette application est configurée pour utiliser `JDBC` et pas `Hibernate`. Si on souhaite changer la méthode de stockage en BDD utilisée, il faut changer le code sources des classes `RessourceService`, `EtudiantService` et `NoteService`. On aimerait pouvoir plus facilement switcher entre `JDBC` et `Hibernate` en utilisant un simple **fichier de configuration**. On vous demande donc de **refactorer** le code afin de mettre en place un tel système (avec une **fabrique abstraite** gérant des dépendances, comme dans l'exercice précédent). Quelques commentaires :
+
+  * L'interface **Stockage** (dans le paquetage `stockage`) permet de définir un repository. Vous pouvez notamment aller jeter un œil aux repositories **concrets** qui utilisent `JDBC` et implémentent cette interface dans `stockage/jdbc`.
+
+  * Il faudra utiliser votre fabrique abstraite directement dans la méthode `getInstance` des trois services. Comme vous pouvez le constater, ces services sont des **singletons**. Ils sont donc difficilement testables...mais nous allons régler ce problème dans le prochain TP !
+
+  * Dans les trois services, vous avez des exemples d'instanciation des repositories JDBC simples (définis dans l'application).
+
+  * On accède aux repositories issus de `Hibernate` différemment. Pour rappel, ils sont fournis via une **librairie externe** nommée `HbernateRepositories`. Vous n'avez donc pas la main dessus ! De plus, les noms des méthodes différents de celle de votre interface `Stockage`... Quel pattern allez-vous utiliser pour résoudre ce problème ? Vous l'avez vu pendant ce TP. On rappelle comment manipuler les repositories de `Hibernate` (vous n'étiez peut-être pas allé jusque-là dans le TP) :
+
+    * La classe `EntityRepository<T>` permet de gérer un repository correspondant à une entité `T` (paramètre générique, qui peut être remplacé, par exemple par `EntityRepository<Ressource>`).
+
+    * Les méthodes qu'on peut utiliser sur un tel **repository** sont : `create`, `update`, `deleteById`, `findById`, `findAll` qui sont similaires aux méthodes définies dans l'interface `Stockage`.
+
+    * On n'instancie pas directement ces repositories, on les récupère via l'instruction suivante :
+
+    ```java
+    EntityRepository<MonEntite> repository = RepositoryManager.getRepository(MonEntite.class);
+
+    //Par exemple :
+    EntityRepository<Ressource> repository = RepositoryManager.getRepository(Ressource.class);
+    ```
+
+    * Si vous gérez bien le concept de **généricité** adapter les `EntityRepository` à votre architecture ne devrait demander qu'une seule classe (peut-être un peu dure à trouver si vous n'êtes pas encore trop à l'aise avec cette notion). Sinon, il y a aussi une solution plus basique utilisant trois classes.
+
+5. Une fois le refactoring terminé, vérifiez que tout fonctionne en alternant entre `JDBC` et `Hibernate` en modifiant votre fichier de configuration. Comme les deux systèmes utilisent la même base, cela n'est pas forcément évident de repérer quand l'un ou l'autre est utilisé. au démarrage, `Hibernate` va vous mettre divers messages d'informations dans la console contrairement à `JDBC`. Sinon, essayez de mettre un mauvais mot de passe dans une des configurations (dans `JDBCUtils` ou bien le fichier de configuration d'Hibernate) et alternez entre les deux méthodes. L'application ne devrait pas fonctionner seulement dans un cas sur deux.
+
+6. N'oubliez pas de push ce projet sur gitlab. **Attention**, si vous ne voulez pas que vos identifiants soient visibles, supprimez-les avant de push. Mais, à priori, seuls les enseignants ont accès à vos dépôts gitlab si vous l'avez placé dans le bon `namespace`.
+</div>
+
+Avec votre refactoring, il devient très facile d'ajouter et d'utiliser une nouvelle source de stockage de données, comme un fichier XML par exemple ou une base de données `SQLite` dédiées aux tests ! Et passer d'une méthode à l'autre ne demande alors plus aucune modification du code source.
+
+## Décorateur : Builder ou Fabrique ?
+
+Dans le dernier TP, vous avez découvert le pattern **décorateur** permettant de "composer" une instance en combiner les fonctionnalités de différents types de classes de manière dynamique. Nous avions notamment vu un exemple portant sur des salariés puis un exercice portant sur différents types de produits.
+
+Comme l'objet créé avec le pattern "décorateur" peut être assez complexe, il peut être intéressant de le coupler avec un pattern créateur comme **fabrique** ou bien **builder**.
+
+Reprenons l'exemple des salariés et essayons d'appliquer ces deux patterns :
+
+```java
+interface I_Salarie {
+  double getSalaire();
+}
+
+
+class Salarie implements I_Salarie {
+
+  private double salaire;
+
+  public Salarie(double salaire) {
+    this.salaire = salaire;
+  }
+
+  public double getSalaire() {
+    return salaire;
+  }
+
+}
+
+abstract class SalarieDecorator implements I_Salarie {
+   protected I_Salarie salarie;
+
+   public SalarieDecorator(I_Salarie salarie) {
+      this.salarie = salarie;
+   }
+}
+
+class ChefProjet extends SalarieDecorator {
+
+  private I_Salarie salarie;
+
+  private int nombreProjetsGeres;
+
+  public ChefProjet(I_Salarie salarie, int nombreProjetsGeres) {
+    super(salarie)
+    this.nombreProjetsGeres = nombreProjetsGeres;
+  }
+
+  @Override
+  public double getSalaire() {
+    return salarie.getSalaire() + 100 * (nombreProjetsGeres);
+  }
+
+}
+
+class ResponsableDeStagiaires extends SalarieDecorator {
+
+  private int nombreStagiairesGeres;
+
+  public ResponsableDeStagiaires(I_Salarie salarie, int nombreStagiairesGeres) {
+    super(salarie);
+    this.nombreStagiairesGeres = nombreStagiairesGeres;
+  }
+
+  @Override
+  public double getSalaire() {
+    return salarie.getSalaire() + 50 * nombreStagiairesGeres;
+  }
+
+}
+```
+
+On peut créer : des salariés simples, des salariés chefs de projet, des salariés responsables de stagiaires et des salariés à la fois chefs de projets et responsables de stagiaires. Si on ajoutait un nouveau type de `Salarie`, cela multiplierait les possibilités...
+
+Sans pattern créateur, il faut donc créer les salariés ainsi :
+
+```java
+I_Salarie salarie1 = new Salarie(2000);
+I_Salarie salarie2 = new SalarieChef(new Salarie(2500), 3);
+I_Salarie salarie3 = new ResponsableDeStagiaires(new Salarie(2300), 5);
+I_Salarie salarie4 = new SalarieChef(new ResponsableDeStagiaires(new Salarie(1800), 4), 2); 
+```
+
+Essayons d'abord d'utiliser le pattern **fabrique** :
+
+```java
+class SalarieFactory {
+
+  private static SalarieFactory INSTANCE;
+
+  private SalarieFactory() {}
+
+  public static SalarieFactory getInstance() {
+    if(INSTANCE == null) {
+      INSTANCE = new SalarieFactory();
+    }
+    return INSTANCE;
+  }
+
+  public Salarie creerSalarie(double salaire) {
+    return new Salarie(salaire);
+  }
+
+  public SalarieChef creerSalarieChef(I_Salarie salarie, double nombreProjetsGeres) {
+    return new SalarieChef(salarie, nombreProjetsGeres);
+  }
+
+  public ResponsableDeStagiaires creerResponsableStagiaires(I_Salarie salarie, int nombreStagiairesGeres) {
+    return new ResponsableDeStagiaires(salarie, nombreStagiairesGeres);
+  }
+
+}
+
+class Main {
+
+  public static void main(String[]args) {
+    SalarieFactory factory = SalarieFactory.getInstance();
+    I_Salarie salarie = factory.creerSalarieChef(factory.creerResponsableStagiaires(factory.creerSalarie(1800), 4), 2);
+  }
+
+}
+```
+
+<div class="exercise">
+
+1. Ouvrez le paquetage `decorateur`. Il s'agit du code complété de l'exercice sur les **produits** du dernier TP où on a mis en place un décorateur pour pouvoir avoir à la fois des produits avec des réductions et des produits qui périment bientôt.
+
+2. Comme dans l'exemple des salariés, réfactorez votre code pour mettre en place une **fabrique** qui permettant de construire vos produits. Adaptez le code de `Main` en conséquence.
+
+</div>
+
+Bon, cela fonctionne, mais à part déplacer la création dans la fabrique, il est toujours assez complexe de créer l'objet comme quand nous utilisions les `new` directement dans `Main`... Essayons plutôt avec un `Builder` !
+
+Attention, l'implémentation de `Builder` que nous allons présenter ici n'est pas un vrai `Builder` comme nous l'avons fait dans l'exercice des builders, mais plutôt une **adaptation** pour fonctionner avec le décorateur :
+
+  * La classe `Builder` va se trouver à l'extérieur de `Produit`. Autrement, cela voudrait dire que `Produit` dépendrait de toutes ces classes filles, et cela ne semble pas très adéquat.
+
+  * Le produit va être instancié dès le départ puis augmenté au fur et à mesure alors que normalement, la cible du builder n'est instanciée que quand on appelle la méthode `build`.
+
+  * Par conséquent, la méthode `build` ne renvoie qu'une instance déjà construite et ne construit rien.
+
+Bref, retenez simplement que c'est une adaptation un peu particulière et qui s'éloigne quand même pas mal du pattern de base (retenez plutôt l'exemple des burgers). Néanmoins, nous allons voir que cette adaptation s'emboîte assez bien avec **décorateur** :
+
+```java
+class SalarieBuilder {
+
+  private I_Salarie salarie;
+
+  public SalarieBuilder(double salaire) {
+    salarie = new Salarie(salaire);
+  }
+
+  public SalarieBuilder withChefProjet(int nombreProjetsGeres) {
+    salarie = new SalarieChef(salarie, nombreProjetsGeres);
+    return this;
+  }
+
+  public SalarieBuilder withResponsableStagiaires(int nombreStagiairesGeres) {
+    salarie = new ResponsableDeStagiaires(salarie, nombreStagiairesGeres);
+    return this;
+  }
+
+  public I_Salarie build() {
+    return salarie;
+  }
+
+}
+
+class Main {
+
+  public static void main(String[]args) {
+    I_Salarie salarie1 = new SalarieBuilder(2000).build();
+    I_Salarie salarie2 = new SalarieBuilder(2500).withChefProjet(3).build();
+    I_Salarie salarie3 = new SalarieBuilder(2300).withResponsableStagiaires(5).build();
+    I_Salarie salarie4 = new SalarieBuilder(1800).withChefProjet(4).withResponsableStagiaires(2).build();
+  }
+
+}
+```
+<div class="exercise">
+
+1. Réfactorez le code de votre application pour ajouter un builder (adapté) pour vos **produits**.
+
+2. Adaptez le code de `Main` pour utiliser votre builder au lieu de la fabrique.
+
+</div>
+
+La version utilisant le **builder** semble bien plus pratique que la **fabrique** ! C'est donc une solution plutôt satisfaisante pour ce problème qu'on pourra retenir.
+
+## Amélioration du générateur de donjons
+
+Et si nous essayons de combiner plus de patterns ? Nous avons l'application idéale pour ça : le générateur de donjon (paquetage `fabrique2`). Il y a déjà le pattern **fabrique**, **fabrique abstraite**, **singleton** et **prototype**.
+
+<div class="exercise">
+
+1. Nous aimerions maintenant que les différentes salles puissent être combinées afin de créer une "super-salle". Par exemple, on aimerait avoir des salles avec des coffres et 20 ennemis. Une salle avec une énigme et un boss. Une salle avec tout à la fois...! Quel design pattern pouvez-vous utiliser pour mettre en place une telle fonctionnalité ? La seule méthode qui nous intéresse est `toString`. À l'affichage, on doit avoir les informations de toutes les salles qui composent une salle. Après vos refactoring, vous devrez logiquement adapter le code de vos deux **fabriques**. Pour la configuration **difficile** on souhaite faire des changements supplémentaires :
+
+  * Une salle normale est une salle avec un coffre et entre 20 et 40 ennemis.
+
+  * Une salle spéciale est soit une salle avec un coffre et 20 ennemis (une chance sur cinq) ou bien une salle avec un boss avec un niveau entre 30 et 50.
+
+  * La salle finale est une salle avec une énigme, un boss de niveau 80 et 30 ennemis.
+
+2. On aimerait améliorer la création des **salles** composées. Par exemple, avec un **Builder**...?
+
+3. Testez que tout fonctionne.
+
+4. Réalisez le diagramme de classes de conception de votre application.
+</div>
 
 ## Conclusion
+
+Vous maîtrisez maintenant l'ensemble des **design patterns créateurs** ainsi que le pattern **Adaptateur**. Ce TP vous a aussi logiquement permis de renforcer votre pratique de la conception logicielle et de l'application des principes `SOLID`.
+
+Toutefois, attention à ne pas attraper la **patternite** : c'est une maladie connue qu'attrapent les jeunes ingénieurs logiciels qui découvrent les **design patterns**. Cela se manifeste par une envie de mettre des patterns partout à tort et à travers même quand cela n'est pas nécessaire. Comme pour le **singleton**, il faut se poser la question de savoir si un pattern est nécessaire ou non. Normalement, l'utilisation d'un pattern vient assez naturellement quand on souhaite résoudre le problème qui lui est lié. Si son utilisation semble un peu trop forcée, c'est que cela est probablement injustifié. Bref, comme toujours, il faut avoir une vision générale et sur le long terme !
+
+Dans le prochain TP, nous verrons comment encore plus optimiser la **gestion des dépendances** de notre programme en construisant notre propre **conteneur IoC** afin de gérer dynamiquement les dépendances majeures de nos applications.
