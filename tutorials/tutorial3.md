@@ -769,18 +769,25 @@ abstract class SalarieDecorator implements I_Salarie {
    public SalarieDecorator(I_Salarie salarie) {
       this.salarie = salarie;
    }
+
+   public double getSalaire() {
+      return salarie.getSalaire();
+   }
 }
 
 class ResponsableDeStagiaires extends SalarieDecorator {
 
-   private int nombreStagiairesGeres;
+  private int nombreStagiairesGeres;
 
-   public ResponsableDeStagiaires(I_Salarie salarie, int nombreStagiairesGeres) {
-      super(salarie);
-      this.nombreStagiairesGeres = nombreStagiairesGeres;
-   }
+  public ResponsableDeStagiaires(I_Salarie salarie, int nombreStagiairesGeres) {
+    super(salarie);
+    this.nombreStagiairesGeres = nombreStagiairesGeres;
+  }
 
-   //Reste du code
+  @Override
+  public double getSalaire() {
+    return super.getSalaire() + 50 * nombreStagiairesGeres;
+  }
 
 }
 ```
