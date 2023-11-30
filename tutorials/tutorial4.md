@@ -731,9 +731,9 @@ Mais alors, qui doit faire cette copie ?
 
 <div class="exercise">
 
-1. Réfactorez votre code afin que `Banque` renvoie une **copie** du compte courant sélectionné. Attention au **solde** ! Il faut qu'il soit identique au compte copié. Vérifiez que cela fonctionne en lançant le test unitaire. Il devrait maintenant passer.
+1. refactorez votre code afin que `Banque` renvoie une **copie** du compte courant sélectionné. Attention au **solde** ! Il faut qu'il soit identique au compte copié. Vérifiez que cela fonctionne en lançant le test unitaire. Il devrait maintenant passer.
 
-2. On aimerait maintenant que la `Banque` gère aussi des **comptes épargne**. En fait, il faut qu'elle puisse gérer des **CompteBancaire** et pas seulement des **comptes courants**. Réfactorez le code de la classe `Banque` pour rendre cela possible (en utilisant plutôt la classe abstraite `compteBancaire` plutôt que `CompteCourant`). 
+2. On aimerait maintenant que la `Banque` gère aussi des **comptes épargne**. En fait, il faut qu'elle puisse gérer des **CompteBancaire** et pas seulement des **comptes courants**. refactorez le code de la classe `Banque` pour rendre cela possible (en utilisant plutôt la classe abstraite `compteBancaire` plutôt que `CompteCourant`). 
 
     Vous devrez néanmoins conserver `ouvrirCompteCourant` tel quel car elle ouvre spécifiquement un compte courant. Vous devrez aussi ajouter une méthode `ouvrierCompteEpargne` (tout cela ne respecte pas énormément le principe ouvert/fermé, mais nous allons nous en contenter pour cet exercice). 
     
@@ -1335,7 +1335,7 @@ Parfois, il n'est pas nécessairement souhaitable d'avoir la possibilité d'util
 
 1. Ouvrez le paquetage `fabrique3`. C'est le retour des **pokémons** ! Mais il y a également une nouvelle famille de monstres : **les digimons** qui ont un fonctionnement similaire aux pokémons mais on en plus un système d'énergie. En tout cas, ils se créent de la même manière que les pokémons ou plus généralement, qu'un "monstre".
 
-2. Actuellement, dans le `Main`, on crée des pokémons et on utilise le simulateur de combat pour en faire combattre deux. À la place des pokémons, on voudrait parfois utiliser des digimons. Maintenant que vous connaissez le pattern **fabrique abstraite** réfactorez le code afin de pouvoir facilement switcher entre des combats avec divers pokémons et des combats avec divers digimons. Si vous rencontrez quelques petits problèmes, regardez les méthodes de `Digimon`... ne serait-il pas judicieux de lui faire implémenter une certaine interface ? Et pour les différentes sous-classes de `Digimon` ? (`DigimonEau`, `DigimonFeu`...). Vous devrez aussi adapter le `Main` et `SimulateurCombat`.
+2. Actuellement, dans le `Main`, on crée des pokémons et on utilise le simulateur de combat pour en faire combattre deux. À la place des pokémons, on voudrait parfois utiliser des digimons. Maintenant que vous connaissez le pattern **fabrique abstraite** refactorez le code afin de pouvoir facilement switcher entre des combats avec divers pokémons et des combats avec divers digimons. Si vous rencontrez quelques petits problèmes, regardez les méthodes de `Digimon`... ne serait-il pas judicieux de lui faire implémenter une certaine interface ? Et pour les différentes sous-classes de `Digimon` ? (`DigimonEau`, `DigimonFeu`...). Vous devrez aussi adapter le `Main` et `SimulateurCombat`.
 
 3. Contrairement à l'exercice précédent sur les **donjons**, on ne veut pas que les deux fabriques cohabitent à un instant t du programme. On veut que l'application fonctionne exclusivement avec des pokémons ou bien fonctionne exclusivement avec des digimons. Mais on ne veut pas changer manuellement l'instance de la fabrique utilisée partout dans le code source. Il faut imaginer que cette fabrique est probablement utilisée à divers endroits et surtout, qu'on ne souhaite pas recompiler le code source à chaque changement. Comment pourrions-nous faire ?
 
@@ -1656,7 +1656,7 @@ Maintenant, revenons à nos petits monstres...
 
     * Commencez par implémenter une classe abstraite `patternmonAdapter` qui permet d'adapter la classe abstraite `Patternmon`. Normalement, vous ne devriez pas trop avoir de difficulté, c'est quasiment comme dans l'exemple.
 
-    * `patternmon` est une classe abstraite et nous avons besoin de pouvoir adapter ses classes héritières concrètes (correspondant à `MonstreEau`, `MonstreFeu`, etc...). Il faut créer un adaptateur par classe héritière ! Cet adaptateur devra **étendre** votre adaptateur abstrait `patternmonAdapter` et implémenter l'interface `MonstreX` correspondante (`MonstreEau` pour l'adaptation de `WaterPatternmon` par exemple).
+    * `patternmon` est une classe abstraite et nous avons besoin de pouvoir adapter ses classes filles concrètes (correspondant à `MonstreEau`, `MonstreFeu`, etc...). Il faut créer un adaptateur par classe fille ! Cet adaptateur devra **étendre** votre adaptateur abstrait `patternmonAdapter` et implémenter l'interface `MonstreX` correspondante (`MonstreEau` pour l'adaptation de `WaterPatternmon` par exemple).
     
     * Commencez par tenter d'adapter `WaterPatternmon`. Vous allez sans doute rencontrer une difficulté lorsque vous allez essayer d'implémenter les méthodes propres à l'interface. Dans un premier temps, essayez de résoudre cela par vous-même, puis, après quelques essais, lisez la prochaine section.
 
@@ -1691,7 +1691,7 @@ public class patternmonEauAdapter extends PatternmonAdapter implements MonstreEa
 }
 ```
 
-Si vous avez bien une implémentation similaire (faites les changements nécessaires si ce n'est pas le cas) vous obtenez une erreur au niveau de la méthode `getDureeRespiration`. Cela est dû au fait que dans la classe mère, l'attribut `patternmon` est du type abstrait `Patternmon` et pas un `Waterpatternmon` ! Donc, dans la classe héritière, impossible d'utiliser `getBreathingTime`.
+Si vous avez bien une implémentation similaire (faites les changements nécessaires si ce n'est pas le cas) vous obtenez une erreur au niveau de la méthode `getDureeRespiration`. Cela est dû au fait que dans la classe mère, l'attribut `patternmon` est du type abstrait `Patternmon` et pas un `Waterpatternmon` ! Donc, dans la classe fille, impossible d'utiliser `getBreathingTime`.
 
 La première solution "simple" serait de **caster** le patternmon. Normalement, comme on est sûr d'avoir passé au constructeur parent un `Waterpatternmon`, c'est un **cast** sans risques :
 
@@ -1711,7 +1711,7 @@ Petite démonstration sur `patternmonAdapter` et `patternmonEauAdapter` :
 ```java 
 //On définit le paramètre générique T lors de la déclaration de la classe
 //Je suis assuré que T est un objet qui étend la classe Patternmon
-public abstract class PatternmonAdapter<T extends patternmon> implements Monstre {
+public abstract class PatternmonAdapter<T extends Patternmon> implements Monstre {
 
     //Peut être n'importe quel patternmon.
     //Je peut appeller les méthodes de "patternmon" sur cet objet
@@ -1938,7 +1938,7 @@ Le **conteneur IoC** que nous allons utiliser dans le prochain TP permet de ne p
 
 ### Mise en pratique sur une application plus large
 
-Vous allez maintenant mettre en application ce que vous avez appris sur une application un peu plus large : l'application de gestion des étudiants (OGE) sur laquelle vous avez travaillé dans le cours de base de données !
+Vous allez maintenant mettre en application ce que vous avez appris sur une application un peu plus large : l'application de gestion des étudiants (OGE) sur laquelle vous avez travaillé dans le cours de base de données.
 
 <div class="exercise">
 
@@ -1954,7 +1954,7 @@ Vous allez maintenant mettre en application ce que vous avez appris sur une appl
 
     Lancez l'application et vérifiez que tout fonctionne.
 
-4. De base cette application est configurée pour utiliser `JDBC` et pas `Hibernate`. Si on souhaite changer la méthode de stockage en BDD utilisée, il faut changer le code sources des classes `RessourceService`, `EtudiantService` et `NoteService`. On aimerait pouvoir plus facilement switcher entre `JDBC` et `Hibernate` en utilisant un simple **fichier de configuration**. On vous demande donc de **refactorer** le code afin de mettre en place un tel système (avec une **fabrique abstraite** gérant des dépendances, comme dans l'exercice précédent). Quelques commentaires :
+4. De base cette application est configurée pour utiliser `JDBC` et pas `Hibernate`. Si on souhaite changer la méthode de stockage en BDD utilisée, il faut changer le code source des classes `RessourceService`, `EtudiantService` et `NoteService`. On aimerait pouvoir plus facilement switcher entre `JDBC` et `Hibernate` en utilisant un simple **fichier de configuration**. On vous demande donc de **refactorer** le code afin de mettre en place un tel système (avec une **fabrique abstraite** gérant des dépendances, comme dans l'exercice précédent). Quelques commentaires :
 
     * L'interface **Stockage** (dans le paquetage `stockage`) permet de définir un repository. Vous pouvez notamment aller jeter un œil aux repositories **concrets** qui utilisent `JDBC` et implémentent cette interface dans `stockage/jdbc`.
 
@@ -1962,9 +1962,9 @@ Vous allez maintenant mettre en application ce que vous avez appris sur une appl
 
     * Dans les trois services, vous avez des exemples d'instanciation des repositories JDBC simples (définis dans l'application).
 
-    * On accède aux repositories issus de `Hibernate` différemment. Pour rappel, ils sont fournis via une **librairie externe** nommée `HbernateRepositories`. Vous n'avez donc pas la main dessus ! De plus, les noms des méthodes différents de celle de votre interface `Stockage`... Quel pattern allez-vous utiliser pour résoudre ce problème ? Vous l'avez vu pendant ce TP. On rappelle comment manipuler les repositories de `Hibernate` (vous n'étiez peut-être pas allé jusque-là dans le TP) :
+    * On accède aux repositories issus de `Hibernate` différemment. Pour rappel, ils sont fournis via une **librairie externe** nommée `HibernateRepositories`. Vous n'avez donc pas la main dessus ! De plus, les noms des méthodes différents de celle de votre interface `Stockage`... Quel pattern allez-vous utiliser pour résoudre ce problème ? Vous l'avez vu pendant ce TP. On rappelle comment manipuler les repositories de `Hibernate` (vous n'étiez peut-être pas allé jusque-là dans le TP) :
 
-      * La classe `EntityRepository<T>` permet de gérer un repository correspondant à une entité `T` (paramètre générique, qui peut être remplacé, par exemple par `EntityRepository<Ressource>`).
+      * La classe `EntityRepository<T>` permet de gérer un repository correspondant à une entité `T` (paramètre générique, qui peut être instancié, par exemple par `EntityRepository<Ressource>`).
 
       * Les méthodes qu'on peut utiliser sur un tel **repository** sont : `create`, `update`, `deleteById`, `findById`, `findAll` qui sont similaires aux méthodes définies dans l'interface `Stockage`.
 
@@ -2112,7 +2112,7 @@ class Main {
 
 1. Ouvrez le paquetage `decorateur`. Il s'agit du code complété de l'exercice sur les **produits** du dernier TP où on a mis en place un décorateur pour pouvoir avoir à la fois des produits avec des réductions et des produits qui périment bientôt.
 
-2. Comme dans l'exemple des salariés, réfactorez votre code pour mettre en place une **fabrique** qui permettant de construire vos produits. Adaptez le code de `Main` en conséquence.
+2. Comme dans l'exemple des salariés, refactorez votre code pour mettre en place une **fabrique** qui permettant de construire vos produits. Adaptez le code de `Main` en conséquence.
 
 </div>
 
@@ -2120,7 +2120,7 @@ Bon, cela fonctionne, mais à part déplacer la création dans la fabrique, il e
 
 Attention, l'implémentation de `Builder` que nous allons présenter ici n'est pas un vrai `Builder` comme nous l'avons fait dans l'exercice des builders, mais plutôt une **adaptation** pour fonctionner avec le décorateur :
 
-  * La classe `Builder` va se trouver à l'extérieur de `Produit`. Autrement, cela voudrait dire que `Produit` dépendrait de toutes ces classes filles, et cela ne semble pas très adéquat.
+  * La classe `Builder` va se trouver à l'extérieur de `Produit`. Autrement, cela voudrait dire que `Produit` dépendrait de toutes ses classes filles, et cela ne semble pas très adéquat.
 
   * Le produit va être instancié dès le départ puis augmenté au fur et à mesure alors que normalement, la cible du builder n'est instanciée que quand on appelle la méthode `build`.
 
@@ -2166,7 +2166,7 @@ class Main {
 ```
 <div class="exercise">
 
-1. Réfactorez le code de votre application pour ajouter un builder (adapté) pour vos **produits**.
+1. refactorez le code de votre application pour ajouter un builder (adapté) pour vos **produits**.
 
 2. Adaptez le code de `Main` pour utiliser votre builder au lieu de la fabrique.
 
@@ -2180,7 +2180,7 @@ Et si nous essayons de combiner plus de patterns ? Nous avons l'application idé
 
 <div class="exercise">
 
-1. Nous aimerions maintenant que les différentes salles puissent être combinées afin de créer une "super-salle". Par exemple, on aimerait avoir des salles avec des coffres et 20 ennemis. Une salle avec une énigme et un boss. Une salle avec tout à la fois...! Quel design pattern pouvez-vous utiliser pour mettre en place une telle fonctionnalité ? La seule méthode qui nous intéresse est `toString`. À l'affichage, on doit avoir les informations de toutes les salles qui composent une salle. Après vos refactoring, vous devrez logiquement adapter le code de vos deux **fabriques**. Pour la configuration **difficile** on souhaite faire des changements supplémentaires :
+1. Nous aimerions maintenant que les différentes salles puissent être combinées afin de créer une "super-salle". Par exemple, on aimerait avoir des salles avec des coffres et 20 ennemis, une salle avec une énigme et un boss, une salle avec tout à la fois...! Quel design pattern pouvez-vous utiliser pour mettre en place une telle fonctionnalité ? La seule méthode qui nous intéresse est `toString`. À l'affichage, on doit avoir les informations de toutes les salles qui composent une salle. Après vos refactoring, vous devrez logiquement adapter le code de vos deux **fabriques**. Pour la configuration **difficile** on souhaite faire des changements supplémentaires :
 
     * Une salle normale est une salle avec un coffre et entre 20 et 40 ennemis.
 
