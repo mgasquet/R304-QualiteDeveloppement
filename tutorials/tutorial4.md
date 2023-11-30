@@ -7,17 +7,17 @@ lang: fr
 
 ## Introduction
 
-Quand on parle de **design patterns** on fait généralement référence aux patterns dits **GoF** (Gang of Four) présentés dans le livre **Design Patterns: Elements of Reusable Object-Oriented Software** qui est une référence dans le monde de l'ingénérie logicielle. Le **Gang of Four** fait référence au quatre auteurs de ce livre : **Erich Gamma**, **Richard Helm**, **Ralph Johnson** et **John Vlissides**.
+Quand on parle de **design patterns** on fait généralement référence aux patterns dits **GoF** (Gang of Four) présentés dans le livre **Design Patterns: Elements of Reusable Object-Oriented Software** qui est une référence dans le monde de l'ingénierie logicielle. Le **Gang of Four** fait référence au quatre auteurs de ce livre : **Erich Gamma**, **Richard Helm**, **Ralph Johnson** et **John Vlissides**.
 
 Pour rappel, un **design pattern** est une solution ré-utilisable et adaptable vis-à-vis d'un problème de conception logicielle assez récurent. Un pattern est généralement présenté via un diagramme de classes de conception et un exemple d'implémentation. Un pattern a pour but est d'être applicable et adaptable à n'importe quel projet ou contexte.
 
-Il existe d'autres types de design patterns (par exemple, les patterns GRASP) mais les plus connus et les plus utilisés sont ceux du **GoF** que nous allons explorer dans ce cours. Tous ces **patterns** permettent de renforcer l'application des principes **SOLID**. Par ailleurs, certains langages comme `Java` proposent (dans leurs librairies de base) des **classes** et **interfaces** permettant d'implémenter certains patterns **GoF** comme **observateur**, **itérateur**, **prototype**...
+Il existe d'autres types de design patterns (par exemple, les patterns GRASP) mais les plus connus et les plus utilisés sont ceux du **GoF** que nous allons explorer dans ce cours. Tous ces **patterns** permettent de renforcer l'application des principes **SOLID**. Par ailleurs, certains langages comme `Java` proposent (dans leur librairie standard) des **classes** et **interfaces** permettant d'implémenter certains patterns **GoF** comme **observateur**, **itérateur**, **prototype**...
 
 Les design patterns **GoF** se divisent en trois catégories :
 
-* Les patterns **créateurs** : concernent la **création d'objet**. Ils permettent de mettre en place des solutions et des structures pour permettre de contrôler l'instanciation des objets du programme. Cela permet de réduire les dépendances de type "create".
+* Les patterns **créateurs** : concernent la **création d'objet**. Ils permettent de mettre en place des solutions et des structures pour contrôler l'instanciation des objets du programme. Cela permet de réduire les dépendances de type "create".
 
-* Les patterns **stucturaux** : permettent d'organiser les objets en faisant notamment de l'abstraction pour augmenter la modularité du programme et l'ajout de nouvelles fonctionnalités (principe ouvert/fermé).
+* Les patterns **structuraux** : permettent d'organiser les objets en faisant notamment de l'abstraction pour augmenter la modularité du programme et l'ajout de nouvelles fonctionnalités (principe ouvert/fermé).
 
 * Les patterns **comportementaux** : permettent d'organiser la collaboration et les communications entre les objets du programme afin de distribuer efficacement les **responsabilités**.
 
@@ -25,7 +25,7 @@ Dans le TP précédent, vous avez déjà vu un pattern **strucural** (Décorateu
 
 Dans ce TP, nous allons voir **tous les patterns créateurs** et allons les mettre en application : **singleton**, **builder**, **prototype**, **fabrique** et enfin **fabrique abstraite**.
 
-Nous verrons aussi un autre pattern **strucutral** appelé **adaptateur**. En fait, nous allons voir que beaucoup de ces patterns peuvent (et doivent) être combinés dans un projet plus large. Nous traitons souvent des problèmes "simple" avec quelques classes pour illustrer le fonctionnement d'un pattern, mais sur un projet plus large, il est tout à fait naturel de faire travailler en concert les différents patterns.
+Nous verrons aussi un autre pattern **structurel** appelé **adaptateur**. En fait, nous allons voir que beaucoup de ces patterns peuvent (et doivent) être combinés dans un projet plus large. Nous traitons souvent des problèmes "simple" avec quelques classes pour illustrer le fonctionnement d'un pattern, mais sur un projet plus large, il est tout à fait naturel de faire travailler en concert les différents patterns.
 
 <div class="exercise">
 
@@ -41,7 +41,7 @@ Nous verrons aussi un autre pattern **strucutral** appelé **adaptateur**. En fa
 
 ## Le pattern Singleton
 
-L'idée du pattern **Singleton** est très simple : on souhaite **qu'il n'existe qu'une seule instance d'une classe** donnée dans tout le programme. Dès qu'un autre objet souhaite utiliser cette classe, il utilise l'instance "globale" définie dans l'application et **ne doit pas pouvoir en instancier lui-même** (l'utilisation de **new** doit être bloqué en dehors de la classe). L'instance globale doit être accessible à n'improte quel endroit de l'appliation.
+L'idée du pattern **Singleton** est très simple : on souhaite **qu'il n'existe qu'une seule instance d'une classe** donnée dans tout le programme. Dès qu'un autre objet souhaite utiliser cette classe, il utilise l'instance "globale" définie dans l'application et **ne doit pas pouvoir en instancier lui-même** (l'utilisation de **new** doit être bloqué en dehors de la classe). L'instance globale doit être accessible à n'importe quel endroit de l'application.
 
 Pour faire cela, il existe deux solutions :
 
@@ -114,7 +114,7 @@ Pour cela, il y a trois changements à réaliser dans la classe qu'on veut trans
 
 * Enfin, créer une méthode **publique** et **statique** qui retourne un objet du type de la classe. Cette méthode est nommée `getInstance`. Tout d'abord, elle regarde si la variable `INSTANCE` a été initialisée ou non (si elle est `null` ou non). Si elle n'est pas encore initialisée, la classe l'instancie. Dans tous les cas, à la fin, on retourne `INSTANCE`.
 
-Par la suite, toutes les entités qui souhaitent récupérer une instance de cette classe utilisent la méthode `getInstance` qui peut directement être appelée sur la classe car **statique**. Lors du premier accès, l"instance "globale" sera alors initialisée.
+Par la suite, toutes les entités qui souhaitent récupérer une instance de cette classe utilisent la méthode `getInstance` qui peut directement être appelée sur la classe car **statique**. Lors du premier accès, l'instance "globale" sera alors initialisée.
 
 Dans un environnement **multi-threadé** (exécution de plusieurs processus en parallèle, comme des `Runnable` ou des `Thread` en Java) il faut faire attention à ce que la méthode `getInstance` ne soit pas appelée en même temps par deux **Threads** différents. Pour régler cela en java, il suffit d'ajouter le mot clé `synchronized` lors de la définition de la méthode.
 
@@ -205,7 +205,7 @@ Commençons par une mise en application très simple.
 
 Un cas un peu plus concret qui montre l'intérêt d'utiliser un `Singleton` est dans le contexte où deux objets différents dépendent de l'état d'une classe. Une classe `A` modifie l'état de `Service` et une classe `B` a besoin de connaître les modifications qu'a effectuées `A` dans `Service` pour fonctionner. Les deux classes `A` et `B` doivent alors dépendre de la même instance de `Service` !
 
-Aussi, imaginons une classe d'accès à une base de données : celle-ci initialise une connexion vers la base qui peut prendre plusieurs secondes. Il serait inconscient d'instancier cette classe à chaque endroit où on en a besoin (cela dégraderait les performances !). On va plutôt utiliser un **Singleton**. C'est le cas de la classe `SQLUtils` que vous avez codé dans le TP "JDBC / Hibernate" en cours de base de données.
+Aussi, imaginons une classe d'accès à une base de données: celle-ci initialise une connexion vers la base qui peut prendre plusieurs secondes. Il serait inconscient d'instancier cette classe à chaque endroit où on en a besoin (cela dégraderait les performances !). On va plutôt utiliser un **Singleton**. C'est le cas de la classe `SQLUtils` que vous avez codé dans le TP "JDBC / Hibernate" en cours de base de données.
 
 <div class="exercise">
 
@@ -217,13 +217,13 @@ Aussi, imaginons une classe d'accès à une base de données : celle-ci initiali
 
 4. Vérifiez que tout fonctionne et que les bugs sont bien résolus.
 
-5. Le principe SOLID `D` (dependency inversion) est-il respecté sur les classes `CreationAnimal` et `LectureAnimaux` ? Si ce n'est pas le cas, réfactorez votre code.
+5. Le principe SOLID `D` (dependency inversion) est-il respecté sur les classes `CreationAnimal` et `LectureAnimaux` ? Si ce n'est pas le cas, refactorez votre code.
 
 </div>
 
 ### Classe statique VS Singleton
 
-En introduction de cette section, nous avions évoqué le fait d'utiliser une **classe statique** pour obtenir un résultat similaire au singleton. Une classe statique est une classe où il n'y a que des attributs et des méthodes **de classe** qui apprtiennent donc à la classe et pas à une instance en particulier. Ainsi, tous les objets qui manipulent cette classe utilisent la même "entité" (en fait, il n'y a juste pas d'instance).
+En introduction de cette section, nous avions évoqué le fait d'utiliser une **classe statique** pour obtenir un résultat similaire au singleton. Une classe statique est une classe où il n'y a que des attributs et des méthodes **de classe** qui appartiennent donc à la classe et pas à une instance en particulier. Ainsi, tous les objets qui manipulent cette classe utilisent la même "entité" (en fait, il n'y a juste pas d'instance).
 
 Par exemple, on pourrait remplacer ce **Singleton** :
 
@@ -326,7 +326,7 @@ Si cette méthode pourrait paraître plus "facile" à mettre en place et à util
 
     * Injecter le `FakeServiceMail` quand on instancie `ServiceUtilisateur` et `ServiceCommande` dans nos tests unitaires.
 
-    Un tel refactoring est-il possible ici...? Essayez de réfactorer et relevez les problèmes que vous rencontrez.
+    Un tel refactoring est-il possible ici? Essayez de refactorer et relevez les problèmes que vous rencontrez.
 
 </div>
 
@@ -340,7 +340,7 @@ Bref, l'utilisation d'une **classe statique** rend les services qui l'utilisent 
 
 L'utilisation d'un **Singleton** résout tous ces problèmes :
 
-* L'instance de la classe est une véritable instance, un objet. Il peut donc être passé en paramètre dans un constructeur, par exemple.
+* L'instance de la classe est une véritable instance, un objet. Elle peut donc être passé en paramètre dans un constructeur, par exemple.
 
 * La classe peut hériter, implémenter des interfaces...
 
@@ -424,7 +424,7 @@ Mais pourquoi est-il déconseillé d'utiliser "trop" de singletons :
 
 Attention, tout cela ne veut pas dire que le singleton est inutile ! Seulement qu'il ne doit pas être utilisé pour tout et n'importe quoi. Il faut également se poser la question "est-ce que cette instance doit pouvoir être accessible par tout le monde" ?
 
-On va notamment éviter d'appliquer **singletons** sur des classes qui contiennent du **code métier** relatif à des règles de notre application et que nous allons surement vouloir tester. A l'inverse, nous allons bientôt parler du pattern **fabrique** et **fabrique abstraite**. Les classes produites par ces applications ont pour but de créer et/ou fournir des objets (des dépendances). Ces classes doivent pouvoir être accessibles par toute l'application et on ne va pas spécialement les tester (pas de code métier). Il est alors judicieux d'appliquer **Singleton** sur ces classes.
+On va notamment éviter d'appliquer **singletons** sur des classes qui contiennent du **code métier** relatif à des règles de notre application et que nous allons sûrement vouloir tester. A l'inverse, nous allons bientôt parler du pattern **fabrique** et **fabrique abstraite**. Les classes produites par ces applications ont pour but de créer et/ou fournir des objets (des dépendances). Ces classes doivent pouvoir être accessibles par toute l'application et on ne va pas spécialement les tester (pas de code métier). Il est alors judicieux d'appliquer **Singleton** sur ces classes.
 
 Certains membres du **GoF** regrettent un peu la surutilisation maladroite de **Singleton** par certains développeurs. Ces développeurs ont l'illusion de coder proprement, car ils utilisent un design pattern, mais c'est tout l'inverse. Appliquer les design patterns ne veut pas forcément dire que votre conception est de qualité. Il faut savoir quand et comment les utiliser !
 
@@ -460,11 +460,11 @@ Ce pattern permet de résoudre le problème de création d'un objet qui a beauco
 
     Ajoutez ces nouveaux attributs à la classe `Burger`.
 
-3. Maintenant que nous avons ajouté ces deux options, quels sont tous les types de burgers qu'il est possible de créer ? Ajoutez de nouveaux **constructeurs** pour gérer tous les cas... Si vous bloquez à un moment, c'est normal ! Comprenez-vous pourquoi il n'est pas possible de poursuivre la conception actuelle...?
+3. Maintenant que nous avons ajouté ces deux options, quels sont tous les types de burgers qu'il est possible de créer ? Ajoutez de nouveaux **constructeurs** pour gérer tous les cas... Si vous bloquez à un moment, c'est normal ! Comprenez-vous pourquoi il n'est pas possible de poursuivre la conception actuelle?
 
 </div>
 
-En effet, rien que le fait de pouvoir avoir des burgers avec du pain et des tomates et des bugers avec du pain et de la salade empeêche de créer les constructeurs adéquats :
+En effet, rien que le fait de pouvoir avoir des burgers avec du pain et des tomates et des bugers avec du pain et de la salade empêche de créer les constructeurs adéquats :
 
 ```java
 public class Burger {
@@ -485,23 +485,23 @@ public class Burger {
 }
 ```
 
-Dans l'exemple précédent, les deux constructeurs entre en collision car ils ont la même signature `Burger(String, PainBurger, boolean)`.
+Dans l'exemple précédent, les deux constructeurs entrent en collision car ils ont la même signature `Burger(String, PainBurger, boolean)`.
 
-Pour palier à cela, on pourrait mettre en place la solution bancale suivante :
+Pour pallier cela, on pourrait mettre en place la solution bancale suivante :
 
 * Instancier un **Burger** seulement avec son nom et son type de pain.
 
 * Utiliser des **setters** pour définir le fait d'ajouter de la salade ou des tomates.
 
-Cette solution est mauvaise, car on part du principe que tous les **setters** nécessaires sont accessibles publiquement. Ce n'est pas forcément le cas et dans le cas du `Burger`, seul le **setter** du `nom` est accessible. On a décidé qu'une fois créé, on ne doit pas pouvoir modifier les ingrédients du Burger, mais qu'on peut le renommer. Il n'est donc pas possible d'ajouter des **settters** !
+Cette solution est mauvaise, car on part du principe que tous les **setters** nécessaires sont accessibles publiquement. Ce n'est pas forcément le cas et dans le cas du `Burger`, seul le **setter** du `nom` est accessible. On a décidé qu'une fois créé, on ne doit pas pouvoir modifier les ingrédients du Burger, mais qu'on peut le renommer. Il n'est donc pas possible d'ajouter des **setters** !
 
 Le pattern **builder** permet de résoudre ce problème avec une classe qui permet de contrôler comment l'objet est créé. Cette classe est généralement placée **à l'intérieur de la classe à construire** même si on retrouve des versions et des variantes avec la classe "Builder" comme classe externe indépendante.
 
-Cette classe possède :
+Cette classe possède:
 
 * Les mêmes attributs que la classe cible (du moins ceux qu'on peut préciser lors de l'initialisation de l'objet).
 
-* Un constructeur qui prend en paramètre tous les attributs qu'on doit obligatoirement initialiser lorsqu'on créé l'objet cible.
+* Un constructeur qui prend en paramètre tous les attributs qu'on doit obligatoirement initialiser lorsqu'on crée l'objet cible.
 
 * Pour chaque option, une méthode `WithNomOption(valeur)` qui permet d'ajouter une option (initialise l'attribut correspondant dans la classe du Builder). Cette méthode renvoie `this` (donc, l'instance du Builder) afin qu'on puisse enchaîner les appels des méthodes `with` pour ajouter d'autres options.
 
@@ -674,7 +674,7 @@ class Exemple {
 
     * Burger avec du pain moisi, avec de la salade et du poulet.
 
-    * Burger avec du pain sésames, avec des tomates, de la salade.
+    * Burger avec du pain au sésame, avec des tomates, de la salade.
 
     * Burger avec du pain classique, avec de la salade, des tomates, de la viande de bœuf et du cheddar.
 
@@ -688,23 +688,23 @@ Nous allons directement présenter le principe et l'intérêt du pattern **proto
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `protoype1` et consultez les classes mises à disposition. Il s'agit d'une mini application bancaire permettant de gérer des comptes. Pour le moment, la classe `Banque` permet de gérer des **comtpes courants**. C'est elle qui gère intégralement ces comptes bancaires : leur création et le changement de solde (créditer/débiter). Elle est donc **composée des comptes bancaires** (ce qui se trasuirait par une **agrégation noire** sur un diagramme de classes de conception).
+1. Ouvrez le paquetage `protoype1` et consultez les classes mises à disposition. Il s'agit d'une mini application bancaire permettant de gérer des comptes. Pour le moment, la classe `Banque` permet de gérer des **comptes courants**. C'est elle qui gère intégralement ces comptes bancaires : leur création et le changement de solde (créditer/débiter). Elle est donc **composée des comptes bancaires** (ce qui se trasuirait par une **agrégation noire** sur un diagramme de classes de conception).
 
 2. Le développeur a pensé qu'il serait utile qu'un objet extérieur puisse récupérer un `CompteCourant` depuis la banque pour consulter le solde (ou autre). Il a donc créé une méthode `getInformationsCompteNumero`. Expérimentez dans le `Main` en créditant le compte d'un objet récupéré par cette méthode puis récupérez de nouveau ce compte depuis la banque et affichez son solde. Le solde du compte t-il était modifié ? Lancez le test unitaire situé dans la classe dans `src/test/java/prototype1`. Il ne passe pas... Comprenez-vous pourquoi ?
 
 </div>
 
-Le test unitaire n'est pas mal écrit. En fait, comme la banque gère exclusivement les différents **comtpes bancaires**, il ne doit pas être possible qu'une autre classe puisse récupérer et modifier les objets que contient la banque. C'est toute la sémantique derrière la **composition** sur un diagramme de classe (l'agrégation noire). Le "composant" est créé dans la classe (c'est le cas) et ne doit pas en sortir (ce n'est pas le cas ici).
+Le test unitaire n'est pas mal écrit. En fait, comme la banque gère exclusivement les différents **comptes bancaires**, il ne doit pas être possible qu'une autre classe puisse récupérer et modifier les objets que contient la banque. C'est toute la sémantique derrière la **composition** sur un diagramme de classe (l'agrégation noire). Le "composant" est créé dans la classe (c'est le cas) et ne doit pas en sortir (ce n'est pas le cas ici).
 
-Une première solution pourrait être d'ajouter une méthode `double recupererSolde(int numeroCompte)` dans la classe `Banque`. Mais dans certains cas, on a vraiment besoin d'obtenir l'objet `ComtpeCourant` cible, sans pour autant modifier l'original... alors comment faire ?
+Une première solution pourrait être d'ajouter une méthode `double recupererSolde(int numeroCompte)` dans la classe `Banque`. Mais dans certains cas, on a vraiment besoin d'obtenir l'objet `CompteCourant` cible, sans pour autant modifier l'original... alors comment faire ?
 
-L'idée est de renvoyer une **copie** complète de l'objet ! Toutes les valeurs des attributs de l'objet copié seront identiques dans le nouvel objet, mais s'il est modifié, l'objet original (stocké dans `Banque`) ne sera pas impacté. L'objet renvoyé par `getInformationsCompteNumero` est alors un nouvel objet identique qu compte, mais ce n'est pas l'objet original. Le principe de la composition est alors respecté.
+L'idée est de renvoyer une **copie** complète de l'objet ! Toutes les valeurs des attributs de l'objet copié seront identiques dans le nouvel objet, mais s'il est modifié, l'objet original (stocké dans `Banque`) ne sera pas impacté. L'objet renvoyé par `getInformationsCompteNumero` est alors un nouvel objet identique au compte, mais ce n'est pas l'objet original. Le principe de la composition est alors respecté.
 
 Mais alors, qui doit faire cette copie ?
 
 * Est-ce que `Banque` est habilité à faire cela ? Cela ne semble pas trop **Single responsability** friendly ! De plus, est-ce que `Banque` a la capacité de copier `CompteCourant` ? A priori, il n'a pas accès aux attributs privés ou protégés comme `solde`, alors que `CompteCourant`, oui.
 
-* À la place, on peut définir un **constructeur par copie** dans `CompteCourant`. L'objectif d'un tel constructeur est de prendre un objet du même type et d'initialiser ses propres attributs avec les valeurs des attributs de l'autre objet. Vous avez sans doutes utilisé de tels constructeurs en première année (notamment dans le cours d'initiation au développement) :
+* À la place, on peut définir un **constructeur par copie** dans `CompteCourant`. L'objectif d'un tel constructeur est de prendre un objet du même type et d'initialiser ses propres attributs avec les valeurs des attributs de l'autre objet. Vous avez sans doute utilisé de tels constructeurs en première année (notamment dans le cours d'initiation au développement) :
 
   ```java
   class Date {
@@ -733,7 +733,7 @@ Mais alors, qui doit faire cette copie ?
 
 1. Réfactorez votre code afin que `Banque` renvoie une **copie** du compte courant sélectionné. Attention au **solde** ! Il faut qu'il soit identique au compte copié. Vérifiez que cela fonctionne en lançant le test unitaire. Il devrait maintenant passer.
 
-2. On aimerait maintenant que la `Banque` gère aussi des **comptes épargne**. En fait, il faut qu'elle puisse gérer des **CompteBancaire** et pas seulement des **comptes courants**. Réfactorez le code de la classe `Banque` pour rendre cela possible (en utilisant plutôt la classe abstraite `ComtpeBancaire` plutôt que `CompteCourant`). 
+2. On aimerait maintenant que la `Banque` gère aussi des **comptes épargne**. En fait, il faut qu'elle puisse gérer des **CompteBancaire** et pas seulement des **comptes courants**. Réfactorez le code de la classe `Banque` pour rendre cela possible (en utilisant plutôt la classe abstraite `compteBancaire` plutôt que `CompteCourant`). 
 
     Vous devrez néanmoins conserver `ouvrirCompteCourant` tel quel car elle ouvre spécifiquement un compte courant. Vous devrez aussi ajouter une méthode `ouvrierCompteEpargne` (tout cela ne respecte pas énormément le principe ouvert/fermé, mais nous allons nous en contenter pour cet exercice). 
     
@@ -835,11 +835,11 @@ class Service {
 
 <div class="exercise">
 
-1. Réfactorez votre code en appliquant le pattern **prototype** sur vos comptes bancaires. Adaptez aussi le code de `getInformationsCompteNumero` en conséquence.
+1. Refactorez votre code en appliquant le pattern **prototype** sur vos comptes bancaires. Adaptez aussi le code de `getInformationsCompteNumero` en conséquence.
 
 2. Vérifiez que le test unitaire passe toujours.
 
-3. Réalisez le **diagramme de séquence des interactions** permettant de modéliser ce qu'il se passe lors de l'éxécutin du code suivant :
+3. Réalisez le **diagramme de séquence des interactions** permettant de modéliser ce qu'il se passe lors de l'éxécution du code suivant :
 
     ```java
     Banque banque = new Banque();
@@ -851,7 +851,7 @@ class Service {
 
 </div>
 
-L'objectif du pattern **prototype** est donc de déifnir un moyen d'obtenir des **copies** d'un objet, notamment dans un contexte où vos classes manipulent des abstractions (comme c'est souvent le cas quad on applique les principes **SOLID** et les **design patterns**). Si on souhaite pouvoir copier un objet abstrait manipulé, chaque classe concrète de la hiérarchie doit définir sa propre logique de copie via la méthode `cloner`.
+L'objectif du pattern **prototype** est donc de définir un moyen d'obtenir des **copies** d'un objet, notamment dans un contexte où vos classes manipulent des abstractions (comme c'est souvent le cas quand on applique les principes **SOLID** et les **design patterns**). Si on souhaite pouvoir copier un objet abstrait manipulé, chaque classe concrète de la hiérarchie doit définir sa propre logique de copie via la méthode `cloner`.
 
 **Java** permet aussi d'implémenter ce pattern en étendant l'interface `Cloneable` (et la méthode `clone`) !
 
