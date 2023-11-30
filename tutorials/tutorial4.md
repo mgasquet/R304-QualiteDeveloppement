@@ -9,7 +9,7 @@ lang: fr
 
 Quand on parle de **design patterns** on fait généralement référence aux patterns dits **GoF** (Gang of Four) présentés dans le livre **Design Patterns: Elements of Reusable Object-Oriented Software** qui est une référence dans le monde de l'ingénierie logicielle. Le **Gang of Four** fait référence au quatre auteurs de ce livre : **Erich Gamma**, **Richard Helm**, **Ralph Johnson** et **John Vlissides**.
 
-Pour rappel, un **design pattern** est une solution ré-utilisable et adaptable vis-à-vis d'un problème de conception logicielle assez récurent. Un pattern est généralement présenté via un diagramme de classes de conception et un exemple d'implémentation. Un pattern a pour but est d'être applicable et adaptable à n'importe quel projet ou contexte.
+Pour rappel, un **design pattern** est une solution réutilisable et adaptable vis-à-vis d'un problème de conception logicielle assez récurent. Un pattern est généralement présenté via un diagramme de classes de conception et un exemple d'implémentation. Un pattern a pour but est d'être applicable et adaptable à n'importe quel projet ou contexte.
 
 Il existe d'autres types de design patterns (par exemple, les patterns GRASP) mais les plus connus et les plus utilisés sont ceux du **GoF** que nous allons explorer dans ce cours. Tous ces **patterns** permettent de renforcer l'application des principes **SOLID**. Par ailleurs, certains langages comme `Java` proposent (dans leur librairie standard) des **classes** et **interfaces** permettant d'implémenter certains patterns **GoF** comme **observateur**, **itérateur**, **prototype**...
 
@@ -1128,7 +1128,7 @@ public class Main {
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `fabrique1`. Il s'agit de l'application avec des **animaux** que vous aviez développés lors du dernier TP. La nouveauté est qu'il y a aussi des **aniamux normaux** et des **animaux robots** (qui ont seulement en plus une voix robotique quand ils font un cri...).
+1. Ouvrez le paquetage `fabrique1`. Il s'agit de l'application avec des **animaux** que vous aviez développée lors du dernier TP. La nouveauté est qu'il y a aussi des **animaux normaux** et des **animaux robots** (qui ont seulement en plus une voix robotique quand ils font un cri...).
 
 2. Actuellement, si je veux changer mes animaux pour utiliser des animaux robotiques dans le `Main`, je suis obligé de changer tout le code du `Main`. Il faut vous imaginer cela pour plusieurs classes : si je veux changer mes animaux pour des animaux robotiques, je dois changer le code de toutes les classes qui créent des animaux ! Pour permettre plus de flexibilité, vous devez :
 
@@ -1166,9 +1166,9 @@ Néanmoins, cette solution n'est pas forcément conseillée car :
 
 * Elle implique que toutes les classes concrètes instanciées ont les mêmes paramètres (ce qui n'est pas toujours le cas, par exemple, si nous avions eu une figure `Rectangle` dans l'exemple des figures géométriques...)
 
-* Il faut gérer le cas où `type` n'est pas un type connu. cCe qui ne peut pas arriver si on sépare les instanciations en différentes méthodes (et évite les bugs style faute de frappe...).
+* Il faut gérer le cas où `type` n'est pas un type connu. Ceci ne peut pas arriver si on sépare les instanciations en différentes méthodes (et évite les bugs causés par des fautes de frappe...).
 
-Bref, on préférera donc généralement séparer chaque instanciation dans une méthode distincte, comme ce que vous avez probablement fait sur l'exercice ou comme dans l'exemple des figures géométriques.
+Bref, on préférera généralement séparer chaque instanciation dans une méthode distincte, comme ce que vous avez probablement fait sur l'exercice ou comme dans l'exemple des figures géométriques.
 
 Pour l'instant, si nous voulons changer de "famille" de classes utilisée (animaux normaux / animaux robots) nous sommes obligés de changer le code de la classe `AnimalFactory`. Avec le pattern suivant **"fabrique abstraite"** nous allons pouvoir résoudre ce problème (et même faire cohabiter deux familles).
 
@@ -1182,7 +1182,7 @@ Attaquons tout de suite par un exercice :
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `fabrique2`. Cette application permet de construire des **donjons** pour un jeu-vidéo. Un **donjon** est constitué de différentes pièces (des pièces avec des coffres, des pièces avec des ennemis, des pièces avec des énigmes, des pièces avec des boss...). Une pièce peut être complétée par le joueur ou non. Chaque donjon possède un algorithme de génération qui créé les salles dans un ordre précis (avec un peu d'alétoire). Il est constitué de "pièces normales", de "pièces spéciales" et d'une "pièce finale" dans cet ordre :
+1. Ouvrez le paquetage `fabrique2`. Cette application permet de construire des **donjons** pour un jeu-vidéo. Un **donjon** est constitué de différentes pièces (des pièces avec des coffres, des pièces avec des ennemis, des pièces avec des énigmes, des pièces avec des boss...). Une pièce peut être complétée par le joueur ou non. Chaque donjon possède un algorithme de génération qui créé les salles dans un ordre précis (avec un peu d'aléatoire). Il est constitué de "pièces normales", de "pièces spéciales" et d'une "pièce finale" dans cet ordre :
 
     * Une salle normale
 
@@ -1218,7 +1218,7 @@ Attaquons tout de suite par un exercice :
 
 </div>
 
-Vous avez peut-être trouvé la solution par vous-même avec la dernière question, mais si vous connaissez à maîtriser les bonnes pratiques de conception logicielle, il y a un concept qui revuebt souvent dans les patterns et lorsqu'on applique les principes SOLID : l'abstraction.
+Vous avez peut-être trouvé la solution par vous-même avec la dernière question, mais si vous commencez à maîtriser les bonnes pratiques de conception logicielle, il y a un concept qui revient souvent dans les patterns et lorsqu'on applique les principes SOLID : l'abstraction.
 
 L'idée du pattern **fabrique abstraite** est donc de disposer d'une abstraction (classe abstraite ou interface) qui définie le contrat que doivent remplir les fabriques concrètes. Pour chaque famille de classes, on crée une fabrique concrète qui implémente de cette interface ou étend cette classe abstraite. Ensuite, toutes les classes qui souhaitent utiliser cette fabrique doivent dépendre de la **fabrique abstraite** et non plus d'une fabrique concrète. Couplé à de l'injection de dépendances, il est très facile de complétement changer le comportement d'une classe. C'est globalement l'idée du pattern **Stratégie** que vous avez déjà vu lors du dernier TP, mais appliqué pour des fabriques !
 
@@ -1335,7 +1335,7 @@ Parfois, il n'est pas nécessairement souhaitable d'avoir la possibilité d'util
 
 1. Ouvrez le paquetage `fabrique3`. C'est le retour des **pokémons** ! Mais il y a également une nouvelle famille de monstres : **les digimons** qui ont un fonctionnement similaire aux pokémons mais on en plus un système d'énergie. En tout cas, ils se créent de la même manière que les pokémons ou plus généralement, qu'un "monstre".
 
-2. Actuellement, dans le `Main`, on crée des pokémons et on utilise le simulateur de combat pour en faire combattre deux. À la place des pokémons, on voudrait parfois utiliser des digimons. Maintenant que vous connaissez le pattern **fabrique abstraite** réfactorez le code afin de pouvoir facilement switcher entre des combats avec divers pokémons et des combats avec divers digimons. Si vous rencontrez quelques petits problèmes, regardez les méthodes de `Digimon`...ne serait-il pas judicieux de lui faire implémenter une certaine interface ? Et pour les différentes sous-classes de `Digimon` ? (`DigimonEau`, `DigimonFeu`...). Vous devrez aussi adapter le `Main` et `SimulateurCombat`.
+2. Actuellement, dans le `Main`, on crée des pokémons et on utilise le simulateur de combat pour en faire combattre deux. À la place des pokémons, on voudrait parfois utiliser des digimons. Maintenant que vous connaissez le pattern **fabrique abstraite** réfactorez le code afin de pouvoir facilement switcher entre des combats avec divers pokémons et des combats avec divers digimons. Si vous rencontrez quelques petits problèmes, regardez les méthodes de `Digimon`... ne serait-il pas judicieux de lui faire implémenter une certaine interface ? Et pour les différentes sous-classes de `Digimon` ? (`DigimonEau`, `DigimonFeu`...). Vous devrez aussi adapter le `Main` et `SimulateurCombat`.
 
 3. Contrairement à l'exercice précédent sur les **donjons**, on ne veut pas que les deux fabriques cohabitent à un instant t du programme. On veut que l'application fonctionne exclusivement avec des pokémons ou bien fonctionne exclusivement avec des digimons. Mais on ne veut pas changer manuellement l'instance de la fabrique utilisée partout dans le code source. Il faut imaginer que cette fabrique est probablement utilisée à divers endroits et surtout, qu'on ne souhaite pas recompiler le code source à chaque changement. Comment pourrions-nous faire ?
 
@@ -1486,9 +1486,9 @@ La fabrique abstraite vise un fichier qui se situe dans `src/main/resources/conf
 
 ### Intégrer une librairie externe
 
-Les pokémons et les digimons sont des classes qui ont été crées par le développeur de ce projet et où il est donc possible de réarranger le code pour que tout fonctionne. Mais que se passerait-il si nous voulions intégrer à notre système du code sur lequel nous n'avons pas la main (dont nous ne pouvons pas éditer le code source). Par exemple, des classes compilées qui proviennent d'une librairie.
+Les pokémons et les digimons sont des classes qui ont été créées par le développeur de ce projet et où il est donc possible de réarranger le code pour que tout fonctionne. Mais que se passerait-il si nous voulions intégrer à notre système du code sur lequel nous n'avons pas la main (dont nous ne pouvons pas éditer le code source)? Par exemple, des classes compilées qui proviennent d'une librairie.
 
-Pour illustrer ce problème, reprenons notre exemple de figures géométriques. Imaginons que vous souhaitez pouvoir afficher des carrés et des cercles de manière "complexe" (à voir ce que "complexe" veut dire dans ce contexte). Au lieu de ré-inventer la roue, vous avez trouvé une librairie `FiguresComplexes` qui fait cela pour vous ! Via `Maven`, vous installez cette librairie sur votre projet.
+Pour illustrer ce problème, reprenons notre exemple de figures géométriques. Imaginons que vous souhaitez pouvoir afficher des carrés et des cercles de manière "complexe" (à voir ce que "complexe" veut dire dans ce contexte). Au lieu de réinventer la roue, vous avez trouvé une librairie `FiguresComplexes` qui fait cela pour vous ! Via `Maven`, vous installez cette librairie sur votre projet.
 
 Vous ne pouvez pas modifier le code source de cette classe, mais vous pouvez étudier leur documentation. Vous êtes notamment intéressés par les deux classes suivantes :
 
@@ -1552,9 +1552,9 @@ Ces deux classes répondent à tous les besoins...mais, de prime abord, il sembl
 
 Cela semble compromis ! Mais pas de panique, un design pattern résout ce problème : `Adaptateur`.
 
-L'objectif de ce pattern est de faire en sorte qu'une classe "incompatible" avec notre architecture puisse tout de même être utilisée en passant par une classe dîte *adaptateur** qui fait le pont entre votre architecture et cette classe grâce à de la **composition** (encore et toujours !). C'est un peu comme quand vous voyagez en Angleterre par exemple. Les prises électriques ne sont pas compatibles avec la prise de votre chargeur de téléphone. Vous devez alors utiliser un adaptateur entre la prise de votre chargeur et celle Anglaise.
+L'objectif de ce pattern est de faire en sorte qu'une classe "incompatible" avec notre architecture puisse tout de même être utilisée en passant par une classe dîte *adaptateur** qui fait le pont entre votre architecture et cette classe grâce à de la **composition** (encore et toujours !). C'est un peu comme quand vous voyagez en Angleterre par exemple. Les prises électriques ne sont pas compatibles avec la prise de votre chargeur de téléphone. Vous devez alors utiliser un adaptateur entre la prise de votre chargeur et celle anglaise.
 
-Ici, la "prise du chargeur" est votre architecture, les interfaces, les abstractions, l'adaptateur la classe qui va être amenée par le pattern et la prise Anglaise la classe "externe" que vous souhaitez utiliser.
+Ici, la "prise du chargeur" est votre architecture, les interfaces, les abstractions, l'adaptateur la classe qui va être amenée par le pattern et la prise anglaise la classe "externe" que vous souhaitez utiliser.
 
 Voici comment appliquer ce pattern :
 
@@ -1650,13 +1650,13 @@ Maintenant, revenons à nos petits monstres...
 
 <div class="exercise">
 
-1. Une librairie nommée `Pattermon` est importée dans le projet ! Explorez ses classes en allant dans `src/main/resources/libs/Pattermons.jar` (normalement, l'IDE vous permet de voir les classes contenues dans le `.jar`).
+1. Une librairie nommée `patternmon` est importée dans le projet ! Explorez ses classes en allant dans `src/main/resources/libs/patternmons.jar` (normalement, l'IDE vous permet de voir les classes contenues dans le `.jar`).
 
-2. Comme vous pouvez le constater, cette librairie définie de nouveaux monstres "Pattermons" qu'on souhaite maintenant intégrer à notre système de simulation de combat. Comme vous l'avez deviné, nous allons donc devoir mettre en place un `Adaptateur` ! Cependant, comme il y a une hiérarchie de classes ici, la mise en place va être un poil plus complexe que sur notre exemple, donc nous allons le faire pas à pas :
+2. Comme vous pouvez le constater, cette librairie définit de nouveaux monstres "patternmons" qu'on souhaite maintenant intégrer à notre système de simulation de combat. Comme vous l'avez deviné, nous allons donc devoir mettre en place un `Adaptateur` ! Cependant, comme il y a une hiérarchie de classes ici, la mise en place va être un poil plus complexe que sur notre exemple, donc nous allons le faire pas à pas :
 
-    * Commencez par implémenter une classe abstraite `PattermonAdapter` qui permet d'adapter la classe abstraite `Patternmon`. Normalement, vous ne devriez pas trop avoir de difficulté, c'est quasiment comme dans l'exemple.
+    * Commencez par implémenter une classe abstraite `patternmonAdapter` qui permet d'adapter la classe abstraite `Patternmon`. Normalement, vous ne devriez pas trop avoir de difficulté, c'est quasiment comme dans l'exemple.
 
-    * `Pattermon` est une classe abstraite et nous avons besoin de pouvoir adapter ses classes filles concrètes (correspondant à `MonstreEau`, `MonstreFeu`, etc...). Il faut créer un adaptateur par classe fille ! Cet adaptateur devra **étendre** votre adaptateur abstrait `PattermonAdapter` et implémenter l'interface `MonstreX` correspondante (`MonstreEau` pour l'adaptation de `WaterPatternmon` par exemple).
+    * `patternmon` est une classe abstraite et nous avons besoin de pouvoir adapter ses classes héritières concrètes (correspondant à `MonstreEau`, `MonstreFeu`, etc...). Il faut créer un adaptateur par classe héritière ! Cet adaptateur devra **étendre** votre adaptateur abstrait `patternmonAdapter` et implémenter l'interface `MonstreX` correspondante (`MonstreEau` pour l'adaptation de `WaterPatternmon` par exemple).
     
     * Commencez par tenter d'adapter `WaterPatternmon`. Vous allez sans doute rencontrer une difficulté lorsque vous allez essayer d'implémenter les méthodes propres à l'interface. Dans un premier temps, essayez de résoudre cela par vous-même, puis, après quelques essais, lisez la prochaine section.
 
@@ -1669,16 +1669,16 @@ Voyons un peu tout ça :
 ```java 
 public abstract class PatternmonAdapter implements Monstre {
 
-    protected Pattermon patternmon;
+    protected patternmon patternmon;
 
     //...
 
 }
 
-public class PattermonEauAdapter extends PatternmonAdapter implements MonstreEau {
+public class patternmonEauAdapter extends PatternmonAdapter implements MonstreEau {
 
-    //Prend un WaterPattermon en pramètre et pas un Patternmon !
-    public PattermonEauAdapter(WaterPatternmon patternmon) {
+    //Prend un Waterpatternmon en pramètre et pas un Patternmon !
+    public patternmonEauAdapter(WaterPatternmon patternmon) {
         super(patternmon);
     }
 
@@ -1691,14 +1691,14 @@ public class PattermonEauAdapter extends PatternmonAdapter implements MonstreEau
 }
 ```
 
-Si vous avez bien une implémentation similaire (faites les changements nécessaires si ce n'est pas le cas) vous obtenez une erreur au niveau de la méthode `getDureeRespiration`. Cela est dû au fait que dans la classe mère, l'attribut `patternmon` est du type abstrait `Patternmon` et pas un `Waterpattermon` ! Donc, dans la classe fille, impossible d'utiliser `getBreathingTime`.
+Si vous avez bien une implémentation similaire (faites les changements nécessaires si ce n'est pas le cas) vous obtenez une erreur au niveau de la méthode `getDureeRespiration`. Cela est dû au fait que dans la classe mère, l'attribut `patternmon` est du type abstrait `Patternmon` et pas un `Waterpatternmon` ! Donc, dans la classe héritière, impossible d'utiliser `getBreathingTime`.
 
-La première solution "simple" serait de **caster** le patternmon. Normalement, comme on est sûr d'avoir passé au constructeur parent un `WaterPattermon`, c'est un **cast** sans risques :
+La première solution "simple" serait de **caster** le patternmon. Normalement, comme on est sûr d'avoir passé au constructeur parent un `Waterpatternmon`, c'est un **cast** sans risques :
 
 ```java 
 @Override
 public int getDureeRespiration() {
-    return ((WaterPattermon) this.patternmon).getBreathingTime();
+    return ((Waterpatternmon) this.patternmon).getBreathingTime();
 }
 ```
 
@@ -1706,38 +1706,38 @@ Mais cette solution n'est pas élégante et il en existe une bien meilleure : la
 
 Quand une classe enfant étend la classe mère, elle peut alors préciser la classe concrète utilisée à la place de `T`. Ainsi, la classe mère est configurée pour utiliser ce type.
 
-Petite démonstration sur `PattermonAdapter` et `PattermonEauAdapter` :
+Petite démonstration sur `patternmonAdapter` et `patternmonEauAdapter` :
 
 ```java 
 //On définit le paramètre générique T lors de la déclaration de la classe
 //Je suis assuré que T est un objet qui étend la classe Patternmon
-public abstract class PatternmonAdapter<T extends Pattermon> implements Monstre {
+public abstract class PatternmonAdapter<T extends patternmon> implements Monstre {
 
-    //Peut être n'importe quel pattermon.
-    //Je peut appeller les méthodes de "Pattermon" sur cet objet
+    //Peut être n'importe quel patternmon.
+    //Je peut appeller les méthodes de "patternmon" sur cet objet
     protected T patternmon;
 
-    public PatternmonAdapter(T pattermon) {
-      this.pattermon = pattermon;
+    public PatternmonAdapter(T patternmon) {
+      this.patternmon = patternmon;
     }
 
     //...
 
 }
 
-//Quand on étend PatternmonAdapter, on précise la classe cocnrète utilisée (ici, WatterPattermon)
-//Il faut imaginer que dans la classe mère, le "T" est remplacé par WatterPattermon.
-public class PattermonEauAdapter extends PatternmonAdapter<WaterPattermon> implements MonstreEau {
+//Quand on étend PatternmonAdapter, on précise la classe cocnrète utilisée (ici, Watterpatternmon)
+//Il faut imaginer que dans la classe mère, le "T" est remplacé par Watterpatternmon.
+public class patternmonEauAdapter extends PatternmonAdapter<Waterpatternmon> implements MonstreEau {
 
-    //Prend un WaterPattermon en pramètre et pas un Patternmon !
+    //Prend un Waterpatternmon en pramètre et pas un Patternmon !
     //Maintenant, on est "forcé" d'utiliser ce constructeur.
-    public PattermonEauAdapter(WaterPatternmon patternmon) {
+    public patternmonEauAdapter(WaterPatternmon patternmon) {
         super(patternmon);
     }
 
     @Override
     public int getDureeRespiration() {
-        //Plus d'erreurs, car l'attribut "pattermon" dans la classe mère est un WaterPattermon !
+        //Plus d'erreurs, car l'attribut "patternmon" dans la classe mère est un Waterpatternmon !
         return this.patternmon.getBreathingTime();
     }
 
@@ -1748,19 +1748,19 @@ Si vous n'avez pas tout compris, n'hésitez pas à en parler avec votre enseigna
 
 <div class="exercise">
 
-1. Adaptez votre code pour introduire la généricité comme dans l'exemple ci-dessus puis implémentez les classes restantes : `PatternmonElectriqueAdapter`, `PatternmonPsyAdapter`, `PattermonFeuAdapter` et `PattermonPlanteAdapter`.
+1. Adaptez votre code pour introduire la généricité comme dans l'exemple ci-dessus puis implémentez les classes restantes : `PatternmonElectriqueAdapter`, `PatternmonPsyAdapter`, `patternmonFeuAdapter` et `patternmonPlanteAdapter`.
 
-2. Créez une nouvelle fabrique permettant de créer des `Pattermons`.
+2. Créez une nouvelle fabrique permettant de créer des `patternmons`.
 
 3. Adaptez le code de votre **fabrique abstraite** afin de pouvoir gérer votre nouvelle fabrique.
 
-4. Un simple changement dans le fichier de configuration doit suffire pour utiliser les pattermons. Testez et vérifiez que tout marche bien (les attaques des monstres devraient avoir des noms anglais).
+4. Un simple changement dans le fichier de configuration doit suffire pour utiliser les patternmons. Testez et vérifiez que tout marche bien (les attaques des monstres devraient avoir des noms anglais).
 
 </div>
 
 ### Gestion des dépendances
 
-Jusqu'ici nous avons vu des fabriques qui instancient systématiquement un objet à chaque appel d'une méthode type `creer...`. Cependant, ce fonctionnement n'est pas obligatoire. Par exemple on pourrait avoir une fabrique qui **instancie** et stocke certains objets lors de son initialisation puis renvoie une référence vers ces objets lorsqu'on la solicite.
+Jusqu'ici nous avons vu des fabriques qui instancient systématiquement un objet à chaque appel d'une méthode type `creer...`. Cependant, ce fonctionnement n'est pas obligatoire. Par exemple on pourrait avoir une fabrique qui **instancie** et stocke certains objets lors de son initialisation puis renvoie une référence vers ces objets lorsqu'on la sollicite.
 
 Avec un tel fonctionnement, une **fabrique** permet alors de gérer les **dépendances** d'un programme. Elle pourrait par exemple stocker différentes instances de **services**  concrets de l'application. Couplé avec le pattern **fabrique abstraite**, cela nous permet de rendre les dépendances de notre programme fortement modulables !
 
@@ -1900,9 +1900,9 @@ public class Main {
 ![Fabrique 5]({{site.baseurl}}/assets/TP4/Fabrique5.svg){: width="40%" }
 </div>
 
-Dans l'exemple ci-dessus, un simple changement dans le fichier de configuration permet de changer les services concrets utilisés pour `ServiceA` et `ServiceB`. Contrairement aux exercices précédents, dans le cas d'un service, il n'est pas utile (voir, il ne faut pas) le ré-instancier chaque fois. Par exemple, dans le cas d'une classe "repository" permettant de faire des requêtes sur une base de données.
+Dans l'exemple ci-dessus, un simple changement dans le fichier de configuration permet de changer les services concrets utilisés pour `ServiceA` et `ServiceB`. Contrairement aux exercices précédents, dans le cas d'un service, il n'est pas utile (voire, il ne faut pas) le réinstancier chaque fois. Par exemple, dans le cas d'une classe "repository" permettant de faire des requêtes sur une base de données.
 
-C'est un peu comme ci toutes les dépendances stockées dans ces fabriques étaient de singletons, car on ne manipule qu'une seule instance de ces objets dans le programme. Mais cela est encore mieux qu'un singleton, car ces classes (`ServiceA1`, `ServiceB1`, etc...) ne sont pas construits comme des singletons ! Elles sont donc beaucoup plus adaptées aux tests unitaires. Comme mentionné dans la section "Avertissement" sur les singletons, nous préférerons utiliser des fabriques plutôt que de multiplier les singletons dans l'application.
+C'est un peu comme si toutes les dépendances stockées dans ces fabriques étaient de singletons, car on ne manipule qu'une seule instance de ces objets dans le programme. Mais cela est encore mieux qu'un singleton, car ces classes (`ServiceA1`, `ServiceB1`, etc...) ne sont pas construites comme des singletons ! Elles sont donc beaucoup plus adaptées aux tests unitaires. Comme mentionné dans la section "Avertissement" sur les singletons, nous préférerons utiliser des fabriques plutôt que de multiplier les singletons dans l'application.
 
 Il est toléré d'avoir un **singleton** pour les classes telles que les fabriques abstraites ou leurs sous-classes, car elles n'ont pas vraiment pour but d'être testées (unitairement). Mais sur les services qui contiennent du code métier, il faut éviter le **singleton** quand cela est possible. Les fabriques et les fabriques abstraites répondent à ce problème.
 
@@ -1916,7 +1916,7 @@ Pour le moment, revenons à nos moutons et appliquons ce que nous avons appris s
 
 2. Actuellement, si nous voulons changer la méthode de stockage (en mémoire ou dans un fichier) il faut éditer à la main `IHMUtilisateur` pour remplacer les paramètres injectés lors de la création de `ServiceUtilisateur`. On souhaite rendre cela plus modulable. Refactorez le code pour mettre en place et utiliser une **fabrique abstraite** et des **fabriques** pour gérer les deux types de méthodes stockage disponibles dans l'application. La configuration du type stockage utilisé devra se faire via un fichier de configuration textuel simple. Aussi, vos fabriques doivent stocker les **dépendances** qu'elles gèrent et ne pas les ré-instancier à chaque fois qu'on en a besoin. 
 
-    Normalement, vous n'avez pas besoin de toucher la classe `ServcieUtilisateur`, mais il faudra probablement adapter le code de `IHMUtilisateur`.
+    Normalement, vous n'avez pas besoin de toucher la classe `ServiceUtilisateur`, mais il faudra probablement adapter le code de `IHMUtilisateur`.
 
 3. Testez que tout fonctionne en alternant entre les deux méthodes de stockage via votre fichier de configuration.
 
