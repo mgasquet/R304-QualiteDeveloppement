@@ -31,7 +31,7 @@ Nous verrons aussi un autre pattern **structurel** appelé **adaptateur**. En fa
 
 1. Pour commencer, forkez [le dépôt GitLab suivant](https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/tp4) en le plaçant dans le namespace `qualite-de-developpement-semestre-3/etu/votrelogin`.
 
-2. Clonez votre nouveau dépôt en local. Ouvre le projet avec `IntelliJ` et vérifiez qu'il n'y a pas d'erreur.
+2. Clonez votre nouveau dépôt en local. Ouvrez le projet avec votre IDE et vérifiez qu'il n'y a pas d'erreur.
 
 3. Pendant ce TP, on vous demandera de créer des **diagrammes UML** de conception (classes, séquences). Vous déposerez vos diagrammes dans un dossier `uml` (en image ou bien avec le fichier du projet **.mdj** si vous utilisez **StarUML**) que vous devrez créer à la racine du dépôt.
 
@@ -41,7 +41,7 @@ Nous verrons aussi un autre pattern **structurel** appelé **adaptateur**. En fa
 
 ## Le pattern Singleton
 
-L'idée du pattern **Singleton** est très simple : on souhaite **qu'il n'existe qu'une seule instance d'une classe** donnée dans tout le programme. Dès qu'un autre objet souhaite utiliser cette classe, il utilise l'instance "globale" définie dans l'application et **ne doit pas pouvoir en instancier lui-même** (l'utilisation de **new** doit être bloqué en dehors de la classe). L'instance globale doit être accessible à n'importe quel endroit de l'application.
+L'idée du pattern **Singleton** est très simple : on souhaite garantir **qu'il n'existe qu'une seule instance d'une classe dans le programme et fournir un point d'accès global à cette instance**. Dès qu'un autre objet souhaite utiliser cette classe, il utilise l'instance "globale" définie dans l'application et **ne doit pas pouvoir en instancier lui-même** (l'utilisation de **new** doit être bloqué en dehors de la classe). L'instance globale doit être accessible à n'importe quel endroit de l'application (à travers une méthode qui l'expose).
 
 Pour faire cela, il existe deux solutions :
 
@@ -116,7 +116,7 @@ Pour cela, il y a trois changements à réaliser dans la classe qu'on veut trans
 
 Par la suite, toutes les entités qui souhaitent récupérer une instance de cette classe utilisent la méthode `getInstance` qui peut directement être appelée sur la classe car **statique**. Lors du premier accès, l'instance "globale" sera alors initialisée.
 
-Dans un environnement **multi-threadé** (exécution de plusieurs processus en parallèle, comme des `Runnable` ou des `Thread` en Java) il faut faire attention à ce que la méthode `getInstance` ne soit pas appelée en même temps par deux **Threads** différents. Pour régler cela en java, il suffit d'ajouter le mot clé `synchronized` lors de la définition de la méthode.
+Dans un environnement **multi-threadé** (exécution de plusieurs processus en parallèle, comme des `Runnable` ou des `Thread` en Java) il faut faire attention à ce que la méthode `getInstance` ne soit pas appelée en même temps par deux **Threads** différents. Pour régler cela en Java, il suffit d'ajouter le mot clé `synchronized` lors de la définition de la méthode.
 
 Regardons ce que cela donne :
 
@@ -302,7 +302,7 @@ class Main {
 }
 ```
 
-Si cette méthode pourrait paraître plus "facile" à mettre en place et à utiliser (pas de `getInstance`, etc...) c'est généralement une **mauvaise idée**. Nous allons tout de suite voir pourquoi avec le prochain exercice. 
+Si cette méthode pourrait paraître plus "facile" à mettre en place et à utiliser (pas de `getInstance`, etc.) c'est généralement une **mauvaise idée**. Nous allons voir pourquoi avec le prochain exercice. 
 
 <div class="exercise">
 
@@ -332,15 +332,15 @@ Si cette méthode pourrait paraître plus "facile" à mettre en place et à util
 
 En essayant de refactorer, vous avez dû rencontrer divers problèmes :
 
-* Une `interface` (dans la plupart des langages) ne peut pas posséder de signature de méthode de classes (`static`).
+* Une `interface` (dans la plupart des langages) ne peut pas posséder de signature de méthode de classe (`static`).
 
-* Il est impossible d'injecter la classe statique comme paramètre d'un constructeur ! Et oui, une classe n'est pas un objet et une instance ! Elle ne peut donc pas être passée en paramètre.
+* Il est impossible d'injecter la classe statique comme paramètre d'un constructeur. Et oui, une classe n'est pas un objet et une instance ! Elle ne peut donc pas être passée en paramètre.
 
 Bref, l'utilisation d'une **classe statique** rend les services qui l'utilisent étroitement dépendant de la classe. Ce qui rend l'application intestable car ces services ne peuvent pas être testés indépendamment des services concrets qui sont utilisés dans l'application. On ne peut pas remplacer le service par un "faux" service utilisé pour les tests unitaires (un **stub** ou un **mock**).
 
 L'utilisation d'un **Singleton** résout tous ces problèmes :
 
-* L'instance de la classe est une véritable instance, un objet. Elle peut donc être passé en paramètre dans un constructeur, par exemple.
+* L'instance de la classe est une véritable instance, un objet. Elle peut donc être passée en paramètre dans un constructeur, par exemple.
 
 * La classe peut hériter, implémenter des interfaces...
 
@@ -394,7 +394,7 @@ class Main {
 
 1. À la place d'une classe statique, utilisez le pattern `Singleton` pour refactorer la classe `ServiceMailer`.
 
-2. Comme expliqué dans l'exercice précédent, introduisez une interface `ServiceMailerInterface` pour abstraite ce service.
+2. Comme expliqué dans l'exercice précédent, introduisez une interface `ServiceMailerInterface` pour abstraire ce service.
 
 3. Créez un nouveau service `FakeServiceMail` implémentant aussi `ServiceMailerInterface` mais qui ne fait rien dans sa méthode `envoyerMail`. Ce service sera aussi un singleton.
 
@@ -404,15 +404,15 @@ class Main {
 
 6. Adaptez aussi les tests pour utiliser `FakeServiceMail`. Vérifiez que l'exécution des tests ne déclenche plus l'envoi (fictif) de mails.
 
-7. Réalisez le **daigramme de classes de cocneption** de l'applciation.
+7. Réalisez le **diagramme de classes de conception** de l'application.
 
 </div>
 
 ### Avertissement
 
-Vous maîtrisez maintenant le pattern **Singleton**, mais vous devez être très précautionneux quant à son utilisation. En conclusion du dernier TP, vous étiez invité à aller jeter un coup d'œil aux [principes STUPID](https://openclassrooms.com/en/courses/5684096-use-mvc-solid-principles-and-design-patterns-in-java/6417836-avoid-stupid-practices-in-programming) qui sont un ensemble de mauvaises pratiques en conception logicielle. Regardez à quoi correspond le `S`.
+Vous maîtrisez maintenant le pattern **Singleton**, mais vous devez être très précautionneux quant à son utilisation. En conclusion du dernier TP vous étiez invité à aller jeter un coup d'œil aux [principes STUPID](https://openclassrooms.com/en/courses/5684096-use-mvc-solid-principles-and-design-patterns-in-java/6417836-avoid-stupid-practices-in-programming) qui sont un ensemble de mauvaises pratiques en conception logicielle. Regardez à quoi correspond le `S`.
 
-En effet, l'abus de **singletons** est dangereux pour la santé ! (du logiciel...). Il présente une solution qui semble plutôt efficace à un problème assez récurent : la gestion des dépendances vers les services de l'application. À tel point qu'on retrouve parfois dans certains projets beaucoup trop de singletons. 
+En effet, l'abus de **singletons** est dangereux pour la santé (du logiciel...) ! Il présente une solution qui semble plutôt efficace à un problème assez récurent : la gestion des dépendances vers les services de l'application. À tel point qu'on retrouve parfois dans certains projets beaucoup trop de singletons. 
 
 Mais pourquoi est-il déconseillé d'utiliser "trop" de singletons :
 
@@ -420,11 +420,11 @@ Mais pourquoi est-il déconseillé d'utiliser "trop" de singletons :
 
 * Il est très difficile (voir impossible) de **tester** un singleton ! Comme le constructeur est **privé** et qu'il n'y a qu'une instance de l'objet dans l'application, on ne peut tester que cette instance. On ne peut pas instancier de nouveaux objets de cette classe pendant les tests unitaires.
 
-* Il existe des solutions bien meilleures pour gérer les dépendances de l'application de manière plus flexibles tout en conservant la possibilité de réaliser des tests unitaires : les fabriques astraites (dont nous allons bientôt parler) et le conteneur d'inversion de contrôle (conteneur IoC, dont nous parlerons au prochain TP).
+* Il existe des solutions bien meilleures pour gérer les dépendances de l'application de manière plus flexibles tout en conservant la possibilité de réaliser des tests unitaires : les fabriques abstraites (dont nous allons bientôt parler) et le conteneur d'inversion de contrôle (conteneur IoC, dont nous parlerons au prochain TP).
 
-Attention, tout cela ne veut pas dire que le singleton est inutile ! Seulement qu'il ne doit pas être utilisé pour tout et n'importe quoi. Il faut également se poser la question "est-ce que cette instance doit pouvoir être accessible par tout le monde" ?
+Attention, tout cela ne veut pas dire que le singleton est inutile ! Seulement qu'il ne doit pas être utilisé pour tout et n'importe quoi. Il faut également se poser la question "_est-ce que cette instance doit pouvoir être accessible par tout le monde_" ?
 
-On va notamment éviter d'appliquer **singletons** sur des classes qui contiennent du **code métier** relatif à des règles de notre application et que nous allons sûrement vouloir tester. A l'inverse, nous allons bientôt parler du pattern **Fabrique** et **Fabrique abstraite**. Les classes produites par ces applications ont pour but de créer et/ou fournir des objets (des dépendances). Ces classes doivent pouvoir être accessibles par toute l'application et on ne va pas spécialement les tester (pas de code métier). Il est alors judicieux d'appliquer **Singleton** sur ces classes.
+On va notamment éviter d'appliquer **singletons** sur des classes qui contiennent du **code métier** relatif à des règles de notre application et que nous allons sûrement vouloir tester. À l'inverse, nous allons bientôt parler du pattern **Fabrique** et **Fabrique Abstraite**. Les classes produites par ces applications ont pour but de créer et/ou fournir des objets (des dépendances). Ces classes doivent pouvoir être accessibles par toute l'application et on ne va pas spécialement les tester (pas de code métier). Il est alors judicieux d'appliquer **Singleton** sur ces classes.
 
 Certains membres du **GoF** regrettent un peu la surutilisation maladroite de **Singleton** par certains développeurs. Ces développeurs ont l'illusion de coder proprement, car ils utilisent un design pattern, mais c'est tout l'inverse. Appliquer les design patterns ne veut pas forcément dire que votre conception est de qualité. Il faut savoir quand et comment les utiliser !
 
