@@ -7,9 +7,9 @@ lang: fr
 
 ## Introduction
 
-Quand on parle de **design patterns** on fait généralement référence aux patterns dits **GoF** (Gang of Four) présentés dans le livre **Design Patterns: Elements of Reusable Object-Oriented Software** qui est une référence dans le monde de l'ingénierie logicielle. Le **Gang of Four** fait référence au quatre auteurs de ce livre : **Erich Gamma**, **Richard Helm**, **Ralph Johnson** et **John Vlissides**.
+Quand on parle de **design patterns** on fait généralement référence aux patterns dits **GoF** (Gang of Four) présentés dans le livre **Design Patterns: Elements of Reusable Object-Oriented Software**, qui est une référence dans le monde de l'ingénierie logicielle. Le **Gang of Four** fait référence au quatre auteurs de ce livre : **Erich Gamma**, **Richard Helm**, **Ralph Johnson** et **John Vlissides**.
 
-Pour rappel, un **design pattern** est une solution réutilisable et adaptable vis-à-vis d'un problème de conception logicielle assez récurent. Un pattern est généralement présenté via un diagramme de classes de conception et un exemple d'implémentation. Un pattern a pour but est d'être applicable et adaptable à n'importe quel projet ou contexte.
+Pour rappel, un **design pattern** est une solution réutilisable et adaptable vis-à-vis d'un problème de conception logicielle assez récurent. Un pattern est généralement présenté via un diagramme de classes de conception et un exemple d'implémentation. Un pattern a pour but d'être applicable et adaptable à n'importe quel projet ou contexte.
 
 Il existe d'autres types de design patterns (par exemple, les patterns GRASP) mais les plus connus et les plus utilisés sont ceux du **GoF** que nous allons explorer dans ce cours. Tous ces **patterns** permettent de renforcer l'application des principes **SOLID**. Par ailleurs, certains langages comme `Java` proposent (dans leur librairie standard) des **classes** et **interfaces** permettant d'implémenter certains patterns **GoF** comme **observateur**, **itérateur**, **prototype**...
 
@@ -21,21 +21,21 @@ Les design patterns **GoF** se divisent en trois catégories :
 
 * Les patterns **comportementaux** : permettent d'organiser la collaboration et les communications entre les objets du programme afin de distribuer efficacement les **responsabilités**.
 
-Dans le TP précédent, vous avez déjà vu un pattern **strucural** (Décorateur) et un pattern **comportemental** (Stratégie). Dans le premier TP **git**, le programme utilisait un pattern **créateur** (fabrique) et un autre pattern **comportemental** (commande). Bref, les design patterns sont partout !
+Dans le TP précédent, vous avez déjà vu un pattern **structurel** (Décorateur) et un pattern **comportemental** (Stratégie). Dans le premier TP **git**, le programme utilisait un pattern **créateur** (fabrique) et un autre pattern **comportemental** (commande). Bref, les design patterns sont partout !
 
-Dans ce TP, nous allons voir **tous les patterns créateurs** et allons les mettre en application : **singleton**, **builder**, **prototype**, **fabrique** et enfin **fabrique abstraite**.
+Dans ce TP, nous allons voir **tous les patterns créateurs** et allons les mettre en application : **singleton**, **builder**, **prototype**, **Fabrique** et enfin **Fabrique abstraite**.
 
 Nous verrons aussi un autre pattern **structurel** appelé **adaptateur**. En fait, nous allons voir que beaucoup de ces patterns peuvent (et doivent) être combinés dans un projet plus large. Nous traitons souvent des problèmes "simple" avec quelques classes pour illustrer le fonctionnement d'un pattern, mais sur un projet plus large, il est tout à fait naturel de faire travailler en concert les différents patterns.
 
 <div class="exercise">
 
-1. Pour commencer, forkez [le dépôt gitlab suivant](https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/tp4) en le plaçant dans le namespace `qualite-de-developpement-semestre-3/etu/votrelogin`.
+1. Pour commencer, forkez [le dépôt GitLab suivant](https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/tp4) en le plaçant dans le namespace `qualite-de-developpement-semestre-3/etu/votrelogin`.
 
 2. Clonez votre nouveau dépôt en local. Ouvre le projet avec `IntelliJ` et vérifiez qu'il n'y a pas d'erreur.
 
 3. Pendant ce TP, on vous demandera de créer des **diagrammes UML** de conception (classes, séquences). Vous déposerez vos diagrammes dans un dossier `uml` (en image ou bien avec le fichier du projet **.mdj** si vous utilisez **StarUML**) que vous devrez créer à la racine du dépôt.
 
-4. À la fin de chaque séance, n'oubliez pas de faire un **push** vers votre dépôt distant sur **Gitlab**.
+4. À la fin de chaque séance, n'oubliez pas de faire un **push** vers votre dépôt distant sur **GitLab**.
 
 </div>
 
@@ -106,7 +106,7 @@ public class ClasseExemple {
 
 Dans cet exemple, nous voyons qu'il y a au moins deux instances de la classe **Service** qui sont générées. Une dans `Client` et une autre dans `ClasseExemple`. S'il n'y a aucun intérêt à avoir plusieurs instances de la classe `Service`, nous pouvons alors la transformer en **Singleton** afin que toutes les classes qui souhaitent utiliser passent par la même instance.
 
-Pour cela, il y a trois changements à réaliser dans la classe qu'on veut transformer en **Sungleton** :
+Pour cela, il y a trois changements à réaliser dans la classe qu'on veut transformer en **Singleton** :
 
 * Changer la **visibilité** du ou des **constructeurs** de la classe en **privé**. Ainsi, plus aucune autre entité pourra créer des instances de cette classe (hormis la classe elle-même).
 
@@ -131,7 +131,7 @@ public class Service {
 
   //On appelle systématiquement cette méthode pour récupérer l'instance "globale"
   public synchronized static Service getInstance() {
-    if(INSTANCE == NULL) {
+    if(INSTANCE == null) {
       INSTANCE = new Service();
     }
     return INSTANCE;
@@ -205,7 +205,7 @@ Commençons par une mise en application très simple.
 
 Un cas un peu plus concret qui montre l'intérêt d'utiliser un `Singleton` est dans le contexte où deux objets différents dépendent de l'état d'une classe. Une classe `A` modifie l'état de `Service` et une classe `B` a besoin de connaître les modifications qu'a effectuées `A` dans `Service` pour fonctionner. Les deux classes `A` et `B` doivent alors dépendre de la même instance de `Service` !
 
-Aussi, imaginons une classe d'accès à une base de données: celle-ci initialise une connexion vers la base qui peut prendre plusieurs secondes. Il serait inconscient d'instancier cette classe à chaque endroit où on en a besoin (cela dégraderait les performances !). On va plutôt utiliser un **Singleton**. C'est le cas de la classe `SQLUtils` que vous avez codé dans le TP "JDBC / Hibernate" en cours de base de données.
+Aussi, imaginons une classe d'accès à une base de données : celle-ci initialise une connexion vers la base qui peut prendre plusieurs secondes. Il serait inconscient d'instancier cette classe à chaque endroit où on en a besoin (cela dégraderait les performances !). On va plutôt utiliser un **Singleton**. C'est le cas de la classe `SQLUtils` que vous avez codé dans le TP "JDBC / Hibernate" en cours de base de données.
 
 <div class="exercise">
 
@@ -237,7 +237,7 @@ public class Service {
   private Service() {}
 
   public synchronized static Service getInstance() {
-    if(INSTANCE == NULL) {
+    if(INSTANCE == null) {
       INSTANCE = new Service();
     }
     return INSTANCE;
@@ -424,7 +424,7 @@ Mais pourquoi est-il déconseillé d'utiliser "trop" de singletons :
 
 Attention, tout cela ne veut pas dire que le singleton est inutile ! Seulement qu'il ne doit pas être utilisé pour tout et n'importe quoi. Il faut également se poser la question "est-ce que cette instance doit pouvoir être accessible par tout le monde" ?
 
-On va notamment éviter d'appliquer **singletons** sur des classes qui contiennent du **code métier** relatif à des règles de notre application et que nous allons sûrement vouloir tester. A l'inverse, nous allons bientôt parler du pattern **fabrique** et **fabrique abstraite**. Les classes produites par ces applications ont pour but de créer et/ou fournir des objets (des dépendances). Ces classes doivent pouvoir être accessibles par toute l'application et on ne va pas spécialement les tester (pas de code métier). Il est alors judicieux d'appliquer **Singleton** sur ces classes.
+On va notamment éviter d'appliquer **singletons** sur des classes qui contiennent du **code métier** relatif à des règles de notre application et que nous allons sûrement vouloir tester. A l'inverse, nous allons bientôt parler du pattern **Fabrique** et **Fabrique abstraite**. Les classes produites par ces applications ont pour but de créer et/ou fournir des objets (des dépendances). Ces classes doivent pouvoir être accessibles par toute l'application et on ne va pas spécialement les tester (pas de code métier). Il est alors judicieux d'appliquer **Singleton** sur ces classes.
 
 Certains membres du **GoF** regrettent un peu la surutilisation maladroite de **Singleton** par certains développeurs. Ces développeurs ont l'illusion de coder proprement, car ils utilisent un design pattern, mais c'est tout l'inverse. Appliquer les design patterns ne veut pas forcément dire que votre conception est de qualité. Il faut savoir quand et comment les utiliser !
 
@@ -485,7 +485,7 @@ public class Burger {
 }
 ```
 
-Dans l'exemple précédent, les deux constructeurs entrent en collision car ils ont la même signature `Burger(String, PainBurger, boolean)`.
+Dans l'exemple précédent, les deux constructeurs entrent en collision, car ils ont la même signature `Burger(String, PainBurger, boolean)`.
 
 Pour pallier cela, on pourrait mettre en place la solution bancale suivante :
 
@@ -539,7 +539,7 @@ class Exemple {
 }
 ```
 
-Dans cette classe, il y a deux attributs qu'il est obligatoire d'initialiser : `data` et `compteur`. Ensuite, il y a diverses options. L'attribut `data` et `optionB` peuvent être modifiés, mais pas le reste. Pour contrôler la construction d'instances de cette classe nous pouvons donc mettre en place un `Builder` :
+Dans cette classe, il y a deux attributs qu'il est obligatoire d'initialiser : `data` et `compteur`. Ensuite, il y a diverses options. L'attribut `data` et `optionB` peuvent être modifiés, mais pas le reste. Pour contrôler la construction d'instances de cette classe, nous pouvons donc mettre en place un `Builder` :
 
 ```java
 class Exemple {
@@ -621,7 +621,7 @@ public class Main {
     Exemple ex1 = builderEx1.withOptionA("truc").withOptionD().build();
 
     Builder builderEx2 = new Exemple.Builder("test2", 50);
-    Exemple ex2 = builderEx2.withOptionB().withOptionC(10.05)..withOptionD().build();
+    Exemple ex2 = builderEx2.withOptionB().withOptionC(10.05).withOptionD().build();
   }
 
 }
@@ -758,9 +758,9 @@ Le pattern **prototype** permet de résoudre ce problème en précisant que :
 ```java
 interface Exemple {
 
-  public void action();
+  void action();
 
-  public Exemple cloner();
+  Exemple cloner();
 }
 
 class A implements Exemple {
@@ -857,7 +857,7 @@ L'objectif du pattern **prototype** est donc de définir un moyen d'obtenir des 
 
 ## Le pattern Fabrique
 
-Le pattern **fabrique** va permettre de centraliser l'instanciation d'une famille de classes dans une classe spécialisée. Les classes ayant besoin d'instancier des objets de cette famille ne vont plus faire elle-même des **new** mais vont plutôt passer par la fabrique.
+Le pattern **Fabrique** va permettre de centraliser l'instanciation d'une famille de classes dans une classe spécialisée. Les classes ayant besoin d'instancier des objets de cette famille ne vont plus faire elle-même des **new** mais vont plutôt passer par la fabrique.
 
 La fabrique connaît les différents types concrets à instancier, mais elle va généralement déclarer renvoyer des abstractions (classes abstraites/interfaces) pour que les classes ayant besoin de créer des objets ne dépendent plus du tout d'un objet concret, mais plutôt de son abstraction. Ainsi, l'impact du changement diminue (si on veut changer la classe concrète utilisée) ce qui renforce notamment le principe ouvert/fermé.
 
@@ -1014,7 +1014,7 @@ public class ServiceB {
 
 Dans cet exemple, `ServiceA` et `ServiceB` sont fortement dépendants de `CarreSimple` et `CercleSimple`. Et on ne peut pas simplement injecter les dépendances, car ces services ont besoin d'instancier ces classes dans leurs méthodes ! Si nous devons changer pour utiliser des `CarreGraphique` et des `CercleGraphique`, il faut modifier ces deux classes !
 
-Nous pouvons mettre en place une **fabrique** pour règler ce problème :
+Nous pouvons mettre en place une **Fabrique** pour règler ce problème :
 
 ```java
 
@@ -1059,7 +1059,7 @@ public class ServiceB {
 
 ```
 
-Maintenant, si nous voulons utiliser `CarreGraphique` et `CercleGraphique` à la place, nous n'avons à faire ce changement que dans **une seule classe** : `FigureGeometriqueFactory` ! Avec le pattern **fabrique abstraite** nous pourrons encore plus facilement changer de "familles".
+Maintenant, si nous voulons utiliser `CarreGraphique` et `CercleGraphique` à la place, nous n'avons à faire ce changement que dans **une seule classe** : `FigureGeometriqueFactory` ! Avec le pattern **Fabrique abstraite** nous pourrons encore plus facilement changer de "familles".
 
 Ici, il semble judicieux de transformer `FigureGeometriqueFactory` en **Singleton** et de l'injecter comme dépendance pour éviter que chaque service instancie une version de la fabrique :
 
@@ -1174,7 +1174,7 @@ Pour l'instant, si nous voulons changer de "famille" de classes utilisée (anima
 
 ## Le pattern Fabrique abstraite
 
-Le pattern **fabrique abstraite** peut être vu comme une extension du pattern **fabrique** et va notamment permettre d'interchanger différentes fabriques qui instancient différentes familles de classes concrètes. Ainsi, au lieu de changer le code de la fabrique quand on veut changer de familles de classes, on ne va plus devoir changer le code de notre fabrique, mais plutôt changer l'instance de la fabrique conctrète utilisée par le programme ou une classe en particulier.
+Le pattern **Fabrique abstraite** peut être vu comme une extension du pattern **Fabrique** et va notamment permettre d'interchanger différentes fabriques qui instancient différentes familles de classes concrètes. Ainsi, au lieu de changer le code de la fabrique quand on veut changer de familles de classes, on ne va plus devoir changer le code de notre fabrique, mais plutôt changer l'instance de la fabrique conctrète utilisée par le programme ou une classe en particulier.
 
 ### Construction de donjons
 
@@ -1220,7 +1220,7 @@ Attaquons tout de suite par un exercice :
 
 Vous avez peut-être trouvé la solution par vous-même avec la dernière question, mais si vous commencez à maîtriser les bonnes pratiques de conception logicielle, il y a un concept qui revient souvent dans les patterns et lorsqu'on applique les principes SOLID : l'abstraction.
 
-L'idée du pattern **fabrique abstraite** est donc de disposer d'une abstraction (classe abstraite ou interface) qui définie le contrat que doivent remplir les fabriques concrètes. Pour chaque famille de classes, on crée une fabrique concrète qui implémente de cette interface ou étend cette classe abstraite. Ensuite, toutes les classes qui souhaitent utiliser cette fabrique doivent dépendre de la **fabrique abstraite** et non plus d'une fabrique concrète. Couplé à de l'injection de dépendances, il est très facile de complétement changer le comportement d'une classe. C'est globalement l'idée du pattern **Stratégie** que vous avez déjà vu lors du dernier TP, mais appliqué pour des fabriques !
+L'idée du pattern **Fabrique abstraite** est donc de disposer d'une abstraction (classe abstraite ou interface) qui définie le contrat que doivent remplir les fabriques concrètes. Pour chaque famille de classes, on crée une fabrique concrète qui implémente de cette interface ou étend cette classe abstraite. Ensuite, toutes les classes qui souhaitent utiliser cette fabrique doivent dépendre de la **fabrique abstraite** et non plus d'une fabrique concrète. Couplé à de l'injection de dépendances, il est très facile de complétement changer le comportement d'une classe. C'est globalement l'idée du pattern **Stratégie** que vous avez déjà vu lors du dernier TP, mais appliqué pour des fabriques !
 
 Reprenons l'exemple des figures géométriques :
 
@@ -1317,7 +1317,7 @@ Comme vous pouvez le constater, après refactoring, il est très facile de chang
 
 <div class="exercise">
 
-1. Refactorez votre code afin d'introduire une nouvelle fabrique permettant de construire des donjons "difficiles" en appliquant le pattern **fabrique abstraite**. Vous devez aussi logiquement légèrement adapter le code de la classe `Donjon`.
+1. Refactorez votre code afin d'introduire une nouvelle fabrique permettant de construire des donjons "difficiles" en appliquant le pattern **Fabrique abstraite**. Vous devez aussi logiquement légèrement adapter le code de la classe `Donjon`.
 
 2. Dans le `Main`, construisez des donjons difficiles et des donjons faciles.
 
@@ -1335,7 +1335,7 @@ Parfois, il n'est pas nécessairement souhaitable d'avoir la possibilité d'util
 
 1. Ouvrez le paquetage `fabrique3`. C'est le retour des **pokémons** ! Mais il y a également une nouvelle famille de monstres : **les digimons** qui ont un fonctionnement similaire aux pokémons mais on en plus un système d'énergie. En tout cas, ils se créent de la même manière que les pokémons ou plus généralement, qu'un "monstre".
 
-2. Actuellement, dans le `Main`, on crée des pokémons et on utilise le simulateur de combat pour en faire combattre deux. À la place des pokémons, on voudrait parfois utiliser des digimons. Maintenant que vous connaissez le pattern **fabrique abstraite** refactorez le code afin de pouvoir facilement switcher entre des combats avec divers pokémons et des combats avec divers digimons. Si vous rencontrez quelques petits problèmes, regardez les méthodes de `Digimon`... ne serait-il pas judicieux de lui faire implémenter une certaine interface ? Et pour les différentes sous-classes de `Digimon` ? (`DigimonEau`, `DigimonFeu`...). Vous devrez aussi adapter le `Main` et `SimulateurCombat`.
+2. Actuellement, dans le `Main`, on crée des pokémons et on utilise le simulateur de combat pour en faire combattre deux. À la place des pokémons, on voudrait parfois utiliser des digimons. Maintenant que vous connaissez le pattern **Fabrique abstraite** refactorez le code afin de pouvoir facilement switcher entre des combats avec divers pokémons et des combats avec divers digimons. Si vous rencontrez quelques petits problèmes, regardez les méthodes de `Digimon`... ne serait-il pas judicieux de lui faire implémenter une certaine interface ? Et pour les différentes sous-classes de `Digimon` ? (`DigimonEau`, `DigimonFeu`...). Vous devrez aussi adapter le `Main` et `SimulateurCombat`.
 
 3. Contrairement à l'exercice précédent sur les **donjons**, on ne veut pas que les deux fabriques cohabitent à un instant t du programme. On veut que l'application fonctionne exclusivement avec des pokémons ou bien fonctionne exclusivement avec des digimons. Mais on ne veut pas changer manuellement l'instance de la fabrique utilisée partout dans le code source. Il faut imaginer que cette fabrique est probablement utilisée à divers endroits et surtout, qu'on ne souhaite pas recompiler le code source à chaque changement. Comment pourrions-nous faire ?
 
@@ -1345,7 +1345,7 @@ Nous sommes dans un cas particulier où tout le programme va utiliser une seule 
 
 Mais comment faire cela sans modifier l'instance concrète utilisée un peu partout ? (car elle est surement injectée à différentes classes). La réponse est simple : il faut regrouper la logique qui instancie la classe concrètement utilisée à un seul endroit. On peut ensuite mettre un système de paramétrage qui permet de changer la fabrique utilisée facilement. Les classes qui ont besoin de cette fabrique iront donc appeler une méthode de cette classe afin de récupérer la fabrique concrète à utiliser.
 
-La question est de savoir : où placer ce bout de code ? Il n'y a pas vraiment de réponse officielle à cette question. Cela pourrait être dans une classe indépendante avec une méthode statique. Cependant, dans la pratique, on retrouve parfois ce bout de code directement dans la **fabrique abstraite** qu'on mélange à un **Singleton** :
+La question est de savoir : où placer ce bout de code ? Il n'y a pas vraiment de réponse officielle à cette question. Cela pourrait être dans une classe indépendante avec une méthode statique. Cependant, dans la pratique, on retrouve parfois ce bout de code directement dans la **Fabrique abstraite** qu'on mélange à un **Singleton** :
 
 ```java
 
@@ -1762,7 +1762,7 @@ Si vous n'avez pas tout compris, n'hésitez pas à en parler avec votre enseigna
 
 Jusqu'ici nous avons vu des fabriques qui instancient systématiquement un objet à chaque appel d'une méthode type `creer...`. Cependant, ce fonctionnement n'est pas obligatoire. Par exemple on pourrait avoir une fabrique qui **instancie** et stocke certains objets lors de son initialisation puis renvoie une référence vers ces objets lorsqu'on la sollicite.
 
-Avec un tel fonctionnement, une **fabrique** permet alors de gérer les **dépendances** d'un programme. Elle pourrait par exemple stocker différentes instances de **services**  concrets de l'application. Couplé avec le pattern **fabrique abstraite**, cela nous permet de rendre les dépendances de notre programme fortement modulables !
+Avec un tel fonctionnement, une **fabrique** permet alors de gérer les **dépendances** d'un programme. Elle pourrait par exemple stocker différentes instances de **services**  concrets de l'application. Couplé avec le pattern **Fabrique abstraite**, cela nous permet de rendre les dépendances de notre programme fortement modulables !
 
 ```java
 interface ServiceA {
@@ -1902,7 +1902,7 @@ public class Main {
 
 Dans l'exemple ci-dessus, un simple changement dans le fichier de configuration permet de changer les services concrets utilisés pour `ServiceA` et `ServiceB`. Contrairement aux exercices précédents, dans le cas d'un service, il n'est pas utile (voire, il ne faut pas) le réinstancier chaque fois. Par exemple, dans le cas d'une classe "repository" permettant de faire des requêtes sur une base de données.
 
-C'est un peu comme si toutes les dépendances stockées dans ces fabriques étaient de singletons, car on ne manipule qu'une seule instance de ces objets dans le programme. Mais cela est encore mieux qu'un singleton, car ces classes (`ServiceA1`, `ServiceB1`, etc...) ne sont pas construites comme des singletons ! Elles sont donc beaucoup plus adaptées aux tests unitaires. Comme mentionné dans la section "Avertissement" sur les singletons, nous préférerons utiliser des fabriques plutôt que de multiplier les singletons dans l'application.
+C'est un peu comme si toutes les dépendances stockées dans ces fabriques étaient de singletons, car on ne manipule qu'une seule instance de ces objets dans le programme. Mais cela est encore mieux qu'un singleton, car ces classes (`ServiceA1`, `ServiceB1`, etc.) ne sont pas construites comme des singletons ! Elles sont donc beaucoup plus adaptées aux tests unitaires. Comme mentionné dans la section "Avertissement" sur les singletons, nous préférerons utiliser des fabriques plutôt que de multiplier les singletons dans l'application.
 
 Il est toléré d'avoir un **singleton** pour les classes telles que les fabriques abstraites ou leurs sous-classes, car elles n'ont pas vraiment pour but d'être testées (unitairement). Mais sur les services qui contiennent du code métier, il faut éviter le **singleton** quand cela est possible. Les fabriques et les fabriques abstraites répondent à ce problème.
 
@@ -1928,7 +1928,7 @@ Pour le moment, revenons à nos moutons et appliquons ce que nous avons appris s
 
     Là aussi, on veut pouvoir facilement switcher entre ces deux configurations sans changer le code, mais en éditant simplement un fichier de configuration.
 
-    Mettez en place un système pour pouvoir gérer ces deux configurations. Encore une fois, vous ne devriez pas avoir besoin d'éditer d'autre classes que `IHMUtilisateur` après la mise en place de votre système.
+    Mettez en place un système pour pouvoir gérer ces deux configurations. Encore une fois, vous ne devriez pas avoir besoin d'éditer d'autres classes que `IHMUtilisateur` après la mise en place de votre système.
 
 5. Vérifiez que tout fonctionne en alternant entre les deux configurations.
 
@@ -1942,7 +1942,7 @@ Vous allez maintenant mettre en application ce que vous avez appris sur une appl
 
 <div class="exercise">
 
-1. Forkez [le dépôt gitlab suivant](https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/tp4-qualite-oge) en le plaçant dans le namespace `qualite-de-developpement-semestre-3/etu/votrelogin`.
+1. Forkez [le dépôt GitLab suivant](https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/tp4-qualite-oge) en le plaçant dans le namespace `qualite-de-developpement-semestre-3/etu/votrelogin`.
 
 2. Clonez votre nouveau dépôt en local. Ouvre le projet avec `IntelliJ` et vérifiez qu'il n'y a pas d'erreur. Si vous exécutez le programme, il y aura une erreur, c'est normal pour le moment.
 
@@ -1981,16 +1981,16 @@ Vous allez maintenant mettre en application ce que vous avez appris sur une appl
 
 5. Une fois le refactoring terminé, vérifiez que tout fonctionne en alternant entre `JDBC` et `Hibernate` en modifiant votre fichier de configuration. Comme les deux systèmes utilisent la même base, cela n'est pas forcément évident de repérer quand l'un ou l'autre est utilisé. au démarrage, `Hibernate` va vous mettre divers messages d'informations dans la console contrairement à `JDBC`. Sinon, essayez de mettre un mauvais mot de passe dans une des configurations (dans `JDBCUtils` ou bien le fichier de configuration d'Hibernate) et alternez entre les deux méthodes. L'application ne devrait pas fonctionner seulement dans un cas sur deux.
 
-6. N'oubliez pas de push ce projet sur gitlab. **Attention**, si vous ne voulez pas que vos identifiants soient visibles, supprimez-les avant de push. Mais, à priori, seuls les enseignants ont accès à vos dépôts gitlab si vous l'avez placé dans le bon `namespace`.
+6. N'oubliez pas de push ce projet sur GitLab. **Attention**, si vous ne voulez pas que vos identifiants soient visibles, supprimez-les avant de push. Mais, à priori, seuls les enseignants ont accès à vos dépôts GitLab si vous l'avez placé dans le bon `namespace`.
 </div>
 
 Avec votre refactoring, il devient très facile d'ajouter et d'utiliser une nouvelle source de stockage de données, comme un fichier XML par exemple ou une base de données `SQLite` dédiées aux tests ! Et passer d'une méthode à l'autre ne demande alors plus aucune modification du code source.
 
 ## Décorateur : Builder ou Fabrique ?
 
-Dans le dernier TP, vous avez découvert le pattern **décorateur** permettant de "composer" une instance en combiner les fonctionnalités de différents types de classes de manière dynamique. Nous avions notamment vu un exemple portant sur des salariés puis un exercice portant sur différents types de produits.
+Dans le dernier TP, vous avez découvert le pattern **Décorateur** permettant d'ajouter des nouvelles fonctionnalités de manière dynamique. Nous avions notamment vu un exemple portant sur des salariés, puis un exercice portant sur différents types de produits.
 
-Comme l'objet créé avec le pattern "décorateur" peut être assez complexe, il peut être intéressant de le coupler avec un pattern créateur comme **fabrique** ou bien **builder**.
+Comme l'objet créé avec le pattern "Décorateur" peut être assez complexe, il peut être intéressant de le coupler avec un pattern créateur comme **Fabrique** ou bien **builder**.
 
 Reprenons l'exemple des salariés et essayons d'appliquer ces deux patterns :
 
@@ -2029,7 +2029,7 @@ class ChefProjet extends SalarieDecorator {
   private int nombreProjetsGeres;
 
   public ChefProjet(I_Salarie salarie, int nombreProjetsGeres) {
-    super(salarie)
+    super(salarie);
     this.nombreProjetsGeres = nombreProjetsGeres;
   }
 
@@ -2068,7 +2068,7 @@ I_Salarie salarie3 = new ResponsableDeStagiaires(new Salarie(2300), 5);
 I_Salarie salarie4 = new SalarieChef(new ResponsableDeStagiaires(new Salarie(1800), 4), 2); 
 ```
 
-Essayons d'abord d'utiliser le pattern **fabrique** :
+Essayons d'abord d'utiliser le pattern **Fabrique** :
 
 ```java
 class SalarieFactory {
@@ -2176,11 +2176,11 @@ La version utilisant le **builder** semble bien plus pratique que la **fabrique*
 
 ## Amélioration du générateur de donjons
 
-Et si nous essayons de combiner plus de patterns ? Nous avons l'application idéale pour ça : le générateur de donjon (paquetage `fabrique2`). Il y a déjà le pattern **fabrique**, **fabrique abstraite**, **singleton** et **prototype**.
+Et si nous essayons de combiner plus de patterns ? Nous avons l'application idéale pour ça : le générateur de donjon (paquetage `fabrique2`). Il y a déjà le pattern **Fabrique**, **Fabrique abstraite**, **singleton** et **prototype**.
 
 <div class="exercise">
 
-1. Nous aimerions maintenant que les différentes salles puissent être combinées afin de créer une "super-salle". Par exemple, on aimerait avoir des salles avec des coffres et 20 ennemis, une salle avec une énigme et un boss, une salle avec tout à la fois...! Quel design pattern pouvez-vous utiliser pour mettre en place une telle fonctionnalité ? La seule méthode qui nous intéresse est `toString`. À l'affichage, on doit avoir les informations de toutes les salles qui composent une salle. Après vos refactoring, vous devrez logiquement adapter le code de vos deux **fabriques**. Pour la configuration **difficile** on souhaite faire des changements supplémentaires :
+1. Nous aimerions maintenant que les différentes salles puissent être combinées afin de créer une "super-salle". Par exemple, on aimerait avoir des salles avec des coffres et 20 ennemis, une salle avec une énigme et un boss, une salle avec tout à la fois...! Quel design pattern pouvez-vous utiliser pour mettre en place une telle fonctionnalité ? La seule méthode qui nous intéresse est `toString`. À l'affichage, on doit avoir les informations de toutes les salles qui composent une salle. Après vos refactoring, vous devrez logiquement adapter le code de vos deux **fabriques**. Pour la configuration **difficile**, on souhaite faire des changements supplémentaires :
 
     * Une salle normale est une salle avec un coffre et entre 20 et 40 ennemis.
 
@@ -2199,6 +2199,6 @@ Et si nous essayons de combiner plus de patterns ? Nous avons l'application idé
 
 Vous maîtrisez maintenant l'ensemble des **design patterns créateurs** ainsi que le pattern **Adaptateur**. Ce TP vous a aussi logiquement permis de renforcer votre pratique de la conception logicielle et de l'application des principes `SOLID`.
 
-Toutefois, attention à ne pas attraper la **patternite** : c'est une maladie connue qu'attrapent les jeunes ingénieurs logiciels qui découvrent les **design patterns**. Cela se manifeste par une envie de mettre des patterns partout à tort et à travers même quand cela n'est pas nécessaire. Comme pour le **singleton**, il faut se poser la question de savoir si un pattern est nécessaire ou non. Normalement, l'utilisation d'un pattern vient assez naturellement quand on souhaite résoudre le problème qui lui est lié. Si son utilisation semble un peu trop forcée, c'est que cela est probablement injustifié. Bref, comme toujours, il faut avoir une vision générale et sur le long terme !
+Toutefois, attention à ne pas attraper la **patternite** : c'est une maladie connue qu'attrapent les jeunes ingénieurs logiciels qui découvrent les **design patterns**. Cela se manifeste par une envie de mettre des patterns partout à tort et à travers même quand cela n'est pas nécessaire. Comme pour le **singleton**, il faut se poser la question de savoir si un pattern est nécessaire ou non. Normalement, l'utilisation d'un pattern vient assez naturellement quand on souhaite résoudre le problème qui lui est lié. Si son utilisation semble un peu trop forcée, c'est que cela est probablement injustifié, ou pire : on est en train de construire un [anti-pattern](https://en.wikipedia.org/wiki/Anti-pattern), une solution non-seulement injustifiée, mais aussi qui a plus de conséquences négatives que positives. Bref, comme toujours, il faut avoir une vision générale et sur le long terme !
 
 Dans le prochain TP, nous verrons comment encore plus optimiser la **gestion des dépendances** de notre programme en construisant notre propre **conteneur IoC** afin de gérer dynamiquement les dépendances majeures de nos applications.
