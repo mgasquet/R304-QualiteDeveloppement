@@ -114,7 +114,7 @@ Pour cela, il y a trois changements à réaliser dans la classe qu'on veut trans
 
 * Enfin, créer une méthode **publique** et **statique** qui retourne un objet du type de la classe. Cette méthode est nommée `getInstance`. Tout d'abord, elle regarde si la variable `INSTANCE` a été initialisée ou non (si elle est `null` ou non). Si elle n'est pas encore initialisée, la classe l'instancie. Dans tous les cas, à la fin, on retourne `INSTANCE`.
 
-Par la suite, toutes les entités qui souhaitent récupérer une instance de cette classe utilisent la méthode `getInstance` qui peut directement être appelée sur la classe car **statique**. Lors du premier accès, l'instance "globale" sera alors initialisée.
+Par la suite, toutes les entités qui souhaitent récupérer une instance de cette classe utilisent la méthode `getInstance` qui peut directement être appelée sur la classe, car **statique**. Lors du premier accès, l'instance "globale" sera alors initialisée.
 
 Dans un environnement **multi-threadé** (exécution de plusieurs processus en parallèle, comme des `Runnable` ou des `Thread` en Java) il faut faire attention à ce que la méthode `getInstance` ne soit pas appelée en même temps par deux **Threads** différents. Pour régler cela en Java, il suffit d'ajouter le mot clé `synchronized` lors de la définition de la méthode.
 
@@ -430,7 +430,7 @@ Certains membres du **GoF** regrettent un peu la surutilisation maladroite de **
 
 ## Le pattern Builder
 
-Le design pattern **Builder** est un pattern que vous avez déjà abordé l'année dernière (sans vraiment le nommer) en cours de développement orienté objets. Cela devrait donc vous rapeller quelques souvenirs !
+Le design pattern **Builder** est un pattern que vous avez déjà abordé l'année dernière en cours de développement orienté objets (cf. [le dernier TP](https://gitlabinfo.iutmontp.univ-montp2.fr/dev-objets/tp11)). Cela devrait donc vous rappeler quelques souvenirs.
 
 Ce pattern permet de résoudre le problème de création d'un objet qui a beaucoup d'options. Voyons donc cela avec un petit exercice.
 
@@ -464,7 +464,7 @@ Ce pattern permet de résoudre le problème de création d'un objet qui a beauco
 
 </div>
 
-En effet, rien que le fait de pouvoir avoir des burgers avec du pain et des tomates et des bugers avec du pain et de la salade empêche de créer les constructeurs adéquats :
+En effet, rien que le fait de pouvoir avoir des burgers avec du pain et des tomates et des burgers avec du pain et de la salade empêche de créer les constructeurs adéquats :
 
 ```java
 public class Burger {
@@ -583,7 +583,7 @@ class Exemple {
       return this;
     }
 
-    //Par défaut, un booléen est à false, donc ajouter cet option signfit passer la valeur à true.
+    //Par défaut, un booléen est à false, donc ajouter cette option signifie passer la valeur à true.
     // Mais on pourrait éventuellement aussi autoriser un paramètre ici.
     public Builder withOptionB() {
       this.optionB = true;
@@ -688,7 +688,7 @@ Nous allons directement présenter le principe et l'intérêt du pattern **proto
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `protoype1` et consultez les classes mises à disposition. Il s'agit d'une mini application bancaire permettant de gérer des comptes. Pour le moment, la classe `Banque` permet de gérer des **comptes courants**. C'est elle qui gère intégralement ces comptes bancaires : leur création et le changement de solde (créditer/débiter). Elle est donc **composée des comptes bancaires** (ce qui se trasuirait par une **agrégation noire** sur un diagramme de classes de conception).
+1. Ouvrez le paquetage `protoype1` et consultez les classes mises à disposition. Il s'agit d'une mini-application bancaire permettant de gérer des comptes. Pour le moment, la classe `Banque` permet de gérer des **comptes courants**. C'est elle qui gère intégralement ces comptes bancaires : leur création et le changement de solde (créditer/débiter). Elle est donc **composée des comptes bancaires** (ce qui se traduirait par une **agrégation noire** sur un diagramme de classes de conception).
 
 2. Le développeur a pensé qu'il serait utile qu'un objet extérieur puisse récupérer un `CompteCourant` depuis la banque pour consulter le solde (ou autre). Il a donc créé une méthode `getInformationsCompteNumero`. Expérimentez dans le `Main` en créditant le compte d'un objet récupéré par cette méthode puis récupérez de nouveau ce compte depuis la banque et affichez son solde. Le solde du compte t-il était modifié ? Lancez le test unitaire situé dans la classe dans `src/test/java/prototype1`. Il ne passe pas... Comprenez-vous pourquoi ?
 
@@ -928,7 +928,7 @@ public class CarreGraphique implements Carre {
 
   @Override
   public void afficherFigure() {
-    //Affichage grpahique du carré...
+    //Affichage graphique du carré...
   }
 
 }
@@ -979,7 +979,7 @@ public class CercleGraphique implements Cercle {
 
   @Override
   public void afficherFigure() {
-    //Affichage grpahique du cercle...
+    //Affichage graphique du cercle...
   }
 
 }
@@ -1014,7 +1014,7 @@ public class ServiceB {
 
 Dans cet exemple, `ServiceA` et `ServiceB` sont fortement dépendants de `CarreSimple` et `CercleSimple`. Et on ne peut pas simplement injecter les dépendances, car ces services ont besoin d'instancier ces classes dans leurs méthodes ! Si nous devons changer pour utiliser des `CarreGraphique` et des `CercleGraphique`, il faut modifier ces deux classes !
 
-Nous pouvons mettre en place une **Fabrique** pour règler ce problème :
+Nous pouvons mettre en place une **Fabrique** pour régler ce problème :
 
 ```java
 
@@ -1174,7 +1174,7 @@ Pour l'instant, si nous voulons changer de "famille" de classes utilisée (anima
 
 ## Le pattern Fabrique abstraite
 
-Le pattern **Fabrique abstraite** peut être vu comme une extension du pattern **Fabrique** et va notamment permettre d'interchanger différentes fabriques qui instancient différentes familles de classes concrètes. Ainsi, au lieu de changer le code de la fabrique quand on veut changer de familles de classes, on ne va plus devoir changer le code de notre fabrique, mais plutôt changer l'instance de la fabrique conctrète utilisée par le programme ou une classe en particulier.
+Le pattern **Fabrique abstraite** peut être vu comme une extension du pattern **Fabrique** et va notamment permettre d'interchanger différentes fabriques qui instancient différentes familles de classes concrètes. Ainsi, au lieu de changer le code de la fabrique quand on veut changer de familles de classes, on ne va plus devoir changer le code de notre fabrique, mais plutôt changer l'instance de la fabrique concrète utilisée par le programme ou une classe en particulier.
 
 ### Construction de donjons
 
@@ -1662,7 +1662,7 @@ Maintenant, revenons à nos petits monstres...
 
 </div>
 
-Le problème que vous avez dû rencontrer est le suivant : dans un de vos adaptateurs concrets, vous n'aviez pas accès au `patternmon` passé à la classe parente. Une solution que vous avez peut-être mis en place et de changer la visibilité de cet attribut en `protected`, mais même là, vous aviez sans doutes des erreurs ! 
+Le problème que vous avez dû rencontrer est le suivant : dans un de vos adaptateurs concrets, vous n'aviez pas accès au `patternmon` passé à la classe parente. Une solution que vous avez peut-être mise en place et de changer la visibilité de cet attribut en `protected`, mais même là, vous aviez sans doute des erreurs ! 
 
 Voyons un peu tout ça :
 
@@ -1677,7 +1677,7 @@ public abstract class PatternmonAdapter implements Monstre {
 
 public class patternmonEauAdapter extends PatternmonAdapter implements MonstreEau {
 
-    //Prend un Waterpatternmon en pramètre et pas un Patternmon !
+    //Prend un Waterpatternmon en paramètre et pas un Patternmon !
     public patternmonEauAdapter(WaterPatternmon patternmon) {
         super(patternmon);
     }
@@ -1713,8 +1713,8 @@ Petite démonstration sur `patternmonAdapter` et `patternmonEauAdapter` :
 //Je suis assuré que T est un objet qui étend la classe Patternmon
 public abstract class PatternmonAdapter<T extends Patternmon> implements Monstre {
 
-    //Peut être n'importe quel patternmon.
-    //Je peut appeller les méthodes de "patternmon" sur cet objet
+    //Peut-être n'importe quel patternmon.
+    //Je peux appeler les méthodes de "patternmon" sur cet objet
     protected T patternmon;
 
     public PatternmonAdapter(T patternmon) {
@@ -1725,11 +1725,11 @@ public abstract class PatternmonAdapter<T extends Patternmon> implements Monstre
 
 }
 
-//Quand on étend PatternmonAdapter, on précise la classe cocnrète utilisée (ici, Watterpatternmon)
+//Quand on étend PatternmonAdapter, on précise la classe concrète utilisée (ici, Watterpatternmon)
 //Il faut imaginer que dans la classe mère, le "T" est remplacé par Watterpatternmon.
 public class patternmonEauAdapter extends PatternmonAdapter<Waterpatternmon> implements MonstreEau {
 
-    //Prend un Waterpatternmon en pramètre et pas un Patternmon !
+    //Prend un Waterpatternmon en paramètre et pas un Patternmon !
     //Maintenant, on est "forcé" d'utiliser ce constructeur.
     public patternmonEauAdapter(WaterPatternmon patternmon) {
         super(patternmon);
@@ -1760,9 +1760,9 @@ Si vous n'avez pas tout compris, n'hésitez pas à en parler avec votre enseigna
 
 ### Gestion des dépendances
 
-Jusqu'ici nous avons vu des fabriques qui instancient systématiquement un objet à chaque appel d'une méthode type `creer...`. Cependant, ce fonctionnement n'est pas obligatoire. Par exemple on pourrait avoir une fabrique qui **instancie** et stocke certains objets lors de son initialisation puis renvoie une référence vers ces objets lorsqu'on la sollicite.
+Jusqu'ici, nous avons vu des fabriques qui instancient systématiquement un objet à chaque appel d'une méthode type `creer...`. Cependant, ce fonctionnement n'est pas obligatoire. Par exemple, on pourrait avoir une fabrique qui **instancie** et stocke certains objets lors de son initialisation puis renvoie une référence vers ces objets lorsqu'on la sollicite.
 
-Avec un tel fonctionnement, une **fabrique** permet alors de gérer les **dépendances** d'un programme. Elle pourrait par exemple stocker différentes instances de **services**  concrets de l'application. Couplé avec le pattern **Fabrique abstraite**, cela nous permet de rendre les dépendances de notre programme fortement modulables !
+Avec un tel fonctionnement, une **fabrique** permet alors de gérer les **dépendances** d'un programme. Elle pourrait par exemple stocker différentes instances de **services** concrets de l'application. Couplé avec le pattern **Fabrique abstraite**, cela nous permet de rendre les dépendances de notre programme fortement modulables !
 
 ```java
 interface ServiceA {
@@ -2188,7 +2188,7 @@ Et si nous essayons de combiner plus de patterns ? Nous avons l'application idé
 
     * La salle finale est une salle avec une énigme, un boss de niveau 80 et 30 ennemis.
 
-2. On aimerait améliorer la création des **salles** composées. Par exemple, avec un **Builder**...?
+2. On aimerait améliorer la création des **salles** composées. Par exemple, avec un **Builder**... ?
 
 3. Testez que tout fonctionne.
 
@@ -2199,6 +2199,6 @@ Et si nous essayons de combiner plus de patterns ? Nous avons l'application idé
 
 Vous maîtrisez maintenant l'ensemble des **design patterns créateurs** ainsi que le pattern **Adaptateur**. Ce TP vous a aussi logiquement permis de renforcer votre pratique de la conception logicielle et de l'application des principes `SOLID`.
 
-Toutefois, attention à ne pas attraper la **patternite** : c'est une maladie connue qu'attrapent les jeunes ingénieurs logiciels qui découvrent les **design patterns**. Cela se manifeste par une envie de mettre des patterns partout à tort et à travers même quand cela n'est pas nécessaire. Comme pour le **singleton**, il faut se poser la question de savoir si un pattern est nécessaire ou non. Normalement, l'utilisation d'un pattern vient assez naturellement quand on souhaite résoudre le problème qui lui est lié. Si son utilisation semble un peu trop forcée, c'est que cela est probablement injustifié, ou pire : on est en train de construire un [anti-pattern](https://en.wikipedia.org/wiki/Anti-pattern), une solution non-seulement injustifiée, mais aussi qui a plus de conséquences négatives que positives. Bref, comme toujours, il faut avoir une vision générale et sur le long terme !
+Toutefois, attention à ne pas attraper la **patternité** : c'est une maladie connue qu'attrapent les jeunes ingénieurs logiciels qui découvrent les **design patterns**. Cela se manifeste par une envie de mettre des patterns partout à tort et à travers même quand cela n'est pas nécessaire. Comme pour le **singleton**, il faut se poser la question de savoir si un pattern est nécessaire ou non. Normalement, l'utilisation d'un pattern vient assez naturellement quand on souhaite résoudre le problème qui lui est lié. Si son utilisation semble un peu trop forcée, c'est que cela est probablement injustifié, ou pire : on est en train de construire un [anti-pattern](https://en.wikipedia.org/wiki/Anti-pattern), une solution non-seulement injustifiée, mais aussi qui a plus de conséquences négatives que positives. Bref, comme toujours, il faut avoir une vision générale et sur le long terme !
 
 Dans le prochain TP, nous verrons comment encore plus optimiser la **gestion des dépendances** de notre programme en construisant notre propre **conteneur IoC** afin de gérer dynamiquement les dépendances majeures de nos applications.
