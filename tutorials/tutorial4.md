@@ -430,7 +430,7 @@ Certains membres du **GoF** regrettent un peu la surutilisation maladroite de **
 
 ## Le pattern Builder
 
-Le design pattern **Builder** est un pattern que vous avez déjà abordé l'année dernière en cours de développement orienté objets (cf. [le dernier TP](https://gitlabinfo.iutmontp.univ-montp2.fr/dev-objets/tp11)). Cela devrait donc vous rappeler quelques souvenirs.
+Le design pattern **Builder** est un pattern que vous avez déjà abordé l'année dernière en cours de développement orienté objets. Cela devrait donc vous rappeler quelques souvenirs.
 
 Ce pattern permet de résoudre le problème de création d'un objet qui a beaucoup d'options. Voyons donc cela avec un petit exercice.
 
@@ -460,7 +460,7 @@ Ce pattern permet de résoudre le problème de création d'un objet qui a beauco
 
     Ajoutez ces nouveaux attributs à la classe `Burger`.
 
-3. Maintenant que nous avons ajouté ces deux options, quels sont tous les types de burgers qu'il est possible de créer ? Ajoutez de nouveaux **constructeurs** pour gérer tous les cas... Si vous bloquez à un moment, c'est normal ! Comprenez-vous pourquoi il n'est pas possible de poursuivre la conception actuelle?
+3. Maintenant que nous avons ajouté ces deux options, quels sont tous les types de burgers qu'il est possible de créer ? Ajoutez de nouveaux **constructeurs** pour gérer tous les cas... Si vous bloquez à un moment, c'est normal ! Comprenez-vous pourquoi il n'est pas possible de poursuivre la conception actuelle ?
 
 </div>
 
@@ -497,7 +497,7 @@ Cette solution est mauvaise, car on part du principe que tous les **setters** n�
 
 Le pattern **builder** permet de résoudre ce problème avec une classe qui permet de contrôler comment l'objet est créé. Cette classe est généralement placée **à l'intérieur de la classe à construire** même si on retrouve des versions et des variantes avec la classe "Builder" comme classe externe indépendante.
 
-Cette classe possède:
+Cette classe possède :
 
 * Les mêmes attributs que la classe cible (du moins ceux qu'on peut préciser lors de l'initialisation de l'objet).
 
@@ -680,6 +680,10 @@ class Exemple {
 
 3. Réalisez le **diagramme de classes de conception** de votre application.
 
+**NB :** Certains IDE (dont IntelliJ) permettent de générer automatiquement le code d'un Builder à partir d'une classe. Sur IntelliJ, il faut faire un clic droit sur le constructeur de la classe pour laquelle vous souhaitez générer le builder, puis aller dans _Replace constructor with builder_. Le Builder sera généré comme une classe à part. Pour la rendre interne à la classe cible, il suffira juste de faire un Drag & Drop du Builder dans sa classe cible.
+
+**Remarque :** lorsqu'il s'agit d'une hiérarchie de classes (par héritage) pour laquelle il faut créer des builders, la solution n'est pas forcément évidente. En effet, il faut faire une hiérarchie de builders pour éviter la duplication de code, tout en respectant le principe LSP, à savoir : les méthodes **with...** doivent retourner le bon type de builder. Pour plus de détails voir le (cf. [le dernier TP](https://gitlabinfo.iutmontp.univ-montp2.fr/dev-objets/tp11) de Développement Orienté Objets de première année).
+
 </div>
 
 ## Le pattern Prototype
@@ -857,9 +861,9 @@ L'objectif du pattern **prototype** est donc de définir un moyen d'obtenir des 
 
 ## Le pattern Fabrique
 
-Le pattern **Fabrique** va permettre de centraliser l'instanciation d'une famille de classes dans une classe spécialisée. Les classes ayant besoin d'instancier des objets de cette famille ne vont plus faire elle-même des **new** mais vont plutôt passer par la fabrique.
+Le pattern **Fabrique** va permettre de centraliser l'instanciation d'une famille de classes dans une classe spécialisée. Les classes ayant besoin d'instancier des objets de cette famille ne vont plus faire elle-même des **new**, mais vont plutôt passer par la fabrique.
 
-La fabrique connaît les différents types concrets à instancier, mais elle va généralement déclarer renvoyer des abstractions (classes abstraites/interfaces) pour que les classes ayant besoin de créer des objets ne dépendent plus du tout d'un objet concret, mais plutôt de son abstraction. Ainsi, l'impact du changement diminue (si on veut changer la classe concrète utilisée) ce qui renforce notamment le principe ouvert/fermé.
+La fabrique connaît les différents types concrets à instancier, mais elle va généralement renvoyer des abstractions (classes abstraites/interfaces) pour que les classes ayant besoin de créer des objets ne dépendent plus du tout d'un objet concret, mais plutôt de son abstraction. Ainsi, l'impact du changement diminue (si on veut changer la classe concrète utilisée) ce qui renforce notamment le principe ouvert/fermé.
 
 Dans une application où certaines classes sont instanciées à différents endroits, il est donc plutôt judicieux d'utiliser une fabrique pour réduire les dépendances de type "create". Seule la fabrique est dépendante des objets concrets et les autres classes sont seulement dépendante de la fabrique (et des abstractions).
 
@@ -1204,7 +1208,7 @@ Attaquons tout de suite par un exercice :
 
     * Salle finale : Une salle avec un Boss avec un niveau entre 1 à 10.
 
-2. Mettez en place une **fabrique** pour que le `Donjon` n'ait pas à instancier les salles lui-même. Il y aura donc trois méthodes dans cette fabrique : `creerSalleNormale`, `creerSalleSpeciale` et `creerSalleFinale`. Pour cet exercice, il n'y a pas besoin de créer de sous-classes ou d'interfaces `SalleSpeciale`, `SalleFinale`, etc... La fabrique renverra simplement des objets `Salle` pour chaque méthode. Transformez également cette fabrique en **Singleton**. Adaptez le code de `Donjon` et de `Main` en conséquence.
+2. Mettez en place une **fabrique** pour que le `Donjon` n'ait pas à instancier les salles lui-même. Il y aura donc trois méthodes dans cette fabrique : `creerSalleNormale`, `creerSalleSpeciale` et `creerSalleFinale`. Pour cet exercice, il n'y a pas besoin de créer de sous-classes ou d'interfaces `SalleSpeciale`, `SalleFinale`, etc. La fabrique renverra simplement des objets `Salle` pour chaque méthode. Transformez également cette fabrique en **Singleton**. Adaptez le code de `Donjon` et de `Main` en conséquence.
 
 3. La configuration actuelle du Donjon est un mode "facile". On aimerait introduire le mode "difficile" où on a les correspondances suivantes :
 
@@ -1656,7 +1660,7 @@ Maintenant, revenons à nos petits monstres...
 
     * Commencez par implémenter une classe abstraite `patternmonAdapter` qui permet d'adapter la classe abstraite `Patternmon`. Normalement, vous ne devriez pas trop avoir de difficulté, c'est quasiment comme dans l'exemple.
 
-    * `patternmon` est une classe abstraite et nous avons besoin de pouvoir adapter ses classes filles concrètes (correspondant à `MonstreEau`, `MonstreFeu`, etc...). Il faut créer un adaptateur par classe fille ! Cet adaptateur devra **étendre** votre adaptateur abstrait `patternmonAdapter` et implémenter l'interface `MonstreX` correspondante (`MonstreEau` pour l'adaptation de `WaterPatternmon` par exemple).
+    * `patternmon` est une classe abstraite et nous avons besoin de pouvoir adapter ses classes filles concrètes (correspondant à `MonstreEau`, `MonstreFeu`, etc.). Il faut créer un adaptateur par classe fille ! Cet adaptateur devra **étendre** votre adaptateur abstrait `patternmonAdapter` et implémenter l'interface `MonstreX` correspondante (`MonstreEau` pour l'adaptation de `WaterPatternmon` par exemple).
     
     * Commencez par tenter d'adapter `WaterPatternmon`. Vous allez sans doute rencontrer une difficulté lorsque vous allez essayer d'implémenter les méthodes propres à l'interface. Dans un premier temps, essayez de résoudre cela par vous-même, puis, après quelques essais, lisez la prochaine section.
 
@@ -1902,7 +1906,7 @@ public class Main {
 
 Dans l'exemple ci-dessus, un simple changement dans le fichier de configuration permet de changer les services concrets utilisés pour `ServiceA` et `ServiceB`. Contrairement aux exercices précédents, dans le cas d'un service, il n'est pas utile (voire, il ne faut pas) le réinstancier chaque fois. Par exemple, dans le cas d'une classe "repository" permettant de faire des requêtes sur une base de données.
 
-C'est un peu comme si toutes les dépendances stockées dans ces fabriques étaient de singletons, car on ne manipule qu'une seule instance de ces objets dans le programme. Mais cela est encore mieux qu'un singleton, car ces classes (`ServiceA1`, `ServiceB1`, etc.) ne sont pas construites comme des singletons ! Elles sont donc beaucoup plus adaptées aux tests unitaires. Comme mentionné dans la section "Avertissement" sur les singletons, nous préférerons utiliser des fabriques plutôt que de multiplier les singletons dans l'application.
+C'est un peu comme si toutes les dépendances stockées dans ces fabriques étaient de singletons, car on ne manipule qu'une seule instance de ces objets dans le programme. Mais cela est encore mieux qu'un singleton, parce que ces classes (`ServiceA1`, `ServiceB1`, etc.) ne sont pas construites comme des singletons ! Elles sont donc beaucoup plus adaptées aux tests unitaires. Comme mentionné dans la section "Avertissement" sur les singletons, nous préférerons utiliser des fabriques plutôt que de multiplier les singletons dans l'application.
 
 Il est toléré d'avoir un **singleton** pour les classes telles que les fabriques abstraites ou leurs sous-classes, car elles n'ont pas vraiment pour but d'être testées (unitairement). Mais sur les services qui contiennent du code métier, il faut éviter le **singleton** quand cela est possible. Les fabriques et les fabriques abstraites répondent à ce problème.
 
