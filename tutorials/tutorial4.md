@@ -859,15 +859,15 @@ L'objectif du pattern **prototype** est donc de définir un moyen d'obtenir des 
 
 **Remarque technique (pour Java) :** En Java, un mécanisme de clonage est prévu à travers la fonction `clone` de la classe `Object`. Pour l'utiliser sur une classe que vous développez, il faut implémenter l'interface [`Cloneable`](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Cloneable.html). Cette interface ne contient aucune méthode, mais elle permet de signaler que la classe peut être clonée. Le mécanisme interne de cette spécification est assez obscure et a été beaucoup critiqué (voir Item 13 du livre **Effective Java** de Joshua Bloch, ainsi que [les discussions en ligne](https://stackoverflow.com/questions/4081858/how-does-cloneable-work-in-java-and-how-do-i-use-it)). Il est donc préférable de ne pas utiliser cette interface et de définir votre propre méthode `cloner` comme nous l'avons fait dans l'exemple précédent.
 
-## La Fabrique
+## La Fabrique - un concept très utile
 
 Le concept de **Fabrique** permet de centraliser l'instanciation d'une famille de classes dans une classe spécialisée. Les classes ayant besoin d'instancier des objets de cette famille ne vont plus faire elle-même des **new**, mais vont plutôt passer par la fabrique. 
 
-**Remarque importante :** Bien que le concept de **Fabrique** est extrêmement pratique (et utilisé dans différents __design patterns__), il ne s'agit pas d'un design pattern à proprement parler. Prenons-le plutôt comme une application de règles de bon sens. En l'occurrence, il ne faut pas confondre la **Fabrique** avec le design pattern [**Méthode Fabrique** (**Factory Method**)](https://en.wikipedia.org/wiki/Factory_method_pattern) du **GoF**, dont on ne parlera pas dans ce TD (pour les curieux, vous pouvez lire l'exemple de la page Wikipédia en anglais, où l'exemple en Java pour ce design pattern est bien choisi).
+**Remarque importante :** Bien que le concept de **Fabrique** est extrêmement pratique (et utilisé dans différents __design patterns__), il ne s'agit pas d'un design pattern à proprement parler. Prenons-le plutôt comme une application de règles de bon sens. En l'occurrence, il ne faut pas confondre la **Fabrique** avec le design pattern [**Méthode Fabrique** (**Factory Method**)](https://en.wikipedia.org/wiki/Factory_method_pattern) du **GoF**, dont on ne parlera pas dans ce TD. Pour les curieux, vous pouvez lire l'exemple de l'URL (correspondant à la page Wikipédia en anglais), où l'exemple en Java pour ce design pattern est bien choisi.
 
 La fabrique connaît les différents types concrets à instancier, mais elle va généralement renvoyer des abstractions (classes abstraites/interfaces) pour que les classes ayant besoin de créer des objets ne dépendent plus du tout d'un objet concret, mais plutôt de son abstraction. Ainsi, l'impact du changement diminue (si on veut changer la classe concrète utilisée) ce qui renforce notamment le principe ouvert/fermé.
 
-Dans une application où certaines classes sont instanciées à différents endroits, il est donc plutôt judicieux d'utiliser une fabrique pour réduire les dépendances de type "create". Seule la fabrique est dépendante des objets concrets et les autres classes sont seulement dépendante de la fabrique (et des abstractions).
+Dans une application où certaines classes sont instanciées à différents endroits, il est donc plutôt judicieux d'utiliser une fabrique pour réduire les dépendances de type _"create"_. Seule la fabrique est dépendante des objets concrets et les autres classes sont seulement dépendante de la fabrique (et des abstractions).
 
 Voyons l'application de **Fabrique** sur un exemple :
 ```java
@@ -1065,7 +1065,7 @@ public class ServiceB {
 
 ```
 
-Maintenant, si nous voulons utiliser `CarreGraphique` et `CercleGraphique` à la place, nous n'avons à faire ce changement que dans **une seule classe** : `FigureGeometriqueFactory` ! Avec le pattern **Fabrique abstraite** nous pourrons encore plus facilement changer de "familles".
+Maintenant, si nous voulons utiliser `CarreGraphique` et `CercleGraphique` à la place, nous n'avons à faire ce changement que dans **une seule classe** : `FigureGeometriqueFactory` !
 
 Ici, il semble judicieux de transformer `FigureGeometriqueFactory` en **Singleton** et de l'injecter comme dépendance pour éviter que chaque service instancie une version de la fabrique :
 
@@ -1136,7 +1136,7 @@ public class Main {
 
 1. Ouvrez le paquetage `fabrique1`. Il s'agit de l'application avec des **animaux** que vous aviez développée lors du dernier TP. La nouveauté est qu'il y a aussi des **animaux normaux** et des **animaux robots** (qui ont seulement en plus une voix robotique quand ils font un cri...).
 
-2. Actuellement, si je veux changer mes animaux pour utiliser des animaux robotiques dans le `Main`, je suis obligé de changer tout le code du `Main`. Il faut vous imaginer cela pour plusieurs classes : si je veux changer mes animaux pour des animaux robotiques, je dois changer le code de toutes les classes qui créent des animaux ! Pour permettre plus de flexibilité, vous devez :
+2. Actuellement, si on souhaite changer les animaux pour utiliser des animaux robotiques dans le `Main`, on est obligé de changer tout le code du `Main`. Il faut vous imaginer cela pour plusieurs classes : s'il faut changer les animaux pour des animaux robotiques, alors il faudra changer le code de toutes les classes qui créent des animaux ! Pour permettre plus de flexibilité, vous devez :
 
     * Mettre en place une fabrique `AnimalFactory` créant des animaux "normaux" pour le moment.
 
@@ -1176,15 +1176,13 @@ Néanmoins, cette solution n'est pas forcément conseillée car :
 
 Bref, on préférera généralement séparer chaque instanciation dans une méthode distincte, comme ce que vous avez probablement fait sur l'exercice ou comme dans l'exemple des figures géométriques.
 
-Pour l'instant, si nous voulons changer de "famille" de classes utilisée (animaux normaux / animaux robots) nous sommes obligés de changer le code de la classe `AnimalFactory`. Avec le pattern suivant **"fabrique abstraite"** nous allons pouvoir résoudre ce problème (et même faire cohabiter deux familles).
+Pour l'instant, si nous voulons changer de "famille" de classes utilisée (animaux normaux / animaux robots) nous sommes obligés de changer le code de la classe `AnimalFactory`. Avec le design pattern **"Fabrique Abstraite"** de la section suivante du TP, nous allons pouvoir résoudre ce problème (et même faire cohabiter deux familles).
 
 ## Le pattern Fabrique abstraite
 
-Le pattern **Fabrique abstraite** utilise des **Fabriques** et va notamment permettre d'interchanger différentes fabriques qui instancient différentes familles de classes concrètes. Ainsi, au lieu de changer le code de la fabrique quand on veut changer de familles de classes, on ne va plus devoir changer le code de notre fabrique, mais plutôt changer l'instance de la fabrique concrète utilisée par le programme ou une classe en particulier.
+Le pattern **Fabrique abstraite** utilise des fabriques et va notamment permettre de les interchanger lorsqu'elles instancient différentes familles de classes concrètes. Ainsi, lorsqu'on souhaite changer la famille de classes à construire, au lieu de modifier le code de la fabrique, on changera plutôt l'instance de la fabrique concrète utilisée par le programme ou une classe en particulier. Cela peut paraître encore un peu abstrait... voyons donc un exemple l'exemple suivant.
 
 ### Construction de donjons
-
-Attaquons tout de suite par un exercice :
 
 <div class="exercise">
 
@@ -1996,7 +1994,7 @@ Avec votre refactoring, il devient très facile d'ajouter et d'utiliser une nouv
 
 Dans le dernier TP, vous avez découvert le pattern **Décorateur** permettant d'ajouter des nouvelles fonctionnalités de manière dynamique. Nous avions notamment vu un exemple portant sur des salariés, puis un exercice portant sur différents types de produits.
 
-Comme l'objet créé avec le pattern "Décorateur" peut être assez complexe, il peut être intéressant de le coupler avec un pattern créateur comme **Fabrique** ou bien **builder**.
+Comme l'objet créé avec le pattern **Décorateur** peut être assez complexe, il peut être intéressant de le coupler avec une **Fabrique** ou bien un **Builder**.
 
 Reprenons l'exemple des salariés et essayons d'appliquer ces deux patterns :
 
