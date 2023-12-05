@@ -212,9 +212,219 @@ Par exemple, ici, il est tout à fait possible de caster un `Object` qui est en 
 
 Cependant, qui doit effectuer ce **cast** ? Cela ne semble pas adéquat de faire cela à chaque fois qu'on appelle `getService` ! En fait, c'est aussi le rôle du **container**. Mais comment faire, vu que la méthode `getService` est paramétrée pour renvoyer le type `Object` ?
 
-Il est temps de vous présenter une fonctionnalité de Java que vous ne connaissiez peut-être pas : **le type de retour paramétrable.**
+Il est temps de vous présenter des fonctionnalités de Java que vous ne connaissiez peut-être pas : **la généricité des méthodes** et **le type de retour paramétrable.**
+
+Vous connaissez probablement la notion de type **générique** que nous avons déjà abordé dans le dernier TP. Pour rappel, il est possible de créer une classe java **générique** en précisant un ou plusieurs **types paramétrables** lors de la définition de la classe. Ces types ne sont pas connus dans le code de la classe et sera précisé lors de l'instanciation d'un objet de ce type. Cela permet notamment d'avoir des classes gérant différents types de données avec le même code. Par exemple `List` est un type générique permettant de préciser un type paramétrable (lez type géré par la liste). `Map` esr aussi une classe générique et permet d'accueillir deux types paramétrables (un pour la clé, un pour la valeur).
+
+Pour rappel, on définit une classe **générique** comme cela :
+
+```java
+//Classe possédant un type générique référencé par la lettre "T" (cela peut être une autre lettre)
+public class Exemple<T> {
+
+    //On peut utiliser le type générique "T" un peu partout dans le code de la classe (attributs, paramètres, type de retour...).
+    //Il utilise comme tout autre type "normal"
+    private T var1;
+    private HashMap<String, T> map;
+
+    public Exemple(T var) {
+        //...
+    }
+
+    public List<T> action() {
+        //...
+    }
+
+    public T getVar() {
+        //...
+    }
+
+}
+
+//On peut alors créer différentes instances de "Exemple" paramètrées avec un type différent :
+//Comme le constructeur attend un paramètre de type "T" (dans notre exemple), il verifiera que le paramètre spécifié est bien du type paramétré cette instance.
+Exemple<Integer> ex1 = new Exemple(1);
+Exemple<String> ex2 = new Exemple("coucou");
+```
+
+Bref, vous aviez sans doutes déjà un souvenir complet ou incomplet de cette fonctionnalité.
+
+Mais saviez-vous qu'il est aussi possible de définir une **fonction générique** en ajoutant des types paramétrables au niveau de la définition d'une fonction ? On parle bien de types qui ne seraient définis **que pour cette fonction** et pas pour la classe entière (donc, pas comme les méthodes de `Exemple<T>`) !
+
+Pour faire cela, il suffit d'utiliser la même notation que pour la classe : `<T, K, V, ...>`, mais au niveau de la méthode/fonction. Les types paramétrés peuvent alors être utilisés dans le **type de retour** de la fonction, notamment. Par contre, il faut impérativement que ces types soient précisé quelque part dans les paramètres de la fonction (et on peut aussi avoir des paramètres avec des types connus, bien entendu).
+
+C'est quand on va appeler la fonction avec des paramètres ayant des types concrets que la fonction va se "configurer" avec les types précisés. Cela peut être un peu difficile à comprendre au premier abord !
+
+Illustrons tout cela avec un exemple :
+
+```java
+
+public static <T> T action(T var) {
+    //...
+}
+
+//J'appelle "action" avec une chaîne de caractère (String) : ma fonction me renvoie donc un String
+//C'est comme si la fonction était devenue "public static String action(String var)"
+//C'est l'appel (ce qu'on passe en paramètre) qui définit le type de retour.
+String s = action("coucou");
+
+Integer b = action(5);
+
+Boolean c = action(false);
+
+//Le type de retour peut aussi faire référence à un paramètre générique configuré dans une classe : 
+public static <T> T rechercheMinimum(List<T> var) {
+    //...
+}
+
+List<String> maListeNoms = new ArrayList(Arrays.asList("Paul", "Nicolas", "Amandine"));
+//Renvoie la plus petite chaîne (dans l'ordre alphabetique)
+String plusPetiteChaine = rechercheMinimum(maListeNoms);
+
+List<Integer> maListeNombres = new ArrayList(Arrays.asList(5, 2, 0, -1, 9));
+//Renvoie le plus petite nombre 
+int plusPetitNombre = rechercheMinimum(maListeNombres);
+
+//On aurait pu faire la même chose avec un tableau :
+public static <T> T rechercheMinimum(T[] var) {
+    //...
+}
+
+//On est pas obligé de renvoyer simplement T (et les autres paramètres), il peuvent aussi servir comme paramètre dans une classe générique.
+//Par ailleurs, on peut tout à fait avoir des paramètres de tpyes connus dans la méthode ! (en plus des paramètres génériques)
+public static <T, V> Map<T, V> exemple(K valeur, T val, boolean filter) {
+
+}
+
+Map<String, Double> map = exemple("coucou", 1.3, false);
+
+//On peut bien sûr utiliser la généricité des foncitons sur une méthode non statique dans une classe
+class MaClasse {
+
+    public void action() {/*...*/}
+
+    public <T> T maMethode(boolean val, Set<T> test) {
+        //...
+    }
+}
+```
+
+Les **fonctions génériques** vont permettre de règle notre problème de **cast**. L'idée serait donc de modifier la méthode `getService` pour lui préciser en paramètre **le type** (la classe) du service ciblé et que la méthode renvoie alors le service **casté** dans ce type. La fonction se basera sur le type précisé en paramètre pour son type de retour !
+
+En **Java**, une classe particulière permet de modéliser des "types" : La classe...`Class` ! Cette classe est **générique** et attend un type en paramètre. Il s'agit du type de la classe ciblée. Il est possible de récupérer cet objet `Class` à partir de n'importe quelle classe ou interface de l'application :
+
+```java
+Class<Integer> classeInt = Integer.class;
+Class<String> classeString = String.class;
+Class<MaClasse> classeMaClasse = MaClasse.class;
+Class<MonInterface> classeMonInterface = MonInterface.class;
+```
+
+Cet objet est très utile car, plus tard, il nous permettra de faire de la **métaprogrammation** en récupérant des constructeurs de la classe afin d'instancier des nouveaux objets dynamiquement, en analysant ses données, ses **annotations**...
+
+Pour l'instant, une méthode en particulier nous intéresse : `cast` : permet de **caster** un objet dans le type représenté par l'instance de `Class` :
+
+```java
+Object o = new String("Coucou");
+Class<String> classeString = String.class;
+String texte = classeString.cast(o);
+```
+
+Attention, si le type n'est pas compatible avec l'instance réelle de l'objet **casté**, il y aura une erreur ! Par exemple, à l'exécution, il y aurait eu une erreur si on avait eu une instance d'un `Integer` dans `o` à la place d'un `String`...
+
+Il est bien sûr possible de caster dans une **abstraction** (classe abstraite / interface) si l'instance implémente l'interface visée ou dérive de cette classe.
+
+Dans notre cas, on aimerait donc utiliser `getService` ainsi :
+
+```java
+interface Service {
+    //...
+}
+
+class ServiceA implements Service {
+    //...
+}
+
+class ServiceB implements Service {
+    //...
+}
+
+class Manager {
+    private Service service;
+
+    public(Service service) {
+        this.service = service;
+    }
+}
+
+container.registerService("service", new ServiceA());
+
+//Cherche l'instance "Object" associée au nom "service" puis la renvoie en la castant en "Service"
+Service service = conteneur.getService("service", Service.class);
+
+container.registerService("manager", new Manager(service));
+//Ou bien :
+container.registerService("manager", new Manager(conteneur.getService("service", Service.class)));
+
+//Cherche l'instance "Object" associée au nom "manager" puis la renvoie en la castant en "Manager"
+Manager manager = container.getService("manager", Manager.class);
+```
+
+<div class="exercise">
+
+1. Modifiez la méthode `getService` afin de la rendre **générique** puis en lui ajoutant un second paramètre correspondant au **type** de la classe dans laquelle doit être **casté** le service récupéré dans la `Map` du conteneur. La méthode doit maintenant renvoyer un objet casté dans le type souhaité. Relisez bien toute la section sur la généricité des fonctions pour comprendre comment faire cela, en regardant notamment les exemples. Si jamais vous bloquez réellement, n'hésitez pas à demander un peu d'aide à votre enseignant.
+
+2. Adaptez votre fonction `initContainerServices` en enregistrant le service correspondant à `ServiceUtilisateur` en utilisant la nouvelle version de `getService` pour injecter les services dont dépend cette classe.
+
+3. Enregistrez le service correspondant au **controller**. Vous devrez là aussi utiliser `getService` pour récupérer la dépendance de cette classe depuis le conteneur.
+
+4. Dans la fonction `main`, supprimez tout le code et remplacez-le par :
+
+    * Un appel à `initContainerServices` afin d'initialiser le conteneur et les services.
+
+    * La récupération du **controller** depuis le conteneur.
+
+    * Un appel à la méthode `startIHM` du controller.
+
+5. Lancez votre application et vérifiez que tout fonctionne comme attendu !
+
+6. Dans `initContainerServices`, changez les instances concrètes utilisées pour le `mailer`, le `hasher` et le `stockage`. Normalement, si tout est bien implémenté, vous ne devez que modifier les paramètres des trois appels à `registerService` et rien d'autre. Relancez le programme et vérifiez que tout fonctionne encore. S'il y a une erreur, c'est que vous avez probablement utilisé une classe concrète au lieu d'une abstraction à certains endroits ! 
+
+</div>
 
 ### Paramétrage - Centralisation de l'instanciation
+
+Notre base de conteneur est fonctionnelle, mais nous faisons toujours des `new` dans le `Main` pour instancier les dépendances. Le but du conteneur est aussi de **centraliser** l'instanciation de ces dépendances. Nous allons donc remédier à cela en modifiant la méthode `registerService`. À la place de donner simplement à cette méthode un `Object` correspondant à l'instance déjà créée d'une dépendance, nous allons plutôt fournir toutes les données nécessaires à son instanciation : le type de la classe **concrète** que l'on veut créer et l'ensemble des **paramètres** à fournir à son **constructeur**. 
+
+Concernant la **classe**, nous allons à nouveau utiliser l'objet `Class` comme dans l'exercice précédent. On rappelle que quand on utilise un objet `Class`, il est attendu de spécifier le type paramétré utilisé : `Class<...>`. Cependant, dans notre cas, pour l'enregistrement, nous n'attendons pas de classe spécifique. La généricité n'est pas forcément une bonne une solution ici, car, lors de l'enregistrement, le but n'est pas de pouvoir utiliser différentes versions de cette méthode par type, mais simplement de la rendre compatible avec n'importe quelle `Class` passée en paramètre. De plus, le type de retour ne dépend pas de ce type paramétré dans le cas de `registerService`. 
+
+Il existe une solution très simple pour ce problème : utiliser le type `?` comme type paramétré pour `Class` : `Class<?>`. Le `?` sert simplement à dire "n'importe quel type". Cependant, contrairement au type paramétré, ce `?` ne pourra pas être réutilisé comme retour de la fonction, par exemple (on n'aurait pas pu l'utiliser pour `getService`).
+
+```java
+//Accepte des listes de n'importe quel type
+public void traitementListe(List<?> param) {
+
+}
+
+//Accepte des classes de n'importe quel type
+public void traitementClasse(Class<?> param) {
+
+}
+
+//On aurait aussi pu utiliser la générécité ici, mais cela aurait été inutile, car on ne se sert pas de T dans le type de retour !
+//Dans ce cas, on préférera donc utiliser la syntaxe utilisant "?"
+public <T> void traitementClasse(Class<T> param) {
+
+}
+
+//Attention par contre, dans cet exemple que nous avions vu précédemment, on a besoin du type paramétré dans le retour !
+//L'utilisation de "?" ne marcherait donc pas
+public <T> T rechercheMinimum(T[] var) {
+    //...
+}
+```
+
+
 
 ## Lazy loading et injection
 
