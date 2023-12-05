@@ -682,7 +682,7 @@ class Exemple {
 
 **NB :** Certains IDE (dont IntelliJ) permettent de générer automatiquement le code d'un Builder à partir d'une classe. Sur IntelliJ, il faut faire un clic droit sur le constructeur de la classe pour laquelle vous souhaitez générer le builder, puis aller dans _Replace constructor with builder_. Le Builder sera généré comme une classe à part. Pour la rendre interne à la classe cible, il suffira juste de faire un Drag & Drop du Builder dans sa classe cible.
 
-**Remarque :** lorsqu'il s'agit d'une hiérarchie de classes (par héritage) pour laquelle il faut créer des builders, la solution n'est pas forcément évidente. En effet, il faut faire une hiérarchie de builders pour éviter la duplication de code, tout en respectant le principe LSP, à savoir : les méthodes **with...** doivent retourner le bon type de builder. Pour plus de détails voir le (cf. [le dernier TP](https://gitlabinfo.iutmontp.univ-montp2.fr/dev-objets/tp11) de Développement Orienté Objets de première année).
+**Remarque :** lorsqu'il s'agit d'une hiérarchie de classes (par héritage) pour laquelle il faut créer des builders, la solution n'est pas forcément évidente. En effet, il faut faire une hiérarchie de builders pour éviter la duplication de code, tout en respectant le principe LSP, à savoir : les méthodes **with...** doivent retourner le bon type de builder. Pour plus de détails voir le [le dernier TP](https://gitlabinfo.iutmontp.univ-montp2.fr/dev-objets/tp11) de Développement Orienté Objets de première année).
 
 </div>
 
@@ -692,13 +692,13 @@ Nous allons directement présenter le principe et l'intérêt du pattern **proto
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `protoype1` et consultez les classes mises à disposition. Il s'agit d'une mini-application bancaire permettant de gérer des comptes. Pour le moment, la classe `Banque` permet de gérer des **comptes courants**. C'est elle qui gère intégralement ces comptes bancaires : leur création et le changement de solde (créditer/débiter). Elle est donc **composée des comptes bancaires** (ce qui se traduirait par une **agrégation noire** sur un diagramme de classes de conception).
+1. Ouvrez le paquetage `protoype1` et consultez les classes mises à disposition. Il s'agit d'une mini-application bancaire permettant de gérer des comptes. Pour le moment, la classe `Banque` permet de gérer des **comptes courants**. C'est elle qui gère intégralement ces comptes bancaires : leur création et le changement de solde (créditer/débiter). Elle est donc **composée des comptes bancaires** (ce qui se traduirait par une **agrégation forte** sur un diagramme de classes de conception).
 
 2. Le développeur a pensé qu'il serait utile qu'un objet extérieur puisse récupérer un `CompteCourant` depuis la banque pour consulter le solde (ou autre). Il a donc créé une méthode `getInformationsCompteNumero`. Expérimentez dans le `Main` en créditant le compte d'un objet récupéré par cette méthode puis récupérez de nouveau ce compte depuis la banque et affichez son solde. Le solde du compte t-il était modifié ? Lancez le test unitaire situé dans la classe dans `src/test/java/prototype1`. Il ne passe pas... Comprenez-vous pourquoi ?
 
 </div>
 
-Le test unitaire n'est pas mal écrit. En fait, comme la banque gère exclusivement les différents **comptes bancaires**, il ne doit pas être possible qu'une autre classe puisse récupérer et modifier les objets que contient la banque. C'est toute la sémantique derrière la **composition** sur un diagramme de classe (l'agrégation noire). Le "composant" est créé dans la classe (c'est le cas) et ne doit pas en sortir (ce n'est pas le cas ici).
+Le test unitaire n'est pas mal écrit. En fait, comme la banque gère exclusivement les différents **comptes bancaires**, il ne doit pas être possible qu'une autre classe puisse récupérer et modifier les objets que contient la banque. C'est toute la sémantique derrière la **composition forte** (ou *agrégation forte*) sur un diagramme de classe. Le "composant" est créé dans la classe (c'est le cas) et ne doit pas en sortir (ce n'est pas le cas ici).
 
 Une première solution pourrait être d'ajouter une méthode `double recupererSolde(int numeroCompte)` dans la classe `Banque`. Mais dans certains cas, on a vraiment besoin d'obtenir l'objet `CompteCourant` cible, sans pour autant modifier l'original... alors comment faire ?
 
@@ -735,13 +735,13 @@ Mais alors, qui doit faire cette copie ?
 
 <div class="exercise">
 
-1. refactorez votre code afin que `Banque` renvoie une **copie** du compte courant sélectionné. Attention au **solde** ! Il faut qu'il soit identique au compte copié. Vérifiez que cela fonctionne en lançant le test unitaire. Il devrait maintenant passer.
+1. Refactorez votre code afin que `Banque` renvoie une **copie** du compte courant sélectionné. Attention au **solde** ! Il faut qu'il soit identique au compte copié. Vérifiez que cela fonctionne en lançant le test unitaire. Il devrait maintenant passer.
 
-2. On aimerait maintenant que la `Banque` gère aussi des **comptes épargne**. En fait, il faut qu'elle puisse gérer des **CompteBancaire** et pas seulement des **comptes courants**. refactorez le code de la classe `Banque` pour rendre cela possible (en utilisant plutôt la classe abstraite `compteBancaire` plutôt que `CompteCourant`). 
+2. On aimerait maintenant que la `Banque` gère aussi des **comptes épargne**. En fait, il faut qu'elle puisse gérer des **CompteBancaire** et pas seulement des **comptes courants**. refactorez le code de la classe `Banque` pour rendre cela possible (en utilisant plutôt la classe abstraite `CompteBancaire` plutôt que `CompteCourant`). 
 
-    Vous devrez néanmoins conserver `ouvrirCompteCourant` tel quel car elle ouvre spécifiquement un compte courant. Vous devrez aussi ajouter une méthode `ouvrierCompteEpargne` (tout cela ne respecte pas énormément le principe ouvert/fermé, mais nous allons nous en contenter pour cet exercice). 
+    Vous devrez néanmoins conserver la méthode `ouvrirCompteCourant` telle quelle, car elle ouvre spécifiquement un compte courant. Vous devrez aussi ajouter une méthode `ouvrirCompteEpargne` (tout cela ne respecte pas vraiment le principe ouvert/fermé, mais nous allons nous en contenter pour cet exercice). 
     
-    Vous n'avez pas à ajouter de nouveaux attributs ou d'autres méthodes en dehors de `ouvrierCompteEpargne`. (Notamment, interdiction de faire une deuxième liste séparée gérant les comptes épargnes).
+    Vous n'avez pas à ajouter de nouveaux attributs ou d'autres méthodes en dehors de `ouvrirCompteEpargne`. (Notamment, interdiction de faire une deuxième liste séparée gérant les comptes épargnes).
 
     Normalement, vous avez une erreur sur la méthode `getInformationsCompteNumero`. C'est normal.
 
@@ -857,7 +857,7 @@ class Service {
 
 L'objectif du pattern **prototype** est donc de définir un moyen d'obtenir des **copies** d'un objet, notamment dans un contexte où vos classes manipulent des abstractions (comme c'est souvent le cas quand on applique les principes **SOLID** et les **design patterns**). Si on souhaite pouvoir copier un objet abstrait manipulé, chaque classe concrète de la hiérarchie doit définir sa propre logique de copie via la méthode `cloner`.
 
-**Java** permet aussi d'implémenter ce pattern en étendant l'interface `Cloneable` (et la méthode `clone`) !
+**Remarque technique (pour Java) :** En Java, un mécanisme de clonage est prévu à travers la fonction `clone` de la classe `Object`. Pour l'utiliser sur une classe que vous développez, il faut implémenter l'interface [`Cloneable`](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Cloneable.html). Cette interface ne contient aucune méthode, mais elle permet de signaler que la classe peut être clonée. Le mécanisme interne de cette spécification est assez obscure et a été beaucoup critiqué (voir Item 13 du livre **Effective Java** de Joshua Bloch, ainsi que [les discussions en ligne](https://stackoverflow.com/questions/4081858/how-does-cloneable-work-in-java-and-how-do-i-use-it)). Il est donc préférable de ne pas utiliser cette interface et de définir votre propre méthode `cloner` comme nous l'avons fait dans l'exemple précédent.
 
 ## La Fabrique
 
