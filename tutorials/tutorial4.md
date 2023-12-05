@@ -424,7 +424,7 @@ Mais pourquoi est-il déconseillé d'utiliser "trop" de singletons :
 
 Attention, tout cela ne veut pas dire que le singleton est inutile ! Seulement qu'il ne doit pas être utilisé pour tout et n'importe quoi. Il faut également se poser la question "_est-ce que cette instance doit pouvoir être accessible par tout le monde_" ?
 
-On va notamment éviter d'appliquer **singletons** sur des classes qui contiennent du **code métier** relatif à des règles de notre application et que nous allons sûrement vouloir tester. À l'inverse, nous allons bientôt parler du pattern **Fabrique** et **Fabrique Abstraite**. Les classes produites par ces applications ont pour but de créer et/ou fournir des objets (des dépendances). Ces classes doivent pouvoir être accessibles par toute l'application et on ne va pas spécialement les tester (pas de code métier). Il est alors judicieux d'appliquer **Singleton** sur ces classes.
+On va notamment éviter d'appliquer **singletons** sur des classes qui contiennent du **code métier** relatif à des règles de notre application et que nous allons sûrement vouloir tester. À l'inverse, nous allons bientôt parler des **Fabriques** et du pattern **Fabrique Abstraite**. Les classes produites par ces applications ont pour but de créer et/ou fournir des objets (des dépendances). Ces classes doivent pouvoir être accessibles par toute l'application et on ne va pas spécialement les tester (pas de code métier). Il est alors judicieux d'appliquer **Singleton** sur ces classes.
 
 Certains membres du **GoF** regrettent un peu la surutilisation maladroite de **Singleton** par certains développeurs. Ces développeurs ont l'illusion de coder proprement, car ils utilisent un design pattern, mais c'est tout l'inverse. Appliquer les design patterns ne veut pas forcément dire que votre conception est de qualité. Il faut savoir quand et comment les utiliser !
 
@@ -859,9 +859,11 @@ L'objectif du pattern **prototype** est donc de définir un moyen d'obtenir des 
 
 **Java** permet aussi d'implémenter ce pattern en étendant l'interface `Cloneable` (et la méthode `clone`) !
 
-## Le pattern Fabrique
+## La Fabrique
 
-Le pattern **Fabrique** va permettre de centraliser l'instanciation d'une famille de classes dans une classe spécialisée. Les classes ayant besoin d'instancier des objets de cette famille ne vont plus faire elle-même des **new**, mais vont plutôt passer par la fabrique.
+Le concept de **Fabrique** permet de centraliser l'instanciation d'une famille de classes dans une classe spécialisée. Les classes ayant besoin d'instancier des objets de cette famille ne vont plus faire elle-même des **new**, mais vont plutôt passer par la fabrique. 
+
+**Remarque importante :** Bien que le concept de **Fabrique** est extrêmement pratique (et utilisé dans différents __design patterns__), il ne s'agit pas d'un design pattern à proprement parler. Prenons-le plutôt comme une application de règles de bon sens. En l'occurrence, il ne faut pas confondre la **Fabrique** avec le design pattern [**Méthode Fabrique** (**Factory Method**)](https://en.wikipedia.org/wiki/Factory_method_pattern) du **GoF**, dont on ne parlera pas dans ce TD (pour les curieux, vous pouvez lire l'exemple de la page Wikipédia en anglais, où l'exemple en Java pour ce design pattern est bien choisi).
 
 La fabrique connaît les différents types concrets à instancier, mais elle va généralement renvoyer des abstractions (classes abstraites/interfaces) pour que les classes ayant besoin de créer des objets ne dépendent plus du tout d'un objet concret, mais plutôt de son abstraction. Ainsi, l'impact du changement diminue (si on veut changer la classe concrète utilisée) ce qui renforce notamment le principe ouvert/fermé.
 
@@ -1178,7 +1180,7 @@ Pour l'instant, si nous voulons changer de "famille" de classes utilisée (anima
 
 ## Le pattern Fabrique abstraite
 
-Le pattern **Fabrique abstraite** peut être vu comme une extension du pattern **Fabrique** et va notamment permettre d'interchanger différentes fabriques qui instancient différentes familles de classes concrètes. Ainsi, au lieu de changer le code de la fabrique quand on veut changer de familles de classes, on ne va plus devoir changer le code de notre fabrique, mais plutôt changer l'instance de la fabrique concrète utilisée par le programme ou une classe en particulier.
+Le pattern **Fabrique abstraite** utilise des **Fabriques** et va notamment permettre d'interchanger différentes fabriques qui instancient différentes familles de classes concrètes. Ainsi, au lieu de changer le code de la fabrique quand on veut changer de familles de classes, on ne va plus devoir changer le code de notre fabrique, mais plutôt changer l'instance de la fabrique concrète utilisée par le programme ou une classe en particulier.
 
 ### Construction de donjons
 
@@ -2072,7 +2074,7 @@ I_Salarie salarie3 = new ResponsableDeStagiaires(new Salarie(2300), 5);
 I_Salarie salarie4 = new SalarieChef(new ResponsableDeStagiaires(new Salarie(1800), 4), 2); 
 ```
 
-Essayons d'abord d'utiliser le pattern **Fabrique** :
+Essayons d'abord d'utiliser le concept de **Fabrique** :
 
 ```java
 class SalarieFactory {
@@ -2180,7 +2182,7 @@ La version utilisant le **builder** semble bien plus pratique que la **fabrique*
 
 ## Amélioration du générateur de donjons
 
-Et si nous essayons de combiner plus de patterns ? Nous avons l'application idéale pour ça : le générateur de donjon (paquetage `fabrique2`). Il y a déjà le pattern **Fabrique**, **Fabrique abstraite**, **singleton** et **prototype**.
+Et si nous essayons de combiner plus de patterns ? Nous avons l'application idéale pour ça : le générateur de donjon (paquetage `fabrique2`). Il y a déjà la **Fabrique abstraite**, le **Singleton** et **Prototype**.
 
 <div class="exercise">
 
