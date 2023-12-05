@@ -23,7 +23,7 @@ Les design patterns **GoF** se divisent en trois catégories :
 
 Dans le TP précédent, vous avez déjà vu un pattern **structurel** (Décorateur) et un pattern **comportemental** (Stratégie). Dans le premier TP **git**, le programme utilisait un pattern **créateur** (fabrique) et un autre pattern **comportemental** (commande). Bref, les design patterns sont partout !
 
-Dans ce TP, nous allons voir **tous les patterns créateurs** et allons les mettre en application : **singleton**, **builder**, **prototype**, **Fabrique** et enfin **Fabrique abstraite**.
+Dans ce TP, nous allons voir **tous les patterns créateurs** et allons les mettre en application : **Singleton**, **Builder**, **Prototype** et enfin **Fabrique Abstraite**.
 
 Nous verrons aussi un autre pattern **structurel** appelé **adaptateur**. En fait, nous allons voir que beaucoup de ces patterns peuvent (et doivent) être combinés dans un projet plus large. Nous traitons souvent des problèmes "simple" avec quelques classes pour illustrer le fonctionnement d'un pattern, mais sur un projet plus large, il est tout à fait naturel de faire travailler en concert les différents patterns.
 
@@ -1178,15 +1178,15 @@ Bref, on préférera généralement séparer chaque instanciation dans une méth
 
 Pour l'instant, si nous voulons changer de "famille" de classes utilisée (animaux normaux / animaux robots) nous sommes obligés de changer le code de la classe `AnimalFactory`. Avec le design pattern **"Fabrique Abstraite"** de la section suivante du TP, nous allons pouvoir résoudre ce problème (et même faire cohabiter deux familles).
 
-## Le pattern Fabrique abstraite
+## Le pattern Fabrique Abstraite
 
-Le pattern **Fabrique abstraite** utilise des fabriques et va notamment permettre de les interchanger lorsqu'elles instancient différentes familles de classes concrètes. Ainsi, lorsqu'on souhaite changer la famille de classes à construire, au lieu de modifier le code de la fabrique, on changera plutôt l'instance de la fabrique concrète utilisée par le programme ou une classe en particulier. Cela peut paraître encore un peu abstrait... voyons donc un exemple l'exemple suivant.
+Le pattern **Fabrique Abstraite** utilise des fabriques et va notamment permettre de les interchanger lorsqu'elles instancient différentes familles de classes concrètes. Ainsi, lorsqu'on souhaite changer la famille de classes à construire, au lieu de modifier le code de la fabrique, on changera plutôt l'instance de la fabrique concrète utilisée par le programme ou une classe en particulier. Cela peut paraître encore un peu abstrait... regardons donc directement l'exemple suivant.
 
 ### Construction de donjons
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `fabrique2`. Cette application permet de construire des **donjons** pour un jeu-vidéo. Un **donjon** est constitué de différentes pièces (des pièces avec des coffres, des pièces avec des ennemis, des pièces avec des énigmes, des pièces avec des boss...). Une pièce peut être complétée par le joueur ou non. Chaque donjon possède un algorithme de génération qui créé les salles dans un ordre précis (avec un peu d'aléatoire). Il est constitué de "pièces normales", de "pièces spéciales" et d'une "pièce finale" dans cet ordre :
+1. Ouvrez le paquetage `fabrique2`. Cette application permet de construire des **donjons** pour un jeu-vidéo. Un **donjon** est constitué de différentes salles (des pièces avec des coffres, des pièces avec des ennemis, des pièces avec des énigmes, des pièces avec des boss...). Une salle peut être complétée par le joueur ou non. Chaque donjon possède un algorithme de génération qui créé les salles dans un ordre précis (avec un peu d'aléatoire). Il est constitué de "salles normales", de "salles spéciales" et d'une "salle finale", dans cet ordre :
 
     * Une salle normale
 
@@ -1224,7 +1224,7 @@ Le pattern **Fabrique abstraite** utilise des fabriques et va notamment permettr
 
 Vous avez peut-être trouvé la solution par vous-même avec la dernière question, mais si vous commencez à maîtriser les bonnes pratiques de conception logicielle, il y a un concept qui revient souvent dans les patterns et lorsqu'on applique les principes SOLID : l'abstraction.
 
-L'idée du pattern **Fabrique abstraite** est donc de disposer d'une abstraction (classe abstraite ou interface) qui définie le contrat que doivent remplir les fabriques concrètes. Pour chaque famille de classes, on crée une fabrique concrète qui implémente de cette interface ou étend cette classe abstraite. Ensuite, toutes les classes qui souhaitent utiliser cette fabrique doivent dépendre de la **fabrique abstraite** et non plus d'une fabrique concrète. Couplé à de l'injection de dépendances, il est très facile de complétement changer le comportement d'une classe. C'est globalement l'idée du pattern **Stratégie** que vous avez déjà vu lors du dernier TP, mais appliqué pour des fabriques !
+L'idée du pattern **Fabrique Abstraite** est donc de disposer d'une abstraction (classe abstraite ou interface) qui définie le contrat que doivent remplir les fabriques concrètes. Pour chaque famille de classes, on crée une fabrique concrète qui implémente de cette interface ou étend cette classe abstraite. Ensuite, toutes les classes qui souhaitent utiliser cette fabrique doivent dépendre de la **fabrique abstraite** et non plus d'une fabrique concrète. Couplé à de l'injection de dépendances, il est très facile de complétement changer le comportement d'une classe. C'est globalement l'idée du pattern **Stratégie** que vous avez déjà vu lors du dernier TP, mais appliqué pour des fabriques !
 
 Reprenons l'exemple des figures géométriques :
 
@@ -1321,7 +1321,7 @@ Comme vous pouvez le constater, après refactoring, il est très facile de chang
 
 <div class="exercise">
 
-1. Refactorez votre code afin d'introduire une nouvelle fabrique permettant de construire des donjons "difficiles" en appliquant le pattern **Fabrique abstraite**. Vous devez aussi logiquement légèrement adapter le code de la classe `Donjon`.
+1. Refactorez votre code afin d'introduire une nouvelle fabrique permettant de construire des donjons "difficiles" en appliquant le pattern **Fabrique Abstraite**. Vous devez aussi logiquement légèrement adapter le code de la classe `Donjon`.
 
 2. Dans le `Main`, construisez des donjons difficiles et des donjons faciles.
 
@@ -1339,7 +1339,7 @@ Parfois, il n'est pas nécessairement souhaitable d'avoir la possibilité d'util
 
 1. Ouvrez le paquetage `fabrique3`. C'est le retour des **pokémons** ! Mais il y a également une nouvelle famille de monstres : **les digimons** qui ont un fonctionnement similaire aux pokémons mais on en plus un système d'énergie. En tout cas, ils se créent de la même manière que les pokémons ou plus généralement, qu'un "monstre".
 
-2. Actuellement, dans le `Main`, on crée des pokémons et on utilise le simulateur de combat pour en faire combattre deux. À la place des pokémons, on voudrait parfois utiliser des digimons. Maintenant que vous connaissez le pattern **Fabrique abstraite** refactorez le code afin de pouvoir facilement switcher entre des combats avec divers pokémons et des combats avec divers digimons. Si vous rencontrez quelques petits problèmes, regardez les méthodes de `Digimon`... ne serait-il pas judicieux de lui faire implémenter une certaine interface ? Et pour les différentes sous-classes de `Digimon` ? (`DigimonEau`, `DigimonFeu`...). Vous devrez aussi adapter le `Main` et `SimulateurCombat`.
+2. Actuellement, dans le `Main`, on crée des pokémons et on utilise le simulateur de combat pour en faire combattre deux. À la place des pokémons, on voudrait parfois utiliser des digimons. Maintenant que vous connaissez le pattern **Fabrique Abstraite** refactorez le code afin de pouvoir facilement switcher entre des combats avec divers pokémons et des combats avec divers digimons. Si vous rencontrez quelques petits problèmes, regardez les méthodes de `Digimon`... ne serait-il pas judicieux de lui faire implémenter une certaine interface ? Et pour les différentes sous-classes de `Digimon` ? (`DigimonEau`, `DigimonFeu`...). Vous devrez aussi adapter le `Main` et `SimulateurCombat`.
 
 3. Contrairement à l'exercice précédent sur les **donjons**, on ne veut pas que les deux fabriques cohabitent à un instant t du programme. On veut que l'application fonctionne exclusivement avec des pokémons ou bien fonctionne exclusivement avec des digimons. Mais on ne veut pas changer manuellement l'instance de la fabrique utilisée partout dans le code source. Il faut imaginer que cette fabrique est probablement utilisée à divers endroits et surtout, qu'on ne souhaite pas recompiler le code source à chaque changement. Comment pourrions-nous faire ?
 
@@ -1349,7 +1349,7 @@ Nous sommes dans un cas particulier où tout le programme va utiliser une seule 
 
 Mais comment faire cela sans modifier l'instance concrète utilisée un peu partout ? (car elle est surement injectée à différentes classes). La réponse est simple : il faut regrouper la logique qui instancie la classe concrètement utilisée à un seul endroit. On peut ensuite mettre un système de paramétrage qui permet de changer la fabrique utilisée facilement. Les classes qui ont besoin de cette fabrique iront donc appeler une méthode de cette classe afin de récupérer la fabrique concrète à utiliser.
 
-La question est de savoir : où placer ce bout de code ? Il n'y a pas vraiment de réponse officielle à cette question. Cela pourrait être dans une classe indépendante avec une méthode statique. Cependant, dans la pratique, on retrouve parfois ce bout de code directement dans la **Fabrique abstraite** qu'on mélange à un **Singleton** :
+La question est de savoir : où placer ce bout de code ? Il n'y a pas vraiment de réponse officielle à cette question. Cela pourrait être dans une classe indépendante avec une méthode statique. Cependant, dans la pratique, on retrouve parfois ce bout de code directement dans la **Fabrique Abstraite** qu'on mélange à un **Singleton** :
 
 ```java
 
@@ -1766,7 +1766,7 @@ Si vous n'avez pas tout compris, n'hésitez pas à en parler avec votre enseigna
 
 Jusqu'ici, nous avons vu des fabriques qui instancient systématiquement un objet à chaque appel d'une méthode type `creer...`. Cependant, ce fonctionnement n'est pas obligatoire. Par exemple, on pourrait avoir une fabrique qui **instancie** et stocke certains objets lors de son initialisation puis renvoie une référence vers ces objets lorsqu'on la sollicite.
 
-Avec un tel fonctionnement, une **fabrique** permet alors de gérer les **dépendances** d'un programme. Elle pourrait par exemple stocker différentes instances de **services** concrets de l'application. Couplé avec le pattern **Fabrique abstraite**, cela nous permet de rendre les dépendances de notre programme fortement modulables !
+Avec un tel fonctionnement, une **fabrique** permet alors de gérer les **dépendances** d'un programme. Elle pourrait par exemple stocker différentes instances de **services** concrets de l'application. Couplé avec le pattern **Fabrique Abstraite**, cela nous permet de rendre les dépendances de notre programme fortement modulables !
 
 ```java
 interface ServiceA {
@@ -2180,7 +2180,7 @@ La version utilisant le **builder** semble bien plus pratique que la **fabrique*
 
 ## Amélioration du générateur de donjons
 
-Et si nous essayons de combiner plus de patterns ? Nous avons l'application idéale pour ça : le générateur de donjon (paquetage `fabrique2`). Il y a déjà la **Fabrique abstraite**, le **Singleton** et **Prototype**.
+Et si nous essayons de combiner plus de patterns ? Nous avons l'application idéale pour ça : le générateur de donjon (paquetage `fabrique2`). Il y a déjà la **Fabrique Abstraite**, le **Singleton** et **Prototype**.
 
 <div class="exercise">
 
