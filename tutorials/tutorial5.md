@@ -669,13 +669,221 @@ Pour mettre en place un tel système, l'idée est la suivante :
 
 Nous arrivons au pont pivot de ce TP qui va nous permettre d'exporter toute la partie "configuration" dans un fichier. Après cette étape, il n'y aura pas besoin d'éditer le code source afin d'initialiser et de relier nos dépendances (comme nous le faisons actuellement dans `initContainerServices`). Toute notre application sera alors modulable grâce à ce fichier ! En plus d'être globalement plus pratique et plus lisible que du code, cela permet aussi d'éditer les dépendances concrètes utilisées sans avoir besoin de recompiler notre programme.
 
-### Mise en place
+Notre fichier de configuration va utiliser le langage de balises `XML` (Extensible Markup Language). Le but est d'avoir une section contenant la description de chaque service sous la forme de **balises**. Pour chaque balise de **service**, on précisera :
 
-Notre fichier de configuration va utiliser le langage de balises `XML` (Extensible Markup Language).
+* Le nom du service.
+
+* La classe concrète qu'on souhaite utiliser.
+
+* La liste ordonnée des arguments (paramètres) nécessaires à l'instanciation de la classe. Chaque paramètre sera représenté par une nouvelle **balise** pour laquelle on précisera la valeur du paramètre en question.
+
+On obtient alors un fichier ayant cette allure :
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<services>
+
+    <service name="nom_service" class="com.package.MaClasse">
+        <argument value="val1"/>
+        <argument value="val2"/>
+    </service>
+
+    <service name="nom_service2" class="com.ex.Exemple">
+        <argument value="val"/>
+    </service>
+
+</services>
+```
+
+Dans cet exemple, on a la déclaration d'un premier service nommé `nom_service` ayant pour classe concrète `MaClasse` situé dans le paquetage `com.package` dont le constructeur prend deux paramètres. On a ensuite un deuxième service nommé `nom_service2` ayant pour classe concrète `Exemple` situé dans le paquetage `com.ex` dont le constructeur prend un paramètre.
+
+Bref, a priori, ce fichier ne devrait pas être trop dur à comprendre (cela ressemble pas mal à de l'HTML !). Néanmoins, il y a un problème majeur que nous devons prendre en compte et que nous allons traiter dans la prochaine section.
 
 ### Parsing
 
+Avant de considérer le traitement du fichier de configuration dans le code, il faut régler le problème du **parsing**. En effet, dans le fichier de configuration, les balises `argument` contiennent des valeurs sous la forme de chaînes de caractères. Cela passe si la valeur représentée est du type `String`. Mais que se passe-t-il si on a un nombre, un booléen, ou autre...?
+
+Par exemple :
+
+```java
+public class MaClasse {
+
+    private String attr1;
+
+    private boolean attr2;
+
+    private int attr3;
+
+    public MaClasse(String attr1, boolean attr2, int attr3) {
+        this.attr1 = attr1;
+        this.attr2 = attr2;
+        this.attr3 = attr3;
+    }
+
+}
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<services>
+
+    <service name="nom_service" class="com.package.MaClasse">
+        <argument value="hello"/>
+        <argument value="true"/>
+        <argument value="5"/>
+    </service>
+
+</services>
+```
+
+Quand nous allons traiter ce fichier au niveau du code (dans le conteneur) nous allons récupérer chaque `value` de chaque `argument` sous la forme de `String`. Nous ne pouvons pas obtenir le type "réel" de la donnée. Il faut donc trouver un moyen d'indiquer que cette chaîne de caractères doit être convertie en un type particulier. On appelle cela le **parsing**.
+
+La solution va donc être de créer des classes dédiées au **parsing** de chaînes de caractères dans un type de données précis. Nous indiquerons ensuite dans notre fichier de configuration quel **parser** utiliser pour chaque `argument`.
+
+Nous allons mettre en place une interface abstraite et **générique** permettant de définir une méthode de **parsing** :
+
+```java
+public interface Parser<T> {
+
+    T parse(String value);
+
+}
+```
+
+Le paramètre générique `T` correspond au type obtenu après le **parsing** de la chaîne de caractères. Par exemple, pour gérer le **parsing** de nombres entiers, on va créer une classe implémentant `Parser<Integer>` :
+
+```java
+public class IntegerParser implements Parser<Integer> {
+
+    public Integer parse(String value) {
+        return Integer.parseInt(value);
+    }
+
+}
+```
+
+Les types **primitifs** possèdent des méthodes qui permettent de parser une chaîne de caractères : `Double.parseDouble`, `Boolean.parseBoolean`, etc...
+
+Le but va donc être de créer un **parser** pour chaque type dont nous aurons besoin.
+
+<div class="exercise">
+
+1. Dans le paquetage `ioc`, créez un nouveau paquetage `parser` puis, à l'intérieur, créez l'interface `Parser` puis la classe `IntegerParser` à partir du code donné ci-dessus.
+
+2. Toujours dans le paquetage `parser`, créez les classes suivantes :
+
+    * `DoubleParser` : permet de parser une chaîne de caractères en `Double`.
+
+    * `FloatParser` : permet de parser une chaîne de caractères en `Float`.
+
+    * `BooleanParser` : permet de parser une chaîne de caractères en `Boolean`.
+
+    * `StringParser` : permet de parser une chaîne de caractères en `String` : en fait il faut simplement renvoyer la chaîne ! Cela peut sembler inutile, mais cela est bien nécessaire pour que notre système fonctionne de manière cohérente.
+
+    * `ReferenceParser` : permet de parser une chaîne de caractères en `Reference` : on se sert de la chaîne de caractère pour instancier un nouvel objet `Reference`.
+
+</div>
+
+Avec tous ces nouveaux **parsers** nous allons pouvoir reprendre notre fichier de configuration pour indiquer la classe de parsing à utiliser pour chaque argument, avec un nouvel attribut :
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<services>
+
+    <service name="nom_service" class="com.package.MaClasse">
+        <argument value="hello" parser="ioc.parser.StringParser"/>
+        <argument value="true" parser="ioc.parser.BooleanParser"/>
+        <argument value="5" parser="ioc.parser.IntegerParser"/>
+    </service>
+
+</services>
+```
+
+Comme pour la classe du `service`, on indique le chemin menant à la classe du `parser` qu'on souhaite utiliser. Du côté du code, on devra instancier le parser avec la classe indiquée et convertir la chaîne contenue dans `value`. Ce système n'est pas encore très ergonomique (un peu lourd à écrire) ni optimal, car nous devons instancier un nouveau parser pour chaque argument. Plus tard, nous verrons une meilleure méthode pour gérer cet aspect.
+
+Le dernier parser `ReferenceParser` est très utile, car il permet de faire simplement référence à un autre service (grâce à tout ce qu'on a mis en place auparavant) ! Comme ça, quand on a besoin d'utiliser un autre service comme `argument`, il suffit d'indiquer le nom de ce service comme valeur puis de préciser le parser `ioc.parser.ReferenceParser` :
+
+```java
+interface Service {
+    //...
+}
+
+class ServiceA implements Service {
+    //...
+}
+
+class ServiceB implements Service {
+    //...
+}
+
+class Manager {
+    private Service service;
+
+    public(Service service) {
+        this.service = service;
+    }
+}
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<services>
+
+    <!-- Si on veut utiliser ServiceB à la place, il suffit d'éditer cette ligne ! -->
+    <service name="service" class="ServiceA"/>
+
+    <service name="manager" class="Manager">
+        <argument value="service" parser="ioc.parser.ReferenceParser"/>
+    </service>
+
+</services>
+```
+
+Bref, nous pouvons maintenant configurer tous les services de notre application avec cette syntaxe.
+
+<div class="exercise">
+
+Créez un fichier `services.xml` dans le dossier `src/main/resources`. Importez et complétez ce squelette de configuration représentant l'ensemble des services nécessaires au fonctionnement de l'application :
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<services>
+
+    <service name="smtp" class="...">
+        <argument value="..." parser="..."/>
+        <argument value="..." parser="..."/>
+        <argument value="..." parser="..."/>
+    </service>
+
+    <service name="mailer" class="...">
+        <argument value="..." parser="..."/>
+    </service>
+
+    <service name="hasher" class="..."/>
+
+    <service name="stockage" class="..."/>
+
+    <service name="service_utilisateur" class="...">
+        <argument value="..." parser="..."/>
+        <argument value="..." parser="..."/>
+        <argument value="..." parser="..."/>
+    </service>
+
+    <service name="controller_utilisateur" class="...">
+        <argument value="..." parser="..."/>
+    </service>
+
+</services>
+```
+
+Il faut remplacer les `...`. Concernant l'attribut `class` (et pour les parsers), il faut bien indiquer le chemin de la classe (avec son paquetage). Normalement, `IntelliJ` vous permet d'autocompléter pour ne pas vous tromper ! Par exemple, pour `ConnexionSMTP` : `application.service.mailer.ConnexionSMTP`.
+
+Comme nous n'avons pas encore codé la logique de chargement de ce fichier, nous ne pouvons pas encore le tester. Mais cela va venir !
+
+</div>
+
 ### Chargement
+
 
 ### Gestionnaire de parsers
 
