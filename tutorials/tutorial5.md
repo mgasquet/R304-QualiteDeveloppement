@@ -801,7 +801,7 @@ Avec tous ces nouveaux **parsers** nous allons pouvoir reprendre notre fichier d
 
 Comme pour la classe du `service`, on indique le chemin menant à la classe du `parser` qu'on souhaite utiliser. Du côté du code, on devra instancier le parser avec la classe indiquée et convertir la chaîne contenue dans `value`. Ce système n'est pas encore très ergonomique (un peu lourd à écrire) ni optimal, car nous devons instancier un nouveau parser pour chaque argument. Plus tard, nous verrons une meilleure méthode pour gérer cet aspect.
 
-Le dernier parser `ReferenceParser` est très utile, car il permet de faire simplement référence à un autre service (grâce à tout ce qu'on a mis en place auparavant) ! Comme ça, quand on a besoin d'utiliser un autre service comme `argument`, il suffit d'indiquer le nom de ce service comme valeur puis de préciser le parser `ioc.parser.ReferenceParser` :
+Le dernier parser `ReferenceParser` est très utile, car il permet de faire simplement référence à un autre service par son nom (grâce à tout ce qu'on a mis en place auparavant) ! Comme ça, quand on a besoin d'utiliser un autre service comme `argument`, il suffit d'indiquer le nom de ce service comme valeur puis de préciser le parser `ioc.parser.ReferenceParser` :
 
 ```java
 interface Service {
@@ -876,7 +876,7 @@ Créez un fichier `services.xml` dans le dossier `src/main/resources`. Importez 
 </services>
 ```
 
-Il faut remplacer les `...`. Concernant l'attribut `class` (et pour les parsers), il faut bien indiquer le chemin de la classe (avec son paquetage). Normalement, `IntelliJ` vous permet d'autocompléter pour ne pas vous tromper ! Par exemple, pour `ConnexionSMTP` : `application.service.mailer.ConnexionSMTP`.
+Il faut remplacer les `...`. Concernant l'attribut `class` (et pour les parsers), il faut bien indiquer le chemin de la classe (avec le chemin du paquetage). Normalement, `IntelliJ` vous permet d'autocompléter pour ne pas vous tromper ! Par exemple, pour `ConnexionSMTP` : `application.service.mailer.ConnexionSMTP`.
 
 Comme nous n'avons pas encore codé la logique de chargement de ce fichier, nous ne pouvons pas encore le tester. Mais cela va venir !
 
@@ -884,8 +884,141 @@ Comme nous n'avons pas encore codé la logique de chargement de ce fichier, nous
 
 ### Chargement
 
+Bon, maintenant que notre fichier de configuration est en place, il nous faut écrire le code permettant d'en extraire les données afin de stocker tous ces services dans notre conteneur !
+
+Nous allons décomposer toutes les fonctions utiles à la lecture de ce fichier XML :
+
+```java
+InputStream stream = ClassLoader.getSystemResourceAsStream(filePath);
+DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+DocumentBuilder db = dbf.newDocumentBuilder();
+Document doc = db.parse(stream);
+doc.getDocumentElement().normalize();
+```
+
+* Cette première section de code permet de charger et de traiter le fichier désigné par `filePath`.
+
+* L'utilisation de `ClassLoader.getSystemResourceAsStream` permet de charger un fichier **interne** à l'application. C'est-à-dire, à terme, un fichier se trouvant dans l'exécutable `.jar`. Pendant le développement, cela permet de charger les fichiers placés dans `src/java/resources`.
+
+* La variable `doc` obtenue permet de rechercher des éléments dans le document XML.
+
+```java
+NodeList nodeList = doc.getElementsByTagName("exemple");
+
+for(int i = 0 ; i < nodeList.getLength(); i++) {
+
+    Node node = nodeList.item(i);
+
+    NamedNodeMap attributes = node.getAttributes();
+    String val = attributes.getNamedItem("attribute_name").getNodeValue();
+}
+```
+
+* À partir du document `doc`, on peut récupérer une liste de **noeuds** (nodes) qui correspondent à une balise en particulier. Dans notre cas, cela sera les balises `service`.
+
+* On peut parcourir cette liste de **noeuds** afin de traiter les données contenues dans chaque balise.
+
+* Depuis un **noeud**, on peut récupérer la liste de ses attributs. On peut alors lire la valeur de cet attribut en précisant son nom (ici, pour l'exemple `attribute_name`) ce qui renvoie une chaîne de caractères.
+
+```java
+NodeList nodeChilds = node.getChildNodes();
+for(int j = 0; j < nodeChilds.getLength(); j++) {
+    Node child = nodeChilds.item(j);
+    if(child.getNodeName().equals("child_name")) {
+        NamedNodeMap attributes = child.getAttributes();
+        String val = attributes.getNamedItem("attribute_name").getNodeValue();
+    }
+}
+```
+
+* Un **noeud** peut avoir des enfants (comme nos balises `service` peuvent avoir des balises enfants `argument`) qu'il est possible de parcourir. 
+
+* On peut vérifier le nom de la balise enfant traitée. 
+
+* On peut ensuite lire les différents attributs de ce sous-noeud comme pour un noeud classique.
+
+Notre objectif est de lire notre fichier `services.xml` et, pour chaque balise `service`, extraire les informations nécessaires (la classe et la liste des paramètres nécessaires à son initialisation) afin d'enregistrer le service avec `registerService`.
+
+Nous aurons besoin de divers bouts de code afin d'extraire ces informations efficacement :
+
+```java
+//Permet d'obtenir un objet `Class<?>` à partir du chemin complet d'une classe 
+String cheminClasse = "com.package.example.MaClasse";
+Class<?> serviceClass = Class.forName(cheminClasse);
+
+//Permet d'obteneir la classe d'un parser, de l'instancier et de parser un chaîne de caractères avec.
+String parserClassPath = "ioc.MonParser";
+Class<?> parserClass = Class.forName(parserClassPath);
+Parser<?> parser = (Parser<?>) new Expression(parserClass, "new", null).getValue();
+Object parsedValue = service.parse(valeurAParser);
+```
+
+<div class="exercise">
+
+1. Dans votre classe `Conteneur`, ajoutez et complétez la méthode suivante permettant de charger les données d'un fichier de configuration `xml` dans le conteneur :
+
+        ```java
+        public void loadServicesFromfile(String filePath) {
+            try {
+                InputStream stream = ClassLoader.getSystemResourceAsStream(filePath);
+                DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+                DocumentBuilder db = dbf.newDocumentBuilder();
+                Document doc = db.parse(stream);
+                doc.getDocumentElement().normalize();
+
+                NodeList serviceList = doc.getElementsByTagName("service");
+                
+                for(int i = 0 ; i < serviceList.getLength(); i++) {
+
+                    Node service = serviceList.item(i);
+                    NamedNodeMap attributes = service.getAttributes();
+
+                    String serviceName = //A compléter (récupération du nom du service)
+
+                    String classPath = //A compléter (récupération du chemin de la classe du service)
+                    Class<?> serviceClass = //A compléter (transformation du chemin de la classe en objet Class concret)
+
+                    //Arguments permettant de construire le service
+                    List<Object> arguments = new ArrayList<>();
+                    NodeList servicesChilds = service.getChildNodes();
+
+                    for(int j = 0; j < servicesChilds.getLength(); j++) {
+
+                        Node child = servicesChilds.item(j);
+
+                        if(child.getNodeName().equals("argument")) {
+
+                            NamedNodeMap argumentAttributes = child.getAttributes();
+                            String value = //A compléter (récupération de la valeur de l'argument)
+
+                            String parser = //A compléter (récupération du chemin de la classe de parsing de l'argument)
+
+                            //Récupération et instanciation du parser
+                            //
+                            //
+                            Object argumentValue = //A compléter (parsing de la valeur récupérée)
+                            arguments.add(argumentValue);
+                        }
+                    }
+                    registerService(name, serviceClass, arguments.toArray());
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        ```
+2. Dans la fonction `main` de `Main`, supprimez la ligne faisant appel à `initContainerServices` et remplacez-la par un appel à `loadServicesFromfile` sur le conteneur, permettant de charger les données du fichier `services.xml`. Normalement il n'y a rien d'autre à toucher. Assurez-vous simplement que le nom du service correspondant au **controller** est le même dans `main` (quand vous le récupérez) quand dans le fichier de configuration.
+
+3. Lancez l'application et vérifiez que tout fonctionne. Si c'est le cas, vous pouvez supprimer (ou plutôt commenter) la fonction `initContainerServices` qui ne nous sert plus à rien, car maintenant nous avons notre fichier de configuration !
+
+4. Avez-vous compris tout ce qu'il se passe et surtout pourquoi cela fonctionne ? S'il y a des points qui sont encore flous, n'hésitez pas à en discuter avec votre enseignant.
+</div>
+
+Si vous en êtes arrivé à ce stade et que tout fonctionne, bravo ! Vous avez maintenant un gestionnaire de dépendances fonctionnel et qui permet de configurer les dépendances de notre application plutôt facilement sans avoir besoin de toucher au code source ! C'est là la force du **conteneur de dépendances IoC**. La suite du TP vise à améliorer encore plus le fonctionnement du conteneur. On va aussi ajouter divers systèmes afin de faciliter encore plus l'écriture du fichier de configuration.
 
 ### Gestionnaire de parsers
+
+
 
 ## Auto-wiring
 
