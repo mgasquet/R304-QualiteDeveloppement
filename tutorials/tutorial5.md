@@ -65,7 +65,7 @@ Pour tester notre **conteneur** au fur et à mesure, nous allons utiliser un pro
 
 1. Pour commencer, forkez [le dépôt GitLab suivant](https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/tp5) en le plaçant dans le namespace `qualite-de-developpement-semestre-3/etu/votrelogin`.
 
-2. Clonez votre nouveau dépôt en local. Ouvrez le projet avec votre IDE et vérifiez qu'il n'y a pas d'erreur. Explorez les fichier, lancez-le programme pour tester.
+2. Clonez votre nouveau dépôt en local. Ouvrez le projet avec votre IDE et vérifiez qu'il n'y a pas d'erreur. Explorez les fichiers, lancez-le programme pour tester.
 
 3. À la fin de chaque séance, n'oubliez pas de faire un **push** vers votre dépôt distant sur **GitLab**.
 
@@ -878,6 +878,8 @@ Créez un fichier `services.xml` dans le dossier `src/main/resources`. Importez 
 
 Il faut remplacer les `...`. Concernant l'attribut `class` (et pour les parsers), il faut bien indiquer le chemin de la classe (avec le chemin du paquetage). Normalement, `IntelliJ` vous permet d'autocompléter pour ne pas vous tromper ! Par exemple, pour `ConnexionSMTP` : `application.service.mailer.ConnexionSMTP`.
 
+Choisissez la classe concrète que vous voulez pour `mailer`, `hasher` et `stockage`.
+
 Comme nous n'avons pas encore codé la logique de chargement de ce fichier, nous ne pouvons pas encore le tester. Mais cela va venir !
 
 </div>
@@ -898,7 +900,7 @@ doc.getDocumentElement().normalize();
 
 * Cette première section de code permet de charger et de traiter le fichier désigné par `filePath`.
 
-* L'utilisation de `ClassLoader.getSystemResourceAsStream` permet de charger un fichier **interne** à l'application. C'est-à-dire, à terme, un fichier se trouvant dans l'exécutable `.jar`. Pendant le développement, cela permet de charger les fichiers placés dans `src/java/resources`.
+* L'utilisation de `ClassLoader.getSystemResourceAsStream` permet de charger un fichier **interne** à l'application. C'est-à-dire, à terme, un fichier se trouvant dans l'exécutable `.jar`. Pendant le développement, cela permet de charger les fichiers placés dans `src/main/resources`.
 
 * La variable `doc` obtenue permet de rechercher des éléments dans le document XML.
 
@@ -1011,16 +1013,300 @@ Object parsedValue = service.parse(valeurAParser);
 
 3. Lancez l'application et vérifiez que tout fonctionne. Si c'est le cas, vous pouvez supprimer (ou plutôt commenter) la fonction `initContainerServices` qui ne nous sert plus à rien, car maintenant nous avons notre fichier de configuration !
 
-4. Avez-vous compris tout ce qu'il se passe et surtout pourquoi cela fonctionne ? S'il y a des points qui sont encore flous, n'hésitez pas à en discuter avec votre enseignant.
+4. Essayez de changer les classes concrètes des services utilisés (pour le mailer, le hasher et le stockage) dans `services.xml` et vérifiez que tout fonctionne encore.
+
+5. Avez-vous compris tout ce qu'il se passe et surtout pourquoi cela fonctionne ? S'il y a des points qui sont encore flous, n'hésitez pas à en discuter avec votre enseignant.
 </div>
 
-Si vous en êtes arrivé à ce stade et que tout fonctionne, bravo ! Vous avez maintenant un gestionnaire de dépendances fonctionnel et qui permet de configurer les dépendances de notre application plutôt facilement sans avoir besoin de toucher au code source ! C'est là la force du **conteneur de dépendances IoC**. La suite du TP vise à améliorer encore plus le fonctionnement du conteneur. On va aussi ajouter divers systèmes afin de faciliter encore plus l'écriture du fichier de configuration.
+Si vous en êtes arrivé à ce stade et que tout fonctionne, bravo ! Vous avez maintenant un gestionnaire de dépendances fonctionnel et qui permet de configurer les dépendances de n'importe quelle application plutôt facilement sans avoir besoin de toucher au code source ! C'est là la force du **conteneur de dépendances IoC**. La suite du TP vise à améliorer le fonctionnement du conteneur. On va aussi ajouter divers systèmes afin de faciliter encore plus l'écriture du fichier de configuration.
 
 ### Gestionnaire de parsers
 
+Comme nous l'avons mentionné précédemment, notre solution de **parsing** est fonctionnelle, mais pas optimale car :
 
+* On doit créer une nouvelle instance du **parser** à chaque fois qu'on traite un `argument`.
+
+* C'est un peu lourd à écrire dans le fichier de configuration !
+
+Pour régler ce problème, nous proposons d'utiliser un **gestionnaire de parsers**. L'idée est la suivante :
+
+* Avoir une classe qui associe des chaînes de caractères simples (`int`, `double`, `reference`) à une instance de **parser**.
+
+* Pouvoir charger et instancier ces **parsers** à partir d'un autre fichier de configuration `xml`. Ainsi, si une application a besoin de créer un nouveau type de **parser**, elle pourra le charger dans ce gestionnaire. Ceux par "défaut" (que nous avons déjà créés) seront chargés automatiquement.
+
+* Remplacer les références vers les classes de **parsing** par le nom du **parser** dans notre fichier de configuration `xml`.
+
+* Dans le conteneur, récupérer l'instance du **parser** ciblé depuis le gestionnaire quand on traite un `argument`.
+
+Le fichier configurant les **parsers** pourrait ressembler à cela :
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<parsers>
+    <parser name="int" class="ioc.parser.IntegerParser"/>
+    <parser name="double" class="ioc.parser.DoubleParser"/>
+    <parser name="string" class="ioc.parser.StringParser"/>
+    ...
+</parsers>
+```
+
+Le `name` correspond au nom qu'on utilisera pour référencer le **parser** et `class` à la classe du parser en question.
+
+Ensuite, on pourra créer une classe `ParserManager` afin de gérer nos parsers :
+
+```java
+public class ParserManager {
+
+    //Associe les noms de parsers à une instance de parser.
+    private Map<String, Parser<?>> parsers;
+
+    public ParserManager() {
+        parsers = new HashMap<>();
+        //Chargement des parsers par défaut.
+        loadParsers("parsers.xml");
+    }
+
+    //Permet de charger des parsers à partir d'un fichier XML.
+    public void loadParsers(String parsersFilePath) {
+        //...
+    }
+
+    //Permet de récupérer un parser à partir de son nom.
+    public Parser<?> getParser(String name) {
+        return parsers.get(name);
+    }
+
+}
+```
+
+Il faut bien comprendre qu'à terme, on va extraire toutes les classes relatives au conteneur et aux parsers dans une librairie indépendante qui pourra être utilisée sur n'importe quel projet. Le fichier `parsers.xml` sera inclut dans cette librairie et correspondra aux parsers "par défaut" (`IntegerParser`, `ReferenceParser`...). C'est pour cela que `ParserManager` charge ce fichier automatiquement lors de son initialisation. Néanmoins, cette classe est ouverte et permettra à une autre application incluant cette librairie de charger des parsers customs supplémentaires en appelant `loadParsers`.
+
+Le fichier `services.xml` quant à lui ne sera pas inclut dans notre librairie "conteneur". C'est normal, il s'agit d'un fichier relatif à l'application qu'on développe !
+
+Bref, dans un premier temps, faisons en sorte de faire fonctionner notre gestionnaire.
+
+<div class="exercise">
+
+1. Dans `src/main/resources` créez un fichier `parsers.xml` reprenant le contenu du fichier présenté un peu plus tôt. Complétez ce fichier avec tous les parsers restants (`float`, `boolean`, `reference`...).
+
+2. Dans le paquetage `ioc/parser` créez la classe `ParserManager` en reprenant le code présenté plus tôt.
+
+3. Dans votre classe `ParserManager`, complétez la méthode `loadParsers` permettant de charger les données des `parsers` depuis un fichier `xml` :
+
+        ```java
+        public void loadParsers(String parsersFilePath) {
+            try {
+                InputStream stream = ClassLoader.getSystemResourceAsStream(parsersFilePath);
+                DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+                DocumentBuilder db = dbf.newDocumentBuilder();
+                Document doc = db.parse(stream);
+                doc.getDocumentElement().normalize();
+                NodeList parserList = doc.getElementsByTagName("parser");
+                for(int i = 0 ; i < parserList.getLength(); i++) {
+
+                    Node parser = parserList.item(i);
+                    NamedNodeMap attributes = parser.getAttributes();
+
+                    String name = //A compléter (récupération du nom du parser)
+
+                    String class = //A compléter (récupération du chemin de la classe de parsing de l'argument)
+                    Class<?> parserClass = //A compléter (récupération de la classe du parser)
+                    Parser<?> parserInstance = (Parser<?>) new Expression(parserClass, "new", null).getValue();
+
+                    parsers.put(name, parserInstance);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        ```
+
+4. Il serait pratique (et justifié) que `ParserManager` soit un singleton (pour pouvoir facilement y accéder dans le conteneur et aussi pour qu'une application puisse enregistrer de nouveaux parsers). Faites les modifications nécessaires !
+
+5. Testez que votre gestionnaire de parsing fonctionne correctement en ajoutant temporairement le code suivant dans `main` permettant de vérifier que le parser `int` et bien chargé et fonctionne : 
+
+        ```java
+        Parser<?> parser = ParserManager.getInstance().getParser("int");
+        Object parsed = parser.parse("10");
+        //Doit afficher "10" dans la console.
+        System.out.println(parsed);
+        ```
+
+        Si tout fonctionne, supprimez (ou commentez) ce bout de code.
+
+</div>
+
+Le système de chargement de parsing fonctionne ! Il ne nous reste plus qu'à adapter le code de notre conteneur pour utiliser notre gestionnaire puis simplifier l'écriture de `services.xml`.
+
+Avec notre nouveau système, nous allons pouvoir mettre à jour ce fichier :
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<services>
+
+    <service name="nom_service" class="com.package.MaClasse">
+        <argument value="hello" parser="ioc.parser.StringParser"/>
+        <argument value="true" parser="ioc.parser.BooleanParser"/>
+        <argument value="5" parser="ioc.parser.IntegerParser"/>
+    </service>
+
+    <service name="autre_service" class="com.package.Exemple">
+        <argument value="nom_service" parser="ioc.parser.ReferenceParser"/>
+    </service>
+
+</services>
+```
+
+En ce fichier :
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<services>
+
+    <service name="nom_service" class="com.package.MaClasse">
+        <argument value="hello" parser="string"/>
+        <argument value="true" parser="boolean"/>
+        <argument value="5" parser="int"/>
+    </service>
+
+    <service name="autre_service" class="com.package.Exemple">
+        <argument value="nom_service" parser="reference"/>
+    </service>
+
+</services>
+```
+
+<div class="exercise">
+
+1. Mettez à jour votre fichier `services.xml` afin d'utiliser le nom du **parser** souhaité pour chaque `argument` au lieu de sa classe.
+
+2. Dans votre **conteneur**, mettez à jour la méthode `loadServicesFromfile` pour utiliser le `ParserManager` pour récupérer le parser souhaité au lieu d'instancier un nouveau parser dans la portion de code permettant de traiter un `argument`. On rappelle que `ParserManager` est un **singleton**.
+
+3. Lancez votre application et vérifiez que tout fonctionne.
+
+</div>
+
+## Export et mise en application
+
+Comme notre conteneur est maintenant assez complet, nous pouvons l'exporter en "standalone" et le tester sur une application un peu plus concrète. Plus tard, nous allons encore l'améliorer avec le système d'**autowiring** mais cette version est déjà suffisamment qualitative pour être utilisée.
+
+<div class="exercise">
+
+1. Forkez [le dépôt GitLab suivant](https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/conteneur) en le plaçant dans le namespace `qualite-de-developpement-semestre-3/etu/votrelogin`.
+
+2. Clonez votre nouveau dépôt en local. Ouvrez le projet avec votre IDE et vérifiez qu'il n'y a pas d'erreur. Il n'y a que des paquetages vides, c'est normal.
+
+3. Dans le paquetage `fr.iutmontpellier.ioc.parser` importez tout ce qui se trouve dans votre paquetage `ioc.parser`. Dans le paquetage `fr.iutmontpellier.ioc.container`, importez vos classes `Container`, `ServiceConfiguration` et `Reference`. Il faudra peut-être réparer les imports dans `Container` et dans `ReferenceParser`.
+
+4. Dans le dossier `src/main/resources/fr/iutmontpellier/ioc/parser`, importez votre fichier `parsers.xml`. Dans ce fichier, il faudra mettre à jour le chemin des classes référencées !
+
+5. Dans la classe `ParserManager`, il faut mettre à jour le chemin du fichier autochargé ! Il s'agit maintenant de `fr/iutmontpellier/ioc/parser/parsers.xml`.
+
+6. Sur la barre latérale droite (sur `IntelliJ`) cliquez sur `Maven` puis, dans le panneau qui s'ouvre, cliquez sur `ConteneurDependances`, `Lyfecycle` et faites un double-clic sur `compile`. Une fois le processus achevé, faites un double-clic sur `package`.
+
+</div>
+
+Votre librairie est maintenant compilée et exportée sur la forme d'un fichier `.jar` qu'il ets possible d'importer et d'utiliser dans d'autres projets ! Ce fichier est disponible dans le dossier `target` de votre projet, sous le nom `ConteneurDependances-1.0.0.jar` (nom configuré dans le fichier `pom.xml`).
+
+Il est temps de faire fonctionner votre nouvelle librairie sur un projet plus large. Le projet que nous allons utiliser est "OGE", l'application que vous aviez manipulé dans le cours de base de données et (peut-être) lors du TP4 si vous étiez arrivé jusque-là. Il faut simplement retenir qu'il y avait deux méthodes de stockage dans l'application : une utilisant la librairie `JDBC` de manière brute et l'autre utilisant l'ORM `Hibernate`. Dans le dernier TP, nous nous proposions de gérer les dépendances vers le support de stockage avec le pattern **fabtrique abstraite**. Ici, nous allons utiliser notre **conteneur**.
+
+<div class="exercise">
+
+1. Forkez [le dépôt GitLab suivant](https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/tp5-qualite-oge) en le plaçant dans le namespace `qualite-de-developpement-semestre-3/etu/votrelogin`.
+
+2. Clonez votre nouveau dépôt en local. Ouvrez le projet avec votre IDE. Il va y avoir des erreurs au niveau des classes type "controller", c'est normal ! En fait, le travail a été un peu prémâché : auparavant, nos classes `services` étaient des **singletons** (EtudiantService, RessourceService, NoteService) qui utilisaient une fabrique abstraite pour récupérer les classes de stockages adéquates. Nous avons retiré notre système de fabrique abstraite et les classes de services ne sont plus des singletons (ce qui est une bonne chose, car cela signifit qu'on peut les tester unitairement !). Cependant, tous les controllers sont cassés, car ils récupéraient l'instance de ces singletons.
+
+3. L'objectif de cet exercice va être d'utiliser le **conteneur** pour enregsitrer nos services comme dépendances et les importer dans les différents **controllers** (à la place d'utiliser `getInstance` qui n'existe plus...). Commençons donc par importer la librairie contenant le **conteneur** dans notre projet. Pour cela :
+
+    * Copiez et collez le fichier `ConteneurDependances-1.0.0.jar` vers le dossier `src/main/resources/libs` de cette application (il y a déjà un autre fichier `.jar` permettant de faire le pont avec hibernate...)
+
+    * Dans le fichier `pom.xml`, ajoutez l'import suivant dans la section `dependencies` :
+
+        ```xml
+        <dependency>
+            <groupId>fr.iutmontpellier</groupId>
+            <artifactId>ConteneurDependances</artifactId>
+            <version>1.0.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/main/resources/libs/ConteneurDependances-1.0.0.jar</systemPath>
+        </dependency>
+        ```
+
+    * Rafraichissez le projet Maven avec le bouton qui apparait en haut à droite du fichier ou bien en cliquant sur `pom.xml` puis `Maven` et `Reload project`.
+
+    * Dans le fichier `src/main/java/module-info.java` ajoutez la ligne suivante dans le bloc `open module...` :
+
+        ```java
+        open module tp.oge {
+            ...
+            requires ConteneurDependances;
+        }
+        ```
+
+4. Il va falloir configurer nos services. On va commencer par faire fonctionner l'application avec `JDBC`. Il faut donc définir : un service qui stocke une instance de `JDBCUtils`, les 3 services de stockages typés `JDBC` (`StockageRessourceJDBC`, `StockageEtudiantJDBC` `StockageNoteJDBC` qui se construsient avec `JDBCUtils`) et enfin, les 3 services `RessourceService`, `EtudiantService` et `NoteService`. Prenez le temps de consulter le constructeur de ces 7 classes pour savoir comment elles sont construites ! Créez alors un fichier `services.xml` dans `src/main/resources` à partir de ce squelette et complétez-le :
+
+    ```xml
+    <?xml version="1.0" encoding="UTF-8" ?>
+    <services>
+
+        <service name="jdbc_utils" class="fr.iutmontpellier.tpoge.stockage.jdbc.JDBCUtils">
+            <!-- A compléter -->
+            <!-- La class JDBCUtils se construit avec les différentes informations de connexion -->
+            <!-- Pour rappel : 
+                - url : jdbc:oracle:thin:@162.38.222.149:1521:iut
+                - driver : oracle.jdbc.driver.OracleDriver
+                - user/pass : login et mot de passe utilisés dans le département (connexion sur les machines, sur isql, etc...)
+            -->
+        </service>
+
+        <!-- Service de stockage des ressources (utilisant StockageRessourceJDBC, pour le moment) -->
+        <service name="..." class="...">
+            <!-- A compléter -->
+        </service>
+
+        <!-- Service de stockage des étudiants (utilisant StockageEtudiantJDBC, pour le moment) -->
+        <service name="..." class="...">
+            <!-- A compléter -->
+        </service>
+
+        <!-- Service de stockage des notes (utilisant StockageNoteJDBC, pour le moment) -->
+        <service name="..." class="...">
+            <!-- A compléter -->
+        </service>
+
+        <!-- Service de gestion des ressources (utilisant RessourceService) -->
+        <service name="..." class="...">
+            <!-- A compléter -->
+        </service>
+
+        <!-- Service de gestion des étudiants (utilisant EtudiantService) -->
+        <service name="..." class="...">
+            <!-- A compléter -->
+        </service>
+
+        <!-- Service de gestion des étudiants (utilisant NotetService) -->
+        <service name="..." class="...">
+            <!-- A compléter -->
+        </service>
+
+    </services>
+    ```
+
+    Attention, pour `class`, on rappelle qu'il faut indiquer le chemin complet de la classe !
+
+5. Dans la méthode `start` de la classe `Main`, faites en sorte de charger votre fichier de configuration dans le conteneur. On rappelle encore une fois que le **conteneur** est un singleton !
+
+6. Dans les huit classes type "controller" (à partir du paquetage `application/controller`) réparez le code en récupérant les instances des différents services en utiliser votre **conteneur** (et la méthode `getService`).
+
+7. Lancez votre application et vérifiez que tout fonctionne.
+
+8. Dans votre fichier de configuration `services.xml`, changez les classes concrètes utilisées pour les services de stockage par les classes typées `Hibernate`. Attention, contrairement aux classes typées `JDBC`, ces classes ne prennent aucun argument dans leur constructeur. Dans cette configuration, on a d'ailleurs plus besoin du service `jdbc_utils`. Il faudra aussi éditer le fichier `hibernate.cfg.xml` afin de compléter votre login et votre mot de passe à la place de "aCompleter" (les mêmes que ceux utilisés pour JDBC).
+
+9. Lancez votre application et vérifiez qu'elle fonctionne encore.
+
+</div>
+
+Si vous êtes arrivés jusque-là, bravo ! Vous devriez maintenant être capable d'utiliser votre **conteneur** sur n'importe quel projet. Notez qu'il aurait été préférable d'injecter les différentes instances des services dans les controllers (via le constructeur) plutôt que de faire directement appel au singleton du **conteneur** dans le controller. Cepndant, l'architecture de `JavaFX` ne nous permet pas de faire cela facilement. Néanmoins, les controllers n'ont pas vraiment pour but d'être testés unitairement, donc ce n'est pas très grave. Autrement, grâce à ce système de **conteneur**, nous avons aussi enlevé le fonctionnement en mode **singleton** des différents services (ressource, étudiant, note), ce qui les rend beaucoup plus testables.
 
 ## Auto-wiring
-
-
 
