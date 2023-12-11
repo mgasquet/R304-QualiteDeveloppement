@@ -25,3 +25,4 @@ Les documents relatifs au cours et aux travaux dirigés sont disponibles sur [Mo
 
 1. [TP3](tutorials/tutorial3) -- Les principes SOLID
 2. [TP4](tutorials/tutorial4) -- Les design patterns créateurs
+3. [TP5](tutorials/tutorial5) -- Le conteneur de dépendances IoC
