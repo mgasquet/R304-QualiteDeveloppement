@@ -190,28 +190,28 @@ ex.run();
 
 1. Dans le paquetage `ioc`, créez la classe `Conteneur` en complétant le squelette de code suivant :
 
-        ```java
-        public class Conteneur {
+    ```java
+    public class Conteneur {
 
-            //Structure stockant les différents services en associant des chaînes de caractères à des instances d'objets
-            private ??? services;
+        //Structure stockant les différents services en associant des chaînes de caractères à des instances d'objets
+        private ??? services;
 
-            private Conteneur() {
-                services = ???;
-            }
-
-            //Permet de stocker l'instance "instance" dans le conteneur en l'associant au nom désigné par "nomService"
-            public void registerService(String nom, Object instance) {
-                
-            }
-
-            //Permet de renvoyer un Object correspondant au service désigné par "nomService" dans le conteneur
-            public Object getService(String name) {
-                
-            }
-
+        private Conteneur() {
+            services = ???;
         }
-        ```
+
+        //Permet de stocker l'instance "instance" dans le conteneur en l'associant au nom désigné par "nomService"
+        public void registerService(String nom, Object instance) {
+            
+        }
+
+        //Permet de renvoyer un Object correspondant au service désigné par "nomService" dans le conteneur
+        public Object getService(String name) {
+            
+        }
+
+    }
+    ```
 
 2. Il semble judicieux (et justifié) que `Conteneur` soit un **singleton**. En effet, il semble cohérent qu'il n'y ai qu'une seule instance de cette classe et que le conteneur permettant de récupérer n'importe quelle dépendance du projet soit accessible partout. Le conteneur ne fait pas partie du code métier, il ne sera donc pas non plus testé unitairement, à priori. Transformez donc `Conteneur` en **singleton**.
 
@@ -227,11 +227,11 @@ Il y a un problème de type : Votre `mailer` (que cela soit `ServiceMailerBasiqu
 
 Malheureusement, nous ne pouvons pas non plus changer le type de valeur stocké dans la `Map` du conteneur (`Object`) qui doit être le plus général possible pour pouvoir stocker n'importe quelle instance...
 
-Vous connaissez sans doutes déjà la solution : il faut **caster**, c'est-à-dire changer le type (la classe) utilisé pour lire l'objet (il n'y a pas de "transformation" de l'objet, simplement du type de lecture). Ici, c'est à priori un **cast** "safe" car on sait que l'objet rentré dans le container et récupéré ensuite est bien du bon type. Mais il faut tout de même faire attention quand on utilise ce genre de fonctionnalité, car certains types ne sont bien sûr pas compatibles.
+Vous connaissez sans doutes déjà la solution : il faut **caster**, c'est-à-dire changer le type (la classe) utilisé pour lire l'objet (il n'y a pas de "transformation" de l'objet, simplement du type de lecture). Ici, c'est à priori un **cast** "safe" car on sait que l'objet rentré dans le conteneur et récupéré ensuite est bien du bon type. Mais il faut tout de même faire attention quand on utilise ce genre de fonctionnalité, car certains types ne sont bien sûr pas compatibles.
 
 Par exemple, ici, il est tout à fait possible de caster un `Object` qui est en réalité (dans la mémoire lors de l'exécution) une instance de `ConnexionSMTP`. 
 
-Cependant, qui doit effectuer ce **cast** ? Cela ne semble pas adéquat de faire cela à chaque fois qu'on appelle `getService` ! En fait, c'est aussi le rôle du **container**. Mais comment faire, vu que la méthode `getService` est paramétrée pour renvoyer le type `Object` ?
+Cependant, qui doit effectuer ce **cast** ? Cela ne semble pas adéquat de faire cela à chaque fois qu'on appelle `getService` ! En fait, c'est aussi le rôle du **conteneur**. Mais comment faire, vu que la méthode `getService` est paramétrée pour renvoyer le type `Object` ?
 
 Il est temps de vous présenter des fonctionnalités de Java que vous ne connaissiez peut-être pas : **la généricité des méthodes** et **le type de retour paramétrable.**
 
@@ -502,11 +502,11 @@ container.registerService("manager", Manager.class, conteneur.getService("servic
 
 1. Modifiez la méthode `registerService` afin qu'elle instancie maintenant elle-même l'objet en question (puis l'enregistre dans la `Map` de ses services) :
 
-        ```java
-        public void registerService(String name, Class<?> type, Object... parameters) {
+    ```java
+    public void registerService(String name, Class<?> type, Object... parameters) {
 
-        }
-        ```
+    }
+    ```
 2. Adaptez le code de la fonction statique `initContainerServices` dans `Main` pour utiliser la nouvelle version de `registerService`. Il faudra donc, pour chaque service utilisé :
 
     * Préciser un **nom** (comme c'était déjà le cas avant).
@@ -600,11 +600,11 @@ container.registerService("manager", Manager.class, new Reference("service"), ne
 
 2. Dans votre classe `Conteneur`, ajoutez une méthode privée `transformParameters` qui prend en paramètre un tableau d'objets et renvoie un tableau d'objets de la même taille avec les mêmes objets excepté pour les **références** qui doivent être transformées en objet (correspondant au service ciblé par la référence) :
 
-        ```java
-        private Object[] transformParameters(Object[] parameters) {
+    ```java
+    private Object[] transformParameters(Object[] parameters) {
 
-        }
-        ```
+    }
+    ```
 
 3. Dans la méthode `registerService`, utilisez votre nouvelle méthode `transformParameters` afin d'utiliser les paramètres "transformés" lors de l'instanciation du service.
 
@@ -642,20 +642,20 @@ Pour mettre en place un tel système, l'idée est la suivante :
 
 3. Toujours dans le **conteneur**, créez une méthode privée `isLoaded` qui permet de savoir si le service a déjà été chargé (et donc initialisé) ou non. Le service n'est pas chargé s'il ne se trouve pas encore dans la map des **services** du conteneur :
 
-        ```java
-        private boolean isLoaded(String serviceName) {
+    ```java
+    private boolean isLoaded(String serviceName) {
 
-        }
-        ```
+    }
+    ```
 
 4. Toujours dans le **conteneur**, créez une méthode privée `loadService` qui permet de charger un service à partir de son nom. Il s'agit de récupérer les informations du services depuis la `Map` contenant les configurations puis, de l'initialiser (en instanciant le service) et enfin, de le stocker dans la `Map` contenant les services. Il est aussi préférable de retirer le service de la `Map` stockant les configurations. Pour cette méthode, il faut reprendre une partie du code de `registerService` !
 
 
-        ```java
-        private void loadService(String serviceName) {
+    ```java
+    private void loadService(String serviceName) {
 
-        }
-        ```
+    }
+    ```
 
 5. Modifiez le code de `registerService` afin que le service ne soit plus instancié et enregistré dans `services`. À la place, on osuhaite stocker ses données d'initialisation dans `configurations`.
 
@@ -944,7 +944,7 @@ Notre objectif est de lire notre fichier `services.xml` et, pour chaque balise `
 Nous aurons besoin de divers bouts de code afin d'extraire ces informations efficacement :
 
 ```java
-//Permet d'obtenir un objet `Class<?>` à partir du chemin complet d'une classe 
+//Permet d'obtenir un objet "Class<?>" à partir du chemin complet d'une classe 
 String cheminClasse = "com.package.example.MaClasse";
 Class<?> serviceClass = Class.forName(cheminClasse);
 
@@ -959,56 +959,56 @@ Object parsedValue = service.parse(valeurAParser);
 
 1. Dans votre classe `Conteneur`, ajoutez et complétez la méthode suivante permettant de charger les données d'un fichier de configuration `xml` dans le conteneur :
 
-        ```java
-        public void loadServicesFromfile(String filePath) {
-            try {
-                InputStream stream = ClassLoader.getSystemResourceAsStream(filePath);
-                DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-                DocumentBuilder db = dbf.newDocumentBuilder();
-                Document doc = db.parse(stream);
-                doc.getDocumentElement().normalize();
+    ```java
+    public void loadServicesFromfile(String filePath) {
+        try {
+            InputStream stream = ClassLoader.getSystemResourceAsStream(filePath);
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document doc = db.parse(stream);
+            doc.getDocumentElement().normalize();
 
-                NodeList serviceList = doc.getElementsByTagName("service");
-                
-                for(int i = 0 ; i < serviceList.getLength(); i++) {
+            NodeList serviceList = doc.getElementsByTagName("service");
+            
+            for(int i = 0 ; i < serviceList.getLength(); i++) {
 
-                    Node service = serviceList.item(i);
-                    NamedNodeMap attributes = service.getAttributes();
+                Node service = serviceList.item(i);
+                NamedNodeMap attributes = service.getAttributes();
 
-                    String serviceName = //A compléter (récupération du nom du service)
+                String serviceName = //A compléter (récupération du nom du service)
 
-                    String classPath = //A compléter (récupération du chemin de la classe du service)
-                    Class<?> serviceClass = //A compléter (transformation du chemin de la classe en objet Class concret)
+                String classPath = //A compléter (récupération du chemin de la classe du service)
+                Class<?> serviceClass = //A compléter (transformation du chemin de la classe en objet Class concret)
 
-                    //Arguments permettant de construire le service
-                    List<Object> arguments = new ArrayList<>();
-                    NodeList servicesChilds = service.getChildNodes();
+                //Arguments permettant de construire le service
+                List<Object> arguments = new ArrayList<>();
+                NodeList servicesChilds = service.getChildNodes();
 
-                    for(int j = 0; j < servicesChilds.getLength(); j++) {
+                for(int j = 0; j < servicesChilds.getLength(); j++) {
 
-                        Node child = servicesChilds.item(j);
+                    Node child = servicesChilds.item(j);
 
-                        if(child.getNodeName().equals("argument")) {
+                    if(child.getNodeName().equals("argument")) {
 
-                            NamedNodeMap argumentAttributes = child.getAttributes();
-                            String value = //A compléter (récupération de la valeur de l'argument)
+                        NamedNodeMap argumentAttributes = child.getAttributes();
+                        String value = //A compléter (récupération de la valeur de l'argument)
 
-                            String parser = //A compléter (récupération du chemin de la classe de parsing de l'argument)
+                        String parser = //A compléter (récupération du chemin de la classe de parsing de l'argument)
 
-                            //Récupération et instanciation du parser
-                            //
-                            //
-                            Object argumentValue = //A compléter (parsing de la valeur récupérée)
-                            arguments.add(argumentValue);
-                        }
+                        //Récupération et instanciation du parser
+                        //
+                        //
+                        Object argumentValue = //A compléter (parsing de la valeur récupérée)
+                        arguments.add(argumentValue);
                     }
-                    registerService(name, serviceClass, arguments.toArray());
                 }
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+                registerService(name, serviceClass, arguments.toArray());
             }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        ```
+    }
+    ```
 2. Dans la fonction `main` de `Main`, supprimez la ligne faisant appel à `initContainerServices` et remplacez-la par un appel à `loadServicesFromfile` sur le conteneur, permettant de charger les données du fichier `services.xml`. Normalement il n'y a rien d'autre à toucher. Assurez-vous simplement que le nom du service correspondant au **controller** est le même dans `main` (quand vous le récupérez) quand dans le fichier de configuration.
 
 3. Lancez l'application et vérifiez que tout fonctionne. Si c'est le cas, vous pouvez supprimer (ou plutôt commenter) la fonction `initContainerServices` qui ne nous sert plus à rien, car maintenant nous avons notre fichier de configuration !
@@ -1093,46 +1093,46 @@ Bref, dans un premier temps, faisons en sorte de faire fonctionner notre gestion
 
 3. Dans votre classe `ParserManager`, complétez la méthode `loadParsers` permettant de charger les données des `parsers` depuis un fichier `xml` :
 
-        ```java
-        public void loadParsers(String parsersFilePath) {
-            try {
-                InputStream stream = ClassLoader.getSystemResourceAsStream(parsersFilePath);
-                DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-                DocumentBuilder db = dbf.newDocumentBuilder();
-                Document doc = db.parse(stream);
-                doc.getDocumentElement().normalize();
-                NodeList parserList = doc.getElementsByTagName("parser");
-                for(int i = 0 ; i < parserList.getLength(); i++) {
+    ```java
+    public void loadParsers(String parsersFilePath) {
+        try {
+            InputStream stream = ClassLoader.getSystemResourceAsStream(parsersFilePath);
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document doc = db.parse(stream);
+            doc.getDocumentElement().normalize();
+            NodeList parserList = doc.getElementsByTagName("parser");
+            for(int i = 0 ; i < parserList.getLength(); i++) {
 
-                    Node parser = parserList.item(i);
-                    NamedNodeMap attributes = parser.getAttributes();
+                Node parser = parserList.item(i);
+                NamedNodeMap attributes = parser.getAttributes();
 
-                    String name = //A compléter (récupération du nom du parser)
+                String name = //A compléter (récupération du nom du parser)
 
-                    String class = //A compléter (récupération du chemin de la classe de parsing de l'argument)
-                    Class<?> parserClass = //A compléter (récupération de la classe du parser)
-                    Parser<?> parserInstance = (Parser<?>) new Expression(parserClass, "new", null).getValue();
+                String class = //A compléter (récupération du chemin de la classe de parsing de l'argument)
+                Class<?> parserClass = //A compléter (récupération de la classe du parser)
+                Parser<?> parserInstance = (Parser<?>) new Expression(parserClass, "new", null).getValue();
 
-                    parsers.put(name, parserInstance);
-                }
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+                parsers.put(name, parserInstance);
             }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        ```
+    }
+    ```
 
 4. Il serait pratique (et justifié) que `ParserManager` soit un singleton (pour pouvoir facilement y accéder dans le conteneur et aussi pour qu'une application puisse enregistrer de nouveaux parsers). Faites les modifications nécessaires !
 
 5. Testez que votre gestionnaire de parsing fonctionne correctement en ajoutant temporairement le code suivant dans `main` permettant de vérifier que le parser `int` et bien chargé et fonctionne : 
 
-        ```java
-        Parser<?> parser = ParserManager.getInstance().getParser("int");
-        Object parsed = parser.parse("10");
-        //Doit afficher "10" dans la console.
-        System.out.println(parsed);
-        ```
+    ```java
+    Parser<?> parser = ParserManager.getInstance().getParser("int");
+    Object parsed = parser.parse("10");
+    //Doit afficher "10" dans la console.
+    System.out.println(parsed);
+    ```
 
-        Si tout fonctionne, supprimez (ou commentez) ce bout de code.
+    Si tout fonctionne, supprimez (ou commentez) ce bout de code.
 
 </div>
 
@@ -1196,7 +1196,7 @@ Comme notre conteneur est maintenant assez complet, nous pouvons l'exporter en "
 
 2. Clonez votre nouveau dépôt en local. Ouvrez le projet avec votre IDE et vérifiez qu'il n'y a pas d'erreur. Il n'y a que des paquetages vides, c'est normal.
 
-3. Dans le paquetage `fr.iutmontpellier.ioc.parser` importez tout ce qui se trouve dans votre paquetage `ioc.parser`. Dans le paquetage `fr.iutmontpellier.ioc.container`, importez vos classes `Container`, `ServiceConfiguration` et `Reference`. Il faudra peut-être réparer les imports dans `Container` et dans `ReferenceParser`.
+3. Dans le paquetage `fr.iutmontpellier.ioc.parser` importez tout ce qui se trouve dans votre paquetage `ioc.parser`. Dans le paquetage `fr.iutmontpellier.ioc.container`, importez vos classes `Conteneur`, `ServiceConfiguration` et `Reference`. Il faudra peut-être réparer les imports dans `Conteneur` et dans `ReferenceParser`.
 
 4. Dans le dossier `src/main/resources/fr/iutmontpellier/ioc/parser`, importez votre fichier `parsers.xml`. Dans ce fichier, il faudra mettre à jour le chemin des classes référencées !
 
@@ -1536,19 +1536,19 @@ if(!constructors.isEmpty()) {
 
 1. Dans le **conteneur**, ajoutez une méthode de classe **privée** nommée `findAutowiredConstructor` qui permet de trouver le premier constructeur possédant l'annotation `Autowired` d'un type donné en paramètre. S'il n'y en a pas, la méthode renvoie `null`.
 
-        ```java
-        private static Constructor<?> findAutowiredConstructor(Class<?> type) {
+    ```java
+    private static Constructor<?> findAutowiredConstructor(Class<?> type) {
 
-        }
-        ```
+    }
+    ```
 
 2. Toujours dans le **conteneur**, ajoutez une méthode de classe **privée** nommée `hasAutowiredConstructor` qui permet de savoir si un type donné en paramètre possède ou non un constructeur possédant l'annotation `Autowired` (renvoie `true` si c'est le cas et `false` sinon).
 
-        ```java
-        private static boolean hasAutowiredConstructor(Class<?> type) {
-        
-        }
-        ```
+    ```java
+    private static boolean hasAutowiredConstructor(Class<?> type) {
+    
+    }
+    ```
 
 </div>
 
@@ -1593,12 +1593,12 @@ for(Parameter parameter : parameters) {
 
 3. Modifiez la méthode `transformParameters` afin de faire en sorte qu'un paramètre de type `AutowiringReference` soit convertit en l'instance du service correspondant. Pour cela il faut d'abord extraire le type visé puis utiliser `getService` pour obtenir l'instance souhaitée (et éventuellement réaliser une initialisation en chaîne, car pour rappel, nous sommes en mode "lazy-loading") :
 
-        ```java
-        //Quelque part dans le code de "transformParameters"...
-        if(parameter instanceof AutowiringReference reference) {
-            //...
-        }
-        ```
+    ```java
+    //Quelque part dans le code de "transformParameters"...
+    if(parameter instanceof AutowiringReference reference) {
+        //...
+    }
+    ```
 
 4. Modifiez la méthode `loadServicesFromfile` afin de faire en sorte que, quand on charge les données d'un service :
 
@@ -1744,9 +1744,40 @@ Il y a divers points d'améliorations que vous pouvez explorer :
 
 * Régler le problème lié au principe ouvert/fermé au niveau de `transformParameters`.
 
+* Découper un peu plus le code, notamment au niveau des fonctions de chargement des fichiers XML afin de mieux respecter le principe "Single responsability".
+
 Il y a plein d'autres choses que nous aurions pu explorer. Par exemple, dans certains conteneurs, au lieu d'avoir de l'autowiring par "type" (ce qui peut être limité/contraignant), on peut utiliser de l'autowiring par "nom". Si l'attribut/le paramètre a le même nom qu'un service enregistré, on peut réaliser l'autowiring avec ce service.
 
 L'étape ultime que propose certains frameworks est la découverte et l'enregistrement automatique de services en scannant les différentes classes de l'application. On pourrait imaginer qu'on annote les classes de services avec une annotation (par exemple `@Service`, avec éventuellement la classe/l'interface pour laquelle cette classe est une référence, en paramètre). Cela ne serait pas trop dur avec notre conteneur à condition d'installer une librairie adéquate nous permettant de chercher des classes possédant une annotation précise dans toute l'application.
  
 ## Conclusion
 
+Au travers de ce TP, vous avez appris à construire (et à utiliser) un **cotneneur de dépendances IoC**. Dès que vous devez éditer un fichier de configuration lors de l'utilisation d'un **framework** (`Spring`, `Symfony`, `Laravel`...) c'est généralement cet outil qui est utilisé derrière. Maintenant, vous avez une connaissance assez précise de tout ce qu'il se passe en interne et, lorsque vous serez amené à travailler sur avec ce genre de technologie, cela ne devrait plus vous paraitre "mystérieux" ou "magique".
+
+Au-delà du TP, vous pouvez utiliser votre gestionnaire de dépendances avec la librairie `.jar` exportée dans vos futurs projets ! Cela permettra de gérer assez efficacement les différentes dépendances si vous appliquez bien en parallèle les différents principes **SOLID** et notamment le fait d'**utiliser des abstractions au lieu de classes concrètes** lorsqu'une classe à besoin d'utiliser un service donné.
+
+Concernant le parcours `RACDV` vous allez être amené à utiliser le **conteneur de Symfony** dans les cours de complément web (qui peut s'utiliser de manière indépendante, sans le framework complet). Vous pouvez y jeter un œil [ici](https://symfony.com/doc/current/components/dependency_injection.html). On a un fonctionnement assez similaire ! On peut enregistrer les services avec du code ou bien grâce à un fichier de configuration `yaml`. Si vous avez du temps pour votre **SAE** ou d'autre projet, vous pourriez presque envisager de l'utiliser au semestre 3 ! :D
+
+Bref, ce TP conclut le cours de **Qualité de développement** du semestre 3. Voici un bilan de ce que vous avez appris :
+
+* Utilisation plus poussée de git, notamment plus conforme à ce qui est attendu dans le monde professionnel : travail sur plusieurs branches, nommage des commits et des branches, merging, réécriture d'historique, automatisation de tâches et déploiement continu.
+
+* Modélisation de la conception d'un logiciel à l'aide de **diagrammes de classes** et de **séquences**.
+
+* Organisation de l'**architecture** d'un logiciel en différentes **couches**.
+
+* Les principes `SOLID` et le **refactoring** de code. Deux notions clés à retenir : exploiter les **compositions d'objets** (faibles ou fortes) notamment à la place de certains héritages et préférer **dépendre d'abstractions plutôt que de classes concrètes**.
+
+* La notion de **design pattern** et les différents patterns **créateurs** : `singleton`, `builder`, `prototype` et `fabrique abstraite`.
+
+* D'autres **design patterns** : `stratégie`, `décorateur`, `adaptateur`.
+
+* La gestion des dépendances d'un programme à l'aide de **fabriques abstraites**.
+
+* La gestion des dépendances d'un programme à l'aide d'un **conteneur de dépendances IoC** (que vous avez construit vous-même !).
+
+Concernant le **conteneur de dépendances IoC**, ce n'est pas grave si vous n'êtes pas allé au bout du TP et que vous n'avez pas réussi à construire complétement cet outil. Cependant il est important que vous compreniez globalement son fonctionnement (et son intérêt) car c'est un outil que vous allez certainement souvent utiliser à l'avenir, sous différentes formes.
+
+Concernant les **desgin patterns GoF**, n'hésitez pas à aller consulter (et expérimenter) ceux que nous n'avons pas abordé dans ce cours (ceux comportementaux et architecturaux). Pour rappel, il y en a 23 ! Il peut être notamment intéressant d'aller voir **observateur**, **état**, **itérateur**, **Visiteur**. Il y a aussi le pattern **méthode fabrique** (factory method, différent de fabrique / fabrique abstraite) dont nous n'avons pas parlé.
+
+Vous devez maîtriser toutes ces notions abordées dans ce cours pour la suite de votre cursus (et de votre carrière) et ainsi développer dès le début d'un projet un code d'une certaine qualité qui prévoit l'évolutivité et la modularité du projet sur le long terme. Si vous réussissez à appliquer cela, vous n'êtes alors plus un "simple" codeur, mais véritablement un "développeur", voir un **ingénieur logiciel**. À vous de jouer !
