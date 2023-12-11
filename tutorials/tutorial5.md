@@ -49,9 +49,9 @@ Un bon **conteneur de dépendances IoC** propose les fonctionnalités suivantes 
 
 * **Parsing** des paramètres.
 
-* Un certain degré d'**auto-wiring**.
+* Un certain degré d'**autowiring**.
 
-Ces différents points abordent des termes qui sont sans doutes encore obscurs pour vous (notamment lazy-loading, parsing, auto-wiring...) mais nous allons y revenir en temps voulu.
+Ces différents points abordent des termes qui sont sans doutes encore obscurs pour vous (notamment lazy-loading, parsing, autowiring...) mais nous allons y revenir en temps voulu.
 
 Dans votre carrière, vous allez souvent être amené à utiliser (plutôt à configurer) un **conteneur de dépendances** au travers du fichier de configuration du framework que vous utiliserez (par exemple, **Spring** en Java, ou bien **Symfony** pour PHP...). Par ailleurs, dans les cours de complément web du semestre 4 (pour le parcours **RACDV**), un conteneur sera utilisé.
 
@@ -1306,7 +1306,447 @@ Il est temps de faire fonctionner votre nouvelle librairie sur un projet plus la
 
 </div>
 
-Si vous êtes arrivés jusque-là, bravo ! Vous devriez maintenant être capable d'utiliser votre **conteneur** sur n'importe quel projet. Notez qu'il aurait été préférable d'injecter les différentes instances des services dans les controllers (via le constructeur) plutôt que de faire directement appel au singleton du **conteneur** dans le controller. Cepndant, l'architecture de `JavaFX` ne nous permet pas de faire cela facilement. Néanmoins, les controllers n'ont pas vraiment pour but d'être testés unitairement, donc ce n'est pas très grave. Autrement, grâce à ce système de **conteneur**, nous avons aussi enlevé le fonctionnement en mode **singleton** des différents services (ressource, étudiant, note), ce qui les rend beaucoup plus testables.
+Si vous êtes arrivés jusque-là, bravo ! Vous devriez maintenant être capable d'utiliser votre **conteneur** sur n'importe quel projet. Notez qu'il aurait été préférable d'injecter les différentes instances des services dans les controllers (via le constructeur) plutôt que de faire directement appel au singleton du **conteneur** dans le controller. Cependant, l'architecture de `JavaFX` ne nous permet pas de faire cela facilement. Néanmoins, les controllers n'ont pas vraiment pour but d'être testés unitairement, donc ce n'est pas très grave. Autrement, grâce à ce système de **conteneur**, nous avons aussi enlevé le fonctionnement en mode **singleton** des différents services (ressource, étudiant, note), ce qui les rend beaucoup plus testables.
 
-## Auto-wiring
+## Bonus : Autowiring
+
+Poussons encore plus l'automatisation de notre conteneur avec un système d'**autowiring**. Revons dans le projet de base (tp5) Actuellement, dans votre fichier de configuration, quand un service est construit à partir d'autres services (comme `service_utilisateur`) vous devez préciser chaque argument avec un parser `reference`. On pourrait qualifier cela de "câblage" (**wiring** en anglais) car vous êtes en train de "brancher" les différents services entre eux. Et si ce travail pouvait être fait automatiquement...? C'est justement l'objectif de l'**autowiring**.
+
+L'idée est d'analyser les différents types des paramètres du constructeur d'un service cible et aller vérifier si le conteneur possède des services qui possèdent le type désiré et qui pourraient donc être injectés dans ce constructeur. Du côté du fichier de configuration, on pourrait alors enlever les balises type `argument` quand un service est intégralement construit à partir de références vers d'autres services.
+
+Pour mettre en place un tel système, l'idée est la suivante :
+
+* Dans le **conteneur**, maintenir une `Map` associant des types (`Class<?>`) à des noms de services (`String`).
+
+* Dans le fichier de configuration, ajouter la possibilité de déclarer un champ `autowrires` sur chaque service pointant vers une interface ou une classe. Ce champ sert à préciser que ce service est l'implémentation "officielle" de la classe/interface pointée dans `autowires`. Par exemple, cela permettrait de dire qu'un service est l'implémentation de référence d'une interface abstraite d'un service (requis par d'autres services). 
+
+* Le conteneur fera le **mapping** entre la valeur du champ `autowires` et le nom du service (avec la `Map` spéciale que nous avons mentionné plus tôt).
+
+* Pour les classes qui ne sont pas des implémentations de services abstraits (par exemple `smtp`), pour éviter la redondance en déclarant deux fois la même classe (une fois dans `class` et une autre fois dans `autowires`) on peut faire en sorte qu'elle soit automatiquement enregistrée en tant que classe de référence dans le conteneur.
+
+```java
+public class MaClasse implements ServiceInterface {
+    //...
+}
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<services>
+
+    <!-- L'instance de MaClasse est l'instance de référence pour le type ServiceInterface -->
+    <service name="nom_service" class="com.package.MaClasse" autowires="com.package.ServiceInterface">
+        <argument value="hello" parser="string"/>
+        <argument value="true" parser="boolean"/>
+        <argument value="5" parser="int"/>
+    </service>
+
+    <!-- Pas d'attribut "autowires", l'instance de Exemple sera donc la classe de référence pour le type Exemple -->
+    <service name="exemple" class="com.package.Exemple">
+        <argument value="nom_service" parser="reference"/>
+    </service>
+
+</services>
+```
+
+Avec cela, on s'assure d'avoir un annuaire de classes pouvant servir à l'**autowiring**. Ensuite, il faut qu'on puisse enregistrer certains services avec ce système :
+
+* Il faut trouver un moyen d'indiquer qu'un constructeur peut être **autowiré**.
+
+* Dans le conteneur, on dispose d'une méthode pour enregistrer un service par **autowiring**.
+
+* Lors de la résolution d'un service (quand on l'instancie pour la première fois), s'il y a des paramètres qui doivent être **autowirés**, on va chercher le service correspondant dans le conteneur.
+
+* Dans le fichier de configuration, on enlève les balises `argument` des services qui doivent être **autowirés**.
+
+* Lors du chargement d'un fichier de configuration, on détecte si la classe ciblée a un constructeur qui peut être **autowiré**. Si c'est le cas, on procède à un enregistrement du service par autowiring.
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<services>
+
+    <service name="nom_service" class="com.package.MaClasse" autowires="com.package.ServiceInterface">
+        <argument value="hello" parser="string"/>
+        <argument value="true" parser="boolean"/>
+        <argument value="5" parser="int"/>
+    </service>
+
+    <!-- Avant, exemple avait besoin d'explicitement préciser qu'il se construisait avec nom_service -->
+    <!--
+    <service name="exemple" class="com.package.Exemple">
+        <argument value="nom_service" parser="reference"/>
+    </service>
+    -->
+
+    <!-- Après mise en place de l'autowiring, cela n'est plus nécessaire ! -->
+    <service name="exemple" class="com.package.Exemple"/>
+
+</services>
+```
+
+Commençons par la première partie qui doit permettre de constituer notre "annuaire" de services qui peuvent être utilisés par l'autowiring.
+
+<div class="exercise">
+
+1. Dans votre **conteneur**, ajoutez un attribut `autowiringMap` du type `Map` permettant d'associer des types (`Class<?>`) à des chaines de caractères (`String`, les noms des services). N'oubliez pas d'initialiser cet attribut (dans le constructeur) !
+
+2. Modifiez la signature de la méthode `registerService` afin d'y inclure un second paramètre `Class<?>` nommé `autoWiredType` (avant les paramètres). La méthode doit, en plus d'enregistrer la configuration du service comme elle le fait actuellement, associer `autoWiredType` au nom du service que nous sommes en train d'enregistrer, dans notre répertoire `autowiringMap`.
+
+    ```java
+    public void registerService(String serviceName, Class<?> type, Class<?> autowiredType, Object... parameters) {
+        //...
+    }
+    ```
+
+3. Avec la modification précédente, `loadServicesFromfile` est cassé ! En effet, il faut lui indiquer un paramètre pour `autoWiredType`. Ce paramètre correspond donc au type dont le service est une "référence" (donc, potentiellement, un type abstrait comme une interface, mais aussi bien une classe concrète dans certains cas). On va adopter la strétagie suivante :
+
+    * Si la balise `service` possède un attribut `autowires`, on transforme la classe pointée par cet attribut en `Class`.
+
+    * Sinon, on utilise le même type que l'attribut `class` défini par la balise `service` (en gros, la classe s'enregistre comme étant la classe de référence...d'elle même!)
+
+    Complétez la méthode `loadServicesFromfile` pour faire ces modifications. On pourra reprendre et compléter le bout de code suivant :
+
+    ```java
+    Class<?> autowiredType = null;
+    Node autowiredTypeClassPath = attributes.getNamedItem("autowires");
+    if(autowiredTypeClassPath != null) {
+        //Si l'attribut autowires existe bien
+        autowiredType = Class.forName(...);
+    }
+    else {
+        //Sinon, on prend la classe par défaut
+        autowiredType = //A compléter
+    }
+    ```
+
+4. Dans le fichier `services.xml`, ajoutez et configurez l'attribut `autowires` là où cela est nécessaire : pour `mailer`, `hasher`, `stockage` et `service_utilisateur`. Il faut déclarer que tous ces services sont l'implémentation de référence pour leur interface.
+</div>
+
+Maintenant, nous devons faire en sorte qu'un constructeur puisse indiquer qu'il doit être **autowirré** et faire le câblage en interne, dans le conteneur.
+
+Nous pouvons utiliser un système **d'annotations**. Une annotation est un élément qui permet de préciser des méta-informations sur certaines entités du programme : les classes, les méthodes, les attributs, etc...Vous en connaissez déjà certaines que vous avez l'habitude de croiser, comme `Override` par exemple, qui indique qu'une méthode est une version redéfinie d'une méthode d'une classe supérieure dans sa hiérarchie.
+
+Dans le code, il est possible de traiter ces informations et, par exemple, de trouver un constructeur annoté dans une classe, avec une annotation particulière (à partir de son objet `Class`). De plus, les annotations peuvent aussi porter des attributs et être configurées pour ne pouvoir être appliquées qu'à certains endroits (que sur un attribut, que sur une méthode, que sur un constructeur, que sur une classe...). Dans les frameworks, on utilise beaucoup les annotations (aussi appelées attributs en `PHP`) afin d'éviter d'avoir à alourdir les fichiers de configuration. En fait, la configuration se fait directement au niveau du code avec ces annotations.
+
+Pour créer une **annotation**, on crée une classe avec la syntaxe suivante :
+
+```java
+@Retention(RetentionPolicy.RUNTIME)
+public @interface MonAnnotation {}
+```
+
+Elle peut alors être appliquée sur n'importe quel élément :
+
+```java
+@MonAnnotation
+public class MaClasse {
+
+    @MonAnnotation
+    private String attr1;
+
+    @MonAnnotation
+    public MaClasse() {}
+
+    @MonAnnotation
+    public void action() {}
+
+}
+```
+
+Si on souhaite limiter les éléments sur lequel elle peut être placée, il faut utiliser une annotation dans la déclaration de notre annotation :
+
+* `@Target(ElementType.TYPE)` : seulement au niveau de la déclaration de la classe.
+
+* `@Target(ElementType.FIELD)` : seulement sur les attributs.
+
+* `@Target(ElementType.CONSTRUCTOR)` : seulement sur les constructeurs.
+
+* `@Target(ElementType.METHOD)` : seulement sur les méthodes.
+
+Par exemple :
+
+```java
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface MonAnnotation {}
+
+public class MaClasse {
+
+    private String attr1;
+
+    public MaClasse() {}
+
+    @MonAnnotation
+    public void action() {}
+
+    @MonAnnotation
+    public void exemple() {}
+
+}
+```
+
+On peut aussi lui ajouter un (ou plusieurs) attribut(s) qu'il est possible de définir quand on place l'annotation :
+
+```java
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface MonAnnotation {
+
+    //value est un mot clé qu'il faut impérativement utilisé (la valeur à préciser quand on créé l'annotation...)
+    int value();
+
+}
+
+public class MaClasse {
+
+    private String attr1;
+
+    public MaClasse() {}
+
+    @MonAnnotation(5)
+    public void action() {}
+
+    @MonAnnotation(7)
+    public void exemple() {}
+
+}
+```
+
+<div class="exercise">
+
+1. Dans le paquetage `ioc`, créez une annotation `Autowired` qui ne possède aucun attribut et qui ne peut être placée que sur les **constructeurs**.
+
+2. Placez cette annotation sur le constructeur de `ServiceMailerBasique`, `ServiceMailerChiffre`, `ServiceUtilisateur` et `ControllerUtilisateur`. Ce sont toutes des classes construites à partir d'autres services.
+
+</div>
+
+À partir d'un objet `Class` correspondant à un type (une classe), il est possible d'obtenir la liste des constructeurs. Pour chaque constructeur, il est possible de vérifier s'il possède ou non une annotation :
+
+```java
+Class<MaClasse> type = MaClass.class;
+List<Constructor<?>> constructors = type.getDeclaredConstructors();
+
+if(!constructors.isEmpty()) {
+    Constructor<?> constructor = constructor.get(0);
+    boolean possedeAnnotation = constructor.isAnnotationPresent(MonAnnotation.class);
+}
+```
+
+<div class="exercise">
+
+1. Dans le **conteneur**, ajoutez une méthode de classe **privée** nommée `findAutowiredConstructor` qui permet de trouver le premier constructeur possédant l'annotation `Autowired` d'un type donné en paramètre. S'il n'y en a pas, la méthode renvoie `null`.
+
+        ```java
+        private static Constructor<?> findAutowiredConstructor(Class<?> type) {
+
+        }
+        ```
+
+2. Toujours dans le **conteneur**, ajoutez une méthode de classe **privée** nommée `hasAutowiredConstructor` qui permet de savoir si un type donné en paramètre possède ou non un constructeur possédant l'annotation `Autowired` (renvoie `true` si c'est le cas et `false` sinon).
+
+        ```java
+        private static boolean hasAutowiredConstructor(Class<?> type) {
+        
+        }
+        ```
+
+</div>
+
+Afin que notre service **autowiré** puisse être enregistré et traité comme un service "normal" avec `registerService`, il nous faut un outil pour indiquer que les paramètres de la configuration doivent être résolus automatiquement (lors du chargement du service) en aillant chercher dans l'annuaire (`autowiringMap`).
+
+Pour cela, on peut mettre en place la même stratégie que nous avions utilisé avec la classe `Reference` : créer une classe particulière (par exemple `AutowiringReference`) stockant un `type` (le type d'un des paramètres du constructeur qui doit être **autowiré** par un service) et qui sera résolu lors de `transformParameters`.
+
+On aura une méthode à part pour l'enregistrement par `autowiring` qui va récupérer les paramètres du constructeur détecté, en extraire le type et créer une liste de paramètres contenant intégralement des objets de type `AutowiringReference`. On pourra alors faire appel au `registerService` classique.
+
+Pour récupérer les paramètres d'un constructeur (et leurs types) on peut utiliser le code suivant :
+
+```java
+//constructor est un objet de type Constructor<?>
+Parameter[] parameters = constructor.getParameters();
+for(Parameter parameter : parameters) {
+    Class<?> parameterType = parameter.getType();
+}
+```
+
+<div class="exercise">
+
+1. Dans le paquetage `ioc`, créez une classe `AutowiringReference` permettant de stocker et de récupérer un type (`Class<?>`). Comme pour `Reference`, on peut utiliser un `record` à la place de créer une classe "classique".
+
+2. Dans le **conteneur**, ajoutez une méthode `registerServiceByAutowiring` qui permet d'enregsitrer un service en faisant de l'auto wiring. Il faut :
+
+    * Récupérer le constructeur par **autowiring** du type.
+
+    * Créer une liste/un tableau d'objets `AutowiringReference` à partir des types des paramètres des constructeurs.
+
+    * Enregistrer le service "normalement" (`registerService`) avec cette liste d'objets comme paramètres du service.
+
+        ```java
+        public void registerServiceByAutowiring(String serviceName, Class<?> type, Class<?> autowiredType) {
+            Constructor<?> autowiringConstructor = //A compléter
+            if(autowiringConstructor != null) {
+                List<Object> autowiredParameters = new ArrayList<>();
+                //A compléter (remplissage de la liste...)
+                registerService(serviceName, type, autowiredType, autowiredParameters.toArray());
+            }
+        }
+        ```
+
+3. Modifiez la méthode `transformParameters` afin de faire en sorte qu'un paramètre de type `AutowiringReference` soit convertit en l'instance du service correspondant. Pour cela il faut d'abord extraire le type visé puis utiliser `getService` pour obtenir l'instance souhaitée (et éventuellement réaliser une initialisation en chaîne, car pour rappel, nous sommes en mode "lazy-loading") :
+
+        ```java
+        //Quelque part dans le code de "transformParameters"...
+        if(parameter instanceof AutowiringReference reference) {
+            //...
+        }
+        ```
+
+4. Modifiez la méthode `loadServicesFromfile` afin de faire en sorte que, quand on charge les données d'un service :
+
+    * Si son `type` (sa `class`) possède un constructeur **autowiré**, on réalise un enregistrement par **autowiring**.
+
+    * Sinon, on fait comme auparavant en extrayant la liste de ses `arguments` et en réalisant un enregistrement "classique".
+
+</div>
+
+Comme nous l'avions mentionné quand nous avions développé la première version de `transformParameters`, l'utilisation d'un `if` avec vérification de type (`instanceof`) n'est pas bien en accord avec le **principe ouvert/fermé**. On le voit bien ici car, pour ajouter un nouveau cas (`AutowiringReference`) il faut ajouter un nouveau bloc conditionnel et donc modifier le code du conteneur. Il est tout à fait possible de faire plus propre, mais cela est un peu compliqué, notamment avec le système de parsing. L'idée serait plutôt que chaque classe style `Reference` et `AutowiringReference` fasse elle-même sa transformation en service/instance concrète en allant chercher l'information dans le conteneur (fonctionnement proche du pattern **stratégie**). Bref, nous n'allons pas refactorer ce bout de code dans le TP, mais vous pourrez y réfléchir à la fin du TP ! Et peut-être apporter une solution ?
+
+Notre système est prêt ! Il ne reste plus qu'à alléger le fichier `services.xml` sur certains points afin de déclencher l'utilisation de l'autowiring.
+
+<div class="exercise">
+
+1. Dans le fichier `services.xml`, au niveau des services qui peuvent être autowirés (`service_utilisateur`, `controller_utilisateur`, etc...) retirez les balises `argument`.
+
+2. Lancez l'application et vérifiez que tout fonctionne.
+
+</div>
+
+Si tout fonctionne comme attendu, félicitations ! Vous êtes allé assez loin dans le développement de ce conteneur de dépendances ! Exportons-le et mettons-le de nouveau en application sur OGE.
+
+<div class="exercise">
+
+1. Dans le projet du conteneur "standalone", créez un paquetage `annotation` (dans `fr.iutmontpellier.ioc`) et importez-y votre annotation `Autowired`.
+
+2. Dans le paquetage `container`, importez votre classe `AutowiringReference` et mettez à jour la classe `Conteneur` avec le nouveau code.
+
+3. Avec `Maven`, exécutez les actions `compile` et `package` pour mettre à jour votre fichier `.jar`.
+
+4. Importez votre librairie dans le projet `OGE` dans `src/main/resources/libs` (en écrasant l'ancienne). Le projet va un peu buguer, car il ne trouve plus la librairie. Dans le fichier `pom.xml`, supprimez temporairement l'import de la librairie, rechargez le projet Maven, puis remettez le code d'import de la librairie dans `pom.xml` et rechargez le projet de nouveau.
+
+5. Dans le projet `OGE`, Repérez les classes qui pourraient être autowirées et appliquez l'annotation `Autowired` sur leur constructeur.
+
+</div>
+
+Si vous essayez de placer l'attribut `autowires` dans votre fichier `services.xml` vous allez vous apperçevoir d'un problème. Par exemple, pour le service gérant le stockage des ressources (avec `StockageRessourceJDBC` ou bien `StockageRessourceHibernate`). Qu'allez-vous mettre pour l'attribut `autowires` ? En effet, les classes cocnrètes impélmentent une itnerface paramtrée de manière générique. Par exemple `Stockage<Ressource>` et cela n'est malheureusement pas représentable par un chemin de classe dans l'attribut `autowires`.
+
+Même les frameworks professionnels ont du mal à gérer ce cas (on bascule alors plutôt sur un autowiring se basant sur le nom des paramètres plutôt que sur leur type).
+
+La solution est assez simple (mais un peu pénible) : il faut créer une interface non générique qui étend l'interface générique et faire implémenter et utiliser cette interface à nos services.
+
+Par exemple, au lieu d'avoir ça :
+
+```java
+public interface Exemple<T> {
+
+    T action();
+
+}
+
+public class ImplA implements Exemple<Integer> {
+
+    Integer action() {
+        //...
+    }
+
+}
+
+public class ImplB implements Exemple<Integer> {
+
+    Integer action() {
+        //...
+    }
+
+}
+
+public class Service {
+
+    private Exemple<Integer> impl;
+
+    public (Exemple<Integer> impl) {
+        this.impl = impl;
+    }
+
+}
+```
+
+Plutôt avoir ça :
+
+```java
+public interface Exemple<T> {
+
+    T action();
+
+}
+
+public interface ExempleInteger extends Exemple<Integer> {}
+
+public class ImplA implements ExempleInteger{
+
+    Integer action() {
+        //...
+    }
+
+}
+
+public class ImplB implements ExempleInteger {
+
+    Integer action() {
+        //...
+    }
+
+}
+
+public class Service {
+
+    private Exemple<Integer> impl;
+
+    public (ExempleInteger impl) {
+        this.impl = impl;
+    }
+
+}
+```
+
+Ce qui permettra d'écrire, dans le fichier `xml` :
+
+```xml
+<services>
+    <service name="exemple" class="ImplB" autowires="ExempleInteger">
+</services>
+```
+
+<div class="exercise">
+
+1. En vous basant sur l'exemple ci-dessus, créez des interfaces `StockageRessource`, `StockageEtudiant` et `StockageNote` (dans le paquetage `stockage`) et modifiez les classes de stockage de `JDBC` et de `Hibernate` afin d'implémenter ces interfaces. Modifiez également les trois services (`RessourceServuce`, `EtudiantService` et `NoteService`) afin d'utiliser ces nouvelles interfaces (au moins au niveau du constructeur).
+
+2. Toujours dans `OGE`, mettez à jour le fichier `services.xml` pour inclure les attributs `autowires` là où cela est nécessaire et en enlevant les balises `argument` là où cela n'est plus nécessaire.
+
+3. Lancez l'application et vérifiez que tout fonctionne.
+
+</div>
+
+### Pistes d'améliorations
+
+Nous arrivons au bout de ce TP (plutôt même de la section bonus) et, si vous en êtes là, vous avez un conteneur très complet.
+
+Il y a divers points d'améliorations que vous pouvez explorer :
+
+* L'amélioration la plus "facile" : inclure une deuxième annotation nommée `Autowire` qui prend en paramètre un type (`Class<?>`) et permet d'indiquer qu'une classe est la classe de référence pour la classe passée en paramètre. Si cela est bien traité au niveau du **conteneur**, cela peut permettre d'éviter d'écrire l'attribut `autowires` systématiquement sur les services concernés dans le fichier de configuration. Il faut néanmoins garder la possibilité d'utiliser cet attribut `autowires` pour les classes sur lesquelles nous n'avons pas la main et où ne nous pouvons donc pas ajouter cette annotation.
+
+* Régler le problème lié au principe ouvert/fermé au niveau de `transformParameters`.
+
+Il y a plein d'autres choses que nous aurions pu explorer. Par exemple, dans certains conteneurs, au lieu d'avoir de l'autowiring par "type" (ce qui peut être limité/contraignant), on peut utiliser de l'autowiring par "nom". Si l'attribut/le paramètre a le même nom qu'un service enregistré, on peut réaliser l'autowiring avec ce service.
+
+L'étape ultime que propose certains frameworks est la découverte et l'enregistrement automatique de services en scannant les différentes classes de l'application. On pourrait imaginer qu'on annote les classes de services avec une annotation (par exemple `@Service`, avec éventuellement la classe/l'interface pour laquelle cette classe est une référence, en paramètre). Cela ne serait pas trop dur avec notre conteneur à condition d'installer une librairie adéquate nous permettant de chercher des classes possédant une annotation précise dans toute l'application.
+ 
+## Conclusion
 
