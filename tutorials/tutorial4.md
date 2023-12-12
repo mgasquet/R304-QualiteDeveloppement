@@ -1224,7 +1224,7 @@ Le pattern **Fabrique Abstraite** utilise des fabriques et va notamment permettr
 
 Vous avez peut-être trouvé la solution par vous-même avec la dernière question, mais si vous commencez à maîtriser les bonnes pratiques de conception logicielle, il y a un concept qui revient souvent dans les patterns et lorsqu'on applique les principes SOLID : l'abstraction.
 
-L'idée du pattern **Fabrique Abstraite** est donc de disposer d'une abstraction (classe abstraite ou interface) qui définie le contrat que doivent remplir les fabriques concrètes. Pour chaque famille de classes, on crée une fabrique concrète qui implémente de cette interface ou étend cette classe abstraite. Ensuite, toutes les classes qui souhaitent utiliser cette fabrique doivent dépendre de la **fabrique abstraite** et non plus d'une fabrique concrète. Couplé à de l'injection de dépendances, il est très facile de complétement changer le comportement d'une classe. C'est globalement l'idée du pattern **Stratégie** que vous avez déjà vu lors du dernier TP, mais appliqué pour des fabriques !
+L'idée du pattern **Fabrique Abstraite** est donc de disposer d'une abstraction (classe abstraite ou interface) qui définie le contrat que doivent remplir les fabriques concrètes. Pour chaque famille de classes, on crée une fabrique concrète qui implémente cette interface ou étend cette classe abstraite. Ensuite, toutes les classes qui souhaitent utiliser cette fabrique doivent dépendre de la **fabrique abstraite** et non plus d'une fabrique concrète. Couplé à de l'injection de dépendances, il est très facile de complétement changer le comportement d'une classe. C'est globalement l'idée du pattern **Stratégie** que vous avez déjà vu lors du dernier TP, mais appliqué pour des fabriques !
 
 Reprenons l'exemple des figures géométriques :
 
@@ -1321,7 +1321,7 @@ Comme vous pouvez le constater, après refactoring, il est très facile de chang
 
 <div class="exercise">
 
-1. Refactorez votre code afin d'introduire une nouvelle fabrique permettant de construire des donjons "difficiles" en appliquant le pattern **Fabrique Abstraite**. Vous devez aussi logiquement légèrement adapter le code de la classe `Donjon`.
+1. Refactorez votre code afin d'introduire une nouvelle fabrique permettant de construire des donjons "difficiles" en appliquant le pattern **Fabrique Abstraite**. Vous devez aussi logiquement légèrement adapter le code de la classe `Donjon` en introduisant une injection de dépendance vers la fabrique abstraite.
 
 2. Dans le `Main`, construisez des donjons difficiles et des donjons faciles.
 
@@ -1337,7 +1337,7 @@ Parfois, il n'est pas nécessairement souhaitable d'avoir la possibilité d'util
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `fabrique3`. C'est le retour des **pokémons** ! Mais il y a également une nouvelle famille de monstres : **les digimons** qui ont un fonctionnement similaire aux pokémons mais on en plus un système d'énergie. En tout cas, ils se créent de la même manière que les pokémons ou plus généralement, qu'un "monstre".
+1. Ouvrez le paquetage `fabrique3`. C'est le retour des **pokémons** ! Mais il y a également une nouvelle famille de monstres : **les digimons** qui ont un fonctionnement similaire aux pokémons mais ont en plus un système d'énergie. En tout cas, ils se créent de la même manière que les pokémons ou plus généralement, qu'un "monstre".
 
 2. Actuellement, dans le `Main`, on crée des pokémons et on utilise le simulateur de combat pour en faire combattre deux. À la place des pokémons, on voudrait parfois utiliser des digimons. Maintenant que vous connaissez le pattern **Fabrique Abstraite** refactorez le code afin de pouvoir facilement switcher entre des combats avec divers pokémons et des combats avec divers digimons. Si vous rencontrez quelques petits problèmes, regardez les méthodes de `Digimon`... ne serait-il pas judicieux de lui faire implémenter une certaine interface ? Et pour les différentes sous-classes de `Digimon` ? (`DigimonEau`, `DigimonFeu`...). Vous devrez aussi adapter le `Main` et `SimulateurCombat`.
 
