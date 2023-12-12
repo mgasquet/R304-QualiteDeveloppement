@@ -1673,7 +1673,7 @@ Voyons un peu tout ça :
 ```java 
 public abstract class PatternmonAdapter implements Monstre {
 
-    protected patternmon patternmon;
+    protected Patternmon patternmon;
 
     //...
 
