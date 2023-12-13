@@ -15,7 +15,7 @@ En fait, nous avons vu deux types d'utilisation de la **fabrique** :
 
 * Pour gérer et stocker diverses **dépendances concrètes** et les fournir aux classes qui ont en besoin. Dans ce type de **fabrique**, les objets concrets ne sont instanciés qu'une seule fois (lors de l'initialisation) et les différentes méthodes de la fabrique concrète servent à renvoyer ces objets (sans les recréer). C'est donc une sorte de **gestionnaire des dépendances**. Cela permet aussi de limiter le nombre de services/dépendances type **singletons** mis en place dans l'application (les services gérés par la fabrique ne sont pas des singletons) tout en faisant en sorte qu'une seule instance du service soit effectivement utilisée par l'application (en allant la chercher dans la fabrique).
 
-Cette deuxième utilisation de la fabrique est très intéressante car, en utilisant en plus une **fabrique abstraite** on peut **injecter** différentes **familles** d'instances dans des classes qui dépendent d'abstractions ("dépendre d'abstractions, pas d'implémentation concrète...") ce qui permet de très simplement modifier les **services concrets** utilisés par le programme (et aisni, son fonctionnement) en paramétrant la fabrique utilisée.
+Cette deuxième utilisation de la fabrique est très intéressante car, en utilisant en plus une **fabrique abstraite** on peut **injecter** différentes **familles** d'instances dans des classes qui dépendent d'abstractions ("dépendre d'abstractions, pas d'implémentation concrète...") ce qui permet de très simplement modifier les **services concrets** utilisés par le programme (et ainsi, son fonctionnement) en paramétrant la fabrique utilisée.
 
 Nous l'avons déjà dit, mais dans l'architecture idéale, chaque classe doit être la moins dépendante possible de classes concrètes, pour pouvoir facilement intervertir les services utilisés, mais aussi pour rendre l'application testable. Les fabriques qui gèrent des dépendances nous aident donc en ce sens.
 
@@ -23,7 +23,7 @@ Cependant, il y a quelques inconvénients avec ce fonctionnement :
 
 * Dès qu'on veut mettre en place une nouvelle configuration, on doit créer une nouvelle fabrique concrète dédiée (et donc recompiler le code).
 
-* Si un seul ou deux services changent d'une configuration à l'autre, on est obligé de créer une fabrique dédiée et dupliquer une partie du code, à moins de bien diviser les fabriques en catégorie (ou en ayant une seule fabrique par type de dépendance, par exemple, une fabrique gérant le support de stockage, une fabrique pour le système du hachage de mot de passe...)
+* Si un seul ou deux services changent d'une configuration à l'autre, on est obligé de créer une fabrique dédiée et dupliquer une partie du code, à moins de bien diviser les fabriques en catégories (ou en ayant une seule fabrique par type de dépendance, par exemple, une fabrique gérant le support de stockage, une fabrique pour le système du hachage de mot de passe...)
 
 * Plus il y a de familles de services et de services différents, plus on multiplie les fabriques "gestionnaires de dépendances" dans l'application.
 
@@ -31,7 +31,7 @@ Cependant, il y a quelques inconvénients avec ce fonctionnement :
 
 Pour le dernier problème, nous avons apporté une solution dans le dernier TP en utilisant des **fichiers de configuration** textuels simplistes. En fait, cela va un peu être l'objectif de ce TP, mais en beaucoup plus large.
 
-Les autres problèmes demeures et prouvent la nécessité d'avoir un autre système que des **fabriques** pour gérer les dépendances du programme (bien sûr, les fabriques restent toujours très utiles dans leur utilisation initiale, comme dans l'exercice "donjon").
+Les autres problèmes demeurent et prouvent la nécessité d'avoir un autre système que des **fabriques** pour gérer les dépendances du programme (bien sûr, les fabriques restent toujours très utiles dans leur utilisation initiale, comme dans l'exercice "donjon").
 
 L'outil ultime pour gérer la problématique des dépendances est **le conteneur de dépendances IoC**. Le terme **IoC** désigne un pattern (non **GoF**) signifiant "Inversion of Control". Ce pattern est utilisé dans la plupart des **frameworks** au travers d'un objet appelé **conteneur de dépendances** qui construit, stocke, contrôle, injecte et centralise toutes les **implémentations concrètes** des **dépendances abstraites** utilisées par les objets du programme. Cela peut être vu comme une "super-fabrique" gérant des dépendances **unique** et construite **dynamiquement** (lors du lancement du programme). Il est possible de charger différents assemblages de dépendances sans avoir besoin de modifier le code du conteneur.
 
@@ -53,11 +53,11 @@ Un bon **conteneur de dépendances IoC** propose les fonctionnalités suivantes 
 
 Ces différents points abordent des termes qui sont sans doutes encore obscurs pour vous (notamment lazy-loading, parsing, autowiring...) mais nous allons y revenir en temps voulu.
 
-Dans votre carrière, vous allez souvent être amené à utiliser (plutôt à configurer) un **conteneur de dépendances** au travers du fichier de configuration du framework que vous utiliserez (par exemple, **Spring** en Java, ou bien **Symfony** pour PHP...). Par ailleurs, dans les cours de complément web du semestre 4 (pour le parcours **RACDV**), un conteneur sera utilisé.
+Dans votre carrière, vous allez souvent être amenés à utiliser (plutôt à configurer) un **conteneur de dépendances** au travers du fichier de configuration du framework que vous utiliserez (par exemple, **Spring** en Java, ou bien **Symfony** pour PHP...). Par ailleurs, dans les cours de complément web du semestre 4 (pour le parcours **RACDV**), un conteneur sera utilisé.
 
-Comme toujours, en tant que "développeur" (et plus simplement "codeur") il est primordial que vous compreniez les rouages d'une telle technologie et son fonctionnement, en profondeur. Les **frameworks** donnent un peu l'impression d'être magique, notamment grâce à leur système de gestion des dépendances. Et cela peut s'avérer risqué car, dès lors, le développeur perd un peu la main sur son programme.
+Comme toujours, en tant que "développeur" (et plus simplement "codeur") il est primordial que vous compreniez les rouages d'une telle technologie et son fonctionnement, en profondeur. Les **frameworks** donnent un peu l'impression d'être magiques, notamment grâce à leur système de gestion des dépendances. Et cela peut s'avérer risqué car, dès lors, le développeur perd un peu la main sur son programme.
 
-Afin de bien comprendre comment fonctionne le **conteneur IoC**, vous n'allez pas seulement en utiliser un... Vous allez en construire un ! Vous verrez qu'au final, si on découpe bien le problème étape par étape, ce n'est pas *trop* compliqué ! À la fin de ce TP, vous obtiendrez alors un conteneur hautement configurable (et assez complet) qui pourra être exporté en tant que librairie et utilisé sur n'importe quel projet (Java, mais le principe est le même sur n'importe quel langage...) 
+Afin de bien comprendre comment fonctionne le **conteneur IoC**, vous n'allez pas seulement en utiliser un... Vous allez en construire un ! Vous verrez qu'au final, si on découpe bien le problème étape par étape, ce n'est pas *trop* compliqué ! À la fin de ce TP, vous obtiendrez alors un conteneur hautement configurable (et assez complet) qui pourra être exporté en tant que librairie et utilisé sur n'importe quel projet (Java, mais le principe est le même sur n'importe quel langage).
 
 Pour tester notre **conteneur** au fur et à mesure, nous allons utiliser un projet provenant du dernier TP, sur lequel nous voulions gérer les différentes dépendances.
 
@@ -91,18 +91,18 @@ Comme vous avez pu le constater en parcourant l'application, nous utilisons actu
 
 ### Conteneur basique - Enregistrement et récupération
 
-Nous allons créer notre classe `Cotneneur` qui répondra à des besoins simples (pour l'instant), à savoir : permettre d'associer des instances d'objets à un nom, les stocker puis permettre de le récupérer en utilisant leur nom.
+Nous allons créer notre classe `Conteneur` qui répondra à des besoins simples (pour l'instant), à savoir : permettre d'associer des instances d'objets à un nom, les stocker puis permettre de le récupérer en utilisant leur nom.
 
 Pour cela, le type le plus approprié semble être une `Map` qui associe des chaînes de caractères `String` à des objets `Object`. Pour rappel, en java, tous les objets descendent de la classe mère `Object`. Donc, une structure stockant des `Object` peut accueillir n'importe quelle instance.
 
 Petit rappel du fonctionnement d'une `Map` en java :
 
 ```java
-//Permet d'associer des "clé" de type Type1 avec des valeurs de type Type2
+//Permet d'associer des "clés" de type Type1 avec des valeurs de type Type2
 //Map est un type abstrait (interface), HashMap est un type concret
 Map<Type1, Type2> map = new HashMap<>();
 
-//Associe la valeur de cle (qui a pour type Type1) avec une valeur (de type Type2)
+//Associe la valeur de clé (qui a pour type Type1) avec une valeur (de type Type2)
 map.put(cle, valeur);
 
 //Récupère la valeur associée à la clé dans la Map
@@ -174,7 +174,7 @@ class Exemple {
 
 
 //On imagine que le "conteneur" est déjà initialisé...
-conteneur.registerService('service', new B()); //On aurait pu rempalcer par A !
+conteneur.registerService('service', new B()); //On aurait pu remplacer par A !
 
 conteneur.registerService('objet_pour_exemple', new MaClasse("coucou", 5));
 
@@ -244,7 +244,7 @@ Pour rappel, on définit une classe **générique** comme cela :
 public class Exemple<T> {
 
     //On peut utiliser le type générique "T" un peu partout dans le code de la classe (attributs, paramètres, type de retour...).
-    //Il utilise comme tout autre type "normal"
+    //Il s'utilise comme tout autre type "normal"
     private T var1;
     private HashMap<String, T> map;
 
