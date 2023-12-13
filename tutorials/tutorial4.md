@@ -2001,6 +2001,8 @@ Reprenons l'exemple des salariés et essayons d'appliquer ces deux patterns :
 ```java
 interface I_Salarie {
   double getSalaire();
+  //Prototype
+  I_Salarie clone();
 }
 
 
@@ -2012,8 +2014,16 @@ class Salarie implements I_Salarie {
     this.salaire = salaire;
   }
 
+  private Salarie(Salarie salarieACopier) {
+    this(salarieACopier.salaire);
+  }
+
   public double getSalaire() {
     return salaire;
+  }
+
+  public I_Salarie clone() {
+    return new Salarie(this);
   }
 
 }
@@ -2035,9 +2045,18 @@ class ChefProjet extends SalarieDecorator {
     this.nombreProjetsGeres = nombreProjetsGeres;
   }
 
+  private ChefProjet(ChefProjet chefProjetACopier) {
+    this(chefProjetACopier.salarie.clone(), chefProjetACopier.nombreProjetsGeres);
+  }
+
   @Override
   public double getSalaire() {
     return salarie.getSalaire() + 100 * (nombreProjetsGeres);
+  }
+
+  @Override
+  public I_Salarie clone() {
+    return new ChefProjet(this);
   }
 
 }
@@ -2051,9 +2070,18 @@ class ResponsableDeStagiaires extends SalarieDecorator {
     this.nombreStagiairesGeres = nombreStagiairesGeres;
   }
 
+  private ResponsableDeStagiaires(ResponsableDeStagiaires responsableACopier) {
+    this(responsableACopier.salarie.clone(), responsableACopier.nombreStagiairesGeres);
+  }
+
   @Override
   public double getSalaire() {
     return salarie.getSalaire() + 50 * nombreStagiairesGeres;
+  }
+
+  @Override
+  public I_Salarie clone() {
+    return new ResponsableDeStagiaires(this);
   }
 
 }
@@ -2126,7 +2154,7 @@ Attention, l'implémentation de `Builder` que nous allons présenter ici n'est p
 
   * Le produit va être instancié dès le départ puis augmenté au fur et à mesure alors que normalement, la cible du builder n'est instanciée que quand on appelle la méthode `build`.
 
-  * Par conséquent, la méthode `build` ne renvoie qu'une instance déjà construite et ne construit rien.
+  * La méthode `build` renvoie une **copie** (clone) de l'instance (prototype).
 
 Bref, retenez simplement que c'est une adaptation un peu particulière et qui s'éloigne quand même pas mal du pattern de base (retenez plutôt l'exemple des burgers). Néanmoins, nous allons voir que cette adaptation s'emboîte assez bien avec **décorateur** :
 
@@ -2150,7 +2178,7 @@ class SalarieBuilder {
   }
 
   public I_Salarie build() {
-    return salarie;
+    return salarie.clone();
   }
 
 }
@@ -2166,6 +2194,7 @@ class Main {
 
 }
 ```
+
 <div class="exercise">
 
 1. Refactorez le code de votre application pour ajouter un builder (adapté) pour vos **produits**.
@@ -2190,7 +2219,7 @@ Et si nous essayons de combiner plus de patterns ? Nous avons l'application idé
 
     * La salle finale est une salle avec une énigme, un boss de niveau 80 et 30 ennemis.
 
-2. On aimerait améliorer la création des **salles** composées. Par exemple, avec un **Builder**... ?
+2. On aimerait améliorer la création des **salles** composées. Par exemple, avec un **Builder** (adapté)...?
 
 3. Testez que tout fonctionne.
 
