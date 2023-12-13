@@ -2001,6 +2001,8 @@ Reprenons l'exemple des salariés et essayons d'appliquer ces deux patterns :
 ```java
 interface I_Salarie {
   double getSalaire();
+  //Prototype
+  I_Salarie clone();
 }
 
 
@@ -2012,8 +2014,16 @@ class Salarie implements I_Salarie {
     this.salaire = salaire;
   }
 
+  private Salarie(Salarie salarieACopier) {
+    this(salarieACopier.salaire);
+  }
+
   public double getSalaire() {
     return salaire;
+  }
+
+  public I_Salarie clone() {
+    return new Salarie(this);
   }
 
 }
@@ -2028,8 +2038,6 @@ abstract class SalarieDecorator implements I_Salarie {
 
 class ChefProjet extends SalarieDecorator {
 
-  private I_Salarie salarie;
-
   private int nombreProjetsGeres;
 
   public ChefProjet(I_Salarie salarie, int nombreProjetsGeres) {
@@ -2037,9 +2045,18 @@ class ChefProjet extends SalarieDecorator {
     this.nombreProjetsGeres = nombreProjetsGeres;
   }
 
+  private ChefProjet(ChefProjet chefProjetACopier) {
+    this(chefProjetACopier.salarie.clone(), chefProjetACopier.nombreProjetsGeres);
+  }
+
   @Override
   public double getSalaire() {
     return salarie.getSalaire() + 100 * (nombreProjetsGeres);
+  }
+
+  @Override
+  public I_Salarie clone() {
+    return new ChefProjet(this);
   }
 
 }
@@ -2053,9 +2070,18 @@ class ResponsableDeStagiaires extends SalarieDecorator {
     this.nombreStagiairesGeres = nombreStagiairesGeres;
   }
 
+  private ResponsableDeStagiaires(ResponsableDeStagiaires responsableACopier) {
+    this(responsableACopier.salarie.clone(), responsableACopier.nombreStagiairesGeres);
+  }
+
   @Override
   public double getSalaire() {
     return salarie.getSalaire() + 50 * nombreStagiairesGeres;
+  }
+
+  @Override
+  public I_Salarie clone() {
+    return new ResponsableDeStagiaires(this);
   }
 
 }
@@ -2152,7 +2178,7 @@ class SalarieBuilder {
   }
 
   public I_Salarie build() {
-    return salarie;
+    return salarie.clone();
   }
 
 }
@@ -2170,7 +2196,7 @@ class Main {
 ```
 <div class="exercise">
 
-1. refactorez le code de votre application pour ajouter un builder (adapté) pour vos **produits**.
+1. Refactorez le code de votre application pour ajouter un builder (adapté) pour vos **produits**.
 
 2. Adaptez le code de `Main` pour utiliser votre builder au lieu de la fabrique.
 
