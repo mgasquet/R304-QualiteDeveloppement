@@ -1434,8 +1434,6 @@ public abstract class AbstractFigureGeometriqueFactory {
 
   private static AbstractFigureGeometriqueFactory INSTANCE;
 
-  private String fabriqueSelectionee = "graphique";
-
   public synchronized static AbstractFigureGeometriqueFactory getInstance() {
       if(INSTANCE == null) {
           try {
@@ -1484,7 +1482,7 @@ La fabrique abstraite vise un fichier qui se situe dans `src/main/resources/conf
 
 3. Testez les deux versions !
 
-4. Réalisez le **diagramme de classes de conception** de votre application.
+4. Réalisez le **diagramme de classes de conception** de votre application. Pour ne pas trop perdre de temps, ne mettez que deux pokémons, deux digimons (et les fabriques), ne détaillez pas les méthodes et les attributs. Le plus important est de faire apparaitre les associations et les dépendances.
 
 </div>
 
