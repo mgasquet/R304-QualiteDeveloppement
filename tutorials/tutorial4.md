@@ -1584,7 +1584,7 @@ public class ComplexSquareAdapter implements Carre {
   }*/
 
   @Override
-  public int getSize() {
+  public int getTaille() {
     return complexSquare.getSize();
   }
 
@@ -1652,19 +1652,19 @@ Maintenant, revenons à nos petits monstres...
 
 <div class="exercise">
 
-1. Une librairie nommée `patternmon` est importée dans le projet ! Explorez ses classes en allant dans `src/main/resources/libs/patternmons.jar` (normalement, l'IDE vous permet de voir les classes contenues dans le `.jar`).
+1. Une librairie nommée `patternmon` est importée dans le projet ! Explorez ses classes en allant dans `src/main/resources/libs/patternmons.jar` (normalement, l'IDE vous permet de voir les classes contenues dans le `.jar`). **Attention**, si vous travaillez sur une machine de l'IUT, il est probable que vous deviez utiliser le JDK 19 que vous pouvez installer via IntelliJ (dans **File**, **Project Structure**...). Dans ce cas il faudra aussi changer le fichier `pom.xml` du projet en changeant les deux "17" et "19".
 
 2. Comme vous pouvez le constater, cette librairie définit de nouveaux monstres "patternmons" qu'on souhaite maintenant intégrer à notre système de simulation de combat. Comme vous l'avez deviné, nous allons donc devoir mettre en place un `Adaptateur` ! Cependant, comme il y a une hiérarchie de classes ici, la mise en place va être un poil plus complexe que sur notre exemple, donc nous allons le faire pas à pas :
 
-    * Commencez par implémenter une classe abstraite `patternmonAdapter` qui permet d'adapter la classe abstraite `Patternmon`. Normalement, vous ne devriez pas trop avoir de difficulté, c'est quasiment comme dans l'exemple.
+    * Commencez par implémenter une classe abstraite `PatternmonAdapter` qui permet d'adapter la classe abstraite `Patternmon`. Normalement, vous ne devriez pas trop avoir de difficulté, c'est quasiment comme dans l'exemple.
 
-    * `patternmon` est une classe abstraite et nous avons besoin de pouvoir adapter ses classes filles concrètes (correspondant à `MonstreEau`, `MonstreFeu`, etc.). Il faut créer un adaptateur par classe fille ! Cet adaptateur devra **étendre** votre adaptateur abstrait `patternmonAdapter` et implémenter l'interface `MonstreX` correspondante (`MonstreEau` pour l'adaptation de `WaterPatternmon` par exemple).
+    * `Patternmon` est une classe abstraite et nous avons besoin de pouvoir adapter ses classes filles concrètes (correspondant à `MonstreEau`, `MonstreFeu`, etc.). Il faut créer un adaptateur par classe fille ! Cet adaptateur devra **étendre** votre adaptateur abstrait `PatternmonAdapter` et implémenter l'interface `MonstreX` correspondante (`MonstreEau` pour l'adaptation de `WaterPatternmon` par exemple).
     
     * Commencez par tenter d'adapter `WaterPatternmon`. Vous allez sans doute rencontrer une difficulté lorsque vous allez essayer d'implémenter les méthodes propres à l'interface. Dans un premier temps, essayez de résoudre cela par vous-même, puis, après quelques essais, lisez la prochaine section.
 
 </div>
 
-Le problème que vous avez dû rencontrer est le suivant : dans un de vos adaptateurs concrets, vous n'aviez pas accès au `patternmon` passé à la classe parente. Une solution que vous avez peut-être mise en place et de changer la visibilité de cet attribut en `protected`, mais même là, vous aviez sans doute des erreurs ! 
+Le problème que vous avez dû rencontrer est le suivant : dans un de vos adaptateurs concrets, vous n'aviez pas accès au `Patternmon` passé à la classe parente. Une solution que vous avez peut-être mise en place et de changer la visibilité de cet attribut en `protected`, mais même là, vous aviez sans doute des erreurs ! 
 
 Voyons un peu tout ça :
 
@@ -1677,10 +1677,10 @@ public abstract class PatternmonAdapter implements Monstre {
 
 }
 
-public class patternmonEauAdapter extends PatternmonAdapter implements MonstreEau {
+public class PatternmonEauAdapter extends PatternmonAdapter implements MonstreEau {
 
     //Prend un Waterpatternmon en paramètre et pas un Patternmon !
-    public patternmonEauAdapter(WaterPatternmon patternmon) {
+    public PatternmonEauAdapter(WaterPatternmon patternmon) {
         super(patternmon);
     }
 
@@ -1708,7 +1708,7 @@ Mais cette solution n'est pas élégante et il en existe une bien meilleure : la
 
 Quand une classe enfant étend la classe mère, elle peut alors préciser la classe concrète utilisée à la place de `T`. Ainsi, la classe mère est configurée pour utiliser ce type.
 
-Petite démonstration sur `patternmonAdapter` et `patternmonEauAdapter` :
+Petite démonstration sur `PatternmonAdapter` et `PatternmonEauAdapter` :
 
 ```java 
 //On définit le paramètre générique T lors de la déclaration de la classe
@@ -1729,11 +1729,11 @@ public abstract class PatternmonAdapter<T extends Patternmon> implements Monstre
 
 //Quand on étend PatternmonAdapter, on précise la classe concrète utilisée (ici, Watterpatternmon)
 //Il faut imaginer que dans la classe mère, le "T" est remplacé par Watterpatternmon.
-public class patternmonEauAdapter extends PatternmonAdapter<Waterpatternmon> implements MonstreEau {
+public class PatternmonEauAdapter extends PatternmonAdapter<Waterpatternmon> implements MonstreEau {
 
     //Prend un Waterpatternmon en paramètre et pas un Patternmon !
     //Maintenant, on est "forcé" d'utiliser ce constructeur.
-    public patternmonEauAdapter(WaterPatternmon patternmon) {
+    public PatternmonEauAdapter(WaterPatternmon patternmon) {
         super(patternmon);
     }
 
@@ -1750,7 +1750,7 @@ Si vous n'avez pas tout compris, n'hésitez pas à en parler avec votre enseigna
 
 <div class="exercise">
 
-1. Adaptez votre code pour introduire la généricité comme dans l'exemple ci-dessus puis implémentez les classes restantes : `PatternmonElectriqueAdapter`, `PatternmonPsyAdapter`, `patternmonFeuAdapter` et `patternmonPlanteAdapter`.
+1. Adaptez votre code pour introduire la généricité comme dans l'exemple ci-dessus puis implémentez les classes restantes : `PatternmonElectriqueAdapter`, `PatternmonPsyAdapter`, `PatternmonFeuAdapter` et `PatternmonPlanteAdapter`.
 
 2. Créez une nouvelle fabrique permettant de créer des `patternmons`.
 
