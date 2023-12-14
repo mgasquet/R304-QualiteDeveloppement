@@ -235,7 +235,7 @@ Cependant, qui doit effectuer ce **cast** ? Cela ne semble pas adéquat de faire
 
 Il est temps de vous présenter des fonctionnalités de Java que vous ne connaissiez peut-être pas : **la généricité des méthodes** et **le type de retour paramétrable.**
 
-Vous connaissez probablement la notion de type **générique** que nous avons déjà abordé dans le dernier TP. Pour rappel, il est possible de créer une classe java **générique** en précisant un ou plusieurs **types paramétrables** lors de la définition de la classe. Ces types ne sont pas connus dans le code de la classe et sera précisé lors de l'instanciation d'un objet de ce type. Cela permet notamment d'avoir des classes gérant différents types de données avec le même code. Par exemple `List` est un type générique permettant de préciser un type paramétrable (lez type géré par la liste). `Map` esr aussi une classe générique et permet d'accueillir deux types paramétrables (un pour la clé, un pour la valeur).
+Vous connaissez probablement la notion de type **générique** que nous avons déjà abordé dans le dernier TP. Pour rappel, il est possible de créer une classe java **générique** en précisant un ou plusieurs **types paramétrables** lors de la définition de la classe. Ces types ne sont pas connus dans le code de la classe et sera précisé lors de l'instanciation d'un objet de ce type. Cela permet notamment d'avoir des classes gérant différents types de données avec le même code. Par exemple `List` est un type générique permettant de préciser un type paramétrable (lez type géré par la liste). `Map` est aussi une classe générique et permet d'accueillir deux types paramétrables (un pour la clé, un pour la valeur).
 
 Pour rappel, on définit une classe **générique** comme cela :
 
@@ -332,7 +332,7 @@ class MaClasse {
 
 Les **fonctions génériques** vont permettre de règle notre problème de **cast**. L'idée serait donc de modifier la méthode `getService` pour lui préciser en paramètre **le type** (la classe) du service ciblé et que la méthode renvoie alors le service **casté** dans ce type. La fonction se basera sur le type précisé en paramètre pour son type de retour !
 
-En **Java**, une classe particulière permet de modéliser des "types" : La classe...`Class` ! Cette classe est **générique** et attend un type en paramètre. Il s'agit du type de la classe ciblée. Il est possible de récupérer cet objet `Class` à partir de n'importe quelle classe ou interface de l'application :
+En **Java**, une classe particulière permet de modéliser des "types" : La classe... `Class` ! Cette classe est **générique** et attend un type en paramètre. Il s'agit du type de la classe ciblée. Il est possible de récupérer cet objet `Class` à partir de n'importe quelle classe ou interface de l'application :
 
 ```java
 Class<Integer> classeInt = Integer.class;
@@ -411,7 +411,7 @@ Manager manager = container.getService("manager", Manager.class);
 
 7. Lancez votre application et vérifiez que tout fonctionne comme attendu !
 
-8. Dans `initContainerServices`, changez les instances concrètes utilisées pour le `mailer`, le `hasher` et le `stockage`. Normalement, si tout est bien implémenté, vous ne devez que modifier les paramètres des trois appels à `registerService` et rien d'autre. Relancez le programme et vérifiez que tout fonctionne encore. S'il y a une erreur, c'est que vous avez probablement utilisé une classe concrète au lieu d'une abstraction à certains endroits (lors d'appels à `getService` pour initialiser `ServcieUtilisateur`, par exemple...) ! En effet, il est tout à fait possible de **caster** une classe dans un type abstrait qu'elle implémente (son interface, sa classe abstraite mère...).
+8. Dans `initContainerServices`, changez les instances concrètes utilisées pour le `mailer`, le `hasher` et le `stockage`. Normalement, si tout est bien implémenté, vous ne devez que modifier les paramètres des trois appels à `registerService` et rien d'autre. Relancez le programme et vérifiez que tout fonctionne encore. S'il y a une erreur, c'est que vous avez probablement utilisé une classe concrète au lieu d'une abstraction à certains endroits (lors d'appels à `getService` pour initialiser `ServiceUtilisateur`, par exemple...) ! En effet, il est tout à fait possible de **caster** une classe dans un type abstrait qu'elle implémente (son interface, sa classe abstraite mère...).
 
 </div>
 
@@ -522,7 +522,7 @@ container.registerService("manager", Manager.class, conteneur.getService("servic
 
 ### Références
 
-Plutôt que de devoir faire appel à `getService` lorsque nous initialisons nos `services` dès qu'il y a des dépendances, nous pourrions déléguer ce travail au **conteneur**. L'idée serait d'aovir un objet `Reference` contenant le nom d'un service qu'on utiliserait comme paramètre normal dans `registerService` au lieu de faire appel à `getService`.
+Plutôt que de devoir faire appel à `getService` lorsque nous initialisons nos `services` dès qu'il y a des dépendances, nous pourrions déléguer ce travail au **conteneur**. L'idée serait d'avoir un objet `Reference` contenant le nom d'un service qu'on utiliserait comme paramètre normal dans `registerService` au lieu de faire appel à `getService`.
 
 De son côté, le **conteneur** transformera cette **référence** en l'objet cible désiré en allant chercher dans sa `Map` lors de l'enregistrement. Au-delà de l'aspect ergonomique, ce système nous permettra de mettre en place un système de **lazy-loading** dont nous reparlerons bientôt.
 
@@ -616,9 +616,9 @@ container.registerService("manager", Manager.class, new Reference("service"), ne
 
 ## Lazy loading
 
-Note conteneur fonctionne et permet de centraliser efficacement nos dépendances. Cependant, comme ces dépendances sont enregistrées lors du lancement de l'application, elles sont toutes instanciées à ce moment-là. Cela signfit qu'il y a des services potentiels qui sont initialisés, mais dont nous n'allons peut-être pas nous servir !
+Note conteneur fonctionne et permet de centraliser efficacement nos dépendances. Cependant, comme ces dépendances sont enregistrées lors du lancement de l'application, elles sont toutes instanciées à ce moment-là. Cela signifit qu'il y a des services potentiels qui sont initialisés, mais dont nous n'allons peut-être pas nous servir !
 
-Dans notre mini-application, nous nous servons de tout, à priori, car il n'y a qu'un seul **controller**, qu'un seul **service**, etc... Mais il faut s'imaginer que sur une grosse application, il peut être couteux d'initialiser tous ces services au lancement ! Dans le cadre d'une application **web** par exemple, il ne serait pas judicieux d'initialiser les dépendances de tous les contrôleurs alors que la requête d'un utilisateur n'en vise qu'un seul.
+Dans notre mini-application, nous nous servons de tout, à priori, car il n'y a qu'un seul **controller**, qu'un seul **service**, etc... Mais il faut s'imaginer que sur une grosse application, il peut être coûteux d'initialiser tous ces services au lancement ! Dans le cadre d'une application **web** par exemple, il ne serait pas judicieux d'initialiser les dépendances de tous les contrôleurs alors que la requête d'un utilisateur n'en vise qu'un seul.
 
 Le **lazy loading** permet de résoudre ce problème en faisant en sorte d'initialiser un service donné seulement quand on en a besoin : quand on le récupère (avec `getService`) ou bien quand on récupère un autre service qui a besoin de ce service pour être initialisé (on provoque donc des initialisations en chaîne).
 
@@ -657,7 +657,7 @@ Pour mettre en place un tel système, l'idée est la suivante :
     }
     ```
 
-5. Modifiez le code de `registerService` afin que le service ne soit plus instancié et enregistré dans `services`. À la place, on osuhaite stocker ses données d'initialisation dans `configurations`.
+5. Modifiez le code de `registerService` afin que le service ne soit plus instancié et enregistré dans `services`. À la place, on souhaite stocker ses données d'initialisation dans `configurations`.
 
 6. Modifiez le code de `getService` afin de vérifier que le service est déjà chargé ou non et, si ce n'est pas le cas, déclencher son chargement. Le reste de la méthode reste inchangé, on renvoie (et on **caste**) le service obtenu comme auparavant.
 
