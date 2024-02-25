@@ -1216,7 +1216,7 @@ Il est temps de faire fonctionner votre nouvelle librairie sur un projet plus la
 
 2. Clonez votre nouveau dépôt en local. Ouvrez le projet avec votre IDE. Il va y avoir des erreurs au niveau des classes type "controller", c'est normal ! En fait, le travail a été un peu prémâché : auparavant, nos classes `services` étaient des **singletons** (EtudiantService, RessourceService, NoteService) qui utilisaient une fabrique abstraite pour récupérer les classes de stockages adéquates. Nous avons retiré notre système de fabrique abstraite et les classes de services ne sont plus des singletons (ce qui est une bonne chose, car cela signifit qu'on peut les tester unitairement !). Cependant, tous les controllers sont cassés, car ils récupéraient l'instance de ces singletons.
 
-3. L'objectif de cet exercice va être d'utiliser le **conteneur** pour enregsitrer nos services comme dépendances et les importer dans les différents **controllers** (à la place d'utiliser `getInstance` qui n'existe plus...). Commençons donc par importer la librairie contenant le **conteneur** dans notre projet. Pour cela :
+3. L'objectif de cet exercice va être d'utiliser le **conteneur** pour enregistrer nos services comme dépendances et les importer dans les différents **controllers** (à la place d'utiliser `getInstance` qui n'existe plus...). Commençons donc par importer la librairie contenant le **conteneur** dans notre projet. Pour cela :
 
     * Copiez et collez le fichier `ConteneurDependances-1.0.0.jar` vers le dossier `src/main/resources/libs` de cette application (il y a déjà un autre fichier `.jar` permettant de faire le pont avec hibernate...)
 
@@ -1249,7 +1249,7 @@ Il est temps de faire fonctionner votre nouvelle librairie sur un projet plus la
     <?xml version="1.0" encoding="UTF-8" ?>
     <services>
 
-        <service name="jdbc_utils" class="fr.iutmontpellier.tpoge.stockage.jdbc.JDBCUtils">
+        <service name="jdbc_utils" class="fr.iutmontpellier.tpoge.storage.jdbc.JDBCUtils">
             <!-- A compléter -->
             <!-- La class JDBCUtils se construit avec les différentes informations de connexion -->
             <!-- Pour rappel : 
@@ -1296,7 +1296,7 @@ Il est temps de faire fonctionner votre nouvelle librairie sur un projet plus la
 
 5. Dans la méthode `start` de la classe `Main`, faites en sorte de charger votre fichier de configuration dans le conteneur. On rappelle encore une fois que le **conteneur** est un singleton !
 
-6. Dans les huit classes type "controller" (à partir du paquetage `application/controller`) réparez le code en récupérant les instances des différents services en utiliser votre **conteneur** (et la méthode `getService`).
+6. Dans les huit classes type "controller" (à partir du paquetage `controller`) réparez le code en récupérant les instances des différents services en utiliser votre **conteneur** (et la méthode `getService`).
 
 7. Lancez votre application et vérifiez que tout fonctionne.
 
@@ -1636,7 +1636,7 @@ Si tout fonctionne comme attendu, félicitations ! Vous êtes allé assez loin d
 
 </div>
 
-Si vous essayez de placer l'attribut `autowires` dans votre fichier `services.xml` vous allez vous apperçevoir d'un problème. Par exemple, pour le service gérant le stockage des ressources (avec `StockageRessourceJDBC` ou bien `StockageRessourceHibernate`). Qu'allez-vous mettre pour l'attribut `autowires` ? En effet, les classes cocnrètes impélmentent une itnerface paramtrée de manière générique. Par exemple `Stockage<Ressource>` et cela n'est malheureusement pas représentable par un chemin de classe dans l'attribut `autowires`.
+Si vous essayez de placer l'attribut `autowires` dans votre fichier `services.xml` vous allez vous apercevoir d'un problème. Par exemple, pour le service gérant le stockage des ressources (avec `StockageRessourceJDBC` ou bien `StockageRessourceHibernate`). Qu'allez-vous mettre pour l'attribut `autowires` ? En effet, les classes concrètes implémentent une interface paramétrée de manière générique. Par exemple `Stockage<Ressource>` et cela n'est malheureusement pas représentable par un chemin de classe dans l'attribut `autowires`.
 
 Même les frameworks professionnels ont du mal à gérer ce cas (on bascule alors plutôt sur un autowiring se basant sur le nom des paramètres plutôt que sur leur type).
 
@@ -1726,7 +1726,7 @@ Ce qui permettra d'écrire, dans le fichier `xml` :
 
 <div class="exercise">
 
-1. En vous basant sur l'exemple ci-dessus, créez des interfaces `StockageRessource`, `StockageEtudiant` et `StockageNote` (dans le paquetage `stockage`) et modifiez les classes de stockage de `JDBC` et de `Hibernate` afin d'implémenter ces interfaces. Modifiez également les trois services (`RessourceServuce`, `EtudiantService` et `NoteService`) afin d'utiliser ces nouvelles interfaces (au moins au niveau du constructeur).
+1. En vous basant sur l'exemple ci-dessus, créez des interfaces `StockageRessource`, `StockageEtudiant` et `StockageNote` (dans le paquetage `storage`) et modifiez les classes de stockage de `JDBC` et de `Hibernate` afin d'implémenter ces interfaces. Modifiez également les trois services (`RessourceServuce`, `EtudiantService` et `NoteService`) afin d'utiliser ces nouvelles interfaces (au moins au niveau du constructeur).
 
 2. Toujours dans `OGE`, mettez à jour le fichier `services.xml` pour inclure les attributs `autowires` là où cela est nécessaire et en enlevant les balises `argument` là où cela n'est plus nécessaire.
 

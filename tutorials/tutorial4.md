@@ -1950,7 +1950,7 @@ Vous allez maintenant mettre en application ce que vous avez appris sur une appl
 
 3. Pour rappel, ce programme peut se connecter à une base de données par deux moyens : en utilisant l'API `JDBC` en "brut" ou bien en passant par l'ORM `Hibernate`. Vous n'avez pas nécessairement besoin d'avoir fini ce TP dans son intégralité en base de données pour pouvoir faire cet exercice. Il y a un peu de configuration à faire pour que vous puissiez vous connecter à votre BDD par JDBC et Hibernate :
 
-    * Dans la classe `stockage/jdbc/JDBCUtils`, remplacez les valeurs `aCompleter` par vos identifiants d'accès à la base de données `Oracle` de l'IUT.
+    * Dans la classe `storage/jdbc/JDBCUtils`, remplacez les valeurs `aCompleter` par vos identifiants d'accès à la base de données `Oracle` de l'IUT.
 
     * Faites de même dans le fichier `hibernate.cfg.xml` dans `src/main/java/resources`.
 
@@ -1958,7 +1958,7 @@ Vous allez maintenant mettre en application ce que vous avez appris sur une appl
 
 4. De base cette application est configurée pour utiliser `JDBC` et pas `Hibernate`. Si on souhaite changer la méthode de stockage en BDD utilisée, il faut changer le code source des classes `RessourceService`, `EtudiantService` et `NoteService`. On aimerait pouvoir plus facilement switcher entre `JDBC` et `Hibernate` en utilisant un simple **fichier de configuration**. On vous demande donc de **refactorer** le code afin de mettre en place un tel système (avec une **fabrique abstraite** gérant des dépendances, comme dans l'exercice précédent). Quelques commentaires :
 
-    * L'interface **Stockage** (dans le paquetage `stockage`) permet de définir un repository. Vous pouvez notamment aller jeter un œil aux repositories **concrets** qui utilisent `JDBC` et implémentent cette interface dans `stockage/jdbc`.
+    * L'interface **Stockage** (dans le paquetage `storage`) permet de définir un repository. Vous pouvez notamment aller jeter un œil aux repositories **concrets** qui utilisent `JDBC` et implémentent cette interface dans `storage/jdbc`.
 
     * Il faudra utiliser votre fabrique abstraite directement dans la méthode `getInstance` des trois services. Comme vous pouvez le constater, ces services sont des **singletons**. Ils sont donc difficilement testables...mais nous allons régler ce problème dans le prochain TP !
 

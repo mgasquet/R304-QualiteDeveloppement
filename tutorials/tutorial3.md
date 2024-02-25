@@ -1386,7 +1386,7 @@ Vous allez voir qu'en plus de rendre notre projet modulable, utiliser **l'invers
 
 2. Réalisez un **diagramme de classes de conception** de l'application (hors `Main`). Cela nous permettra de faire une comparaison après **refactoring**.
 
-3. Une classe contenant des **tests unitaires** est présente dans `src/test/java/dip2`. Lancez les tests deux fois, tout devrait bien se passer.
+3. Une classe contenant des **tests unitaires** est présente dans `src/test/java/dip2/service/utilisateur`. Lancez les tests deux fois, tout devrait bien se passer.
 
 4. On aimerait effectuer quelques changements dans le programme, notamment au niveau de `ServiceUtilisateur` :
 
@@ -1419,7 +1419,7 @@ Cependant, comment faire pour garder le stockage avec fichier pur l'exécution "
 
 <div class="exercise">
 
-1. Refactorez les classes du paquetage **stockage** puis le code de `ServiceUtilisateur` afin de respecter le principe d'inversion des dépendances en utilisant des **abstractions** et surtout **l'injection de dépendances**.
+1. Refactorez les classes du paquetage **storage** puis le code de `ServiceUtilisateur` afin de respecter le principe d'inversion des dépendances en utilisant des **abstractions** et surtout **l'injection de dépendances**.
 
 2. Mettez à jour le code de `ControllerUtilisateur` afin que celui-ci utilise `ServiceUtilisateur` avec `StockageUtilisateurFichier`.
 
