@@ -159,8 +159,6 @@ Il peut être intéressant de mettre votre documentation en ligne de cette mani�
 
 Notez qu'il est également possible de générer la documentation d'un projet `PHP` de manière similaire : voir [cette ressource](https://docs.phpdoc.org/guide/getting-started/generating-documentation.html).
 
-Pourquoi pas commencer à utiliser cet outil dans vos SAEs ?
-
 ## Découverte des workflows
 
 **GitHub** propose un outil appelé **GitHub actions**. Ce système permet de détecter quand un événement survient sur un dépôt (par exemple, un **push** sur une branche spécifique...) et de déclencher un **script** appelé **workflow** en conséquence. C'est un peu similaire aux **triggers** en base de données.
@@ -349,119 +347,6 @@ Et voilà ! Maintenant, dès qu'un push sera effectué sur la branche de **produ
 
 Avec les `workflows`, nous pouvons automatiser le processus de **déploiement** d'une application, c'est-à-dire sa **mise en production** afin qu'elle soit utilisable et exploitable par les utilisateurs. Il s'agit de la partie `CD` (continous delivery) où l'application est déployée / délivrée de manière continue.
 
-### Déploiement d'un site web PHP
-
-Grâce à l'action [SFTP Deploy](https://github.com/marketplace/actions/sftp-deploy), nous pouvons uploader les fichiers du dépôt vers un répertoire dans un serveur accessible via FTP (par exemple, le `public_html` de l'IUT !).
-
-Voici l'allure générale d'un tel **workflow** :
-
-```yml
-name : nom_custom_workflow
-
-on:
-  push:
-    branches:
-      - master
-
-jobs:
-
-  deploy-website:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Upload files on FTP server
-        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
-        with:
-          # Adresse du serveur
-          server: sftp.exemple.com
-          # Numéro de port
-          port: 22
-          # Nom d'utilisateur
-          username: username
-          # Mot de passe
-          password: password
-          # Dossier de destination dans le serveur
-          remote_path: public/www/
-          # Si on utilise sftp
-          sftp_only: true
-```
-
-Attention, le dossier ciblé par `remote_path` doit déjà exister sur le serveur distant.
-
-Peut-être que vous êtes choqué de voir `password` et même `username` écrits en clair dans ce fichier, et vous savez raison ! Tout le monde peut lire les fichiers de **workflow**. Il est donc totalement exclu d'y placer des informations sensibles ! Alors comment faire ?
-
-GitHub permet d'associer des **variables secrètes** à notre dépôt et d'y faire référence dans nos **workflows**. Ainsi, à la lecture, personne ne pourra voir le contenu réel de ces données, mais lors de l'exécution, la bonne valeur sera utilisée.
-
-Pour créer une **variable secrète** à partir de la page du dépôt, on se rend dans `Settings`, `Secrets and Variables` et `Actions`. Ensuite, il faut appuyer sur le bouton `New repository secret`. On donne alors un nom (qui sera celui utilisé dans le **workflow**) puis on place la valeur réelle de la variable (le mot de passe en clair, par exemple).
-
-Il faut respecter quelques règles de nommage :
-
-* Les noms peuvent contenir uniquement des caractères alphanumériques et des underscores (`A-Z`, `a-z`, `0-9`, `_`). Les espaces ne sont pas autorisés.
-
-* Les noms ne doivent pas commencer par un chiffre.
-
-Ensuite, pour l'utiliser dans un **workflow**, on utilise ce format : {% raw %}`${{ secrets.nom_variable }}`{% endraw %}. Par exemple :
-
-{% raw %}
-```yml
-jobs:
-
-  deploy-website:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Upload files on FTP server
-        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
-        with:
-          ...
-          password: ${{ secrets.mdp }}
-```
-{% endraw %}
-
-Concernant les informations pour se connecter au serveur FTP de l'IUT :
-
-* Adresse : `ftpinfo.iutmontp.univ-montp2.fr`
-
-* Port : `22`
-
-* sftp_only : `true` (le serveur de l'IUT est uniquement accessible est SFTP)
-
-* username / password : vos identifiants de département (à gérer avec des variables secrètes).
-
-<div class="exercise">
-
-1. Téléchargez le fichier [index.php]({{site.baseurl}}/assets/TP2/index.php) et placez-le dans un nouveau dossier de projet. Il s'agit d'une simple page web affichant "Hello world".
-
-2. Initialisez le dépôt git ce projet en local, puis sur GitHub, créez un nouveau dépôt vierge et associez-le à votre dépôt local.
-
-3. Sur votre machine, rendez-vous dans le dossier `~/public_html` et créez un dossier `hello_world_site`.
-
-4. Sur votre dépôt GitHub, créez deux nouvelles variables **secrètes**. Un pour le nom d'utilisateur et un pour le mot de passe. Il s'agit de vos identifiants SFTP qui sont les mêmes que vous utilisez pour vous connecter sur vos machines, à GitLab, etc...
-
-5. Créez un fichier `deploy.yml` dans un nouveau dossier `.github/workflows` placé dans votre dépôt.
-
-6. Faites en sorte que ce workflow s'exécute seulement quand on réalise un **push** sur la branche **master**.
-
-7. Ajoutez un **job** permettant de déployer votre projet vers le dossier `/public_html/hello_world_site/` du serveur FTP de l'IUT. Pensez à bien utiliser les variables secrètes définies plus tôt pour le nom d'utilisateur et le mot de passe !
-
-8. Poussez le projet sur le dépôt distant. Suivez son état. Si tout se passe bien, alors, le site a été déployé et vous pouvez y accéder sur le serveur web de l'IUT : [https://webinfo.iutmontp.univ-montp2.fr/~login/hello_world_site/](https://webinfo.iutmontp.univ-montp2.fr/~login/hello_world_site/) (en remplaçant `login`, bien entendu).
-
-9. Dans votre dépôt local, ajoutez la ligne de code suivante dans le fichier `index.php` :
-
-    ```php
-    echo "<p>Nous sommes le <strong>{$date->format('j F Y')}</strong> et il est <strong>{$date->format('H:i')}</strong></p>";
-    ```
-
-10. Poussez cette modification sur le dépôt distant, patientez et vérifiez que votre site a bien été mis à jour !
-
-</div>
-
-Vous pouvez maintenant déployer vos projets web sur leur serveur de destination avec un simple **push** sur une branche !
-
-Ici, nous avons utilisé l'action **SFTP Deploy** car le serveur de l'IUT utilise SFTP. Pour un serveur utilisant seulement **FTP**, on utilisera plutôt l'action [FTP Deploy](https://github.com/marketplace/actions/ftp-deploy).
-
 ### Releases
 
 **GitHub** permet de publier des **releases** de notre application, c'est-à-dire une version fonctionnelle du logiciel, avec les exécutables et les ressources nécessaires.
@@ -561,6 +446,119 @@ On doit utiliser une nouvelle fois {% raw %}`${{ github.ref_name }}`{% endraw %}
 3. Vérifiez que le `workflow` s'exécute bien puis vérifiez que le fichier placé dans la release `v0.0.2` porte le bon nom.
 
 </div>
+
+### Déploiement d'un site web PHP
+
+Grâce à l'action [SFTP Deploy](https://github.com/marketplace/actions/sftp-deploy), nous pouvons uploader les fichiers du dépôt vers un répertoire dans un serveur accessible via FTP (par exemple, le `public_html` de l'IUT !).
+
+Voici l'allure générale d'un tel **workflow** :
+
+```yml
+name : nom_custom_workflow
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+
+  deploy-website:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Upload files on FTP server
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+        with:
+          # Adresse du serveur
+          server: sftp.exemple.com
+          # Numéro de port
+          port: 22
+          # Nom d'utilisateur
+          username: username
+          # Mot de passe
+          password: password
+          # Dossier de destination dans le serveur
+          remote_path: public/www/
+          # Si on utilise sftp
+          sftp_only: true
+```
+
+Attention, le dossier ciblé par `remote_path` doit déjà exister sur le serveur distant.
+
+Peut-être que vous êtes choqué de voir `password` et même `username` écrits en clair dans ce fichier, et vous savez raison ! Tout le monde peut lire les fichiers de **workflow**. Il est donc totalement exclu d'y placer des informations sensibles ! Alors comment faire ?
+
+GitHub permet d'associer des **variables secrètes** à notre dépôt et d'y faire référence dans nos **workflows**. Ainsi, à la lecture, personne ne pourra voir le contenu réel de ces données, mais lors de l'exécution, la bonne valeur sera utilisée.
+
+Pour créer une **variable secrète** à partir de la page du dépôt, on se rend dans `Settings`, `Secrets and Variables` et `Actions`. Ensuite, il faut appuyer sur le bouton `New repository secret`. On donne alors un nom (qui sera celui utilisé dans le **workflow**) puis on place la valeur réelle de la variable (le mot de passe en clair, par exemple).
+
+Il faut respecter quelques règles de nommage :
+
+* Les noms peuvent contenir uniquement des caractères alphanumériques et des underscores (`A-Z`, `a-z`, `0-9`, `_`). Les espaces ne sont pas autorisés.
+
+* Les noms ne doivent pas commencer par un chiffre.
+
+Ensuite, pour l'utiliser dans un **workflow**, on utilise ce format : {% raw %}`${{ secrets.nom_variable }}`{% endraw %}. Par exemple :
+
+{% raw %}
+```yml
+jobs:
+
+  deploy-website:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Upload files on FTP server
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+        with:
+          ...
+          password: ${{ secrets.mdp }}
+```
+{% endraw %}
+
+Concernant les informations pour se connecter au serveur FTP de l'IUT :
+
+* Adresse : `ftpinfo.iutmontp.univ-montp2.fr`
+
+* Port : `22`
+
+* sftp_only : `true` (le serveur de l'IUT est uniquement accessible est SFTP)
+
+* username / password : vos identifiants de département **(à gérer avec des variables secrètes)**.
+
+<div class="exercise">
+
+1. Téléchargez le fichier [index.php]({{site.baseurl}}/assets/TP2/index.php) et placez-le dans un nouveau dossier de projet. Il s'agit d'une simple page web affichant "Hello world".
+
+2. Initialisez le dépôt git ce projet en local, puis sur GitHub, créez un nouveau dépôt vierge et associez-le à votre dépôt local.
+
+3. A l'aide de [cette page](https://iutdepinfo.iutmontp.univ-montp2.fr/intranet/acces-aux-serveurs/) (il faut utiliser vos identifiants habituels du département) connectez-vous en **SFTP** au serveur de l'iut (en utilisant le logiciel **FileZila**, par exemple). Ensuite, sur le serveur, rendez-vous dans le dossier `public_html` et créez un dossier `hello_world_site`.
+
+4. Sur votre dépôt GitHub, créez deux nouvelles variables **secrètes**. Un pour le nom d'utilisateur et un pour le mot de passe. Il s'agit de vos identifiants SFTP qui sont les mêmes que vous utilisez pour vous connecter sur vos machines, à GitLab, etc...
+
+5. Créez un fichier `deploy.yml` dans un nouveau dossier `.github/workflows` placé dans votre dépôt.
+
+6. Faites en sorte que ce workflow s'exécute seulement quand on réalise un **push** sur la branche **master**.
+
+7. Ajoutez un **job** permettant de déployer votre projet vers le dossier `/public_html/hello_world_site/` du serveur FTP de l'IUT. Pensez à bien utiliser les variables secrètes définies plus tôt pour le nom d'utilisateur et le mot de passe !
+
+8. Poussez le projet sur le dépôt distant. Suivez son état. Si tout se passe bien, alors, le site a été déployé et vous pouvez y accéder sur le serveur web de l'IUT : [https://webinfo.iutmontp.univ-montp2.fr/~login/hello_world_site/](https://webinfo.iutmontp.univ-montp2.fr/~login/hello_world_site/) (en remplaçant `login`, bien entendu).
+
+9. Dans votre dépôt local, ajoutez la ligne de code suivante dans le fichier `index.php` :
+
+    ```php
+    echo "<p>Nous sommes le <strong>{$date->format('j F Y')}</strong> et il est <strong>{$date->format('H:i')}</strong></p>";
+    ```
+
+10. Poussez cette modification sur le dépôt distant, patientez et vérifiez que votre site a bien été mis à jour !
+
+</div>
+
+Vous pouvez maintenant déployer vos projets web sur leur serveur de destination avec un simple **push** sur une branche !
+
+Ici, nous avons utilisé l'action **SFTP Deploy** car le serveur de l'IUT utilise SFTP. Pour un serveur utilisant seulement **FTP**, on utilisera plutôt l'action [FTP Deploy](https://github.com/marketplace/actions/ftp-deploy).
 
 ### Déploiement d'un programme multiplateforme
 

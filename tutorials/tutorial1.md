@@ -19,7 +19,7 @@ Lors des deux séances, le fil rouge sera une application **JAVA** (déjà exist
 
 ## Rappels
 
-Normalement, vous avez appris à vous servir de **git** (et du [**GitLab** de l'IUT](https://gitlabinfo.iutmontp.univ-montp2.fr/)) depuis l'année dernière. Nous allons revenir rapidement sur les notions élémentaires de base sans trop approfondir. Si vous êtes déjà à l'aise avec **git** vous pouvez survoler cette section, mais il peut être intéressant de la lire pour se remettre dans le bain ou si vous n'avez pas touché à git (et GitLab) depuis longtemps !
+Normalement, vous avez appris à vous servir de **git** (et du [**GitLab** de l'IUT](https://gitlabinfo.iutmontp.univ-montp2.fr/)) depuis l'année dernière. Nous allons revenir rapidement sur les notions élémentaires de base sans trop approfondir. Si vous êtes déjà à l'aise avec **git** vous pouvez survoler cette section, mais il peut être intéressant de la lire pour se remettre dans le bain ou si vous n'avez pas touché à git (et GitLab) depuis longtemps ! Quoi qu'il en soit, ces bases doivent déjà globalement être maîtrisées. N'y passez donc pas trop de temps.
 
 En complément, vous pouvez aussi aller consulter le [tutoriel d'introduction à git de première année](https://gitlabinfo.iutmontp.univ-montp2.fr/valicov/tutoGit1ereAnnee). Il existe également des nombreux tutoriels en ligne. Nous vous recommandons le [Git-it-electron](https://github.com/jlord/git-it-electron) qui est à la fois interactif et ludique.
 
@@ -51,7 +51,7 @@ En haut à gauche, cliquez sur votre image de profil puis `Preférences`. Sur la
 
 Il y a deux moyens de réaliser le versioning d'un projet : 
 
-* Cloner un dépôt distant (un déjà existant ou bien un fraichement créé) ce qui permet de récupérer les sources sur une machine. Le projet est alors automatiquement lié au dépôt distant.
+* Cloner un dépôt distant (un déjà existant ou bien un fraîchement créé) ce qui permet de récupérer les sources sur une machine. Le projet est alors automatiquement lié au dépôt distant.
 
 * Initialiser le dépôt en local puis le publier sur un nouveau dépôt distant. Par exemple, pour un projet qui existe déjà, mais qui n'a pas encore été versionné.
 
@@ -206,7 +206,7 @@ Pour l'instant, vous allez simplement utiliser un **fork** pour créer votre pro
 
 <div class="exercise">
 
-1. Comme vous avez l'habitude depuis le Semestre 2 (Dev-Objets, IHM, Intro Archi), le code source des TPs à faire sur GitLab va résider dans le groupe GitLab correspondant : https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/. Dans ce groupe normalement, il y a un sous-groupe qui vous est dédié : `etu/votrelogin` (nom + première lettre du nom + éventuellement un chiffre). Ce **namespace** va permettre de regrouper vos projets liés à ce cours au même endroit. Rendez-vous sur [le dépôt du projet](https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/editeur-de-texte/) puis réalisez un **fork**. Sur GitLab, il s'agit du bouton en haut à droite du dépôt. Au niveau de **Project URL**, dans le champ **Select a namespace** précisez `qualite-de-developpement-semestre-3/etu/votrelogin` (nom + première lettre du nom + éventuellement un chiffre).
+1. Comme vous avez l'habitude depuis le Semestre 2 (Dev-Objets, IHM, Intro Archi), le code source des TPs à faire sur GitLab va résider dans le groupe GitLab correspondant : [https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/](https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/). Dans ce groupe normalement, il y a un sous-groupe qui vous est dédié : `etu/votrelogin` (nom + première lettre du nom + éventuellement un chiffre). Ce **namespace** va permettre de regrouper vos projets liés à ce cours au même endroit. Rendez-vous sur [le dépôt du projet](https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/editeur-de-texte/) puis réalisez un **fork**. Sur GitLab, il s'agit du bouton en haut à droite du dépôt. Au niveau de **Project URL**, dans le champ **Select a namespace** précisez `qualite-de-developpement-semestre-3/etu/votrelogin` (nom + première lettre du nom + éventuellement un chiffre).
 
 2. Une fois le **fork** achevé, vous obtenez alors un nouveau dépôt dans votre espace personnel. Sur votre machine, **clonez** ce dépôt (en utilisant la bonne commande git).
 
@@ -279,34 +279,36 @@ Pour le prochain exercice (et pour pouvoir vous montrer quelque chose d'intéres
 1. On souhaite ajouter une commande pour **remplacer** une portion du texte par une autre chaîne de caractères. Tout d'abord, commencez par ajouter la méthode suivante dans la classe `Document` :
 
     ```java
-    public void remplacer(int start, int end, String remplacement) {
-        String leftPart = texte.substring(0, start);
-        String rightPart = texte.substring(end);
-        texte = leftPart + remplacement + rightPart;
+    public void remplacer(int debut, int fin, String remplacement) {
+        String partieGauche = texte.substring(0, debut);
+        String partieDroite = texte.substring(fin + 1);
+        texte = partieGauche + remplacement + partieDroite;
     }
     ```
 2. On souhaite donc créer une commande `remplacer` qui s'exécutera ainsi :
 
     ```bash
-    remplacer;depart;fin;chaine
+    remplacer;debut;fin;chaine
     ```
    
-   Cette commande remplace la portion du texte du document située entre l'index `depart` (inclus) et l'index `fin` (exclus) par la chaîne de caractères `chaine` (qui n'est pas obligée d'avoir la même longueur que la zone remplacée).
+   Cette commande remplace la portion du texte du document située entre l'index `debut` (inclus) et l'index `fin` (inclus) par la chaîne de caractères `chaine` (qui n'est pas obligée d'avoir la même longueur que la zone remplacée).
 
    Voici un exemple d'exécution utilisant la commande `ajouter` et `remplacer` :
 
     ```bash
     ajouter;hello world!
     hello world!
-    remplacer;0;5;banane
+    remplacer;0;4;banane
     banane world!
-    remplacer;0;3;
+    remplacer;0;2;
     ane world!
     ```
 
     En vous inspirant de la classe `CommandeAjouter`, créez une classe `CommandeRemplacer`. Attention, les paramètres fournis dans la commande sont de type `String` et vous avez besoin de nombres entiers (`int`). Vous pouvez alors utiliser la méthode de classe `Integer.parseInt(...)` pour convertir une chaîne de caractères en `int`.
 
     N'oubliez pas de faire plusieurs commits (comme demandé plus haut) pendant le développement de cette fonctionnalité ! Par exemple, vous pouvez en faire trois en laissant un bug volontairement dans le code du premier commit puis le fixer avec le second commit, et enfin ajouter des commentaires ou de la documentation avec le troisième commit.
+
+    Techniquement (comme montré dans l'exemple), le paramètre contenant le texte peut être vide...à vous de gérer cela!
 
 3. Enregistrez cette nouvelle commande dans la méthode **createCommand** de `CommandeFactory`, en vous basant sur l'exemple de la commande `ajouter`.
 
@@ -319,9 +321,9 @@ Pour le prochain exercice (et pour pouvoir vous montrer quelque chose d'intéres
 
 Parfois, lors du développement d'une fonctionnalité, il arrive de faire plusieurs commits (et pas juste un seul, quand la fonctionnalité est terminée et fonctionnelle). Cela peut vite alourdir l'historique des commits et le rendre assez peu clair. Néanmoins, c'est une bonne chose de versionner régulièrement son travail ! Il faut juste ne pas le faire de manière excessive (pas un commit après chaque ligne de code !).
 
-Là aussi, git propose une solution : la **réécriture d'historique** aussi appelée **squash de commits**. Cette fonctionnalité permet de sélectionner un ensemble de commits (par exemple, les 5 derniers commits) et de le regrouper en un seul et même commits. Ainsi, quand une fonctionnalité a fini d'être développée, on peut regrouper tous les commits qui ont été réalisés lors du développement de cette partie en un seul et même commit et ainsi, rendre l'historique plus élégant.
+Là aussi, git propose une solution : la **réécriture d'historique** aussi appelée **squash de commits**. Cette fonctionnalité permet de sélectionner un ensemble de commits (par exemple, les 5 derniers commits) et de le regrouper en un seul et même commit. Ainsi, quand une fonctionnalité a fini d'être développée, on peut regrouper tous les commits qui ont été réalisés lors du développement de cette partie en un seul commit et ainsi, rendre l'historique plus élégant.
 
-On utilise pour cela la commande suivante :
+Pour cela, on utilise la commande suivante :
 
 ```bash
 git rebase -i HEAD~N
@@ -335,7 +337,7 @@ Par exemple :
 pick 2e5d3fd debut ajout chat
 pick earc042 chat progression
 pick f2ep173 chat fini
-pick t2du1z9 ha non en fait, fix du chat...
+pick t2du1z9 ah non en fait, fix du chat...
 ```
 
 Les commits sélectionnés sont présentés du plus ancien au plus récent. Il suffit alors de remplacer le mot clé `pick` par `s` (pour squash) pour tous les commits qu'on veut **squasher**. Tous les commits libellés par **s** seront alors fusionnés dans le premier commit libellé **pick** au-dessus d'eux. Il faut donc **obligatoirement libeller au moins un commit en pick**. 
@@ -346,7 +348,7 @@ Sur nano/vim, on quitte ensuite cette interface en faisant `Echap` puis `:wq` (�
 pick 2e5d3fd debut ajout chat
 s earc042 chat progression
 s f2ep173 chat fini
-s t2du1z9 ha non en fait, fix du chat...
+s t2du1z9 ah non en fait, fix du chat...
 ```
 
 Une autre interface s'affiche alors. Elle présente le "nouveau message" du commit qui combine les messages de tous les commits précédents. Vous pouvez alors réécrire un autre message de commit. On quitte cette interface de la même manière que précédemment (`Echap` puis `:wq`).
@@ -362,7 +364,7 @@ chat progression
 chat fini
 
 #4rd commit message
-ha non en fait, fix du chat...
+ah non en fait, fix du chat...
 ```
 
 Peut devenir : 
@@ -374,7 +376,7 @@ Ajout du chat
 
 Le **rebasing** s'effectue alors. On peut consulter l'historique pour constater le changement (`git log`).
 
-Depuis cet état, votre dépôt distant va refuser d'intégrer vos changements, car des commits ont disparu... Il ne sait plus où vous en êtes. Vous pouvez alors forcer le changement en utilisant l'option `--force` lors du push. Attention à ne pas abuser de cette option, car il force le dépôt distant à se synchroniser sur votre version et donc, effacer les différences entre son contenu et votre dépôt. Il est donc conseillé d'utiliser cette option seulement dans le cas du rebase, comme nous venons de le voir. De plus, on va plutôt utiliser le **rebase** quasi-exclusivement sous les sous-branches comme nous allons le voir bientôt.
+Depuis cet état, votre dépôt distant va refuser d'intégrer vos changements, car des commits ont disparu... Il ne sait plus où vous en êtes. Vous pouvez alors forcer le changement en utilisant l'option `--force` lors du push. Attention à ne pas abuser de cette option, car il force le dépôt distant à se synchroniser sur votre version et donc, effacer les différences entre son contenu et votre dépôt. Il est donc conseillé d'utiliser cette option seulement dans le cas du rebase, comme nous venons de le voir. De plus, on va plutôt utiliser le **rebase** quasi-exclusivement sous les sous-branches (et jamais le `main`/ `master`) comme nous allons le voir bientôt.
 
 Attention, sur **Gitlab**, la branche **master** est protégée contre le `--force`, par défaut. Pour désactiver cette sécurité : sur la page du dépôt, dans le menu à gauche → **Settings** → **Repository** → **Protected Branches** → **Expand**. Un peu plus bas sont listées toutes les branches protégées. Si on veut annuler cette protection, il suffit d'activer l'option **Allowed to force push**. 
 
@@ -412,21 +414,20 @@ Maintenant, nous allons ajouter une troisième commande ! Là aussi, effectuez p
 1. On souhaite ajouter une commande pour mettre en **majuscules** une portion du texte. Commencez par définir et compléter le code de la méthode suivante dans `Document` :
 
     ```java
-    public void majuscules(int start, int end) {
+    public void majuscules(int debut, int fin) {
         //TO-DO!
     }
     ```
 
     **Astuces** : 
-
-    - Pour extraire une portion d'une chaîne de caractères, servez-vous de la méthode `substring`. 
+    - Pour extraire une portion d'une chaîne de caractères, servez-vous de la méthode `substring`. Attention, dans cette fonction, le deuxième index (index de fin) est exclus (le caractère se trouvant a cette position n'est pas extrait).
     - Pour passer l'intégralité d'une chaîne de caractères, on utilise la méthode `toUpperCase`.
     - Votre code respecte-t-il le principe [DRY](https://fr.wikipedia.org/wiki/Ne_vous_r%C3%A9p%C3%A9tez_pas) ? Pensez à réutiliser la méthode `remplacer`...
 
 2. On souhaite appeler la commande ainsi :
 
     ```bash
-    majuscules;depart;fin
+    majuscules;debut;fin
     ```
 
     Définissez donc une classe adéquate pour cette `commande` et enregistrez là dans la `factory`.
@@ -475,7 +476,7 @@ On peut également rajouter (optionnellement) tout un corps au commit, pour donn
 
 On pourrait avoir, par exemple, le commit suivant :
 
-`refactor:utilisation de l'injection de dépendances`
+`refactor: utilisation de l'injection de dépendances`
 
 Plus d'informations sur [cette ressource](https://gist.github.com/qoomon/5dfcdf8eec66a051ecd85625518cfd13).
 
@@ -488,7 +489,7 @@ Bien sûr, si vous faites beaucoup de commits, ce format peut vite devenir lourd
 
 Vous pouvez visualiser votre **dépôt** git comme un **arbre**. Une branche est un endroit où on peut effectuer des commits. Au début, cet "arbre" ne possède qu'une seule **branche** (la branche master/main). Sur une branche, à partir de n'importe quel point (un commit, ou même dans un dépôt qui vient d'être initialisé), il est possible de démarrer une **nouvelle branche** à partir de ce point.
 
-La nouvelle **branche** créée est une copie (dérivation) de la branche d'où elle a été créée. Par contre, elle évolue différemment. Tous les commits effectués sur cette branche n'affectent pas la branche d'origine.  
+La nouvelle **branche** créée est une dérivation de la branche d'où elle a été créée. Par contre, elle évolue différemment. Tous les commits effectués sur cette branche n'affectent pas la branche d'origine.  
 
 Il est alors possible de changer la branche de travail à n'importe quel moment (tant que les derniers changements sur la branche ont été **commit**). On retourne alors dans la version définie par le commit le plus récent de la branche.
 
@@ -496,11 +497,11 @@ Il est alors possible de changer la branche de travail à n'importe quel moment 
 
 Si cette visualisation est encore trop abstraite pour vous, imaginez-vous dans un univers de science-fiction où vous auriez le pouvoir de créer différentes dimensions parallèles à la nôtre et d'y voyager librement ! À terme, si cela est possible, vous aimeriez réunir plusieurs éléments de chaque dimension dans la nôtre ! Mais cela peu parfois occasionner certains soucis... (c'est tout le sujet du comics DC **Crisis on Infinite Earths** où à la fin, cinq terres se retrouvent réunies en une seule).
 
-Dans un dépôt **git** profesionnel, vous allez usuellement trouver des **branches permanentes** et des **branches temporaires**.
+Dans un dépôt **git** professionnel, vous allez usuellement trouver des **branches permanentes** et des **branches temporaires**.
 
 Par exemple, pour les **branches permanentes** :
 
-- `master` : la branche principale dite de `production`. Elle contient une version stable et fonctionnelle du code. Pendant le développement, on ne `commit` jamais directement dessus ! (oups, c'est ce qu'on a fait jusqu'ici... ! Et ce que la plupart d'entre vous font dans leur propre projet, par ailleurs...)
+- `master` (ou parfois, `main`) : la branche principale dite de `production`. Elle contient une version stable et fonctionnelle du code. Pendant le développement, on ne `commit` jamais directement dessus ! (oups, c'est ce qu'on a fait jusqu'ici... ! Et c'est aussi ce que la plupart d'entre vous font dans leur propre projet, par ailleurs...)
 
 - `development` : la branche dérivée de `master` et utilisée pour le développement. Généralement, on s'en sert pendant la phase de développement pour intégrer peu à peu les différentes branches de fonctionnalités développées pendant le cycle (un **sprint**, par exemple). Cette branche sera alors fusionnée, une fois **stable**, sur `master`.
 
@@ -508,7 +509,7 @@ Par exemple, pour les **branches permanentes** :
 
 Pour les **branches temporaires**, on peut avoir :
 
-- `feature/nom_feature` : branche dérivée de `development` et utilisée pour développer une fonctionnalité "`nom_feature`". À terme, cette branche sera fusionnée sur `development`.
+- `feature/nom_feature` : branche dérivée de `development` et utilisée pour développer une fonctionnalité `nom_feature`. À terme, cette branche sera fusionnée sur `development`.
 
 - `bugfix/description_bug` : branche dérivée de `development` et utilisée pour réparer un bug (décrit succinctement par `description_bug`).
 
@@ -637,13 +638,13 @@ Nous allons mettre en application ce que vous avez appris sur les **branches** e
 
 1. Depuis votre branche `master`, créez et déplacez-vous dans une nouvelle branche nommée `development`.
 
-2. Dans l'éditeur, on souhaite ajouter une commande pour `effacer` une partie du texte (entre deux positions). Depuis `development`, créez et déplacez-vous dans une **nouvelle branche** nommée adéquatement et développez cette fonctionnalité. 
+2. Dans l'éditeur, on souhaite ajouter une commande pour `effacer` une partie du texte (entre deux positions). Depuis `development`, créez et déplacez-vous dans une **nouvelle branche** nommée adéquatement et développez cette fonctionnalité (commencez par ajouter une fonction `efface` dans `Document`, puis créez et enregistrez la commande).
 
     Vous ferez attention aux **messages de commit** qui doivent respecter les conventions qui vous ont été présentées plus tôt (en tout cas, au moins le "dernier" regroupant tous vos commits, s'il y en a plusieurs).
 
     Pensez aussi au principe [DRY](https://fr.wikipedia.org/wiki/Ne_vous_r%C3%A9p%C3%A9tez_pas) (la fonction `effacer` de la classe `Document` devrait être toute petite !).
 
-3. Une fois cette fonctionnalité développée, revenez dans votre branche `development`. Fusionnez la branche correspondant à la commande `effacer`. Normalement, il ne devrait pas y avoir de conflits, mais si par malchance, vous en avez créé, pensez à les résoudre.  Vous pouvez faire un **push** de la branche `development`.
+3. Une fois cette fonctionnalité développée, revenez dans votre branche `development`. Fusionnez la branche correspondant à la commande `effacer`. Normalement, il ne devrait pas y avoir de conflits, mais si par malchance, vous en avez créé, pensez à les résoudre. Vous pouvez faire un **push** de la branche `development`.
 
 4. On souhaite ajouter une commande `clear` qui efface tout le texte. Réappliquez le même processus que pour la question précédente (création d'une nouvelle branche, écriture du code correspondant). 
 
@@ -652,6 +653,8 @@ Nous allons mettre en application ce que vous avez appris sur les **branches** e
 5. Comme précédemment, revenez dans votre branche `development` et fusionnez avec la branche correspondant à la commande `clear`. Vous pouvez faire un **push** de la branche `development`.
 
 6. Vérifiez que tout fonctionne bien (sans tenir compte du fait que la commande `clear` soit buguée), puis, faites en sorte d'intégrer vos fonctionnalités à la branche principale `master`. N'oubliez pas de push tout ça !
+
+<!-- 7. Supprimez vos deux **branches temporaires** (celles ayant servies à développer les deux **features**). Elles ne sont plus utiles! -->
 
 </div>
 
@@ -665,7 +668,7 @@ Vous et les autres étudiants de votre groupe ont inséré un mini bug lors de l
 
 Comment faire pour reporter ce bug au développeur ? GitLab propose simplement une rubrique `Issues` (dans le menu de gauche du dépôt) qui va servir à l'ouverture et la fermeture de **tickets**. Ces **tickets** sont souvent des signalements de bug, mais on peut aussi avoir des suggestions de fonctionnalités, etc. Un autre utilisateur peut même réaliser du code solution et le proposer en résolution du ticket, si le propriétaire du dépôt l'accepte !
 
-Pour la suite des exercices, trouvez-vous un binôme qui est au même point que vous. C'est très important, **vous ne pouvez pas faire le reste du TP seul**. Si l'attente est trop longue, vous pouvez directement passer à la section 4 **"Bonus (pour les plus rapides)"**, en attendant. Éventuellement, vous pouvez essayer de vous débrouiller à 3 si un binôme n'est pas possible avec la configuration du groupe.
+Pour la suite des exercices, trouvez-vous un binôme qui est au même point que vous. C'est très important, **vous ne pouvez pas faire le reste du TP seul**. Si l'attente est trop longue, vous pouvez directement passer à la section 4 **"Bonus (pour les plus rapides)"**, en attendant. Éventuellement, vous pouvez essayer de vous débrouiller à 3 si vous mettre en binôme n'est pas possible avec la configuration du groupe.
 
 <div class="exercise">
 
