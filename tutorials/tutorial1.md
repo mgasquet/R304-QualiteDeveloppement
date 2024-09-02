@@ -654,8 +654,6 @@ Nous allons mettre en application ce que vous avez appris sur les **branches** e
 
 6. Vérifiez que tout fonctionne bien (sans tenir compte du fait que la commande `clear` soit buguée), puis, faites en sorte d'intégrer vos fonctionnalités à la branche principale `master`. N'oubliez pas de push tout ça !
 
-<!-- 7. Supprimez vos deux **branches temporaires** (celles ayant servies à développer les deux **features**). Elles ne sont plus utiles! -->
-
 </div>
 
 ## Collaborer sur un projet
@@ -678,7 +676,7 @@ Pour la suite des exercices, trouvez-vous un binôme qui est au même point que 
 
 3. Sur le dépôt **GitLab** de votre collègue, créez une `issue` et expliquez le bug que vous rencontrez. Une **issue** est en fait un fil de discussion où différentes personnes peuvent intervenir.
 
-4. Lorsque votre collègue a fait de même avec **votre dépôt**, **relevez l'identifiant** (numéro) de l'issue puis retournez dans votre projet et développez un **bugfix**. Il faudra respecter les conventions citées plus tôt pour les branches. Pour le message final du commit, veillez à bien indiquer dans la description le texte suivant : `Closes #numeroIssue` (en remplaçant `numeroIssue`, bien sûr).
+4. Lorsque votre collègue a fait de même avec **votre dépôt**, **relevez l'identifiant** (numéro) de l'issue (normalement : `1`) puis retournez dans votre projet et développez un **bugfix** à partir d'une branche dérivée de `development`. Il faudra respecter les conventions citées plus tôt pour les branches. Pour le message final du commit, veillez à bien indiquer dans la description le texte suivant : `Closes #numeroIssue` (en remplaçant `numeroIssue`, bien sûr).
 
 5. Une fois le **bugfix** publié puis ultimement intégré à `master` via la fusion de la branche `development`, retournez voir l'issue sur **GitLab**. Vous constaterez que votre commit a automatiquement été attaché à cette **issue** et qu'elle a même été fermée !
 
@@ -696,11 +694,11 @@ Le fait de faire une demande d'intégration de son code dans le projet d'origine
 
 <div class="exercise">
 
-1. Encore une fois, rendez-vous dans le dépôt de votre collègue. En haut à droite, appuyez sur le bouton **fork**. Validez. Un nouveau dépôt "forké" à partir de celui de votre collègue est alors disponible.
+1. Encore une fois, rendez-vous dans le dépôt de votre collègue. En haut à droite, appuyez sur le bouton **fork**. Configure le **namespace** pour le placer dans votre sous-groupe `etu/login` puis validez. Un nouveau dépôt "forké" à partir de celui de votre collègue est alors disponible.
 
 2. Clonez ce "nouveau" dépôt sur votre machine : comme ce dépôt forké vous appartient, vous aurez droit de faire des push dessus !
 
-3. Dans l'application récupérée, ajoutez une commande `inserer` qui permet d'insérer une chaîne de caractères à partir d'un index donné. Par exemple :
+3. Dans l'application récupérée, ajoutez une commande `inserer` qui permet d'insérer une chaîne de caractères après une position donnée. Par exemple :
 
     ```bash
     ajouter;bonjour monde
@@ -709,7 +707,7 @@ Le fait de faire une demande d'intégration de son code dans le projet d'origine
     bonjour le monde
     ```
 
-    Il faudra bien respecter le fait d'aller sur la branche de développement puis une branche pour la fonctionnalité, etc.!
+    Il faudra bien respecter le fait d'aller sur la branche de développement puis une branche pour la fonctionnalité, etc. Poussez la branche contenant la fonctionnalité (sans la merger sur `development`).
 
 4. Une fois la fonctionnalité prête et poussée sur GitLab, rendez-vous dans votre dépôt forké puis cliquez sur la rubrique **Code** et **Merge Requests**. Cliquez ensuite sur **New merge request**.
 
@@ -741,7 +739,7 @@ Dans l'exercice précédent, vous avez collaboré avec un collègue mais celui-c
     
     * Dans votre dépôt GitLab (pas celui **forké**, celui original), donnez le rôle **Owner** à votre collègue.
 
-    * Ajoutez une **nouvelle fonctionnalité** permettant d'afficher la description de chaque commande. Pour cela, vous allez ajouter une méthode `getDescriptionCommande` dans l'interface `Commande` et donc l'implémenter dans toutes les commandes. Respectez bien le processus que vous avez jusqu'ici : création d'une sous-branche, commits conventionnels, rebasing, etc. 
+    * Ajoutez une **nouvelle fonctionnalité** permettant d'afficher la description de chaque commande. Pour cela, vous allez ajouter une méthode `getDescriptionCommande` (qui renvoie une donnée de type `String`) dans l'interface `Commande` et donc l'implémenter dans toutes les commandes (avec une description simple). Respectez bien le processus que vous avez jusqu'ici : création d'une sous-branche, commits conventionnels, rebasing, etc. Poussez la branche de votre fonctionnalité sur gitlab.
     
     * Une fois terminé, ne fusionnez pas tout de suite la branche de votre fonctionnalité sur `development`.
 
@@ -751,7 +749,7 @@ Dans l'exercice précédent, vous avez collaboré avec un collègue mais celui-c
 
     * Clonez ce dépôt. Vous avez maintenant les droits d'accès et surtout d'écriture.
 
-    * Sur ce dépôt, ajoutez une nouvelle commande `minuscules` similaire à `majuscules`, mais pour les minuscules (on utilise `toLowerCase`). Respectez bien le processus que vous avez jusqu'ici : création d'une sous-branche, commits conventionnels, rebasing, etc. Une fois terminé, ne fusionnez pas tout de suite la branche de votre fonctionnalité sur `development`. 
+    * Sur ce dépôt, ajoutez une nouvelle commande `minuscules` similaire à `majuscules`, mais pour les minuscules (on utilise `toLowerCase`). Respectez bien le processus que vous avez jusqu'ici : création d'une sous-branche, commits conventionnels, rebasing, etc. Poussez la branche de votre fonctionnalité sur gitlab.
     
     * Une fois terminé, ne fusionnez pas la branche de votre fonctionnalité sur `development`.
 
@@ -759,11 +757,13 @@ Dans l'exercice précédent, vous avez collaboré avec un collègue mais celui-c
 
 5. À partir de [la page principale du site](https://gitlabinfo.iutmontp.univ-montp2.fr/), cliquez sur la catégorie `Merge Requests` puis `Assigned`. Vous pouvez alors visualiser toutes les `merge requests` qui vous ont été assignées.
 
-6. Faites la review de la requête qui vous a été assignée puis validez-la. Votre collègue ayant fait de même avec votre branche, tout devrait être fusionné sur `development` à ce stade ! Bien sûr, si nous avions un peu plus de temps, nous aurions pu refuser la requête, laisser des commentaires, recommencer... ce qui arrive souvent en entreprise (et c'est normal) ! Généralement, les **développeurs seniors** vérifient les `merge requests` des **développeurs juniors** (vous, bientôt). Les **seniors** se vérifient entre eux ou bien sont se considèrent comme assez expérimentés pour se passer de `merge request` et de revue de code... (mais cela est déconseillé).
+6. Faites la review de la requête qui vous a été assignée (explorez l'onglet **Commits**, **Changes**) puis validez-la. Votre collègue ayant fait de même avec votre branche, tout devrait être fusionné sur `development` à ce stade ! Bien sûr, si nous avions un peu plus de temps, nous aurions pu refuser la requête, laisser des commentaires, recommencer... ce qui arrive souvent en entreprise (et c'est normal) ! Généralement, les **développeurs seniors** vérifient les `merge requests` des **développeurs juniors** (vous, bientôt). Les **seniors** se vérifient entre eux ou bien sont se considèrent comme assez expérimentés pour se passer de `merge request` et de revue de code... (mais cela est déconseillé).
 
 7. En local, récupérez les mises à jour sur la branche `development` en faisant un **pull**.
 
 8. Jetez un œil à votre code. Bien que le `merge` ait été réalisé avec succès, il ne devrait plus compiler. Pourquoi ? Choisissez un des membres de votre binôme qui devra corriger les erreurs sur une nouvelle branche (à lui de bien la nommer) puis faire une `merge request` en assignant l'autre membre... L'autre membre fait la revue de code et valide la requête.
+
+9. Chaque membre doit bien penser à récupérer toutes les modifications en local avec un `pull`.
 
 </div>
 
@@ -791,27 +791,31 @@ Jusqu'ici, nous n'avons fait que des **merge** sans conflits bloquants, c'est-à
 
     * Validez la merge request que votre binôme vous a affecté une fois qu'il aura terminé.
 
-4. Maintenant, le propriétaire doit essayer de valider la merge request sur laquelle il est assigné... cela ne marche pas !
+4. Maintenant, le propriétaire doit essayer de valider la merge request sur laquelle il est assigné... cela ne marche pas ! Gitlab détecte immédiatement que la fusion ne sera pas possible et affiche un message d'erreur ("Merge blocked") sur la page.
 
 </div>
 
 En effet, comme les deux fonctionnalités développées touchent la même partie du code, il y a un conflit qui ne peut pas être résolu automatiquement. Quand cela arrive, il faut régler le conflit en local sur la branche concernée, pousser les modifications et re-valider la `merge request`.
 
+Pour l'exercice suivant, le membre ayant le rôle de **collaborateur** va principalement agir. Mettez-vous donc sur le même ordinateur (en pair programming) afin que le **proprietaire** puisse également suivre la résoltuion du conflict.
+
 <div class="exercise">
 
-1. En local, le **collaborateur**, toujours sur sa branche dérivée doit récupérer la dernière version de la branche `development` :
+1. En local, le **collaborateur**, toujours sur sa branche dérivée (là où il a codé sa fonctionnalité) doit récupérer la dernière version de la branche `development` :
 
     ```bash
-    git pull development
+    git pull origin development
     ```
 
     Git indique alors qu'il y a un conflit qu'il faut régler.
 
-2. De retour sur l'IDE, vous constatez alors que la classe `Document` (source du conflit) présente les modifications des deux fichiers. Vous pouvez vous servir des outils de l'IDE ou bien agir manuellement afin de produire la version "finale" de ce fichier : accepter les modifications de l'un ou l'autre des fichiers ou bien fusionner les deux quand cela est possible. Pour notre cas, vous ne garderez qu'un seul des noms pour l'attribut (soit `texteDocument` soit `contentDocument`).
+2. De retour sur l'IDE, vous constatez alors que la classe `Document` (source du conflit) présente les modifications des deux fichiers. Vous pouvez vous servir des outils de l'IDE (clic droit sur `Document`, puis `git` et `Resolve Conflicts`) ou bien agir manuellement afin de produire la version "finale" de ce fichier : accepter les modifications de l'un ou l'autre des fichiers ou bien fusionner les deux quand cela est possible. Pour notre cas, vous ne garderez qu'un seul des noms pour l'attribut (soit `texteDocument` soit `contentDocument`).
 
-3. Une fois le fichier correctement édité, il ne reste plus qu'à faire un `add`, un `commit` et un `push`. Le message du `commit` doit indiquer qu'une résolution du conflit a eu lieu.
+3. Une fois le fichier correctement édité, il ne reste plus qu'à faire un `add`, un `commit` et un `push` sur la branche de la fonctionnalité. Le message du `commit` doit indiquer qu'une résolution du conflit a eu lieu.
 
-4. Une fois que les modifications de la branche sont poussés, le **propriétaire** peut finalement valider la `merge request` de son côté !
+4. Une fois que les modifications de la branche sont poussés, le **propriétaire** peut finalement valider la `merge request` de son côté ! Faites-le.
+
+5. Pour finir, vous pouvez fusionner la branche `development` dans `master` (en local après avoir récupéré les modifications de la branche `development`, ou bien en ligne avec une merge request).
 
 </div>
 

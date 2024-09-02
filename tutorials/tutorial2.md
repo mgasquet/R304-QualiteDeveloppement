@@ -17,11 +17,13 @@ Tout d'abord, vous allez devoir vous inscrire à GitHub (si ce n'est pas déjà 
 
 1. Si ce n'est pas déjà fait, créez-vous un compte [GitHub](https://github.com/signup?ref_cta=Sign+up&ref_loc=header+logged+out&ref_page=%2F&source=header-home).
 
-2. Copiez la clé que vous aviez générée dans votre presse-papier :
+2. Copiez la clé d'authentification dans votre presse-papier :
 
     ```bash
     clip < ~/.ssh/id_rsa.pub
     ```
+
+    A adapter selon votre situation (au cas où votre clé se nomme différamment). Vous pouvez aussi ouvrir le fihcier avec un editeur de texte et copier son contenu.
 
 3. Rendez-vous sur [la page de gestion des clés](https://github.com/settings/keys) de votre profil GitHub. Cliquez sur **"New SSH key"**.
 
@@ -49,13 +51,13 @@ Nous allons faire un premier essai d'hébergement d'un site statique simple.
 
 2. Dans le répertoire contenant votre page HTML, **initialisez** un dépôt (`git init`).
 
-3. Sur **GitHub**, [créez un dépôt](https://github.com/new) avec une visibilité **public** (c'est important) puis reliez-le à votre dépôt en local (`git remote add origin adresse`). L'adresse à utiliser est affichée sur la page du dépôt (zone `Quick Setup`). Enfin, Faites un commit et un push de votre site.
+3. Sur **GitHub**, [créez un dépôt](https://github.com/new) avec une visibilité **public** (c'est important) puis reliez-le à votre dépôt en local (`git remote add origin adresse`). L'adresse à utiliser est affichée sur la page du dépôt (zone `Quick Setup`). Utilisez celle en `ssh`, pas celle `https`. Enfin, faites un add, un commit puis un push de votre site.
 
 4. Toujours sur **GitHub**, dans votre dépôt, rendez-vous dans l'onglet **Settings** puis **Pages** (sur le menu latéral gauche).
 
 5. Dans la section **branch**, sélectionnez **master**. On vous propose deux dossiers : **root** (la racine du dépôt) ou un éventuel dossier **docs**. Laissez donc le paramétrage à **root**.
 
-6. Cliquez sur **Save** et patientez un petit peu. Votre site web sera bientôt accessible à l'adresse : [https://votre_pseudo_git.github.io/nom_dépôt/](https://votre_pseudo_git.github.io/nom_dépôt/). Si votre page ne s'appelle pas `index.html`, il faudra rajouter le nom de la page dans l'URL.
+6. Cliquez sur **Save** et patientez un petit peu (environ une minute). Votre site web sera bientôt accessible à l'adresse : [https://votre_pseudo_git.github.io/nom_dépôt/](https://votre_pseudo_git.github.io/nom_dépôt/). Si votre page ne s'appelle pas `index.html`, il faudra rajouter le nom de la page dans l'URL.
 
 </div>
 
@@ -127,18 +129,12 @@ Pour `PHP`, on retrouve [plus ou moins la même chose](https://www.jetbrains.com
 
 <div class="exercise">
 
-1. Créez un nouveau dépôt vierge sur **GitHub**. Reprenez votre projet **éditeur de texte** (du TP précédent). Nous allons changer l'adresse du dépôt distant. Pour cela :
+1. Créez un nouveau dépôt vierge sur **GitHub** (toujours avec une visibilité en `public`). Reprenez votre projet **éditeur de texte** (du TP précédent). Nous allons changer l'adresse du dépôt distant. 
 
-    On supprime **origin** (pointant actuellement sur le dépôt GitLab) :
-
-    ```bash
-    git remote remove origin
-    ```
-
-    Et on remplace par la nouvelle adresse :
+    Pour cela, on modifie **origin** (pointant actuellement sur le dépôt GitLab) :
 
     ```bash
-    git remote add origin adresse
+    git remote set-url origin nouvelle_adresse
     ```
 
 2. Faites un **push** et vérifiez que votre projet apparait bien sur le dépôt distant **sur GitHub**.
@@ -147,7 +143,7 @@ Pour `PHP`, on retrouve [plus ou moins la même chose](https://www.jetbrains.com
 
 4. Nous allons ajouter une **tâche** à exécuter afin que le gestionnaire de dépendances et de projet (ici **Maven**) génère le site de la **Javadoc**. Sur IntelliJ IDEA, rendez-vous dans **Run** puis **Edit Configurations**. Appuyez sur `+` et sélectionnez **Maven**. Donnez le nom **"Javadoc"** à votre nouvelle tâche et spécifiez `javadoc::javadoc` dans le champ `Run`. Validez.
 
-5. En haut à droite, sélectionnez votre tâche `Javadoc` et exécutez-la. Rendez-vous ensuite dans le dossier `target/site/apidocs` et explorez le site web créé, en local.
+5. En haut à droite, sélectionnez votre tâche `Javadoc` (à côté du bouton "play") et exécutez-la. Dans votre exploreur de fichiers, rendez-vous ensuite dans le dossier `target/reports/apidocs` du projet et explorez le site web créé, en local.
 
 6. Déplacez le dossier `apidocs` à la racine du dépôt et renommez-le `docs`.
 
@@ -211,7 +207,7 @@ Chaque `job` contient une liste de tâches nommées qui s'exécutent dans l'ordr
 
 - Les tâches `run` qui exécutent une commande. Si cette commande échoue (par exemple, échec de compilation) le workflow échoue.
 
-- Les tâches `uses` qui permettent d'appeler une action de workflow **externe**, pour réaliser une action précise. Par exemple, `actions/checkout@v3` est fréquemment utilisé comme première étape, car elle permet de déplacer la machine virtuelle dans une copie locale de votre dépôt (dans l'environnement d'exécution) et donc, d'accéder aux fichiers. Certaines actions ont besoin de paramètres qu'on peut préciser avec le bloc `with`. Beaucoup d'actions sont proposées par l'équipe de GitHub, mais d'autres actions très utiles sont aussi proposées par la communauté !
+- Les tâches `uses` qui permettent d'appeler une action de workflow **externe**, pour réaliser une action précise. Par exemple, `actions/checkout@v4` est fréquemment utilisé comme première étape, car elle permet de déplacer la machine virtuelle dans une copie locale de votre dépôt (dans l'environnement d'exécution) et donc, d'accéder aux fichiers. Certaines actions ont besoin de paramètres qu'on peut préciser avec le bloc `with`. Beaucoup d'actions sont proposées par l'équipe de GitHub, mais d'autres actions très utiles sont aussi proposées par la communauté !
 
 Bref, tous vos **jobs** auront donc cette allure :
 
@@ -227,7 +223,7 @@ jobs:
     steps: #Etapes à réaliser sur le système
       #On se place dans le dépôt...
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       #Suite des actions...
       - name: ...
         uses: ...
@@ -238,10 +234,24 @@ On peut donner des `permissions` au robot exécutant le script. Par exemple, si 
 Pour un événement, il est aussi possible de préciser des conditions supplémentaires, par exemple, "seulement quand on push sur la branche development" :
 
 ```yml
-#Se déclenche quand on push sur n'importe quelle branche
+#Se déclenche quand on push quelque chose
 name : nom_custom_workflow
 
 on: push
+
+jobs:
+  job1:
+    ...
+```
+
+```yml
+#Se déclenche quand on push sur n'importe quelle branche
+name : nom_custom_workflow
+
+on:
+  push:
+    branches:
+      - '*'
 
 jobs:
   job1:
@@ -272,11 +282,28 @@ Pour mettre en pratique, nous allons coder un **workflow** très simple permetta
 
 1. Placez-vous dans votre branche `development`.
 
-2. Créez le dossier de tests `src/test/java` (s'il n'existe pas encore, parce que vous n'avez écrit aucun test...). Pour le créer, depuis IntelliJ le plus simple est de cliquer droit sur le répertoire `src` → **New** → **Directory** → Choisissez `test/java`. Par convention, la couleur verte indique qu'il s'agit du répertoire contenant le code source des tests.
+2. Créez le dossier de tests `src/test/java` (il n'existe pas encore, parce que vous n'avez écrit aucun test). Pour le créer, depuis IntelliJ le plus simple est de cliquer droit sur le répertoire `src` → **New** → **Directory** → Choisissez `test/java`. Par convention, la couleur verte indique qu'il s'agit du répertoire contenant le code source des tests.
 
-3. Créez un paquetage `fr.iut.editeur.document` dans `src/test/` puis, à l'intérieur, créez la classe `DocumentTest` et faites lui étendre la classe `TestCase`. Remarquez, qu'en fait, vous n'avez pas vraiment créé ce paquetage... puisqu'il existe déjà ! Seule l'arborescence des répertoires a été créée dans `src/test/`. En effet, le paquetage est le même que celui de la classe `Document` (dans `src/main/java`). C'est normal, car une convention répandue dit que les tests unitaires doivent écrits dans le même paquetage que les classes qu'ils testent.
+3. Créez un paquetage `fr.iut.editeur.document` dans `src/test/` puis, à l'intérieur, créez la classe `DocumentTest`. Remarquez, qu'en fait, vous n'avez pas vraiment créé ce paquetage... puisqu'il existe déjà ! Seule l'arborescence des répertoires a été créée dans `src/test/`. En effet, le paquetage est le même que celui de la classe `Document` (dans `src/main/java`). C'est normal, car une convention répandue dit que les tests unitaires doivent écrits dans le même paquetage que les classes qu'ils testent.
 
-4. Écrire quelques méthodes pour tester les méthodes de la classe `Document`.
+4. Écrire quelques méthodes pour tester les méthodes de la classe `Document`. Si vous ne vous rappellez plus comment faire, jetez un oel à vos cours Java de l'an dernier ! Voici une squelette de cette classe :
+
+  ```java
+  package fr.iut.editeur.document;
+
+  import org.junit.jupiter.api.Test;
+
+  import static org.junit.jupiter.api.Assertions.*;
+
+  public class DocumentTest {
+
+      @Test
+      public void testMethode() {
+          assertXXX(...)
+      }
+
+  }
+  ```
 
 5. Pour exécuter les tests, **IntelliJ** vous permet de le faire simplement, en cliquant sur le bouton de lancement, à côté de la déclaration de la classe.
 
@@ -286,9 +313,9 @@ Maintenant que vous avez des tests unitaires prêts et fonctionnels, nous allons
 
 Dans le workflow, vous aurez besoin d'un **job** pour :
 
-1. Se déplacer dans votre dépôt. Vous pouvez utiliser l'action `actions/checkout@v3` pour cela.
+1. Se déplacer dans votre dépôt. Vous pouvez utiliser l'action `actions/checkout@v4` pour cela.
 
-2. Installer et mettre en place `Java` (version 17). Vous pouvez utiliser l'action `actions/setup-java@v1` paramétrée (au niveau du `with`) avec `java-version: 17`.
+2. Installer et mettre en place `Java` (version 17). Vous pouvez utiliser l'action `actions/setup-java@v4` paramétrée (au niveau du `with`) avec `java-version: 17` et `distribution: 'oracle'`.
 
 3. Exécuter la commande `mvn test` (exécution de tests avec `maven`).
 
@@ -314,13 +341,13 @@ Pour cela, vous aurez besoin de créer un `job` qui doit :
 
 2. Générer le site de la `javadoc` avec la commande `mvn javadoc::javadoc`.
 
-3. Publier le contenu du site sur une branche dédiée. Pour cela, vous pouvez utiliser l'action `peaceiris/actions-gh-pages@v3`. Cette action nécessite deux paramètres :
+3. Publier le contenu du site sur une branche dédiée. Pour cela, vous pouvez utiliser l'action `peaceiris/actions-gh-pages@v4`. Cette action nécessite deux paramètres :
 
     - `github_token` : permet de vous identifier pour autoriser le robot exécutant le script à pousser sur votre branche. Ce "token" est déjà disponible, il suffit de le préciser avec {% raw %}`${{ secrets.GITHUB_TOKEN }}`{% endraw %}.
 
-    - `publish_dir` : le chemin du dossier contenant les fichiers à publier. En fait, cette action va créer une branche `gh-pages` contenant les fichiers du dossier précisé par le chemin `publish_dir`. Dans notre cas le site de la `javadoc` est généré dans le dossier `./target/site/apidocs/`.
+    - `publish_dir` : le chemin du dossier contenant les fichiers à publier. En fait, cette action va créer une branche `gh-pages` contenant les fichiers du dossier précisé par le chemin `publish_dir`. Dans notre cas le site de la `javadoc` est généré dans le dossier `./target/reports/apidocs/`.
 
-Comme le robot va **créer une branche**, il faut lui donner les droits d'écriture :
+Comme le robot va **créer une branche**, il faut lui donner les droits d'écriture (section à part, par exemple avant ou après les `jobs`) :
 
 ```yml
 permissions :
@@ -333,7 +360,7 @@ permissions :
 
 2. Grâce à ce **workflow**, faites en sorte qu'un **push** **sur la branche master** génère la documentation et la publie sur la branche `gh-pages`. Dans le `job` que vous allez mettre en place, utilisez le système `ubuntu-latest`. N'oubliez pas de nommer chaque `step` dans votre `job`.
 
-3. Faites un `commit` et un `push` sur votre branche `development`. Sur `GitHub`, rendez-vous sur votre dépôt et sélectionnez l'onglet `Actions`. Vérifiez que rien ne se passe (car on n'a pas push sur master !).
+3. Faites un `commit` et un `push` sur votre branche `development`. Sur `GitHub`, rendez-vous sur votre dépôt et sélectionnez l'onglet `Actions`. Vérifiez le workflow correspondant n'est pas éxécuté (car on n'a pas push sur master !). Par contre, l'autre worflow (celui des tests unitaires) devrait s'éxécuter (car on a pas spécifier de branches...).
 
 4. Dans votre terminal, déplacez-vous dans votre branche `master` et réalisez un `merge` de la branche `development`. Faites un `push` de la branche `master` et observez le déroulement de votre workflow dans l'onglet `Actions`. À l'issue, vous devriez voir qu'une branche `gh-pages` est créée !
 
@@ -367,10 +394,16 @@ Cela aura pour effet d'associer le dernier commit à ce **tag**. Pour indiquer a
 git push origin v0.0.1
 ```
 
-Pour **supprimer** un tag, on utilise l'option `-d` avec la commande `tag` :
+Pour **supprimer** un tag en local, on utilise l'option `-d` avec la commande `tag` :
 
 ```bash
 git tag -d vX.Y.Z
+```
+
+Et pour le supprimer sur le dépôt distant :
+
+```bash
+git push -d origin v0.0.1
 ```
 
 ### Déploiement de l'application d'édition de texte
@@ -385,7 +418,7 @@ Pour réaliser ce processus, le `job` du workflow aura besoin de :
 
 2. Générer l'exécutable `.jar` de votre application avec la commande `mvn package`. L'exécutable est placé dans le dossier `target` sous le nom `EditeurDeTexte-0.0.1.jar`.
 
-3. Créer une `release` contenant le fichier `EditeurDeTexte-0.0.1.jar`. Pour cela, vous pouvez utiliser l'action `softprops/action-gh-release@v1`. Cette action nécessite un paramètre :
+3. Créer une `release` contenant le fichier `EditeurDeTexte-0.0.1.jar`. Pour cela, vous pouvez utiliser l'action `softprops/action-gh-release@v2`. Cette action nécessite un paramètre :
 
     - `files` : le chemin des fichiers à inclure dans la `release` (ici `target/EditeurDeTexte-0.0.1.jar`).
 
@@ -407,7 +440,12 @@ on:
     - '*'
 ```
 
-Là aussi, il faut donner la permission 
+Là aussi, il faudra donner la permission d'écriture (car il publie une relase sur le repository `github`) :
+
+```yml
+permissions :
+    contents: write
+```
 
 <div class="exercise">
 
@@ -427,7 +465,7 @@ Là aussi, il faut donner la permission
 
 Très bien, votre `workflow` fonctionne, mais on aimerait que la version affichée sur le fichier `.jar` s'adapte au nom du `tag`. Pour cela, il est possible de préciser à `maven` de changer la `version` du projet avant de générer le `.jar`. Sans cela, il faudrait modifier le fichier `workflow` à chaque publication d'une nouvelle version (et aussi modifier `pom.xml`).
 
-Dans votre `workflow`, vous pouvez donc intégrer l'exécution de la commande suivante :
+Dans votre `workflow`, vous pouvez donc intégrer l'exécution de la commande suivante (avant `mvn package`) :
 
 ```bash
 mvn versions:set -DnewVersion=nouvelle_version -DgenerateBackupPoms=false
@@ -435,7 +473,7 @@ mvn versions:set -DnewVersion=nouvelle_version -DgenerateBackupPoms=false
 
 À la place de `nouvelle_version` vous pouvez utiliser {% raw %}`${{ github.ref_name }}`{% endraw %} qui permet d'obtenir, via le `workflow` le nom de l'élément en train d'être poussé sur le dépôt. Pour un commit, il s'agirait de son identifiant, et pour un tag, il s'agit simplement de son nom. Ainsi, lors de la construction du `.jar`, si le **tag** se nomme `v0.0.2`, le fichier généré sera `EditeurDeTexte-v0.0.2.jar`.
 
-On doit utiliser une nouvelle fois {% raw %}`${{ github.ref_name }}`{% endraw %} pour le chemin du fichier à inclure dans le paramètre `files` de l'action `softprops/action-gh-release@v1`.
+On doit utiliser une nouvelle fois {% raw %}`${{ github.ref_name }}`{% endraw %} pour le chemin du fichier à inclure dans le paramètre `files` de l'action `softprops/action-gh-release@v2`.
 
 <div class="exercise">
 
@@ -449,7 +487,7 @@ On doit utiliser une nouvelle fois {% raw %}`${{ github.ref_name }}`{% endraw %}
 
 ### Déploiement d'un site web PHP
 
-Grâce à l'action [SFTP Deploy](https://github.com/marketplace/actions/sftp-deploy), nous pouvons uploader les fichiers du dépôt vers un répertoire dans un serveur accessible via FTP (par exemple, le `public_html` de l'IUT !).
+Grâce à l'action [SFTP Deploy](https://github.com/marketplace/actions/sftp-deploy), nous pouvons uploader les fichiers du dépôt vers un répertoire dans un serveur accessible via FTP (par exemple, le serveur web de l'IUT !).
 
 Voici l'allure générale d'un tel **workflow** :
 
@@ -467,7 +505,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Upload files on FTP server
         uses: wlixcc/SFTP-Deploy-Action@v1.2.4
         with:
@@ -479,8 +517,8 @@ jobs:
           username: username
           # Mot de passe
           password: password
-          # Dossier de destination dans le serveur
-          remote_path: public/www/
+          # Dossier de destination dans le serveur (absolu, ou relatif...)
+          remote_path: /public/www/
           # Si on utilise sftp
           sftp_only: true
 ```
@@ -509,7 +547,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Upload files on FTP server
         uses: wlixcc/SFTP-Deploy-Action@v1.2.4
         with:
@@ -532,9 +570,9 @@ Concernant les informations pour se connecter au serveur FTP de l'IUT :
 
 1. Téléchargez le fichier [index.php]({{site.baseurl}}/assets/TP2/index.php) et placez-le dans un nouveau dossier de projet. Il s'agit d'une simple page web affichant "Hello world".
 
-2. Initialisez le dépôt git ce projet en local, puis sur GitHub, créez un nouveau dépôt vierge et associez-le à votre dépôt local.
+2. Initialisez le dépôt git ce projet en local, puis sur GitHub, créez un nouveau dépôt vierge (privé ou public, comme vous voulez) et associez-le à votre dépôt local.
 
-3. A l'aide de [cette page](https://iutdepinfo.iutmontp.univ-montp2.fr/intranet/acces-aux-serveurs/) (il faut utiliser vos identifiants habituels du département) connectez-vous en **SFTP** au serveur de l'iut (en utilisant le logiciel **FileZila**, par exemple). Ensuite, sur le serveur, rendez-vous dans le dossier `public_html` et créez un dossier `hello_world_site`.
+3. A l'aide de [cette page](https://iutdepinfo.iutmontp.univ-montp2.fr/intranet/acces-aux-serveurs/) (il faut utiliser vos identifiants habituels du département, rechargez cette page après vous être connecté) connectez-vous en **SFTP** au serveur de l'iut (en utilisant le logiciel **FileZila**, par exemple). Ensuite, sur le serveur, rendez-vous dans le dossier `public_html` et créez un dossier `hello_world_site`.
 
 4. Sur votre dépôt GitHub, créez deux nouvelles variables **secrètes**. Un pour le nom d'utilisateur et un pour le mot de passe. Il s'agit de vos identifiants SFTP qui sont les mêmes que vous utilisez pour vous connecter sur vos machines, à GitLab, etc...
 
@@ -542,7 +580,7 @@ Concernant les informations pour se connecter au serveur FTP de l'IUT :
 
 6. Faites en sorte que ce workflow s'exécute seulement quand on réalise un **push** sur la branche **master**.
 
-7. Ajoutez un **job** permettant de déployer votre projet vers le dossier `/public_html/hello_world_site/` du serveur FTP de l'IUT. Pensez à bien utiliser les variables secrètes définies plus tôt pour le nom d'utilisateur et le mot de passe !
+7. Ajoutez un **job** permettant de déployer votre projet vers le dossier `./public_html/hello_world_site/` du serveur FTP de l'IUT. Pensez à bien utiliser les variables secrètes définies plus tôt pour le nom d'utilisateur et le mot de passe !
 
 8. Poussez le projet sur le dépôt distant. Suivez son état. Si tout se passe bien, alors, le site a été déployé et vous pouvez y accéder sur le serveur web de l'IUT : [https://webinfo.iutmontp.univ-montp2.fr/~login/hello_world_site/](https://webinfo.iutmontp.univ-montp2.fr/~login/hello_world_site/) (en remplaçant `login`, bien entendu).
 
@@ -578,7 +616,7 @@ Nous allons tester ce système sur un petit programme très simple, codé en `C`
 
 3. Créez un dépôt contenant seulement le fichier `puissance.c`.
 
-4. Sur `GitHub`, créez un nouveau dépôt puis reliez-le à votre dépôt local. Faites ensuite votre premier `commit` ainsi que votre premier `push`.
+4. Sur `GitHub`, créez un nouveau dépôt (privé ou public, comme vous voulez) puis reliez-le à votre dépôt local. Faites ensuite votre premier `commit` ainsi que votre premier `push`.
 
 </div>
 
@@ -592,7 +630,7 @@ Voici donc un `job` que l'on pourrait utiliser pour compiler le programme pour u
     runs-on: windows-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Build
         run: gcc puissance.c -o puissance-windows.exe
 ```
@@ -603,7 +641,7 @@ Voici donc un `job` que l'on pourrait utiliser pour compiler le programme pour u
 
 2. Faites en sorte que ce workflow s'exécute seulement quand un `tag` est `push`.
 
-3. Ajoutez **trois jobs** pour compiler le programme dans chaque système. Les systèmes disponibles sont : `ubuntu-latest`, `windows-latest` et `macos-latest`. Pour `ubuntu`, l'exécutable devra se nommer `puissance-linux.bin`, pour `macos` : `puissance-macos` (pas d'extension) et pour `windows` on aura donc `puissance-windows.exe`.
+3. Ajoutez **trois jobs** pour compiler le programme dans chaque système. Les systèmes disponibles sont : `ubuntu-latest`, `windows-latest` et `macos-latest`. Pour `ubuntu`, l'exécutable compilé devra se nommer `puissance-linux.bin`, pour `macos` : `puissance-macos` (pas d'extension) et pour `windows` on aura donc `puissance-windows.exe`.
 
 </div>
 
@@ -615,7 +653,36 @@ Les `artifacts` s'utilisent au travers de **deux actions** :
 
 - `actions/upload-artifact@master` : permet d'uploader un artifact pour le rendre disponible aux autres `jobs`. Il faut préciser un paramètre `name` correspondant au nom de l'artifact et un autre paramètre `path` correspondant au chemin du fichier ciblé (qu'on souhaite uploader). Le fichier sera mis à disposition sous le nom précisé par `name` et les autres `jobs` pourront alors le télécharger.
 
+Par exemple, pour windows :
+
+```yml
+    build-windows:
+      runs-on: windows-latest
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+        - name: Build
+          run: gcc puissance.c -o puissance-windows.exe
+        - name: Upload
+          uses: actions/upload-artifact@master
+          with:
+            name: puissance-windows
+            path: ./puissance-windows.exe
+```
+
 - `actions/download-artifact@master` : permet de télécharger un artifact. Il faut préciser un paramètre `name` correspondant au nom de l'artifact ciblé. Le fichier est alors téléchargé et disponible dans l'environnement du `job`.
+
+Par exemple :
+
+```yml
+    exemple:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Download puissance-windows artifact
+          uses: actions/download-artifact@master
+          with:
+            name: puissance-windows
+```
 
 Le but est donc que chaque `job` fasse un `upload` de l'exécutable compilé. Ensuite, un autre `job` doit télécharger ces fichiers puis créer la `release` en ajoutant les trois exécutables.
 
@@ -652,7 +719,7 @@ jobs:
 
 1. Modifiez votre `workflow` afin que les trois `jobs` fasse un `upload` de leur exécutable.
 
-2. Ajoutez un `job` qui doit **attendre** que les trois autres `jobs` soient terminés avant de s'exécuter. Ce job s'exécutera sur `ubuntu-latest` et devra télécharger les trois exécutables compilés puis créer une `release` contenant ces trois fichiers.
+2. Ajoutez un `job` qui doit **attendre** que les trois autres `jobs` soient terminés avant de s'exécuter. Ce job s'exécutera sur `ubuntu-latest` et devra télécharger les trois exécutables compilés puis créer une `release` contenant ces trois fichiers. Il y aura plusieurs fichiers à placer dans la release (la manière de faire cela est indiqué dans ce TP).
 
 3. Pour que votre `workflow` soit autorisé à créer une `release`, donnez-lui la permission `contents: write`.
 
