@@ -436,7 +436,7 @@ Maintenant, nous allons ajouter une troisième commande ! Là aussi, effectuez p
 
 </div>
 
-L'intitulé de cette section contient **"réparer vos bêtises"** car ce mécanisme permet aussi d'effacer certains commits intermédiaires contenant des informations sensibles, entre autres.
+L'intitulé de cette section contient **"réparer vos bêtises"** car ce mécanisme permet aussi d'er certains commits intermédiaires contenant des informations sensibles, entre autres.
 
 Par exemple, imaginons le scénario suivant :
 
@@ -615,7 +615,7 @@ Lors d'un merge, en cas de conflit (si le **merge** automatique échoue) il faut
    Ici, on a deux versions différentes de la même ligne. La première version est celle de la branche courante (HEAD) et la seconde est celle de la branche à intégrer. Il faut alors choisir la version qui nous intéresse et supprimer le reste. On peut aussi choisir de garder les deux versions et de les fusionner à la main.
 - Éditer ces fichiers pour ne garder que les modifications qui nous intéressent et adapter si besoin.
 
-- Ajouter les fichiers (`git add .`), faire un `commit`, et terminer avec un `push`.
+- Ajouter les fichiers (`git add fichier1 fichier2`), faire un `commit`, et terminer avec un `push`.
 
 Il est aussi tout à fait possible (si besoin) de resynchroniser une sous-branche dérivée de `development` en faisant un `pull` de la branche `development` depuis la sous-branche (si la branche `development` a évoluée entre temps...).
 
@@ -638,7 +638,7 @@ Nous allons mettre en application ce que vous avez appris sur les **branches** e
 
 1. Depuis votre branche `master`, créez et déplacez-vous dans une nouvelle branche nommée `development`.
 
-2. Dans l'éditeur, on souhaite ajouter une commande pour `effacer` une partie du texte (entre deux positions). Depuis `development`, créez et déplacez-vous dans une **nouvelle branche** nommée adéquatement et développez cette fonctionnalité (commencez par ajouter une fonction `efface` dans `Document`, puis créez et enregistrez la commande).
+2. Dans l'éditeur, on souhaite ajouter une commande pour `effacer` une partie du texte (entre deux positions). Depuis `development`, créez et déplacez-vous dans une **nouvelle branche** nommée adéquatement et développez cette fonctionnalité (commencez par ajouter une fonction `effacer` dans `Document`, puis créez et enregistrez la commande).
 
     Vous ferez attention aux **messages de commit** qui doivent respecter les conventions qui vous ont été présentées plus tôt (en tout cas, au moins le "dernier" regroupant tous vos commits, s'il y en a plusieurs).
 
