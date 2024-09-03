@@ -55,7 +55,7 @@ Il y a deux moyens de réaliser le versioning d'un projet :
 
 * Initialiser le dépôt en local puis le publier sur un nouveau dépôt distant. Par exemple, pour un projet qui existe déjà, mais qui n'a pas encore été versionné.
 
-Nous allons d'abord voir comment faire dans la première situation. Nous allons travailler sur **GitLab**, mais cela fonctionne de la même manière sur toutes les plateformes.
+Rappelons-nous d'abord comment faire dans la première situation. Nous allons travailler sur **GitLab**, mais cela fonctionne de la même manière sur toutes les plateformes.
 
 Rendez-vous sur [le GitLab de l'IUT](https://gitlabinfo.iutmontp.univ-montp2.fr). Cliquez sur le bouton `New project` puis `Create blank project`. Pensez à décocher la case proposant d'initialiser le projet avec un fichier **README**, puis créez le projet.
 
@@ -88,21 +88,21 @@ Quand on travaille sur un projet avec **git**, les trois commandes "basiques" qu
 
 **Add**
 
-La première commande va vous permettre d'ajouter des fichiers à versionner :
+La première commande va vous permettre d'ajouter dans _l'index_ des fichiers à versionner, appelé en anglais "_staging area_":
 
 ```bash
 git add element
 ```
 
-Par défaut, tous les changements de fichiers ne sont pas automatiquement versionnés par **git**. Avant d'effectuer un **commit**, il faut dire les fichiers qu'on ajoute. Si on précise un dossier, tous ses fichiers (et sous-dossiers) seront ajoutés, récursivement. Donc, si on souhaite ajouter tous les fichiers, il suffit de faire, depuis la racine du **dépôt** :
+Par défaut, tous les changements de fichiers ne sont pas automatiquement versionnés par **git**. Avant d'effectuer un **commit**, il faut dire les fichiers qu'on ajoute à l'index. Si on précise un dossier, tous ses fichiers (et sous-dossiers) seront ajoutés, récursivement. Donc, si on souhaite ajouter tous les fichiers, il suffit de faire, depuis la racine du **dépôt** :
 
 ```bash
 git add .
 ```
 
-En effet, le point "." désigne le dossier courant. Cette commande ajoute donc tous les fichiers du dossier courant (et de ses sous-dossiers). Attention à ne pas inclure de fichiers indésirables (notamment des fichiers cachés n'apparaissant pas dans le navigateur)!
+En effet, le point "." désigne le dossier courant. Cette commande ajoute donc tous les fichiers du dossier courant et de ses sous-dossiers. Attention à ne pas inclure de fichiers indésirables (notamment des fichiers cachés n'apparaissant pas dans le navigateur) ! Faire `git add .` peut paraître la solution idéale et facile, mais néanmoins il est déconseillé de l'utiliser souvent, car on est presque certains d'ajouter des fichier indésirables à l'index et là, bonjour la galère...
 
-On le rappelle encore, il faut systématiquement ajouter les fichiers qui ont subi des changements (si on souhaite toujours les versionner) avant de réaliser un **commit** (de toute façon, si aucun fichier n'est ajouté, **git** ne vous laissera pas faire de commit).
+On le rappelle encore, il faut systématiquement ajouter les fichiers qui ont subi des changements (si on souhaite toujours les versionner) avant de réaliser un **commit**. De toute façon, si aucun fichier n'est ajouté, **git** ne vous laissera pas faire de commit.
 
 **Commit**
 
