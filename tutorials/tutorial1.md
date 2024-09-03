@@ -690,11 +690,11 @@ Par exemple, le message de commit `Closes #13, #15` ferme les **issues** 13 et 1
 
 Quand on fait un **fork**, on crée une copie "dérivée" du projet de base. Même si nous faisons nos propres commits sur ce "nouveau" projet, nous ne pouvons pas pousser les commits sur le projet d'origine sur lequel nous n'avons probablement pas les droits. Cependant, il est possible de demander aux propriétaires du projet d'origine d'intégrer nos changements !
 
-Le fait de faire une demande d'intégration de son code dans le projet d'origine se nomme `merge request` (ou parfois `pull request`) : on demande à ce que le projet "récupère" (pull) notre code / branche. Il va donc en résulter une fusion (`merge`).
+Le fait de faire une demande d'intégration de son code dans le projet d'origine se nomme `merge request` (ou parfois `pull request`) : on demande à ce que le projet "récupère" (`pull`) notre code / branche. Il va donc en résulter une fusion (`merge`).
 
 <div class="exercise">
 
-1. Encore une fois, rendez-vous dans le dépôt de votre collègue. En haut à droite, appuyez sur le bouton **fork**. Configure le **namespace** pour le placer dans votre sous-groupe `etu/login` puis validez. Un nouveau dépôt "forké" à partir de celui de votre collègue est alors disponible.
+1. Encore une fois, rendez-vous dans le dépôt de votre collègue. En haut à droite, appuyez sur le bouton **fork**. Configurez le **namespace** pour le placer dans votre sous-groupe `etu/login` puis validez. Un nouveau dépôt "forké" à partir de celui de votre collègue est alors disponible.
 
 2. Clonez ce "nouveau" dépôt sur votre machine : comme ce dépôt forké vous appartient, vous aurez droit de faire des push dessus !
 
@@ -707,11 +707,11 @@ Le fait de faire une demande d'intégration de son code dans le projet d'origine
     bonjour le monde
     ```
 
-    Il faudra bien respecter le fait d'aller sur la branche de développement puis une branche pour la fonctionnalité, etc. Poussez la branche contenant la fonctionnalité (sans la merger sur `development`).
+    Il faudra bien respecter le fait d'aller sur la branche de développement puis une branche pour la fonctionnalité, etc. Poussez la branche contenant la fonctionnalité (sans la fusionner sur `development`).
 
 4. Une fois la fonctionnalité prête et poussée sur GitLab, rendez-vous dans votre dépôt forké puis cliquez sur la rubrique **Code** et **Merge Requests**. Cliquez ensuite sur **New merge request**.
 
-5. Dans la partie gauche de l'interface est présenté votre dépôt. Sélectionnez la branche contenant votre nouvelle fonctionnalité. À droite, il s'agit du dépôt de votre collègue. Sélectionnez la branche de destination (`development`).
+5. Dans la partie gauche de l'interface intitulé **Source branch", apparaît votre dépôt. Sélectionnez la branche contenant votre nouvelle fonctionnalité. À droite (**Target branch**), apparaît le dépôt de votre collègue. Sélectionnez la branche de destination (`development`).
 
 6. Cliquez sur **Compare branches and continue**. Dans la nouvelle fenêtre, donnez un **titre** puis une **description** de votre nouvelle fonctionnalité dans les zones prévues à cet effet. Ensuite, cliquez simplement sur **Create merge request**
 
