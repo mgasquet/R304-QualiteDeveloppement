@@ -711,7 +711,7 @@ Le fait de faire une demande d'intégration de son code dans le projet d'origine
 
 4. Une fois la fonctionnalité prête et poussée sur GitLab, rendez-vous dans votre dépôt forké puis cliquez sur la rubrique **Code** et **Merge Requests**. Cliquez ensuite sur **New merge request**.
 
-5. Dans la partie gauche de l'interface intitulé **Source branch", apparaît votre dépôt. Sélectionnez la branche contenant votre nouvelle fonctionnalité. À droite (**Target branch**), apparaît le dépôt de votre collègue. Sélectionnez la branche de destination (`development`).
+5. Dans la partie gauche de l'interface (section **Source branch**), apparaît votre dépôt. Sélectionnez la branche contenant votre nouvelle fonctionnalité. À droite (**Target branch**), apparaît le dépôt de votre collègue. Sélectionnez la branche de destination (`development`).
 
 6. Cliquez sur **Compare branches and continue**. Dans la nouvelle fenêtre, donnez un **titre** puis une **description** de votre nouvelle fonctionnalité dans les zones prévues à cet effet. Ensuite, cliquez simplement sur **Create merge request**
 
