@@ -88,7 +88,7 @@ Quand on travaille sur un projet avec **git**, les trois commandes "basiques" qu
 
 **Add**
 
-La première commande va vous permettre d'ajouter dans _l'index_ des fichiers à versionner, appelé en anglais "_staging area_":
+La première commande va vous permettre d'ajouter dans _l'index_ ("_staging area_" en anglais) des fichiers à versionner :
 
 ```bash
 git add element
@@ -177,7 +177,7 @@ Au lieu de **cloner** un dépôt distant, on peut aussi en créer un en local pu
 
     L'adresse est la même que celle utilisée lorsqu'on clone le dépôt.
 
-4. On réalise un **commit** initial (après un **add**!) :
+4. On réalise un **commit** initial (après un **add**) :
 
     ```bash
     git add .
@@ -192,7 +192,7 @@ Au lieu de **cloner** un dépôt distant, on peut aussi en créer un en local pu
 
 ## Prise en main
 
-Le but de cette première section est de prendre en main l'application qui vous est fournie, de la comprendre, et de travailler dessus avec **git**. Pour la plateforme en ligne, nous utiliserons [le GitLab du département informatique](https://gitlabinfo.iutmontp.univ-montp2.fr). Les fonctionnalités présentées à travers **GitLab** sont applicables à d'autres plateformes ! Il suffit de s'adapter au fonctionnement et spécificités de la plateforme (comme quand vous apprenez un nouveau langage de programmation).
+Le but de cette première section est de prendre en main l'application qui vous est fournie, de la comprendre, et de travailler dessus avec **git**. Pour la plateforme en ligne, nous utiliserons [le GitLab du département informatique](https://gitlabinfo.iutmontp.univ-montp2.fr). Les fonctionnalités présentées à travers **GitLab** sont applicables à d'autres plateformes. Il suffit de s'adapter au fonctionnement et spécificités de la plateforme (comme quand vous apprenez un nouveau langage de programmation).
 
 ### Installation du projet
 
