@@ -17,13 +17,7 @@ Tout d'abord, vous allez devoir vous inscrire à GitHub (si ce n'est pas déjà 
 
 1. Si ce n'est pas déjà fait, créez-vous un compte [GitHub](https://github.com/signup?ref_cta=Sign+up&ref_loc=header+logged+out&ref_page=%2F&source=header-home).
 
-2. Copiez la clé d'authentification dans votre presse-papier :
-
-    ```bash
-    clip < ~/.ssh/id_rsa.pub
-    ```
-
-    A adapter selon votre situation (au cas où votre clé se nomme différamment). Vous pouvez aussi ouvrir le fihcier avec un editeur de texte et copier son contenu.
+2. Copiez la clé d'authentification qui se trouve dans `~/.ssh/id_rsa.pub` (à adapter au cas où votre clé se nomme différamment ou que vous êtes sous Windows). Vous pouvez ouvrir le fihcier avec un editeur de texte et copier son contenu.
 
 3. Rendez-vous sur [la page de gestion des clés](https://github.com/settings/keys) de votre profil GitHub. Cliquez sur **"New SSH key"**.
 
