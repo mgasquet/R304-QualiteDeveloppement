@@ -278,9 +278,9 @@ Pour mettre en pratique, nous allons coder un **workflow** très simple permetta
 
 2. Créez le dossier de tests `src/test/java` (il n'existe pas encore, parce que vous n'avez écrit aucun test). Pour le créer, depuis IntelliJ le plus simple est de cliquer droit sur le répertoire `src` → **New** → **Directory** → Choisissez `test/java`. Par convention, la couleur verte indique qu'il s'agit du répertoire contenant le code source des tests.
 
-3. Créez un paquetage `fr.iut.editeur.document` dans `src/test/` puis, à l'intérieur, créez la classe `DocumentTest`. Remarquez, qu'en fait, vous n'avez pas vraiment créé ce paquetage... puisqu'il existe déjà ! Seule l'arborescence des répertoires a été créée dans `src/test/`. En effet, le paquetage est le même que celui de la classe `Document` (dans `src/main/java`). C'est normal, car une convention répandue dit que les tests unitaires doivent écrits dans le même paquetage que les classes qu'ils testent.
+3. Créez un paquetage `fr.iut.editeur.document` dans `src/test/` puis, à l'intérieur, créez la classe `DocumentTest`. Remarquez, qu'en fait, vous n'avez pas vraiment créé ce paquetage... puisqu'il existe déjà ! Seule l'arborescence des répertoires a été créée dans `src/test/`. En effet, le paquetage est le même que celui de la classe `Document` (dans `src/main/java`). C'est normal, car une convention répandue dit que les tests unitaires doivent être écrits dans le même paquetage que les classes qu'ils testent.
 
-4. Écrire quelques méthodes pour tester les méthodes de la classe `Document`. Si vous ne vous rappellez plus comment faire, jetez un oel à vos cours Java de l'an dernier ! Voici une squelette de cette classe :
+4. Écrire quelques méthodes pour tester les méthodes de la classe `Document`. Si vous ne vous rappellez plus comment faire, jetez un oeil à vos cours Java de l'an dernier ! Voici une squelette de cette classe :
 
   ```java
   package fr.iut.editeur.document;
