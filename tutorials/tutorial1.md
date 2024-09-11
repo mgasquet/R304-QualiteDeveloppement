@@ -694,7 +694,7 @@ Le fait de faire une demande d'intégration de son code dans le projet d'origine
 
 <div class="exercise">
 
-1. Encore une fois, rendez-vous dans le dépôt de votre collègue. En haut à droite, appuyez sur le bouton **fork**. Configurez le **namespace** pour le placer dans votre sous-groupe `etu/login` puis validez. Un nouveau dépôt "forké" à partir de celui de votre collègue est alors disponible.
+1. Encore une fois, rendez-vous dans le dépôt de votre collègue. En haut à droite, appuyez sur le bouton **fork**. Configurez le **namespace** pour le placer dans votre groupe `qualite-de-developpement-semestre-3/etu/votrelogin` puis validez. Un nouveau dépôt "forké" à partir de celui de votre collègue est alors disponible.
 
 2. Clonez ce "nouveau" dépôt sur votre machine : comme ce dépôt forké vous appartient, vous aurez droit de faire des push dessus !
 
