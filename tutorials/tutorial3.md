@@ -396,41 +396,11 @@ En comparant vos deux diagrammes de classes, on peut facilement voir ce qui diff
 
 Dans un code de qualité **les abstractions ne dépendent pas des implémentations**. En d'autres termes, une superclasse ne devrait pas dépendre de ses sous-classes. Seules les sous-classes peuvent dépendre de leurs parents (et on verra que parfois, là aussi, il faut faire attention lorsqu'on utilise l'héritage.). Sur votre premier diagramme, il est clair que ce principe n'est pas respecté, car `Pokemon` dépendait de ses différentes sous-classes, ce qui n'est plus les cas sur le deuxième diagramme.
 
-Continuons dans notre lancée avec un nouvel exercice lié au principe ouvert/fermé, afin de mettre à l'épreuve votre compréhension ce principe.
-
-<div class="exercise">
-
-1. Ouvrez le paquetage `ocp3`. Ce projet modélise le fonctionnement d'un jeu dans lequel on peut construire sa propre **ville** (qui peut être éventuellement attaquée par d'autres joueurs) :
-
-  * Une ville possède différents types de **bâtiments**. 
-  
-  * Un **bâtiment** est caractérisé par : un **nombre de points de vie maximum** (`pvMax`) et un **nombre de points de vie actuels** (`pv` qui est égal au maximum au début et qui peut diminuer si le bâtiment est attaqué). Vous pouvez voir tout cela dans la classe `Batiment`.
-
-  * Chaque **bâtiment** possède (éventuellement) ses propres caractéristiques.
-
-  * Une ville peut posséder plusieurs fois le même type de bâtiment (par exemple, trois théâtres).
-
-  * On doit pouvoir calculer le **score culturel d'une ville**. Le score culturel est calculé en fonction de tous les bâtiments que possède la ville, selon les règles suivantes :
-
-    * Pour chaque **musée** que comporte la ville, on ajoute au score le **nombre d'oeuvres** que possède le musée ainsi que le **bonus** associé au thème du musée.
-
-    * Pour chaque **théâtre** que comporte la ville, on ajoute au score le **nombre d'entrées** du théâtre.
-
-    * Pour chaque **statue**, que comporte la ville, on ajoute le **prix de construction** de la statue ainsi que son **nombre de points de vie** actuel.
-
-  * On doit pouvoir savoir si une ville est **majeure**. Une ville est **majeure** si elle possède au moins **10 bâtiments majeurs**. Les bâtiments majeurs sont les **palais** et les **banques**.
-
-2. Implémentez les méthodes `calculerScoreCulturel`, `compterBatimentsMajeurs` et `estMajeure` de la classe `Ville` en respectant les contraintes définies au point précédent. **Attention** dans le futur, on souhaitera éventuellement ajouter de nouveaux types de bâtiments qui pourraient influer sur le score culturel d'une ville, ou qui pourraient être majeurs. Dans ce cas, il faudra que votre conception permette cet ajout facilement sans avoir à modifier la classe `Ville`.
-
-3. Une classe de test unitaire est présente dans `test/java/ocp3`. Lisez les tests et exécutez-les afin de vérifier que votre solution fonctionne.
-
-</div>
-
 Nous allons maintenant tester votre compréhension des deux principes (`S` et `O`) avec un nouvel exercice un peu différent de ce que vous avez vu jusqu'ici, dans sa forme.
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `ocp4`. Ce projet permet de gérer un paquet de 52 cartes, de le trier, de le mélanger... Exécutez le programme pour observer le rendu. Deux méthodes de tri sont possibles. On définit la méthode de tri utilisée quand on construit l'objet et on peut la changer à tout moment avec un `setter`.
+1. Ouvrez le paquetage `ocp3`. Ce projet permet de gérer un paquet de 52 cartes, de le trier, de le mélanger... Exécutez le programme pour observer le rendu. Deux méthodes de tri sont possibles. On définit la méthode de tri utilisée quand on construit l'objet et on peut la changer à tout moment avec un `setter`.
 
 2. On aimerait ajouter une nouvelle méthode de tri par **bulles**. Voici cet algorithme illustré sur un simple tableau d'entiers :
 
@@ -481,7 +451,7 @@ Le principe de responsabilités unique n'est pas respecté. Pour le `toString`, 
 
 3. Testez que tout fonctionne, essayez plusieurs méthodes de tri sur le paquet, notamment. Normalement, vous ne devez jamais éditer la classe `Paquet` si vous changez le tri utilisé.
 
-4. Générez le diagramme de classes de conception du paquetage `ocp4` (avec `IntelliJ`).
+4. Générez le diagramme de classes de conception du paquetage `ocp3` (avec `IntelliJ`).
 
 </div>
 
@@ -702,7 +672,7 @@ class SalarieResponsableStagiaires extends SalarieDecorateur {
 
 2. Testez que tout fonctionne comme auparavant.
 
-3. Générez le **diagramme de classes de conception** (avec `IntelliJ`) du paquetage `ocp5`.
+3. Générez le **diagramme de classes de conception** (avec `IntelliJ`) du paquetage `ocp4`.
 
 </div>
 
@@ -716,13 +686,17 @@ En fait, ce modèle est réutilisable et adaptable à d'autres situations (nous 
 
 Certains développeurs abusent de l'**héritage** par facilité au lieu d'utiliser d'autres solutions comme la **composition** d'objets. Un "mauvais" héritage est un héritage pour lequel il n'existe pas vraiment de relation de spécialisation entre la superclasse et la sous-classe. La sous-classe ne représente alors pas le même concept que sa classe mère, ce n'est pas réellement une spécialisation.
 
-Tout cela occasionne parfois des problèmes inattendus qui sont mis en lumière par le principe de **substitution de Liskov**.
+Tout cela occasionne parfois des problèmes inattendus qui sont mis en lumière par le principe de **substitution de Liskov** qui est fortement liée à la notion de **programmation par contrat**.
 
-Le principe de **substitution de Liskov** a été introduit par **Barbara Liskov** et énonce qu'un **objet** d'une superclasse donnée doit pouvoir être remplacée par une de ses **sous-classes** sans casser le fonctionnement du programme. Une méthode provenant à l'origine d'une superclasse et appelée sur la sous-classe devrait **respecter le contrat** défini dans la superclasse.
+Quand on parle de **programmation par contrat** cela signifie que chaque classe possède un ensemble de **règles** (implicites ou explicites) autour de ses **méthodes** : **pré-conditions**, **post-conditions**, **effet de bords**, etc. Globalement, quelqu'un qui utilise une instance d'une **classe** donnée sait à quoi s'attendre quand on appelle telle ou telle méthode. Par exemple, on sait qu'un appel à la méthode `add` sur une instance de `ArrayList` va ajouter l'élément à la fin de la collection.
+
+Le principe de **substitution de Liskov** a été introduit par **Barbara Liskov** et énonce qu'un **objet** d'une superclasse donnée doit pouvoir être remplacée par une de ses **sous-classes** sans "casser" le fonctionnement du programme. Une méthode provenant à l'origine d'une superclasse et appelée sur la sous-classe devrait **respecter le contrat** défini dans la superclasse.
+
+Par exemple, si on étend `ArrayList` pour faire un sous-type de collection spécialisé `MonArrayList` : si on redéfinit la méthode `add` dans `MonArrayList`, à la fin d'un appel à cette méthode, l'élément ajouté doit se trouver à la fin de la collection, comme spécifié dans le contrat de `ArrayList`. Peut-être que le chemin et la manière de faire aura été différente de la classe mère, mais le résultat est le même : un code qui utiliserait une instance de `ArrayList` pourrait être remplacé par `MonArrayList` sans perturbation du programme : les tests unitaires passeraient toujours, par exemple.
 
 L'utilisation inappropriée de l'héritage peut amener au non-respect de ce principe.
 
-Voici un scénario illustrant le problème de non-respect du principe de substitution de Liskov : on possède une classe `Rectangle` et on souhaite modéliser une classe `Carre`. D'ailleurs, en géométrie, un carré est une sorte de rectangle...
+Voici un scénario illustrant plus en détail le problème de non-respect du principe de substitution de Liskov : on possède une classe `Rectangle` et on souhaite modéliser une classe `Carre`. D'ailleurs, en géométrie, un carré est un sous-type de rectangle, non ?
 
 <div class="exercise">
 
@@ -738,7 +712,7 @@ Voici un scénario illustrant le problème de non-respect du principe de substit
 
 Avec cette modification, le principe de substitution de Liskov n'est toujours pas respecté ! En effet, si on utilise `Carre` comme un `Rectangle`, des bugs étranges surviennent quand on utilise une méthode prévue pour un `Rectangle` (ici, la méthode **agrandirRectangle**). On ne peut pas substituer le rectangle par un carré sans produire de bugs logiques.
 
-Un autre "patch" possible serait d'ajouter une fonction `setTailleCote` dans `Carre` et redéfinition des fonctions `setHauteur` et `setLargeur` dans `Rectangle` de façon à ce qu'elles ne fassent rien :
+Une autre mauvaise solution possible serait d'ajouter une fonction `setTailleCote` dans `Carre` et de redéfinir les fonctions `setHauteur` et `setLargeur` dans `Rectangle` de façon à ce qu'elles ne fassent rien :
 
 ```java
 class Carre extends Rectangle {
@@ -761,11 +735,11 @@ class Carre extends Rectangle {
 }
 ```
 
-Mais dans ce cas, on ne peut plus utiliser `Carre` comme un `Rectangle` et en plus :
-* on crée des méthodes qui ne font rien et qui polluent le code
-* on duplique le code de `setHauteur` et `setLargeur` dans `Carre` dans `setTailleCote` !
+Mais dans ce cas, on ne peut plus utiliser `Carre` comme un `Rectangle` (one ne respecte toujours pas `LSP`) et en plus :
+* On crée des méthodes qui ne font rien et qui polluent le code.
+* On duplique le code de `setHauteur` et `setLargeur` dans `Carre` dans `setTailleCote` !
 
-Bref, cet héritage est une très mauvaise idée ! En fait, conceptuellement, en programmation, un carré n'est pas un rectangle spécialisé, car les règles pour la hauteur et la largeur sont différentes...cela peut être un peu dur à accepter.
+Bref, cet héritage est une très mauvaise idée ! En fait, conceptuellement, en programmation, un carré n'est pas un rectangle spécialisé, car les règles pour la hauteur et la largeur sont différentes... Cela peut être un peu dur à accepter.
 
 Si on souhaite quand même utiliser un rectangle dans un carré (pour ne pas dupliquer le calcul de l'aire ou des autres méthodes, par exemple) on peut éventuellement utiliser une **composition** comme nous l'avons vu dans l'exercice sur les comptes bancaires, en interdisant à un `Carre` de redéfinir sa hauteur et sa largeur.
 
@@ -781,7 +755,7 @@ Si on souhaite quand même utiliser un rectangle dans un carré (pour ne pas dup
     }
     ```
 
-2. Modifiez la classe `Carre` afin qu'elle n'étende plus la classe `Rectangle` mais implémente l'interface `FigureRectangulaire` et utilise plutôt une **composition** avec un objet de type `Rectangle` (en attribut de la classe) :
+2. Modifiez la classe `Carre` afin qu'elle n'étende plus la classe `Rectangle`, mais implémente l'interface `FigureRectangulaire` et utilise plutôt une **composition** avec un objet de type `Rectangle` (en attribut de la classe) :
 
     * On utilise une composition avec un rectangle, donc il n'y a pas besoin d'attribut `tailleCote` dans la classe. Cela est stocké au niveau du rectangle.
 
@@ -870,26 +844,6 @@ Bref, conceptuellement, une `Pile` n'est pas un `Vector` spécial, mais bien une
 </div>
 
 Eh oui, même les concepteurs de `Java` ont fait quelques bêtises lors du développement du langage. Et il n'est plus possible de supprimer cette classe après coup pour ne pas causer de problèmes de compatibilité. La seule chose à faire est de déprécier cette classe et de conseiller une nouvelle solution mieux conçue (la classe `Deque`). D'où l'importance de bien penser sa conception !
-
-Vous allez maintenant effectuer un dernier exercice pour vous assurer de la compréhension de ce principe SOLID.
-
-<div class="exercise">
-
-1. Ouvrez le paquetage `lsp3`. Il s'agit d'une application de gestion de comptes bancaires. Le **contrat** de la classe `CompteBancaire` est qu'on puisse consulter son solde, retirer de l'argent d'un compte (sans passer son solde en négatif) et en déposer autant d'argent qu'on souhaite.
-
-2. Complétez la classe `CompteBancaireAvecPlafond` : cette classe doit lever une exception `throw new RuntimeException("On ne peut pas déposer plus que le plafond du compte.")` si on essaye d'ajouter de l'argent qui ferait dépasser au solde le plafond du compte. On souhaite garder l'héritage avec `CompteBancaire`.
-
-3. Complétez la classe `CompteBancaireAvecNombreRetraitMaximum` : cette classe doit compter le nombre de retraits effectués et lever une exception `throw new RuntimeException("Nombre maximal de retraits atteint!")` si on essaye de retirer trop de fois (si le nombre de retraits effectués est supérieur au nombre de retraits maximum). On souhaite garder l'héritage avec `CompteBancaire`.
-
-4. Pour valider, exécutez les tests unitaires contenus dans les trois classes de tests dans `test/java/lsp3`. 
-
-5. Décommentez les tests `testDeposerCompteBancaireAvecPlafond` et `testRetirerCompteBancaireAvecNombreRetraitMaximum` puis exécutez-les. Pourquoi ne passent-ils pas ? Pourquoi votre implémentation ne respecte pas le **principe de substitution de liskov** ?
-
-6. Refactorez votre code afin de supprimer l'héritage vers `CompteBancaire` et ainsi ne plus violer le principe `LSP` les deux tests unitaires `testDeposerCompteBancaireAvecPlafond` et `testRetirerCompteBancaireAvecNombreRetraitMaximum` ne devraient plus compiler, vous pouvez les supprimer (car ils n'ont plus lieu d'être).
-
-7. **Bonus** : comment pourrait-on faire pour avoir des comptes bancaires qui combinent les fonctionnalités de plafond et de nombre de retraits maximum, et peut-être d'autres fonctionnalités à l'avenir ? **Si et seulement si le temps le permet**, refactorez votre code pour rendre cela possible (et adaptez vos tests unitaires en conséquence).
-
-</div>
 
 ### Principe de ségrégation des interfaces (Interface segregation)
 
@@ -1130,7 +1084,7 @@ Tout d'abord, illustrons ce principe avec un exemple.
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `dip1`. Dans ce projet, il y a une classe `Etudiant` et une classe `CompteUniversitaire`. Un compte universitaire est détenu par un étudiant. On utilise son nom et son prénom pour générer un login.
+1. Ouvrez le paquetage `dip`. Dans ce projet, il y a une classe `Etudiant` et une classe `CompteUniversitaire`. Un compte universitaire est détenu par un étudiant. On utilise son nom et son prénom pour générer un login.
 
 2. Ajoutez une classe **Enseignant** qui possède un nom, un prénom et définit des **getters** pour ces deux attributs.
 
@@ -1208,7 +1162,7 @@ class B implements I_Exemple {
 }
 ```
 
-Bien, je peux maintenant utiliser un `I_Exemple` dans `Service` au lieu de `A` ou `B`... Mais il reste un problème ! Dans l'exemple d'origine, `A` était instancié dans le constructeur. Hors, on ne peut pas instancier une interface ou une classe abstraite (seulement une classe concrète) :
+Bien, je peux maintenant utiliser un `I_Exemple` dans `Service` au lieu de `A` ou `B`... Mais il reste un problème ! Dans l'exemple d'origine, `A` était instancié dans le constructeur. Or, on ne peut pas instancier une interface ou une classe abstraite (seulement une classe concrète). Et on ne peut pas spécifier directement quelle classe concrète est utilisée, car notre classe `Service` ne sera alors plus modulable :
 
 ```java
 class Service {
@@ -1225,7 +1179,7 @@ class Service {
 }
 ```
 
-Pour palier à ce problème, on utilise **l'injection de dépendance**. La classe concrète est injectée via le constructeur, au moment de l'instanciation de l'objet, mais la classe ne connait que le type abstrait. Cela permet une modularité de la classe qui peut alors être utilisée avec n'importe quel service concret dérivé du type abstrait. Et on peut en ajouter dans le futur. C'est exactement ce que nous avions fait avec le paquet de cartes et les tris avec le pattern **stratégie**, mais également avec le **décorateur** dans l'exercice avec les produits. L'injection de dépendance est partout !
+Pour palier à ce problème, on utilise **l'injection de dépendance**. La classe concrète est injectée via le constructeur, au moment de l'instanciation de l'objet, mais la classe ne connaît que le type abstrait. Cela permet une modularité de la classe qui peut alors être utilisée avec n'importe quel service concret dérivé du type abstrait. Et on peut en ajouter dans le futur. C'est exactement ce que nous avions fait avec le paquet de cartes et les tris avec le pattern **stratégie**, mais également avec le **décorateur** dans l'exercice avec les produits. L'injection de dépendance est partout !
 
 ```java
 class Service {
@@ -1283,17 +1237,115 @@ De cette manière, **l'inversion des dépendances** est respectée. La classe `S
 5. Le compte de "_Tarembois Guy_" doit être généré en utilisant le générateur de login simple et celui de "_Bricot Judas_" avec le générateur par mélange. Testez.
 </div>
 
+## Exercices finaux
+
+Dans cette section, vous allez travailler sur un ensemble d'exercices "de synthèse" qui reprennent les notions abordées dans ce TP. L'idée est que vous identifiez le problème et mettiez en place une solution adéquate et respectueuse des **principes SOLID**.
+
+### Villes et bâtiments
+
+<div class="exercise">
+
+1. Ouvrez le paquetage `final1`. Ce projet modélise le fonctionnement d'un jeu dans lequel on peut construire sa propre **ville** (qui peut être éventuellement attaquée par d'autres joueurs) :
+
+  * Une ville possède différents types de **bâtiments**. 
+  
+  * Un **bâtiment** est caractérisé par : un **nombre de points de vie maximum** (`pvMax`) et un **nombre de points de vie actuels** (`pv` qui est égal au maximum au début et qui peut diminuer si le bâtiment est attaqué). Vous pouvez voir tout cela dans la classe `Batiment`.
+
+  * Chaque **bâtiment** possède (éventuellement) ses propres caractéristiques.
+
+  * Une ville peut posséder plusieurs fois le même type de bâtiment (par exemple, trois théâtres).
+
+  * On doit pouvoir calculer le **score culturel d'une ville**. Le score culturel est calculé en fonction de tous les bâtiments que possède la ville, selon les règles suivantes :
+
+    * Pour chaque **musée** que comporte la ville, on ajoute au score le **nombre d'oeuvres** que possède le musée ainsi que le **bonus** associé au thème du musée.
+
+    * Pour chaque **théâtre** que comporte la ville, on ajoute au score le **nombre d'entrées** du théâtre.
+
+    * Pour chaque **statue**, que comporte la ville, on ajoute le **prix de construction** de la statue ainsi que son **nombre de points de vie** actuel.
+
+  * On doit pouvoir savoir si une ville est **majeure**. Une ville est **majeure** si elle possède au moins **10 bâtiments majeurs**. Les bâtiments majeurs sont les **palais** et les **banques**.
+
+2. Implémentez les méthodes `calculerScoreCulturel`, `compterBatimentsMajeurs` et `estMajeure` de la classe `Ville` en respectant les contraintes définies au point précédent. **Attention** dans le futur, on souhaitera éventuellement ajouter de nouveaux types de bâtiments qui pourraient influer sur le score culturel d'une ville, ou qui pourraient être majeurs. Dans ce cas, il faudra que votre conception permette cet ajout facilement sans avoir à modifier la classe `Ville`.
+
+3. Une classe de test unitaire est présente dans `test/java/final1`. Lisez les tests et exécutez-les afin de vérifier que votre solution fonctionne.
+
+</div>
+
+### Comptes bancaires
+
+<div class="exercise">
+
+1. Ouvrez le paquetage `final2`. Il s'agit d'une application de gestion de comptes bancaires. Le **contrat** de la classe `CompteBancaire` est qu'on puisse consulter son solde, retirer de l'argent d'un compte (sans passer son solde en négatif) et en déposer autant d'argent qu'on souhaite.
+
+2. Complétez la classe `CompteBancaireAvecPlafond` : cette classe doit lever une exception `throw new RuntimeException("On ne peut pas déposer plus que le plafond du compte.")` si on essaye d'ajouter de l'argent qui ferait dépasser au solde le plafond du compte. On souhaite garder l'héritage avec `CompteBancaire`.
+
+3. Complétez la classe `CompteBancaireAvecNombreRetraitMaximum` : cette classe doit compter le nombre de retraits effectués et lever une exception `throw new RuntimeException("Nombre maximal de retraits atteint!")` si on essaye de retirer trop de fois (si le nombre de retraits effectués est supérieur au nombre de retraits maximum). On souhaite garder l'héritage avec `CompteBancaire`.
+
+4. Pour valider, exécutez les tests unitaires contenus dans les trois classes de tests dans `test/java/final2`. 
+
+5. Décommentez les tests `testDeposerCompteBancaireAvecPlafond` et `testRetirerCompteBancaireAvecNombreRetraitMaximum` puis exécutez-les. Pourquoi ne passent-ils pas ? Quel est le principe **SOLID** est violé par votre code ?
+
+6. Réfactorez votre code afin de supprimer l'héritage vers `CompteBancaire` et ainsi ne plus violer un *certain* principe SOLID. Les deux tests unitaires `testDeposerCompteBancaireAvecPlafond` et `testRetirerCompteBancaireAvecNombreRetraitMaximum` ne devraient plus compiler, vous pouvez les supprimer (car ils n'ont plus lieu d'être).
+
+7. **Bonus** : comment pourrait-on faire pour avoir des comptes bancaires qui combinent les fonctionnalités de plafond et de nombre de retraits maximum, et peut-être d'autres fonctionnalités à l'avenir ? **Si et seulement si le temps le permet**, réfactorez votre code pour rendre cela possible (et adaptez vos tests unitaires en conséquence).
+
+</div>
+
+### Serveurs à louer
+
+<div class="exercise">
+
+1. Ouvrez le paquetage `final3`. Il s'agit d'une application de gestion d'une entreprise qui loue des **serveurs** dédiés. Chaque serveur possède notamment un certain montant de **mémoire vive** (en Go), un **processeur** et un **prix mensuel** (à payer par le client qui loue le serveur). L'entreprise propose trois **offres** de serveurs configurés différemment et avec des coûts mensuels plus ou moins élevés : un serveur **basique**, un serveur **intermédiaire** et un serveur **pro**. Sur chaque **serveur**, on peut réaliser certaines actions :
+
+  * Calculer le montant mensuel à payer pour louer le serveur (`calculerPrixMensuel`).
+
+  * Récupérer le montant de mémoire vive (`getMemoireVive`)
+
+  * Récupérer le processeur utilisé (`getCategorieProcesseur`)
+
+  * Allumer le serveur (`allumer`).
+
+  * Éteindre le serveur (`eteindre`).
+
+  * Ouvrir un ticket, s'il y a un problème, pour être aidé par un technicien (`ouvrirTicket`).
+
+  * Fermer un ticket (`fermerTicket`).
+
+2. On aimerait pouvoir ajouter divers **services optionnels** à un **serveur** :
+
+  * Serveur avec plus de mémoire vive :
+
+  * Serveur avec sauvegarde des données :
+
+  * Serveur avec assurance :
+
+  * Serveur avec logs :
+
+3. Testez de créer divers serveurs avec des services (et vérifiez leur comportement : prix, allumage, tickets, etc) :
+
+  * Un serveur **basique** avec **4Go** de **mémoire vive supplémentaire** et un **fichier de log**.
+
+  * Un serveur **intermédiaire** avec la **sauvegarde des données** et une **assurance**.
+
+  * Un serveur **pro** avec **8Go** de **mémoire vive supplémentaire**, la **sauvegarde des données**, une **assurance** et un **fichier de log**.
+
+4. **Bonus** : comment pourrait-on faire pour que les services **assurance** et **sauvegarde des données** soient seulement réservés aux configurations intermédiaires et pros ? **Si et seulement si le temps le permet**, réfactorez votre code pour rendre cela possible.
+
+</div>
+
+### Une application modulable
+
 Pour finir, nous allons travailler sur un exercice un poil plus conséquent divisé en différentes **couches** (cf. partie architecture logicielle du cours sur les DSI).
 
 Vous allez voir qu'en plus de rendre notre projet modulable, utiliser **l'inversion de dépendances** et globalement **ne pas dépendre d'implémentations concrètes** est plus qu'important, car une architecture ne respectant pas ce principe peut occasionner des effets de bords indésirables lors des **tests unitaires**.
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `dip2`. Cette application permet de créer des utilisateurs, de hacher leur mot de passe, de se connecter... Il y a aussi un système de gestion de diverses erreurs. Prenez le temps d'examiner l'architecture, la répartition des classes. Exécutez le programme avec le `Main`.
+1. Ouvrez le paquetage `final4`. Cette application permet de créer des utilisateurs, de hacher leur mot de passe, de se connecter... Il y a aussi un système de gestion de diverses erreurs. Prenez le temps d'examiner l'architecture, la répartition des classes. Exécutez le programme avec le `Main`.
 
-2. Générez un **diagramme de classes de conception** du paquetage `dip2` (avec `IntelliJ`). Cela nous permettra de faire une comparaison après **refactoring**.
+2. Générez un **diagramme de classes de conception** du paquetage `final4` (avec `IntelliJ`). Cela nous permettra de faire une comparaison après **refactoring**.
 
-3. Une classe contenant des **tests unitaires** est présente dans `src/test/java/dip2/service/utilisateur`. Lancez les tests deux fois, tout devrait bien se passer.
+3. Une classe contenant des **tests unitaires** est présente dans `src/test/java/final4/service/utilisateur`. Lancez les tests deux fois, tout devrait bien se passer.
 
 4. On aimerait effectuer quelques changements dans le programme, notamment au niveau de `ServiceUtilisateur` :
 
@@ -1306,7 +1358,7 @@ Vous allez voir qu'en plus de rendre notre projet modulable, utiliser **l'invers
 5. Lancez maintenant les tests unitaires **2 fois de suite**. Il y a une erreur ! Trouvez la raison de cette erreur.
 </div>
 
-Comme dans l'exercice précédent, l'architecture proposée ne respecte pas le principe d'inversion des dépendances, car la classe `ServiceUtilisateur` possède des dépendances vers des classes **concrètes** qui, de plus, ne sont pas injectées.
+L'architecture proposée ne respecte pas le principe d'inversion des dépendances, car la classe `ServiceUtilisateur` possède des dépendances vers des classes **concrètes** qui, de plus, ne sont pas injectées.
 
 On se rend compte que cela pose un véritable problème au niveau des **tests unitaire**. Un test **unitaire**, comme son nom l'indique, teste le fonctionnement d'**une classe**, une **unité**. Or, quand on exécute les tests sur `ServiceUtilisateur`, les méthodes des dépendances concrètes utilisées sont aussi appelées ! Ce qui déclenche donc réellement l'enregistrement de l'utilisateur créé pour les tests dans la base de donnée, alors qu'on souhaitait simplement vérifier la méthode `creerUtilisateur`. Quand les tests sont exécutés une seconde fois, une erreur est détectée, car l'utilisateur existe déjà.
 
@@ -1316,7 +1368,7 @@ Les tests unitaires **ne doivent pas dépendre de l'environnement de production*
 
 Vous avez sans doute constaté des messages **mail envoyé** lors de l'exécution des tests unitaires. Bien sûr, cela n'est pas vraiment le cas, mais de même, dans un cas concret, avec la conception actuelle, des mails seraient véritablement envoyés lors du test du programme (après création d'un utilisateur). C'est problématique.
 
-Pour palier à cela, les testeurs mettent en place des **stubs**. Il s'agit de classes **bouchons** qui ne réalisent pas vraiment l'action demandée, ou alors pas de manière persistante. Aucun effet de bord est produit.
+Pour palier à cela, les testeurs mettent en place des **stubs**. Il s'agit de classes **bouchons** qui ne réalisent pas réellement l'action demandée, ou alors pas de manière persistante. Aucun effet de bord est produit.
 
 Plus tard, dans l'année, vous découvrirez les **mocks** qui permettent de créer de "fausses" classes destinées aux tests dont on peut facilement éditer les méthodes.
 
@@ -1358,7 +1410,7 @@ Il reste maintenant le problème des "mails envoyés" quand on exécute les test
 
 ## Conclusion
 
-Voilà, maintenant, vous savez tout des principes **SOLID** ! Vous êtes donc plus proche d'un ingénieur logiciel qu'un codeur. Il existe un acronyme opposé : les principes **STUPID** qui sont 6 pratiques qui rendent le code très peu qualitatif, intestable, non évolutif et qu'il faut donc absolument éviter ! Bref, des **mauvaises pratiques** qui sont souvent observées. Vous pouvez consulter de la documentation à ce propos [sur cette page](https://openclassrooms.com/en/courses/5684096-use-mvc-solid-principles-and-design-patterns-in-java/6417836-avoid-stupid-practices-in-programming).
+Voilà, maintenant, vous savez tout des principes **SOLID** ! Vous êtes donc plus proche d'un ingénieur logiciel qu'un codeur. Il existe un acronyme opposé : les principes **STUPID** qui sont six pratiques qui rendent le code très peu qualitatif, intestable, non évolutif et qu'il faut donc absolument éviter ! Bref, des **mauvaises pratiques** qui sont souvent observées. Vous pouvez consulter de la documentation à ce propos [sur cette page](https://openclassrooms.com/en/courses/5684096-use-mvc-solid-principles-and-design-patterns-in-java/6417836-avoid-stupid-practices-in-programming).
 
 Dorénavant, pour vos futurs projets (ou ceux actuels, comme la SAE) il faut systématiquement vous poser et réfléchir à la conception de votre programme **à long terme**. Il n'est jamais trop tard pour faire du **refactoring**, mais ne pas avoir besoin d'en faire en respectant une certaine qualité logicielle d'entrée de jeu est encore mieux.
 
