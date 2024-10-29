@@ -468,14 +468,14 @@ Maintenant, voyons une nouvelle situation, où les choses risquent d'être plus 
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `ocp4`. Dans ce projet, il y a une classe `Produit` permettant de gérer des produits et leurs prix. Ensuite, on a souhaité définir une classe `ProduitAvecReduction`, car certains produits proposent des réductions. Tout fonctionne pour le moment, comme vous pouvez le constater dans le `Main`.
+1. Ouvrez le paquetage `ocp4`. Dans ce projet, il y a une classe `Produit` permettant de gérer des produits, leurs prix et afficher leur description (leur nom). Ensuite, on a souhaité définir une classe `ProduitAvecReduction`, car certains produits proposent des réductions. Tout fonctionne pour le moment, comme vous pouvez le constater dans le `Main`.
 
-2. On souhaite maintenant ajouter un nouveau type de produit : les produits avec une date de péremption proche. Sur un tel produit, le prix est calculé en faisant une réduction de 50% sur le prix d'origine. Implémentez donc une classe `ProduitAvecDatePeremptionProche` héritant de `Produit` et réécrivez la méthode `getPrix`. Testez que votre nouveau type de produit a bien le comportement attendu en testant dans le `Main` (ou encore mieux, avec des tests unitaires !)
+2. On souhaite maintenant ajouter un nouveau type de produit : les produits avec une date de péremption proche. Sur un tel produit, le prix est calculé en faisant une réduction de 50% sur le prix d'origine. De plus, lors de l'affichage de la description du produit (son nom), on affiche en plus le message "Réduction de 50% appliquée". Implémentez donc une classe `ProduitAvecDatePeremptionProche` héritant de `Produit` et réécrivez les méthodes `getPrix` et `afficherDescription`. Testez que votre nouveau type de produit a bien le comportement attendu en testant dans le `Main` (ou encore mieux : avec des tests unitaires pour le prix !) en appelant les méthodes `getPrix` et `afficherDescription`.
 
-3. Maintenant, nous voulons qu'un produit puisse à la fois être un produit qui périme bientôt et un produit avec une réduction. C'est-à-dire que les deux **comportements** soient appliqués lors du calcul du prix. Est-il possible de créer une telle classe ou un tel comportement ?
+3. Maintenant, nous voulons qu'un produit puisse à la fois être un produit qui périme bientôt et un produit avec une réduction. C'est-à-dire que les deux **comportements** (réductions) soient appliqués lors du calcul du prix (lors d'un appel à `getPrix`) et que les messages correspondants aux deux types de produit soient affichés (lors d'un appel à `afficherDescription`). Est-il possible de créer une telle classe ou un tel comportement ?
 </div>
 
-Si vous vous êtes contenté uniquement de faire hériter `ProduitAvecDatePeremptionProche` de `Produit`, vous remarquerez qu'il est impossible d'avoir un même produit possédant ces deux fonctionnalités à la fois.
+Si vous vous êtes contenté uniquement de faire hériter `ProduitAvecDatePeremptionProche` de `Produit`, vous remarquerez qu'il est compliqué d'avoir un même produit possédant ces deux fonctionnalités à la fois, notamment car le multihéritage de classes n'est pas possible.
 
 Peut-être que vous avez été plus malin et que vous avez pensé à implémenter une classe héritant de `Produit` et implémentant les deux comportements. Mais dans ce cas, il y a de la **duplication de code**.
 
@@ -618,7 +618,7 @@ Aussi, le salarie n'est pas instancié dans la classe, il est **injecté** (autr
 
 1. Refactorez votre code afin de pouvoir créer un produit qui possède une réduction et qui a aussi une date de péremption proche.
 
-2. Créez un **Twix** avec pour prix de base **3€**, qui périme bientôt et qui a une réduction de 50 centimes. Testez que la valeur obtenue pour le prix est bien la bonne.
+2. Créez un **Twix** avec pour prix de base **3€**, qui périme bientôt et qui a une réduction de 50 centimes. Testez que la valeur obtenue pour le prix est bien la bonne et que l'affiche de la description du produit affiche bien toutes les informations.
 
 3. Inversez l'ordre de création du produit (le produit avec réduction est composé d'un produit avec une date de péremption proche ou l'inverse selon ce que vous avez fait à la question précédente). Est-ce que le prix obtenu est le même qu'à l'étape précédente ?
 
