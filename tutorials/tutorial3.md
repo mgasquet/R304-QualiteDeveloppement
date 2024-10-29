@@ -279,21 +279,21 @@ De même, dans la classe `Pokemon`, pour que le pokémon puisse se présenter av
 
 2. Ajoutez un nouveau type de pokémon : le pokémon type **électricité** qui possède les caractéristiques suivantes :
 
-  * En plus des attributs d'un `Pokemon` classique, un pokémon **électrique** possède un attribut entier `chargeMax` et un attribut booléen `superDecharge`.
+    * En plus des attributs d'un `Pokemon` classique, un pokémon **électrique** possède un attribut entier `chargeMax` et un attribut booléen `superDecharge`.
 
-  * Son nom d'attaque est **Eclair** et elle fait entre **20 dégâts** plus un **bonus de dégâts** entre **0** et la valeur de `chargeMax`. Si l'attribut `superDecharge` du pokémon vaut `true`, alors un autre **bonus de dégâts** de 20 est ajouté.
+    * Son nom d'attaque est **Eclair** et elle fait entre **20 dégâts** plus un **bonus de dégâts** entre **0** et la valeur de `chargeMax`. Si l'attribut `superDecharge` du pokémon vaut `true`, alors un autre **bonus de dégâts** de 20 est ajouté.
   
-  * Faites en sorte de prendre en charge ce nouveau type, **sans refactorer le code existant**, en créant une nouvelle classe `PokemonElectrique` et en ajoutant le code nécessaire là où il faut.
+    * Faites en sorte de prendre en charge ce nouveau type, **sans refactorer le code existant**, en créant une nouvelle classe `PokemonElectrique` et en ajoutant le code nécessaire là où il faut.
 
 3. Ajoutez un nouveau type de pokémon : le pokémon type **psy** qui possède les caractéristiques suivantes :
 
-  * En plus des attributs d'un `Pokemon` classique, un pokémon **psy** possède un attribut entier `bonusPsy`.
+    * En plus des attributs d'un `Pokemon` classique, un pokémon **psy** possède un attribut entier `bonusPsy`.
 
-  * Son nom d'attaque est **Choc mental** et elle fait précisément 30 * `bonusPsy` dégâts.
+    * Son nom d'attaque est **Choc mental** et elle fait précisément 30 * `bonusPsy` dégâts.
 
-  * Faites en sorte de prendre en charge ce nouveau type, **sans refactorer le code existant**, en créant une nouvelle classe `PokemonPsy` et en ajoutant le code nécessaire là où il faut.
+    * Faites en sorte de prendre en charge ce nouveau type, **sans refactorer le code existant**, en créant une nouvelle classe `PokemonPsy` et en ajoutant le code nécessaire là où il faut.
 
-4. Modifiez le `Main` pour faire combattre un pokémon possédant le type **électrique** contre un pokémon possédant le type **psy**. **Attention**, il ne faut pas modifier les autres classes créées auparavant ! Vérifiez que le type des deux pokémons s'affichent bien au début du combat (sinon, c'est que vous avez manqué quelque-chose!). 
+4. Modifiez le `Main` pour faire combattre un pokémon possédant le type **électrique** contre un pokémon possédant le type **psy**. **Attention**, il ne faut pas modifier les autres classes créées auparavant ! Vérifiez que le type des deux pokémons s'affichent bien au début du combat (sinon, c'est que vous avez manqué quelque-chose !). 
 
 </div>
 
@@ -1248,23 +1248,23 @@ Dans cette section, vous allez travailler sur un ensemble d'exercices "bilan" qu
 
 1. Ouvrez le paquetage `bilan1`. Ce projet modélise le fonctionnement d'un jeu dans lequel on peut construire sa propre **ville** (qui peut être éventuellement attaquée par d'autres joueurs) :
 
-  * Une ville possède différents types de **bâtiments**. 
-  
-  * Un **bâtiment** est caractérisé par : un **nombre de points de vie maximum** (`pvMax`) et un **nombre de points de vie actuels** (`pv` qui est égal au maximum au début et qui peut diminuer si le bâtiment est attaqué). Vous pouvez voir tout cela dans la classe `Batiment`.
+    * Une ville possède différents types de **bâtiments**. 
+    
+    * Un **bâtiment** est caractérisé par : un **nombre de points de vie maximum** (`pvMax`) et un **nombre de points de vie actuels** (`pv` qui est égal au maximum au début et qui peut diminuer si le bâtiment est attaqué). Vous pouvez voir tout cela dans la classe `Batiment`.
 
-  * Chaque **bâtiment** possède (éventuellement) ses propres caractéristiques.
+    * Chaque **bâtiment** possède (éventuellement) ses propres caractéristiques.
 
-  * Une ville peut posséder plusieurs fois le même type de bâtiment (par exemple, trois théâtres).
+    * Une ville peut posséder plusieurs fois le même type de bâtiment (par exemple, trois théâtres).
 
-  * On doit pouvoir calculer le **score culturel d'une ville**. Le score culturel est calculé en fonction de tous les bâtiments que possède la ville, selon les règles suivantes :
+    * On doit pouvoir calculer le **score culturel d'une ville**. Le score culturel est calculé en fonction de tous les bâtiments que possède la ville, selon les règles suivantes :
 
-    * Pour chaque **musée** que comporte la ville, on ajoute au score le **nombre d'oeuvres** que possède le musée ainsi que le **bonus** associé au thème du musée.
+      * Pour chaque **musée** que comporte la ville, on ajoute au score le **nombre d'oeuvres** que possède le musée ainsi que le **bonus** associé au thème du musée.
 
-    * Pour chaque **théâtre** que comporte la ville, on ajoute au score le **nombre d'entrées** du théâtre.
+      * Pour chaque **théâtre** que comporte la ville, on ajoute au score le **nombre d'entrées** du théâtre.
 
-    * Pour chaque **statue**, que comporte la ville, on ajoute le **prix de construction** de la statue ainsi que son **nombre de points de vie** actuel.
+      * Pour chaque **statue**, que comporte la ville, on ajoute le **prix de construction** de la statue ainsi que son **nombre de points de vie** actuel.
 
-  * On doit pouvoir savoir si une ville est **majeure**. Une ville est **majeure** si elle possède au moins **10 bâtiments majeurs**. Les bâtiments majeurs sont les **palais** et les **banques**.
+    * On doit pouvoir savoir si une ville est **majeure**. Une ville est **majeure** si elle possède au moins **10 bâtiments majeurs**. Les bâtiments majeurs sont les **palais** et les **banques**.
 
 2. Implémentez les méthodes `calculerScoreCulturel`, `compterBatimentsMajeurs` et `estMajeure` de la classe `Ville` en respectant les contraintes définies au point précédent. **Attention** dans le futur, on souhaitera éventuellement ajouter de nouveaux types de bâtiments qui pourraient influer sur le score culturel d'une ville, ou qui pourraient être majeurs. Dans ce cas, il faudra que votre conception permette cet ajout facilement sans avoir à modifier la classe `Ville`.
 
@@ -1298,79 +1298,79 @@ Dans cette section, vous allez travailler sur un ensemble d'exercices "bilan" qu
 
 1. Ouvrez le paquetage `bilan3`. Il s'agit d'une application de gestion d'une entreprise qui loue des **serveurs** dédiés. Chaque serveur possède notamment un certain montant de **mémoire vive** (en Go), un **processeur** et un **prix mensuel** (à payer par le client qui loue le serveur). L'entreprise propose trois **offres** de serveurs configurés différemment et avec des coûts mensuels plus ou moins élevés : un serveur **basique**, un serveur **intermédiaire** et un serveur **pro**. Sur chaque **serveur**, on peut réaliser certaines actions :
 
-  * Calculer le montant mensuel à payer pour louer le serveur (`calculerPrixMensuel`).
+    * Calculer le montant mensuel à payer pour louer le serveur (`calculerPrixMensuel`).
 
-  * Récupérer le montant de mémoire vive (`getMemoireVive`)
+    * Récupérer le montant de mémoire vive (`getMemoireVive`)
 
-  * Récupérer le processeur utilisé (`getCategorieProcesseur`)
+    * Récupérer le processeur utilisé (`getCategorieProcesseur`)
 
-  * Allumer le serveur (`allumer`).
+    * Allumer le serveur (`allumer`).
 
-  * Éteindre le serveur (`eteindre`).
+    * Éteindre le serveur (`eteindre`).
 
-  * Ouvrir un ticket, s'il y a un problème, pour être aidé par un technicien (`ouvrirTicket`).
+    * Ouvrir un ticket, s'il y a un problème, pour être aidé par un technicien (`ouvrirTicket`).
 
-  * Fermer un ticket (`fermerTicket`).
+    * Fermer un ticket (`fermerTicket`).
 
 2. On aimerait pouvoir ajouter divers **services optionnels** à un **serveur**. On vous demande d'implémenter une solution permettant de créer des serveurs disposant de certains de ces services optionnels :
 
-  * Serveur avec plus de mémoire vive : 
-    
-    * Le serveur dispose d'une extension de sa mémoire vive (nombre entier représentant des Go ajoutés).
-    * Quand le serveur est allumé, en plus des informations habituelles, on affiche la quantité de mémoire vive ajoutée.
-    * Le prix mensuel de location du serveur augmente de 5€ par Go de mémoire ajoutée. 
+    * Serveur avec plus de mémoire vive : 
+      
+      * Le serveur dispose d'une extension de sa mémoire vive (nombre entier représentant des Go ajoutés).
+      * Quand le serveur est allumé, en plus des informations habituelles, on affiche la quantité de mémoire vive ajoutée.
+      * Le prix mensuel de location du serveur augmente de 5€ par Go de mémoire ajoutée. 
 
-  * Serveur avec sauvegarde des données :
+    * Serveur avec sauvegarde des données :
 
-    * Le serveur dispose d'un système de sauvegarde des données (que nous allons modéliser simplement par des messages).
-    * Quand le serveur est allumé, en plus des informations habituelles, on signale que la sauvegarde des données est disponible.
-    * Le prix mensuel de location du serveur augmente de 5€.
-    * Lorsque le serveur est éteint, on demande à l'utilisateur s'il souhaite créer un fichier de sauvegarde des données du serveur. S'il confirme, un message "Création et export d'un fichier de sauvegarde..." est affiché.
+      * Le serveur dispose d'un système de sauvegarde des données (que nous allons modéliser simplement par des messages).
+      * Quand le serveur est allumé, en plus des informations habituelles, on signale que la sauvegarde des données est disponible.
+      * Le prix mensuel de location du serveur augmente de 5€.
+      * Lorsque le serveur est éteint, on demande à l'utilisateur s'il souhaite créer un fichier de sauvegarde des données du serveur. S'il confirme, un message "Création et export d'un fichier de sauvegarde..." est affiché.
 
-    Pour réaliser la dernière fonctionnalité, vous pouvez vous servir de la fonction : `Utils.demander` qui permet de poser une question à un utilisateur et renvoie vrai ou faux (s'il répond oui ou non) :
+      Pour réaliser la dernière fonctionnalité, vous pouvez vous servir de la fonction : `Utils.demander` qui permet de poser une question à un utilisateur et renvoie vrai ou faux (s'il répond oui ou non) :
 
-    ```java
-    if(Utils.demander("Voulez-vous réaliser cette action ?")) {
-      System.out.println("Action...");
-    }
-    ```
+      ```java
+      if(Utils.demander("Voulez-vous réaliser cette action ?")) {
+        System.out.println("Action...");
+      }
+      ```
 
-  * Serveur avec assurance :
+    * Serveur avec assurance :
 
-    * Le serveur dispose d'un système d'assurance qui permet au client d'être dédommagé s'il rencontre trop de problèmes.
-    * Quand le serveur est allumé, en plus des informations habituelles, on signale que le serveur est couvert par une assurance.
-    * Le prix mensuel de location du serveur augmente de 10€.
-    * Lorsqu'un ticket est ouvert, un compteur comptant le nombre de tickets ouverts est incrémenté.
-    * Lorsqu'un ticket est fermé, ce compteur est décrémenté (pour simplifier, on dira qu'on ne ferme jamais un ticket s'il n'y a pas de tickets ouverts).
-    * Lors de l'ouverture d'un nouveau ticket, s'il y a déjà trois tickets d'ouverts, on affiche un message informant l'utilisateur qu'il sera remboursé de 10€ sur sa prochaine facture.
+      * Le serveur dispose d'un système d'assurance qui permet au client d'être dédommagé s'il rencontre trop de problèmes.
+      * Quand le serveur est allumé, en plus des informations habituelles, on signale que le serveur est couvert par une assurance.
+      * Le prix mensuel de location du serveur augmente de 10€.
+      * Lorsqu'un ticket est ouvert, un compteur comptant le nombre de tickets ouverts est incrémenté.
+      * Lorsqu'un ticket est fermé, ce compteur est décrémenté (pour simplifier, on dira qu'on ne ferme jamais un ticket s'il n'y a pas de tickets ouverts).
+      * Lors de l'ouverture d'un nouveau ticket, s'il y a déjà trois tickets d'ouverts, on affiche un message informant l'utilisateur qu'il sera remboursé de 10€ sur sa prochaine facture.
 
-  * Serveur avec logs :
+    * Serveur avec logs :
 
-    * Le serveur dispose d'un système qui permet d'avoir de garder une trace des événements qui se produisent sur le serveur : allumage, arrêt, ouverture et fermeture de tickets. Pour cela, on doit fournir un **nom de fichier** (chaîne de caractères) où les informations seront sauvegardées.
-    * Quand le serveur est allumé, en plus des informations habituelles, on signale que le système de log est activé, en indiquant le nom du fichier où sont sauvegardés les logs.
-    * Le prix mensuel de location du serveur n'augmente pas (option gratuite).
-    * Dès qu'un événement se produit (allumage, arrêt, ouverture et fermeture de tickets) l'information est reportée dans le fichier en indiquant la date de l'événement. Par exemple `[2024-10-29T17:44:22] : Serveur allumé`, etc.
+      * Le serveur dispose d'un système qui permet d'avoir de garder une trace des événements qui se produisent sur le serveur : allumage, arrêt, ouverture et fermeture de tickets. Pour cela, on doit fournir un **nom de fichier** (chaîne de caractères) où les informations seront sauvegardées.
+      * Quand le serveur est allumé, en plus des informations habituelles, on signale que le système de log est activé, en indiquant le nom du fichier où sont sauvegardés les logs.
+      * Le prix mensuel de location du serveur n'augmente pas (option gratuite).
+      * Dès qu'un événement se produit (allumage, arrêt, ouverture et fermeture de tickets) l'information est reportée dans le fichier en indiquant la date de l'événement. Par exemple `[2024-10-29T17:44:22] : Serveur allumé`, etc.
 
-    Pour réaliser la dernière fonctionnalité, vous pouvez vous servir de la fonction : `Utils.ecrireDansFichier` qui permet d'écrire une ligne dans un fichier, combiné à l'utilisation d'un objet `LocalDateTime` :
+      Pour réaliser la dernière fonctionnalité, vous pouvez vous servir de la fonction : `Utils.ecrireDansFichier` qui permet d'écrire une ligne dans un fichier, combiné à l'utilisation d'un objet `LocalDateTime` :
 
-    ```java
-    LocalDateTime time = LocalDateTime.now();
-    Utils.ecrireDansFichier(nomFichier, String.format("[%s] : %s\n", time, "Mon message"));
-    ```
-    
-    Normalement, le fichier sera sauvegardé à la racine de votre projet.
+      ```java
+      LocalDateTime time = LocalDateTime.now();
+      Utils.ecrireDansFichier(nomFichier, String.format("[%s] : %s\n", time, "Mon message"));
+      ```
+      
+      Normalement, le fichier sera sauvegardé à la racine de votre projet.
 
-    Il est conseillé de se créer une méthode (privée) afin de ne pas dupliquer le code.
+      Il est conseillé de se créer une méthode (privée) afin de ne pas dupliquer le code.
 
-    Pour les logs, on se contentera de messages simples : Serveur allumé, Serveur éteint, Ticket ouvert, Ticket Fermé.
+      Pour les logs, on se contentera de messages simples : Serveur allumé, Serveur éteint, Ticket ouvert, Ticket Fermé.
 
 3. Testez de créer divers serveurs avec des services (et vérifiez leur comportement : prix, allumage, tickets, etc) :
 
-  * Un serveur **basique** avec **4Go** de **mémoire vive supplémentaire** et un **fichier de log**.
+    * Un serveur **basique** avec **4Go** de **mémoire vive supplémentaire** et un **fichier de log**.
 
-  * Un serveur **intermédiaire** avec la **sauvegarde des données** et une **assurance**.
+    * Un serveur **intermédiaire** avec la **sauvegarde des données** et une **assurance**.
 
-  * Un serveur **pro** avec **8Go** de **mémoire vive supplémentaire**, la **sauvegarde des données**, une **assurance** et un **fichier de log**.
+    * Un serveur **pro** avec **8Go** de **mémoire vive supplémentaire**, la **sauvegarde des données**, une **assurance** et un **fichier de log**.
 
 4. **Bonus** : comment pourrait-on faire pour que les services **assurance** et **sauvegarde des données** soient seulement réservés aux configurations intermédiaires et pros ? **Si et seulement si le temps le permet**, réfactorez votre code pour rendre cela possible.
 
