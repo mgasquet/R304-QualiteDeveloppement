@@ -5,15 +5,6 @@ layout: tutorial
 lang: fr
 ---
 
-**Attention, si vous aviez déjà commencé ce TP lors de votre dernière séance, il faut mettre à jour votre dépôt local avec les dernières modifications du dépôt d'origine !** :
-
-```bash
-# Depuis le dossier de votre dépôt, en local.
-git remote add upstream git@gitlabinfo.iutmontp.univ-montp2.fr:qualite-de-developpement-semestre-3/tp3.git
-git fetch upstream
-git merge upstream/master master
-```
-
 Dans la première partie de cette ressource, nous avons parlé de **conception logicielle** et notamment comment modéliser cela à l'aide de **diagrammes de classes de conception** et de **diagrammes de séquences des interactions**.
 
 Cependant, savoir modéliser la conception ne garantit en rien la qualité de celle-ci. Un plan de construction d'un bâtiment peut être tout à fait valide d'un point de vue technique, mais donnera potentiellement une bâtisse qui s'écroulera dans quelques années si elle a été mal pensée.
@@ -63,15 +54,15 @@ Dans ce TP, nous allons étudier chaque principe et nous allons vous fournir du 
 
 Ensuite, nous allons voir comme un des principes **SOLID** permet de régler cela, et vous allez donc devoir **refactorer** les différentes applications. **Refactorer** du code (ou réusiner du code en français) signifie retravailler le code source du programme sans pour autant ajouter de nouvelles fonctionnalités à l'application. Il s'agit d'améliorer la qualité du code.
 
+**Attention** : Dans plusieurs exercices, il vous sera demandé de **générer un diagramme de classes** (avec `IntelliJ`). Il est fortement conseillé de prendre des **captures d'écran** de chaque diagramme de classes et de les sauvegarder dans un sous-dossier de votre dépôt. Certains diagrammes permettent de comparer l'évolution de l'architecture et des dépendances avant/après **refactoring**.
+
 <div class="exercise">
 
-1. Pour commencer, forkez [le dépôt gitlab suivant](https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/tp3) en le plaçant dans le namespace `qualite-de-developpement-semestre-3/etu/votrelogin`.
+1. Pour commencer, clonez en local le **dépôt gitlab** forké dans votre espace privé dans le cours de qualité de développement : [https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/etu/votre_login/tp3](https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/etu/votre_login/tp3) en remplaçant `votre_login` par le login que vous utilisez pour accéder au serveur gitlab du département.
 
-2. Clonez votre nouveau dépôt en local. Ouvre le projet avec `IntelliJ` et vérifiez qu'il n'y a pas d'erreur.
+2. Ouvrez le projet avec `IntelliJ` et vérifiez qu'il n'y a pas d'erreur.
 
-3. Pendant ce TP, on vous demandera de créer des **diagrammes UML** de conception (classes, séquences). Vous déposerez vos diagrammes dans un dossier `uml` (en image ou bien avec le fichier du projet **.mdj** si vous utilisez **StarUML**) que vous devrez créer à la racine du dépôt.
-
-4. À la fin de chaque séance, n'oubliez pas de faire un **push** vers votre dépôt distant sur **Gitlab**.
+3. À la fin de chaque séance, n'oubliez pas de faire un **push** vers votre dépôt distant sur **Gitlab**.
 
 </div>
 
@@ -170,11 +161,9 @@ class Main {
 }
 ```
 
-
-
 Ici, chaque classe à **une responsabilité unique** : si la logique pour envoyer un mail change, la classe **Email** n'est pas impactée.
 
-Le principe de responsabilité unique s'applique également aux **paquetages** : chaque paquetage est lié à une responsabilité du programme. Par exemple, sur le TP JDBC que vous faites en bases de données, chaque paquetage à un rôle (et donc une responsabilité) précis : IHM, controllers, services, stockage... (et on pourrait (même *devrait*) aller plus en détail).
+Le principe de responsabilité unique s'applique également aux **paquetages** : chaque paquetage est lié à une responsabilité du programme. Dans un logiciel plus complet, on aurait différents paquetages avec différents rôles : IHM, contrôleurs, services, stockage... (et on pourrait (même *devrait*) aller plus en détail).
 
 Ce principe semble assez facile à mettre en place, mais dans la réalité, on retrouve malheureusement des classes (et des paquetages) "fourre-tout" qui deviennent illisibles au fur et à mesure de l'évolution du programme. Si votre classe a trop de méthode, c'est peut-être qu'elle possède plus d'une responsabilité et que celles-ci pourraient être mieux réparties.
 
@@ -240,7 +229,7 @@ Voyons maintenant un autre exemple.
 
 4. L'idée est d'avoir deux classes : une première, gérant la forme rectangle et l'autre permettant de l'afficher. Mais pour autant, il ne faut pas dupliquer de code ! Refactorez votre code en conséquence afin de mettre en place cette nouvelle conception.
 
-5. Assurez-vous que tout fonctionne (il faudra sans doute adapter la `main`) et qu'il est bien possible d'avoir de créer des rectangles ne contenant aucune logique d'affichage et des rectangles qu'il est possible d'afficher.
+5. Assurez-vous que tout fonctionne (il faudra sans doute adapter le `main`) et qu'il est bien possible d'avoir de créer des rectangles ne contenant aucune logique d'affichage et des rectangles qu'il est possible d'afficher.
 
 </div>
 
@@ -248,15 +237,16 @@ Voyons maintenant un autre exemple.
 
 Après cette mise en bouche, il est temps d'attaquer de sérieux problèmes de conception en développant le **principe ouvert/fermé**. Ce principe est défini comme suit :
 
-"_Les entités d'un logiciel (classes, modules, fonctions) doivent être **ouverts** aux extensions, mais **fermés** aux modifications._" (Bertand Meyer).
+"_Les entités d'un logiciel (classes, modules, fonctions) doivent être **ouverts** aux extensions, mais **fermés** aux modifications._" (**Bertand Meyer**).
 
-En d'autres termes, il doit être possible d'étendre les fonctionnalités/le comportement d'une entité comme une classe sans pour autant avoir besoin de modifier son code source.
+En d'autres termes, il doit être possible d'étendre les fonctionnalités/le **comportement** d'une entité comme une classe **sans pour autant avoir besoin de modifier son code source**.
 
 Ce principe est un pilier fondamental de qualité de code. Avec ce principe, même une classe ou une librairie compilée (non modifiable) autorise le développeur à étendre les fonctionnalités proposées.
 
 Malheureusement, dans de nombreux projets, on rencontre fréquemment des classes violant ce principe, car mal conçues. Les symptômes sont généralement :
-* l'utilisation d'un énorme bloc `if/else if/else` ou d'un `switch case` qui grossit au fur et à mesure qu'on ajoute de nouvelles choses. Avec l'utilisation de `classes` et de l'héritage, on va en plus certainement se retrouver à utiliser des instructions `instanceof` (pour vérifier le type de l'objet) et de `cast` pour pouvoir utiliser des méthodes précises.
-* nécessité de dupliquer du code pour ajouter une nouvelle fonctionnalité (non-respect du principe [_DRY_](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself)).
+* Utilisation d'énormes blocs `if/else if/else` ou de blocs `switch case` qui grossisent au fur et à mesure qu'on ajoute de nouvelles choses. Avec l'utilisation de `classes` et de l'héritage, on va en plus certainement se retrouver à utiliser des instructions `instanceof` (pour vérifier le type de l'objet) et de `cast` pour pouvoir utiliser des méthodes précises.
+* Nécessité de dupliquer du code pour ajouter une nouvelle fonctionnalité (non-respect du principe [_DRY_](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself)).
+* Une classe mère qui dépend de ses classes filles.
 
 Pour vous mettre dans le bain et vous montrer la problématique derrière tout cela, vous allez ajouter de nouvelles fonctionnalités à des projets existants qui ne respectent pas le principe ouvert/fermé.
 
@@ -286,13 +276,23 @@ De même, dans la classe `Pokemon`, pour que le pokémon puisse se présenter av
 
 1. Ouvrez le paquetage `ocp2`. Explorez les classes. Étudiez notamment la classe `SimulateurCombat`.
 
-2. On souhaite ajouter un nouveau type de pokémon : le pokémon type **électricité**. Son attaque est **Eclair** et il fait entre 20 et 100 dégâts. Faites en sorte de prendre en charge ce nouveau type, **sans modifier la structure du code existant**.
+2. Ajoutez un nouveau type de pokémon : le pokémon type **électricité** qui possède les caractéristiques suivantes :
 
-3. On souhaite ajouter un nouveau type de pokémon : le pokémon type **psy**. Son attaque est **Choc mental** et il fait précisément 60 dégâts. Faites en sorte de prendre en charge ce nouveau type, **sans modifier la structure du code existant**.
+  * En plus des attributs d'un `Pokemon` classique, un pokémon **électrique** possède un attribut entier `chargeMax` et un attribut booléen `superDecharge`.
 
-4. Modifiez le `Main` pour faire combattre un pokémon possédant le type **électrique** contre un pokémon possédant le type **psy**. **Attention**, il ne faut pas modifier les autres classes créées auparavant !
+  * Son nom d'attaque est **Eclair** et elle fait entre **20 dégâts** plus un **bonus de dégâts** entre **0** et la valeur de `chargeMax`. Si l'attribut `superDecharge` du pokémon vaut `true`, alors un autre **bonus de dégâts** de 20 est ajouté.
+  
+  * Faites en sorte de prendre en charge ce nouveau type, **sans refactorer le code existant**, en créant une nouvelle classe `PokemonElectrique` et en ajoutant le code nécessaire là où il faut.
 
-5. Ajoutez encore un nouveau pokémon (avec le type, l'attaque et les dégâts de votre choix...)
+3. Ajoutez un nouveau type de pokémon : le pokémon type **psy** qui possède les caractéristiques suivantes :
+
+  * En plus des attributs d'un `Pokemon` classique, un pokémon **psy** possède un attribut entier `bonusPsy`.
+
+  * Son nom d'attaque est **Choc mental** et elle fait précisément 30 * `bonusPsy` dégâts.
+
+  * Faites en sorte de prendre en charge ce nouveau type, **sans refactorer le code existant**, en créant une nouvelle classe `PokemonPsy` et en ajoutant le code nécessaire là où il faut.
+
+4. Modifiez le `Main` pour faire combattre un pokémon possédant le type **électrique** contre un pokémon possédant le type **psy**. **Attention**, il ne faut pas modifier les autres classes créées auparavant ! Vérifiez que le type des deux pokémons s'affichent bien au début du combat (sinon, c'est que vous avez manqué quelque-chose!). 
 
 </div>
 
@@ -384,11 +384,11 @@ Ceci devrait vous permettre de refactorer le code du paquetage `ocp1` (animaux).
 
 1. Refactorez le code du paquetage `ocp1` afin de respecter le principe ouvert/fermé. Adaptez le `Main` en conséquence et vérifiez que tout fonctionne. Il ne doit plus être possible de gérer des animaux inconnus, et c'est bien normal !
 
-2. Réaliser un **diagramme de classes de conception** (hors Main) de l'application du paquetage `ocp2` (avant refactoring). Indiquez bien les **dépendances**.
+2. À l'aide d'`IntelliJ`, générez le **diagramme de classes de conception** de l'application du paquetage `ocp2` (avant refactoring). Pour cela, effectuez un **clic droit** sur le paquetage `ocp2` puis sélectionnez `Diagrams` et enfin `Show Diagrams`. Activez bien l'affichage de tous les éléments et notamment les **dépendances non triviales**.
 
 3. Refactorez le code du paquetage `ocp2` afin de respecter le principe ouvert/fermé. Adaptez le `Main` en conséquence et vérifiez que tout fonctionne.
 
-4. Réaliser un **diagramme de classes de conception** (hors Main) de l'application du paquetage `ocp2` (après refactoring). Indiquez bien les **dépendances**.
+4. Générez maintenant le **diagramme de classes de conception** de l'application du paquetage `ocp2` (après refactoring). Activez bien l'affichage de tous les éléments et notamment les **dépendances non triviales**.
 
 </div>
 
@@ -396,11 +396,41 @@ En comparant vos deux diagrammes de classes, on peut facilement voir ce qui diff
 
 Dans un code de qualité **les abstractions ne dépendent pas des implémentations**. En d'autres termes, une superclasse ne devrait pas dépendre de ses sous-classes. Seules les sous-classes peuvent dépendre de leurs parents (et on verra que parfois, là aussi, il faut faire attention lorsqu'on utilise l'héritage.). Sur votre premier diagramme, il est clair que ce principe n'est pas respecté, car `Pokemon` dépendait de ses différentes sous-classes, ce qui n'est plus les cas sur le deuxième diagramme.
 
-Nous allons mettre à l'épreuve votre compréhension des deux principes (`S` et `O`) avec un nouvel exercice un peu différent de ce que vous venez de voir, dans sa forme.
+Continuons dans notre lancée avec un nouvel exercice lié au principe ouvert/fermé, afin de mettre à l'épreuve votre compréhension ce principe.
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `ocp3`. Ce projet permet de gérer un paquet de 52 cartes, de le trier, de le mélanger... Exécutez le programme pour observer le rendu. Deux méthodes de tri sont possibles. On définit la méthode de tri utilisée quand on construit l'objet et on peut la changer à tout moment avec un `setter`.
+1. Ouvrez le paquetage `ocp3`. Ce projet modélise le fonctionnement d'un jeu dans lequel on peut construire sa propre **ville** (qui peut être éventuellement attaquée par d'autres joueurs) :
+
+  * Une ville possède différents types de **bâtiments**. 
+  
+  * Un **bâtiment** est caractérisé par : un **nombre de points de vie maximum** (`pvMax`) et un **nombre de points de vie actuels** (`pv` qui est égal au maximum au début et qui peut diminuer si le bâtiment est attaqué). Vous pouvez voir tout cela dans la classe `Batiment`.
+
+  * Chaque **bâtiment** possède (éventuellement) ses propres caractéristiques.
+
+  * Une ville peut posséder plusieurs fois le même type de bâtiment (par exemple, trois théâtres).
+
+  * On doit pouvoir calculer le **score culturel d'une ville**. Le score culturel est calculé en fonction de tous les bâtiments que possède la ville, selon les règles suivantes :
+
+    * Pour chaque **musée** que comporte la ville, on ajoute au score le **nombre d'oeuvres** que possède le musée ainsi que le **bonus** associé au thème du musée.
+
+    * Pour chaque **théâtre** que comporte la ville, on ajoute au score le **nombre d'entrées** du théâtre.
+
+    * Pour chaque **statue**, que comporte la ville, on ajoute le **prix de construction** de la statue ainsi que son **nombre de points de vie** actuel.
+
+  * On doit pouvoir savoir si une ville est **majeure**. Une ville est **majeure** si elle possède au moins **10 bâtiments majeurs**. Les bâtiments majeurs sont les **palais** et les **banques**.
+
+2. Implémentez les méthodes `calculerScoreCulturel`, `compterBatimentsMajeurs` et `estMajeure` de la classe `Ville` en respectant les contraintes définies au point précédent. **Attention** dans le futur, on souhaitera éventuellement ajouter de nouveaux types de bâtiments qui pourraient influer sur le score culturel d'une ville, ou qui pourraient être majeurs. Dans ce cas, il faudra que votre conception permette cet ajout facilement sans avoir à modifier la classe `Ville`.
+
+3. Une classe de test unitaire est présente dans `test/java/ocp3`. Lisez les tests et exécutez-les afin de vérifier que votre solution fonctionne.
+
+</div>
+
+Nous allons maintenant tester votre compréhension des deux principes (`S` et `O`) avec un nouvel exercice un peu différent de ce que vous avez vu jusqu'ici, dans sa forme.
+
+<div class="exercise">
+
+1. Ouvrez le paquetage `ocp4`. Ce projet permet de gérer un paquet de 52 cartes, de le trier, de le mélanger... Exécutez le programme pour observer le rendu. Deux méthodes de tri sont possibles. On définit la méthode de tri utilisée quand on construit l'objet et on peut la changer à tout moment avec un `setter`.
 
 2. On aimerait ajouter une nouvelle méthode de tri par **bulles**. Voici cet algorithme illustré sur un simple tableau d'entiers :
 
@@ -419,7 +449,7 @@ Nous allons mettre à l'épreuve votre compréhension des deux principes (`S` et
 
     Faites en sorte que la classe `Paquet` puisse effectuer un tri à bulles. 
     
-    Pour vous aider, vous pourrez utiliser la méthode `compareTo` qui permet de comparer deux cartes. Cette méthode renvoie un nombre négatif si la première carte est strictement inférieure à la seconde, 0 si elles sont égales et un nombre positif si la première carte est strictement supérieure à la seconde.
+    Pour vous aider, vous pourrez utiliser la méthode `compareTo` qui permet de comparer deux cartes. Cette méthode renvoie un nombre négatif si la première carte est strictement inférieure à la seconde, **0** si elles sont égales et un nombre positif si la première carte est strictement supérieure à la seconde.
 
 3. Testez que votre algorithme fonctionne bien en changeant la méthode de tri du paquet dans le `Main`.
 
@@ -447,13 +477,11 @@ Le principe de responsabilités unique n'est pas respecté. Pour le `toString`, 
 
     * Généralisez le tout avec une interface.
 
-    * Utilisez cette interface dans la classe `Paquet`, à la place de `typeTri`.
-
 2. Refactorez le code concernant le **mélange** afin de respecter le **principe de responsabilité unique**. Prévoyez aussi le cas où d'autres méthodes de mélanges pourraient être ajoutées. Comme pour le tri, on souhaite pouvoir définir la méthode de mélange dans le constructeur et la modifier via un setter.
 
 3. Testez que tout fonctionne, essayez plusieurs méthodes de tri sur le paquet, notamment. Normalement, vous ne devez jamais éditer la classe `Paquet` si vous changez le tri utilisé.
 
-4. Réalisez un diagramme de classes de conception votre application (sans la classe Main).
+4. Générez le diagramme de classes de conception du paquetage `ocp4` (avec `IntelliJ`).
 
 </div>
 
@@ -461,148 +489,9 @@ Les principes **SOLID** se combinent naturellement entre eux. D'ailleurs, si vou
 
 Encore mieux, vous venez d'utiliser votre premier **design pattern** au niveau des tris : **Stratégie**. Ce pattern permet **d'injecter** un comportement spécifique dans une classe sans en modifier le code source (et éventuellement, le modifier plus tard). Ce pattern s'appuie sur **ouvert/fermé**, **l'inversion des dépendances** et aide à renforcer **responsabilité unique**. C'est exactement ce que vous venez de faire : la méthode de tri du paquet est modulable et on peut même en ajouter des nouvelles dans le futur ! Et tout cela, sans modifier `Paquet`.
 
-À partir du diagramme de classes de conception que vous venez de réaliser, vous devriez être en mesure de généraliser le pattern **stratégie** à tout type de problème.
+À partir du diagramme de classes de conception que vous venez de générer, vous devriez être en mesure de généraliser le pattern **stratégie** à tout type de problème.
 
 ### Héritage, composition et principe ouvert-fermé
-
-Certains développeurs abusent de l'**héritage** par facilité au lieu d'utiliser d'autres solutions comme la **composition** d'objets. Un "mauvais" héritage est un héritage où il n'existe pas vraiment de relation de spécialisation entre la superclasse et la sous-classe. La sous-classe ne représente alors pas le même concept que sa classe mère, ce n'est pas vraiment une spécialisation.
-
-Tout cela occasionne des bugs parfois inattendus.
-
-<div class="exercise">
-
-1. Ouvrez le paquetage `heritage`. Dans ce programme, on gère des **comptes bancaires**. La première classe `CompteBancaire` permet d'effectuer des opérations et de gérer un **solde**. La deuxième classe `CompteBancaireAvecHistorique` permet de gérer l'**historique** de toutes les opérations réalisées. Il semble s'agir d'un compte bancaire spécialisé, on lui fait donc étendre la classe `CompteBancaire`.
-
-2. Une classe de test unitaire est présente dans `test/java/heritage`. Lisez les tests et exécutez-les. Tout devrait bien se passer.
-
-3. Le développeur à l'origine de la classe `CompteBancaire` souhaite revoir sa classe et résoudre la duplication de code. Pour cela, il va légèrement réfactorer afin d'éviter la duplication de code. Dans la méthode `effectuerTransactions` de  `CompteBancaire`, il souhaite donc plutôt appeler la méthode `effectuerTransaction`. Faites cette modification.
-
-4. Relancez les tests unitaires... Le second ne passe plus. Pourquoi ?
-
-5. Selon l'implémentation interne de `CompteBancaire`, l'appel de `effectuerTransactions` sur une classe fille provoque un bug (historique des opérations enregistrées en double). C'est là que vous pouvez remarquer qu'avoir un héritage impose une vigilance accrue : en refactorisant correctement le code de la classe mère, il se peut qu'on ait altéré le bon fonctionnement d'une de ses classes filles. Prudence donc... Heureusement, dans notre exemple le problème peut être facilement résolu en supprimant la duplication de code dans la classe `CompteBancaireAvecHistorique`. Faites-le !
-
-</div>
-
-Nous venons de voir que l'héritage impose une vigilance accrue lors du refactoring.
-
-<!-- Tout cela peut être réglé en utilisant de la **composition** au lieu d'un **héritage**. L'idée est que la classe "fille" n'hérite pas de la classe mère, mais possède à la place un attribut stockant une instance de cette classe et l'utilise. Si on a besoin que les deux classes soient du même type, on utilise une **interface**.
-
-Considérons l'exemple suivant :
-
-```java
-
-class A {
-
-  public void operation() {
-    //Code de l'opération...
-  }
-
-  //Execute operation n fois
-  public void operations(int n) {
-    for(int i = 0 ; i < n; i++) {
-      operation();
-    }
-  }
-
-}
-
-class B extends A {
-
-  @Override
-  public void operation() {
-      super.operation();
-      System.out.println("Execution d'une opération");
-  }
-
-  @Override
-  public void operations(int n) {
-    super.operations(n);
-    for(int i = 0 ; i < n; i++) {
-      System.out.println("Execution d'une opération");
-    }
-  }
-
-}
-```
-
-Ici, selon le code de la méthode `operations` de la classe `A`, on aura des résultats étranges. Ici, si on exécute `operations(n)` sur une classe de type `B`, on aura `n*2` affichage de `Execution d'une opération`. Si on change le code de `A`, on n'aura peut-être plus ce bug... (si le code est dupliqué).
-
-Bref, cela n'est pas bon. Pour éviter cela, on peut à la place définir une `interface` pour les méthodes utilisées dans `A` et `B` et mettre en place de la **composition** :
-
-```java
-
-public interface Operateur {
-   void operation();
-
-   void operations(int n);
-}
-
-class A implements Operateur {
-
-   @Override
-   public void operation() {
-      //Code de l'opération...
-   }
-
-   //Execute operation n fois
-   @Override
-   public void operations(int n) {
-      for(int i = 0 ; i < n; i++) {
-         operation();
-      }
-   }
-
-}
-
-class B implements Operateur {
-
-   private Operateur operateurParent;
-
-   public B(Operateur operateurParent) {
-      this.operateurParent = operateurParent;
-   }
-
-   //Ou bien, si on veut faire une véritable composition (et qu'on connait la classe mère précise)
-   public B() {
-      operateurParent = new A();
-   }
-
-   @Override
-   public void operation() {
-      operateurParent.operation();
-   }
-
-   @Override
-   public void operations(int n) {
-      operateurParent.operations(n);
-      for(int i = 0 ; i < n; i++) {
-         System.out.println("Execution d'une opération");
-      }
-   }
-
-}
-```
-
-<div style="text-align:center">
-![Heritage 1]({{site.baseurl}}/assets/TP3/Heritage1.svg){: width="25%" }
-</div>
-
-Maintenant, peu importe l'implémentation de `A`, il n'y aura plus jamais aucun bug de duplication des affichages.
-
-<div class="exercise">
-
-1. Définissez une interface `I_CompteBancaire` regroupant les signatures des méthodes `ajouterTransaction` et `ajouterTransactions`.
-
-2. Refactorez votre code en utilisant votre nouvelle interface et en remplaçant l'héritage par une **composition**.
-
-3. Adaptez les tests unitaires et vérifiez qu'ils passent.
-
-4. Remplacez l'appel à `ajouterTransaction` par une incrémentation du solde dans `ajouterTransactions` de la classe `CompteBancaire` (comme c'était le cas à l'origine). Vérifiez que les tests passent toujours.
-
-</div>
-
-Le fait d'utiliser de la composition au lieu de l'héritage est *généralement* une bonne pratique. Attention cependant, l'héritage peut parfois avoir un véritable intérêt quand il existe un lien fort entre la classe mère et les classes filles, comme c'était le cas avec les pokémons, par exemple.
--->
 
 Maintenant, voyons une nouvelle situation, où les choses risquent d'être plus compliquées notamment vis-à-vis du respect du principe **ouvert/fermé** !
 
@@ -612,15 +501,24 @@ Maintenant, voyons une nouvelle situation, où les choses risquent d'être plus 
 
 2. On souhaite maintenant ajouter un nouveau type de produit : les produits avec une date de péremption proche. Sur un tel produit, le prix est calculé en faisant une réduction de 50% sur le prix d'origine. Implémentez donc une classe `ProduitAvecDatePeremptionProche` héritant de `Produit` et réécrivez la méthode `getPrix`. Testez que votre nouveau type de produit a bien le comportement attendu en testant dans le `Main` (ou encore mieux, avec des tests unitaires !)
 
-3. Maintenant, nous voulons qu'un produit puisse à la fois être un produit qui périme bientôt et un produit avec une réduction. Est-il possible de créer une telle classe ou un tel comportement ?
+3. Maintenant, nous voulons qu'un produit puisse à la fois être un produit qui périme bientôt et un produit avec une réduction. C'est-à-dire que les deux **comportements** soient appliqués lors du calcul du prix. Est-il possible de créer une telle classe ou un tel comportement ?
 </div>
 
-Si vous vous êtes contenté uniquement de faire hériter `ProduitAvecDatePeremptionProche` de `Produit`, vous remarquerez qu'il est impossible d'avoir un même produit possédant ces deux fonctionnalités à la fois. Avec un héritage multiple, il y aurait pu y avoir une solution (moche), mais nous avons vu qu'il est déconseillé de faire cela et de toute façon, dans beaucoup de langages (dont Java), ce n'est pas possible.
+Si vous vous êtes contenté uniquement de faire hériter `ProduitAvecDatePeremptionProche` de `Produit`, vous remarquerez qu'il est impossible d'avoir un même produit possédant ces deux fonctionnalités à la fois.
 
-Tout en respectant le **principe ouvert/fermé**, il existe une méthode pour construire un `Produit` possédant autant de comportements mixtes que nous souhaitons. On peut le régler en [favorisant la **composition** au lieu d'un **héritage**](https://en.wikipedia.org/wiki/Composition_over_inheritance). L'idée est que la classe "fille" n'hérite pas de la classe mère en redéfinissant simplement les fonctions, mais possède à la place un attribut stockant une instance de cette classe et l'utilise. Si en plus, on a besoin que les deux classes soient du même type, alors on utilise une **interface**.
+Peut-être que vous avez été plus malin et que vous avez pensé à implémenter une classe héritant de `Produit` et implémentant les deux comportements. Mais dans ce cas, il y a de la **duplication de code**.
 
+Ou alors, peut-être que vous avez été encore plus malin et que vous avez pensé à faire une classe **composée** de deux instances des types de produit concernés. C'est déjà beaucoup mieux ! Mais que se passe-t-il si d'autres types de produit sont ajoutés ? Par exemple, si on a cinq types de produits différents et qu'on veut mixer au choix certaines fonctionnalités de certains types ? Il va quand même y avoir une duplication, à terme.
 
-Illustrons le problème et sa solution :
+Tout en respectant le **principe ouvert/fermé**, il existe une méthode générale pour construire un `Produit` possédant autant de comportements mixtes que nous souhaitons. Si de nouveaux comportements sont ajoutés dans le futur, il n'y aura pas de modification du code existant. On peut implémenter un tel système en [favorisant la **composition** au lieu d'un **héritage**](https://en.wikipedia.org/wiki/Composition_over_inheritance). L'idée est la suivante :
+
+* La classe "mère" définie une interface (abstraction) qu'elle implémente : elle définit son contrat, ce que tous les objets du même type qu'elle doivent pouvoir faire.
+
+* La classe "fille" **n'hérite pas** de la classe mère en redéfinissant simplement les fonctions, mais possède à la place **un attribut stockant une instance de l’interface de la classe mère**. Elle implémente elle-même l'interface de la classe mère. Cette classe fille **délègue** une partie de l’exécution des **opérations** à l'instance qu'elle agrège et ajoute son propre **comportement**.
+
+* On peut ainsi développer plusieurs classes "filles" sous le même format et les concaténer lors de la création de l'objet, ajoutant ainsi plusieurs comportements de manière dynamique.
+
+Illustrons cela à travers un exemple :
 
 ```java
 class Salarie {
@@ -637,11 +535,11 @@ class Salarie {
 
 }
 
-class ChefProjet extends Salarie {
+class SalarieChefDeProjet extends Salarie {
 
    private int nombreProjetsGeres;
 
-   public ChefProjet(double salaire, int nombreProjetsGeres) {
+   public SalarieChefDeProjet(double salaire, int nombreProjetsGeres) {
       super(salaire);
       this.nombreProjetsGeres = nombreProjetsGeres;
    }
@@ -653,11 +551,11 @@ class ChefProjet extends Salarie {
 
 }
 
-class ResponsableDeStagiaires extends Salarie {
+class SalarieResponsableDeStagiaires extends Salarie {
 
    private int nombreStagiairesGeres;
 
-   public ResponsableDeStagiaires(double salaire, int nombreStagiairesGeres) {
+   public SalarieResponsableDeStagiaires(double salaire, int nombreStagiairesGeres) {
       super(salaire);
       this.nombreStagiairesGeres = nombreStagiairesGeres;
    }
@@ -674,12 +572,12 @@ Ici, même problème que pour les produits, si je veux un salarié qui est à la
 Comme souvent, l'héritage est le problème ici. Au lieu de faire un simple héritage entre les classes, nous pourrions plutôt utiliser des **compositions** sur les sous-types et créer ainsi des salariés incluant des salariés, incluant des salariés... ce qui permet de combiner la logique de chaque type ! 
 
 ```java
-interface I_Salarie {
+interface SalarieInterface {
   double getSalaire();
 }
 
 
-class Salarie implements I_Salarie {
+class Salarie implements SalarieInterface {
 
   private double salaire;
 
@@ -693,13 +591,13 @@ class Salarie implements I_Salarie {
 
 }
 
-class ChefProjet implements I_Salarie {
+class SalarieChefProjet implements SalarieInterface {
 
-  private I_Salarie salarie;
+  private SalarieInterface salarie;
 
   private int nombreProjetsGeres;
 
-  public ChefProjet(I_Salarie salarie, int nombreProjetsGeres) {
+  public SalarieChefProjet(SalarieInterface salarie, int nombreProjetsGeres) {
     this.salarie = salarie;
     this.nombreProjetsGeres = nombreProjetsGeres;
   }
@@ -711,13 +609,13 @@ class ChefProjet implements I_Salarie {
 
 }
 
-class ResponsableDeStagiaires implements I_Salarie {
+class SalarieResponsableDeStagiaires implements SalarieInterface {
 
-  private I_Salarie salarie;
+  private SalarieInterface salarie;
 
   private int nombreStagiairesGeres;
 
-  public ResponsableDeStagiaires(I_Salarie salarie, int nombreStagiairesGeres) {
+  public SalarieResponsableDeStagiaires(SalarieInterface salarie, int nombreStagiairesGeres) {
     this.salarie = salarie;
     this.nombreStagiairesGeres = nombreStagiairesGeres;
   }
@@ -737,11 +635,11 @@ Avec cette nouvelle architecture, nous pouvons créer des salariés qui sont che
 
 ```java
 //Salarié qui est chef de projet gérant 3 projets et aussi responsable de stagiaires gérant 5 stagiaires
-I_Salarie salarie = new ResponsableStagiaires(new ChefProjet(new Salarie(2000), 3), 5);
+SalarieInterface salarie = new SalarieResponsableStagiaires(new SalarieChefProjet(new Salarie(2000), 3), 5);
 salarie.getSalaire(); //Renvoie 2550
 ```
 
-Il est important de noter que la classe composée est `I_Salarie` et non pas `Salarie`! Sinon, on ne pourrait pas combiner `ChefProjet` avec `ResponsableStagiaires`.
+Il est important de noter que la classe composée est `SalarieInterface` et non pas `Salarie`! Sinon, on ne pourrait pas combiner `SalarieChefProjet` avec `SalarieResponsableStagiaires`.
 
 Aussi, le salarie n'est pas instancié dans la classe, il est **injecté** (autrement, cela ne fonctionnerait pas), comme ce que vous avez fait, par exemple, avec l'exercice sur le paquet de carte et les différentes méthodes de tri. Sur un diagramme de classes de conception, cela pourrait être représenté par une **agrégation blanche**.
 
@@ -762,11 +660,11 @@ Bon, tout fonctionne bien, mais le code est encore un peu redondant : A priori, 
 Par exemple, pour l'exemple des salariés :
 
 ```java
-//Nous reviendrons sur le nom "decorator" plus tard.
-abstract class SalarieDecorator implements I_Salarie {
-   protected I_Salarie salarie;
+//Nous reviendrons sur le nom "decorateur" plus tard.
+abstract class SalarieDecorateur implements SalarieInterface {
+   private SalarieInterface salarie;
 
-   public SalarieDecorator(I_Salarie salarie) {
+   public SalarieDecorator(SalarieInterface salarie) {
       this.salarie = salarie;
    }
 
@@ -775,11 +673,11 @@ abstract class SalarieDecorator implements I_Salarie {
    }
 }
 
-class ResponsableDeStagiaires extends SalarieDecorator {
+class SalarieResponsableStagiaires extends SalarieDecorateur {
 
   private int nombreStagiairesGeres;
 
-  public ResponsableDeStagiaires(I_Salarie salarie, int nombreStagiairesGeres) {
+  public ResponsableDeStagiaires(SalarieInterface salarie, int nombreStagiairesGeres) {
     super(salarie);
     this.nombreStagiairesGeres = nombreStagiairesGeres;
   }
@@ -790,6 +688,8 @@ class ResponsableDeStagiaires extends SalarieDecorator {
   }
 
 }
+
+//Pareil pour SalarieChefProjet
 ```
 
 <div style="text-align:center">
@@ -802,7 +702,7 @@ class ResponsableDeStagiaires extends SalarieDecorator {
 
 2. Testez que tout fonctionne comme auparavant.
 
-3. Dessinez le **diagramme de classes de conception** (hors `Main`) de cette application.
+3. Générez le **diagramme de classes de conception** (avec `IntelliJ`) du paquetage `ocp5`.
 
 </div>
 
@@ -810,13 +710,18 @@ Dans le futur, si nous ajoutons un nouveau type de **produit**, il suffira alors
 
 En fait, ce modèle est réutilisable et adaptable à d'autres situations (nous l'avons vu avec les salariés). C'est en fait un autre **design pattern** nommé **décorateur** d'où le nom de la classe abstraite dans l'exemple. 
 
-À partir du diagramme de classes que vous avez réalisé, vous devriez être capable de produire un modèle général fonctionnant pour vous.
+À partir du diagramme de classes que vous avez généré, vous devriez être capable de produire un modèle général fonctionnant pour tous les cas de figures.
 
 ### Principe de substitution de Liskov (Liskov substitution)
 
-Le principe de **substitution de Liskov** a été introduit par **Barbara Liskov** et énonce qu'un **objet** d'une superclasse donnée doit pouvoir être remplacée par une de ses **sous-classes** sans casser le fonctionnement du programme. Une méthode provenant à l'origine d'une superclasse et appelée sur la sous-classe devrait produire le même résultat que si elle avait été appelée sur la superclasse.
+Certains développeurs abusent de l'**héritage** par facilité au lieu d'utiliser d'autres solutions comme la **composition** d'objets. Un "mauvais" héritage est un héritage pour lequel il n'existe pas vraiment de relation de spécialisation entre la superclasse et la sous-classe. La sous-classe ne représente alors pas le même concept que sa classe mère, ce n'est pas réellement une spécialisation.
+
+Tout cela occasionne parfois des problèmes inattendus qui sont mis en lumière par le principe de **substitution de Liskov**.
+
+Le principe de **substitution de Liskov** a été introduit par **Barbara Liskov** et énonce qu'un **objet** d'une superclasse donnée doit pouvoir être remplacée par une de ses **sous-classes** sans casser le fonctionnement du programme. Une méthode provenant à l'origine d'une superclasse et appelée sur la sous-classe devrait **respecter le contrat** défini dans la superclasse.
 
 L'utilisation inappropriée de l'héritage peut amener au non-respect de ce principe.
+
 Voici un scénario illustrant le problème de non-respect du principe de substitution de Liskov : on possède une classe `Rectangle` et on souhaite modéliser une classe `Carre`. D'ailleurs, en géométrie, un carré est une sorte de rectangle...
 
 <div class="exercise">
@@ -936,47 +841,55 @@ Mettons vos nouvelles connaissances en pratique avec un autre exercice.
 
     * `add(index, valeur)` → permet d'insérer une valeur à la position ciblée par l'index.
 
-2. Ouvrez la classe de tests unitaires placée dans `test/java/lsp2`. Exécutez les tests. Rien ne passe, c'est normal ! Vous n'avez pas encore implémenté le code de la classe `Pile` qui contient du code par défaut... Vous êtes donc en mode **TDD** (test driven development).
+2. Ouvrez la classe de tests unitaires placée dans `test/java/lsp2/PileTest`. Exécutez les tests. Rien ne passe, c'est normal ! Vous n'avez pas encore implémenté le code de la classe `Pile` qui contient du code par défaut... Vous êtes donc en mode **TDD** (test driven development).
 
-3. Implémentez les méthodes de la classe `Pile` afin que les tests passent.
+3. Implémentez les méthodes de la classe `Pile` afin que les tests passent (ne décommentez pas le dernier test pour le moment).
 
-4. Ajoutez le test unitaire suivant et exécutez-le :
+4. Lisez et exécutez le test contenu dans `test/java/lsp2/VectorTest`. Comprenez-vous pourquoi ce test est valide et nécessaire ?
 
-    ```java
-    @Test
-    public void testSupprimerIndex() {
-        Pile<Integer> pile = new Pile<>();
-        pile.empiler(5);
-        pile.empiler(9);
-        pile.empiler(10);
-        pile.remove(1);
-        pile.depiler();
-        assertEquals(9, pile.sommetPile());
-    }
-    ```
+5. Décommentez le test `testSupprimerIndex` de `test/java/lsp2/PileTest` et exécutez-le. Pourquoi ne passe-t-il pas ?
 
 </div>
 
-Le dernier test n'est pas mal rédigé, car, selon le **contrat** de `Pile`, seules les opérations `estVide`, `empiler`, `depiler` et `sommetPile` doivent produire un effet. Or, comme `Pile` hérite de `Vector`, on a accès à toutes les opérations réalisables sur une liste classique... Donc, dans la logique, même s'il est possible d'appeler `remove` sur notre `Pile`, cela ne doit produire aucun effet ! Or, ce n'est pas le cas ici.
+Le dernier test n'est pas mal rédigé, car, selon le **contrat** de `Pile`, seules les opérations `estVide`, `empiler`, `depiler` et `sommetPile` doivent produire un effet. Or, comme `Pile` hérite de `Vector`, on a accès à toutes les opérations réalisables sur une liste classique... Donc, dans la logique, même s'il est possible d'appeler `remove` sur notre `Pile`, cela ne doit produire aucun effet ! Or, ce n'est pas le cas ici. Bref, **le contrat de la Pile** n'est pas respecté : on peut ajouter et supprimer des éléments autres part qu'au sommet.
 
-On pourrait redéfinir la méthode `remove` (et toutes les méthodes de `Vector` !) pour qu'elles ne fassent rien, mais le principe de substitution de Liskov ne serait alors plus respecté ! On ne pourrait pas substituer un `Vector` par une `Pile`.
+On pourrait redéfinir la méthode `remove` (et toutes les méthodes de `Vector` !) pour qu'elles ne fassent rien, mais le principe de substitution de Liskov ne serait alors plus respecté, car on casserait le **contrat** de `Vector` ! On ne pourrait pas substituer un `Vector` par une `Pile` et le test `testSubstitutionVectorParPile` (dans `test/java/lsp2/VectorTest`) ne fonctionnerait plus...
 
-Bref, conceptuellement, une `Pile` n'est pas un `Vector` spécial, mais bien une structure indépendante... Néanmoins, il est possible d'utiliser une **composition** pour utiliser un `Vector` comme attribut, dans notre classe `Pile`.
+Bref, conceptuellement, une `Pile` n'est pas un `Vector` spécial, mais bien une structure indépendante... Néanmoins, il est possible d'utiliser une **composition** pour utiliser un `Vector` comme attribut, dans notre classe `Pile` et ainsi éviter un certain degré de duplication de code.
 
 <div class="exercise">
 
 1. Refactorez le code de la classe `Pile` en enlevant l'héritage et en utilisant une **composition** avec un `Vector` à la place.
 
-2. Le dernier test ajouté ne compile plus, c'est normal ! La pile n'est pas un `Vector`, on ne peut pas appeler `remove` dessus (et c'est tant mieux). Supprimez donc ce test.
+2. Les tests `testSupprimerIndex` et `testSubstitutionVectorParPile` ne compilent plus, c'est normal ! La pile n'est pas un `Vector`, on ne peut pas appeler `remove` dessus (et c'est tant mieux). Supprimez donc le test `testSupprimerIndex` ainsi que la classe `VectorTest`.
 
 3. Relancez les tests et vérifiez que tout passe.
 
-4. Quelque part dans votre code, définissez une variable de type `Stack` qui est une classe de `Java` permettant de gérer une pile. Allez observer le code source de cette classe (`CTRL+B` sur **IntelliJ** en cliquant sur le nom de la classe). Que remarquez-vous au niveau de sa déclaration ? Cette classe est aujourd'hui dépréciée, pourquoi ?
+4. Quelque part dans votre code, définissez une variable de type `Stack` qui est une classe de `Java` permettant de gérer une pile. Allez observer le code source de cette classe (`CTRL+B` sur **IntelliJ** en cliquant sur le nom de la classe). Que remarquez-vous au niveau de sa déclaration ? Cette classe est aujourd'hui dépréciée. À votre avis, pourquoi ?
 
 </div>
 
-Eh oui, même les concepteurs de `Java` ont fait quelques bêtises lors du développement du langage. Et il n'est plus possible de supprimer cette classe après coup pour ne pas causer de problèmes de compatibilité. La seule chose à faire est de déprécier cette classe et de conseiller une nouvelle solution mieux conçue. D'où l'importance de bien penser sa conception !
+Eh oui, même les concepteurs de `Java` ont fait quelques bêtises lors du développement du langage. Et il n'est plus possible de supprimer cette classe après coup pour ne pas causer de problèmes de compatibilité. La seule chose à faire est de déprécier cette classe et de conseiller une nouvelle solution mieux conçue (la classe `Deque`). D'où l'importance de bien penser sa conception !
 
+Vous allez maintenant effectuer un dernier exercice pour vous assurer de la compréhension de ce principe SOLID.
+
+<div class="exercise">
+
+1. Ouvrez le paquetage `lsp3`. Il s'agit d'une application de gestion de comptes bancaires. Le **contrat** de la classe `CompteBancaire` est qu'on puisse consulter son solde, retirer de l'argent d'un compte (sans passer son solde en négatif) et en déposer autant d'argent qu'on souhaite.
+
+2. Complétez la classe `CompteBancaireAvecPlafond` : cette classe doit lever une exception `throw new RuntimeException("On ne peut pas déposer plus que le plafond du compte.")` si on essaye d'ajouter de l'argent qui ferait dépasser au solde le plafond du compte. On souhaite garder l'héritage avec `CompteBancaire`.
+
+3. Complétez la classe `CompteBancaireAvecNombreRetraitMaximum` : cette classe doit compter le nombre de retraits effectués et lever une exception `throw new RuntimeException("Nombre maximal de retraits atteint!")` si on essaye de retirer trop de fois (si le nombre de retraits effectués est supérieur au nombre de retraits maximum). On souhaite garder l'héritage avec `CompteBancaire`.
+
+4. Pour valider, exécutez les tests unitaires contenus dans les trois classes de tests dans `test/java/lsp3`. 
+
+5. Décommentez les tests `testDeposerCompteBancaireAvecPlafond` et `testRetirerCompteBancaireAvecNombreRetraitMaximum` puis exécutez-les. Pourquoi ne passent-ils pas ? Pourquoi votre implémentation ne respecte pas le **principe de substitution de liskov** ?
+
+6. Refactorez votre code afin de supprimer l'héritage vers `CompteBancaire` et ainsi ne plus violer le principe `LSP` les deux tests unitaires `testDeposerCompteBancaireAvecPlafond` et `testRetirerCompteBancaireAvecNombreRetraitMaximum` ne devraient plus compiler, vous pouvez les supprimer (car ils n'ont plus lieu d'être).
+
+7. **Bonus** : comment pourrait-on faire pour avoir des comptes bancaires qui combinent les fonctionnalités de plafond et de nombre de retraits maximum, et peut-être d'autres fonctionnalités à l'avenir ? **Si et seulement si le temps le permet**, refactorez votre code pour rendre cela possible (et adaptez vos tests unitaires en conséquence).
+
+</div>
 
 ### Principe de ségrégation des interfaces (Interface segregation)
 
@@ -1002,35 +915,29 @@ Voyons comment ne pas respecter ce principe peut devenir très fastidieux au fur
 
     Il a ensuite ajouté un autre type de monture, le **Tigre**.
 
-2. Ajoutez une classe `Rhinoceros` implémentant la classe `Monture`. Pour un `Rhinoceros` on a une vitesse de 30 et une endurance de 100.
+2. Ajoutez une classe `Griffon` étendant `Creature` et implémentant l'interface `Monture`. Cette monture a une vitesse de 300. Cependant, contrairement aux autres montures, cette monture est une **monture volante**. Elle ne possède pas d'endurance. Par contre, on veut connaître son **temps maximum de vol** qui est de 40. Adaptez votre classe en conséquence.
 
-3. Ajoutez une classe `Dauphin` étendant `Creature` et implémentant l'interface `Monture`. Cette monture a une vitesse de 45. Cependant, contrairement aux autres montures, cette monture est une monture aquatique. Elle ne possède pas d'endurance et on veut connaître son **temps de respiration sous l'eau** qui est de 15.
-
-    Concernant l'endurance, que faut-il renvoyer ? On ne peut pas renvoyer 0 ou un nombre négatif, cela n'aurait pas beaucoup de sens. À la place, on peut lever une erreur :
+    Concernant l'endurance, que faut-il renvoyer ? On ne peut pas renvoyer **0** ou un nombre négatif, cela n'aurait pas beaucoup de sens. À la place, on peut lever une erreur :
 
     ```java
     public double getEnduranceMonture() {
-        throw new Error("Une monture aquatique n'a pas d'endurance!");
+        throw new Error("Une monture volante n'a pas d'endurance!");
     }
     ```
 
-4. Dans le cas où il y aurait besoin d'ajouter d'autres montures aquatiques dans le futur, ajoutez la méthode permettant d'obtenir le temps de respiration dans l'interface `Monture`.
+3. Dans le cas où il y aurait besoin d'ajouter d'autres montures volantes dans le futur, ajoutez la méthode permettant d'obtenir le temps de vol dans l'interface `Monture`.
 
-5. Les classes `Cheval` et `Tigre` ne compilent plus ! C'est parce qu'il faut implémenter la méthode permettant d'obtenir le temps de respiration sous l'eau... Or, ces montures n'ont pas de temps de respiration ! On va donc procéder comme pour `Dauphin` en soulevant une erreur :
+4. Les classes `Cheval` et `Tigre` ne compilent plus ! C'est parce qu'il faut implémenter la méthode permettant d'obtenir **le temps maximum de vol**... Or, ces montures n'ont pas de temps maximum de vol ! On va donc procéder comme pour `Griffon` en soulevant une erreur :
 
     ```java
-    throw new Error("Cette monture ne peut pas respirer sous l'eau!");
+    throw new Error("Cette monture ne peut pas voler!");
     ```
 
-6. Ajoutez une classe `Griffon` étendant `Creature` et implémentant l'interface `Monture`. Cette monture a une vitesse de 300. Cependant, contrairement aux autres montures, cette monture est une monture volante. Elle ne possède pas d'endurance et ne respire pas sous l'eau non plus. Par contre, on veut connaître son **temps maximum de vol** qui est de 40. Adaptez votre classe en conséquence.
+5. Ajoutez une classe `Dragon` étendant `Creature` et implémentant l'interface `Monture`. Cette monture a une vitesse de 400. Elle possède aussi un temps de vol maximum de 120 (car c'est une monture volante). Elle ne possède pas d'endurance. Par contre, on veut connaître sa **puissance de feu** qui est de 200. Adaptez votre classe en conséquence.
 
-7. Mettez à jour l'interface `Monture` avec la méthode pour le temps de vol au cas où il y ait d'autres types de montures volantes ajoutées et corrigez les erreurs de compilation.
+6. Mettez à jour l'interface `Monture` avec la méthode pour la puissance de feu au cas où il y ait d'autres types de dragons ajoutés dans le futur et corrigez les erreurs de compilation.
 
-8. Ajoutez une classe `Dragon` étendant `Creature` et implémentant l'interface `Monture`. Cette monture a une vitesse de 400. Elle possède aussi un temps de vol maximum de 120 (car c'est une monture volante). Elle ne possède pas d'endurance et ne respire pas sous l'eau non plus. Par contre, on veut connaître sa **puissance de feu** qui est de 200. Adaptez votre classe en conséquence.
-
-9. Mettez à jour l'interface `Monture` avec la méthode pour la puissance de feu au cas où il y ait d'autres types de dragons ajoutés dans le futur et corrigez les erreurs de compilation.
-
-10. Enfin, ajoutez une classe `LicorneAilee` étendant `Creature` et implémentant l'interface `Monture`. Cette monture a une vitesse de 75. Elle possède aussi un temps de vol maximum de 20 (car c'est une monture volante) et une endurance de 50 (car c'est aussi une monture terrestre !). Par contre, elle ne respire pas sous l'eau et n'a pas de puissance de feu non plus.
+7. Enfin, ajoutez une classe `LicorneAilee` étendant `Creature` et implémentant l'interface `Monture`. Cette monture a une vitesse de 75. Elle possède aussi un temps de vol maximum de 20 (car c'est une monture volante) et une endurance de 50 (car c'est aussi une monture terrestre !). Par contre, elle n'a pas de puissance de feu.
 
 </div>
 
@@ -1384,7 +1291,7 @@ Vous allez voir qu'en plus de rendre notre projet modulable, utiliser **l'invers
 
 1. Ouvrez le paquetage `dip2`. Cette application permet de créer des utilisateurs, de hacher leur mot de passe, de se connecter... Il y a aussi un système de gestion de diverses erreurs. Prenez le temps d'examiner l'architecture, la répartition des classes. Exécutez le programme avec le `Main`.
 
-2. Réalisez un **diagramme de classes de conception** de l'application (hors `Main`). Cela nous permettra de faire une comparaison après **refactoring**.
+2. Générez un **diagramme de classes de conception** du paquetage `dip2` (avec `IntelliJ`). Cela nous permettra de faire une comparaison après **refactoring**.
 
 3. Une classe contenant des **tests unitaires** est présente dans `src/test/java/dip2/service/utilisateur`. Lancez les tests deux fois, tout devrait bien se passer.
 
@@ -1445,15 +1352,13 @@ Il reste maintenant le problème des "mails envoyés" quand on exécute les test
 
 3. Vérifiez que le programme fonctionne toujours comme attendu.
 
-4. Réalisez un **diagramme de classes de conception** de l'application (après refactoring donc) et comparez-le avec le premier diagramme que vous aviez réalisé.
-
-5. Réalisez un **diagramme de séquence des interactions** du scénario nominal (le scénario où tout se passe bien et il n'y a pas d'erreur) du cas d'utilisation "Créer un nouvel utilisateur".
+4. Générez le **diagramme de classes de conception** de l'application (après refactoring donc) et comparez-le avec le premier diagramme que vous aviez réalisé.
 
 </div>
 
 ## Conclusion
 
-Voilà, maintenant, vous savez tout des principes **SOLID** ! Vous êtes donc plus proche d'un ingénieur logiciel qu'un codeur. Il existe un acronyme opposé : les principes **STUPID** qui sont 6 pratiques qui rendent le code très peu qualitatif, untestable, non évolutif et qu'il faut donc absolument éviter ! Bref, des **mauvaises pratiques** qui sont souvent observées. Vous pouvez consulter de la documentation à ce propos [sur cette page](https://openclassrooms.com/en/courses/5684096-use-mvc-solid-principles-and-design-patterns-in-java/6417836-avoid-stupid-practices-in-programming).
+Voilà, maintenant, vous savez tout des principes **SOLID** ! Vous êtes donc plus proche d'un ingénieur logiciel qu'un codeur. Il existe un acronyme opposé : les principes **STUPID** qui sont 6 pratiques qui rendent le code très peu qualitatif, intestable, non évolutif et qu'il faut donc absolument éviter ! Bref, des **mauvaises pratiques** qui sont souvent observées. Vous pouvez consulter de la documentation à ce propos [sur cette page](https://openclassrooms.com/en/courses/5684096-use-mvc-solid-principles-and-design-patterns-in-java/6417836-avoid-stupid-practices-in-programming).
 
 Dorénavant, pour vos futurs projets (ou ceux actuels, comme la SAE) il faut systématiquement vous poser et réfléchir à la conception de votre programme **à long terme**. Il n'est jamais trop tard pour faire du **refactoring**, mais ne pas avoir besoin d'en faire en respectant une certaine qualité logicielle d'entrée de jeu est encore mieux.
 
