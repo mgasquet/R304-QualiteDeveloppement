@@ -171,23 +171,24 @@ Ce principe semble assez facile à mettre en place, mais dans la réalité, on r
 
 1. Ouvrez le paquetage `srp1`. Examinez le code. Il s'agit d'un programme qui permet de faire un simple calcul (pour le moment, une addition). Actuellement, la classe `Client` possède trois responsabilités (certaines sont très simples et tiennent sur une ligne). Identifiez-les.
 
-2. Refactorez le code pour répartir les responsabilités de `Client` en **trois classes**.
+2. Refactorez le code pour répartir les responsabilités de `Client` en **trois nouvelles classes distinctes** (sans compter `Client`). `Client` devra ensuite simplement utiliser ces nouveaux **services**.
 
-3. Assurez-vous qu'en effectuant les changements suivants, vous ne modifiez jamais la même classe deux fois :
+3. Assurez-vous qu'en effectuant les changements suivants, vous ne modifiez jamais `Client`, ni la même classe deux fois de suite :
 
     * On veut que le calcul effectué soit une soustraction.
 
     * On veut que l'affichage final soit "Résultat : valeur".
 
-    * Pour la saisie, on veut plutôt utiliser un `Scanner` et la méthode `nextInt` au lieu d'un `BufferedReader` (il faudra enlever le **catch** de `IOException` et les `parseInt`). Pour rappel, pour définir un `Scanner` :
+    * Pour la saisie des nombres, on veut plutôt utiliser un `Scanner` et la méthode `nextInt` au lieu d'un `BufferedReader`. Il faudra enlever le **catch** de `IOException` et `NumberFormatException` ainsi que les `parseInt`. À la place, on attrapera une exception `InputMismatchException`. Pour rappel, pour définir un `Scanner` :
 
     ```java
     Scanner scanner = new Scanner(System.in);
+    int valeur = scanner.nextInt();
     ```
 
 </div>
 
-Bien sûr, ce premier exercice est très simpliste, mais il faut vous imaginer que les différentes responsabilités sont généralement des traitements plus longs et/ou plus complexes !
+Bien sûr, ce premier exercice est très simpliste (et donc assez peu concret), mais il faut vous imaginer que les différentes responsabilités sont généralement des traitements plus longs et/ou plus complexes !
 
 Voyons maintenant un autre exemple.
 
@@ -1237,15 +1238,15 @@ De cette manière, **l'inversion des dépendances** est respectée. La classe `S
 5. Le compte de "_Tarembois Guy_" doit être généré en utilisant le générateur de login simple et celui de "_Bricot Judas_" avec le générateur par mélange. Testez.
 </div>
 
-## Exercices finaux
+## Exercices bilan
 
-Dans cette section, vous allez travailler sur un ensemble d'exercices "de synthèse" qui reprennent les notions abordées dans ce TP. L'idée est que vous identifiez le problème et mettiez en place une solution adéquate et respectueuse des **principes SOLID**.
+Dans cette section, vous allez travailler sur un ensemble d'exercices "bilan" qui reprennent les notions abordées dans ce TP. L'idée est que vous identifiez le problème et mettiez en place une solution adéquate et respectueuse des **principes SOLID**.
 
 ### Villes et bâtiments
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `final1`. Ce projet modélise le fonctionnement d'un jeu dans lequel on peut construire sa propre **ville** (qui peut être éventuellement attaquée par d'autres joueurs) :
+1. Ouvrez le paquetage `bilan1`. Ce projet modélise le fonctionnement d'un jeu dans lequel on peut construire sa propre **ville** (qui peut être éventuellement attaquée par d'autres joueurs) :
 
   * Une ville possède différents types de **bâtiments**. 
   
@@ -1267,7 +1268,7 @@ Dans cette section, vous allez travailler sur un ensemble d'exercices "de synth�
 
 2. Implémentez les méthodes `calculerScoreCulturel`, `compterBatimentsMajeurs` et `estMajeure` de la classe `Ville` en respectant les contraintes définies au point précédent. **Attention** dans le futur, on souhaitera éventuellement ajouter de nouveaux types de bâtiments qui pourraient influer sur le score culturel d'une ville, ou qui pourraient être majeurs. Dans ce cas, il faudra que votre conception permette cet ajout facilement sans avoir à modifier la classe `Ville`.
 
-3. Une classe de test unitaire est présente dans `test/java/final1`. Lisez les tests et exécutez-les afin de vérifier que votre solution fonctionne.
+3. Une classe de test unitaire est présente dans `test/java/bilan1`. Lisez les tests et exécutez-les afin de vérifier que votre solution fonctionne.
 
 </div>
 
@@ -1275,13 +1276,13 @@ Dans cette section, vous allez travailler sur un ensemble d'exercices "de synth�
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `final2`. Il s'agit d'une application de gestion de comptes bancaires. Le **contrat** de la classe `CompteBancaire` est qu'on puisse consulter son solde, retirer de l'argent d'un compte (sans passer son solde en négatif) et en déposer autant d'argent qu'on souhaite.
+1. Ouvrez le paquetage `bilan2`. Il s'agit d'une application de gestion de comptes bancaires. Le **contrat** de la classe `CompteBancaire` est qu'on puisse consulter son solde, retirer de l'argent d'un compte (sans passer son solde en négatif) et en déposer autant d'argent qu'on souhaite.
 
 2. Complétez la classe `CompteBancaireAvecPlafond` : cette classe doit lever une exception `throw new RuntimeException("On ne peut pas déposer plus que le plafond du compte.")` si on essaye d'ajouter de l'argent qui ferait dépasser au solde le plafond du compte. On souhaite garder l'héritage avec `CompteBancaire`.
 
 3. Complétez la classe `CompteBancaireAvecNombreRetraitMaximum` : cette classe doit compter le nombre de retraits effectués et lever une exception `throw new RuntimeException("Nombre maximal de retraits atteint!")` si on essaye de retirer trop de fois (si le nombre de retraits effectués est supérieur au nombre de retraits maximum). On souhaite garder l'héritage avec `CompteBancaire`.
 
-4. Pour valider, exécutez les tests unitaires contenus dans les trois classes de tests dans `test/java/final2`. 
+4. Pour valider, exécutez les tests unitaires contenus dans les trois classes de tests dans `test/java/bilan2`. 
 
 5. Décommentez les tests `testDeposerCompteBancaireAvecPlafond` et `testRetirerCompteBancaireAvecNombreRetraitMaximum` puis exécutez-les. Pourquoi ne passent-ils pas ? Quel est le principe **SOLID** est violé par votre code ?
 
@@ -1295,7 +1296,7 @@ Dans cette section, vous allez travailler sur un ensemble d'exercices "de synth�
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `final3`. Il s'agit d'une application de gestion d'une entreprise qui loue des **serveurs** dédiés. Chaque serveur possède notamment un certain montant de **mémoire vive** (en Go), un **processeur** et un **prix mensuel** (à payer par le client qui loue le serveur). L'entreprise propose trois **offres** de serveurs configurés différemment et avec des coûts mensuels plus ou moins élevés : un serveur **basique**, un serveur **intermédiaire** et un serveur **pro**. Sur chaque **serveur**, on peut réaliser certaines actions :
+1. Ouvrez le paquetage `bilan3`. Il s'agit d'une application de gestion d'une entreprise qui loue des **serveurs** dédiés. Chaque serveur possède notamment un certain montant de **mémoire vive** (en Go), un **processeur** et un **prix mensuel** (à payer par le client qui loue le serveur). L'entreprise propose trois **offres** de serveurs configurés différemment et avec des coûts mensuels plus ou moins élevés : un serveur **basique**, un serveur **intermédiaire** et un serveur **pro**. Sur chaque **serveur**, on peut réaliser certaines actions :
 
   * Calculer le montant mensuel à payer pour louer le serveur (`calculerPrixMensuel`).
 
@@ -1311,15 +1312,57 @@ Dans cette section, vous allez travailler sur un ensemble d'exercices "de synth�
 
   * Fermer un ticket (`fermerTicket`).
 
-2. On aimerait pouvoir ajouter divers **services optionnels** à un **serveur** :
+2. On aimerait pouvoir ajouter divers **services optionnels** à un **serveur**. On vous demande d'implémenter une solution permettant de créer des serveurs disposant de certains de ces services optionnels :
 
-  * Serveur avec plus de mémoire vive :
+  * Serveur avec plus de mémoire vive : 
+    
+    * Le serveur dispose d'une extension de sa mémoire vive (nombre entier représentant des Go ajoutés).
+    * Quand le serveur est allumé, en plus des informations habituelles, on affiche la quantité de mémoire vive ajoutée.
+    * Le prix mensuel de location du serveur augmente de 5€ par Go de mémoire ajoutée. 
 
   * Serveur avec sauvegarde des données :
 
+    * Le serveur dispose d'un système de sauvegarde des données (que nous allons modéliser simplement par des messages).
+    * Quand le serveur est allumé, en plus des informations habituelles, on signale que la sauvegarde des données est disponible.
+    * Le prix mensuel de location du serveur augmente de 5€.
+    * Lorsque le serveur est éteint, on demande à l'utilisateur s'il souhaite créer un fichier de sauvegarde des données du serveur. S'il confirme, un message "Création et export d'un fichier de sauvegarde..." est affiché.
+
+    Pour réaliser la dernière fonctionnalité, vous pouvez vous servir de la fonction : `Utils.demander` qui permet de poser une question à un utilisateur et renvoie vrai ou faux (s'il répond oui ou non) :
+
+    ```java
+    if(Utils.demander("Voulez-vous réaliser cette action ?")) {
+      System.out.println("Action...");
+    }
+    ```
+
   * Serveur avec assurance :
 
+    * Le serveur dispose d'un système d'assurance qui permet au client d'être dédommagé s'il rencontre trop de problèmes.
+    * Quand le serveur est allumé, en plus des informations habituelles, on signale que le serveur est couvert par une assurance.
+    * Le prix mensuel de location du serveur augmente de 10€.
+    * Lorsqu'un ticket est ouvert, un compteur comptant le nombre de tickets ouverts est incrémenté.
+    * Lorsqu'un ticket est fermé, ce compteur est décrémenté (pour simplifier, on dira qu'on ne ferme jamais un ticket s'il n'y a pas de tickets ouverts).
+    * Lors de l'ouverture d'un nouveau ticket, s'il y a déjà trois tickets d'ouverts, on affiche un message informant l'utilisateur qu'il sera remboursé de 10€ sur sa prochaine facture.
+
   * Serveur avec logs :
+
+    * Le serveur dispose d'un système qui permet d'avoir de garder une trace des événements qui se produisent sur le serveur : allumage, arrêt, ouverture et fermeture de tickets. Pour cela, on doit fournir un **nom de fichier** (chaîne de caractères) où les informations seront sauvegardées.
+    * Quand le serveur est allumé, en plus des informations habituelles, on signale que le système de log est activé, en indiquant le nom du fichier où sont sauvegardés les logs.
+    * Le prix mensuel de location du serveur n'augmente pas (option gratuite).
+    * Dès qu'un événement se produit (allumage, arrêt, ouverture et fermeture de tickets) l'information est reportée dans le fichier en indiquant la date de l'événement. Par exemple `[2024-10-29T17:44:22] : Serveur allumé`, etc.
+
+    Pour réaliser la dernière fonctionnalité, vous pouvez vous servir de la fonction : `Utils.ecrireDansFichier` qui permet d'écrire une ligne dans un fichier, combiné à l'utilisation d'un objet `LocalDateTime` :
+
+    ```java
+    LocalDateTime time = LocalDateTime.now();
+    Utils.ecrireDansFichier(nomFichier, String.format("[%s] : %s\n", time, "Mon message"));
+    ```
+    
+    Normalement, le fichier sera sauvegardé à la racine de votre projet.
+
+    Il est conseillé de se créer une méthode (privée) afin de ne pas dupliquer le code.
+
+    Pour les logs, on se contentera de messages simples : Serveur allumé, Serveur éteint, Ticket ouvert, Ticket Fermé.
 
 3. Testez de créer divers serveurs avec des services (et vérifiez leur comportement : prix, allumage, tickets, etc) :
 
@@ -1341,11 +1384,11 @@ Vous allez voir qu'en plus de rendre notre projet modulable, utiliser **l'invers
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `final4`. Cette application permet de créer des utilisateurs, de hacher leur mot de passe, de se connecter... Il y a aussi un système de gestion de diverses erreurs. Prenez le temps d'examiner l'architecture, la répartition des classes. Exécutez le programme avec le `Main`.
+1. Ouvrez le paquetage `bilan4`. Cette application permet de créer des utilisateurs, de hacher leur mot de passe, de se connecter... Il y a aussi un système de gestion de diverses erreurs. Prenez le temps d'examiner l'architecture, la répartition des classes. Exécutez le programme avec le `Main`.
 
-2. Générez un **diagramme de classes de conception** du paquetage `final4` (avec `IntelliJ`). Cela nous permettra de faire une comparaison après **refactoring**.
+2. Générez un **diagramme de classes de conception** du paquetage `bilan4` (avec `IntelliJ`). Cela nous permettra de faire une comparaison après **refactoring**.
 
-3. Une classe contenant des **tests unitaires** est présente dans `src/test/java/final4/service/utilisateur`. Lancez les tests deux fois, tout devrait bien se passer.
+3. Une classe contenant des **tests unitaires** est présente dans `src/test/java/bilan4/service/utilisateur`. Lancez les tests deux fois, tout devrait bien se passer.
 
 4. On aimerait effectuer quelques changements dans le programme, notamment au niveau de `ServiceUtilisateur` :
 
