@@ -711,9 +711,11 @@ Voici un scénario illustrant plus en détail le problème de non-respect du pri
 
 </div>
 
-Avec cette modification, le principe de substitution de Liskov n'est toujours pas respecté ! En effet, si on utilise `Carre` comme un `Rectangle`, des bugs étranges surviennent quand on utilise une méthode prévue pour un `Rectangle` (ici, la méthode **agrandirRectangle**). On ne peut pas substituer le rectangle par un carré sans produire de bugs logiques.
+Avec cette modification, le principe de substitution de Liskov n'est plus respecté ! On a **cassé** le contrat de `Rectangle` dans `Carre`. `Carre` est un `Rectangle` et on devrait pouvoir modifier sa hauteur et sa largeur librement !
 
-Une autre mauvaise solution possible serait d'ajouter une fonction `setTailleCote` dans `Carre` et de redéfinir les fonctions `setHauteur` et `setLargeur` dans `Rectangle` de façon à ce qu'elles ne fassent rien :
+De plus, si on utilise `Carre` comme un `Rectangle`, des bugs étranges surviennent quand on utilise une méthode prévue pour un `Rectangle` (ici, la méthode **agrandirRectangle**). On ne peut pas substituer le rectangle par un carré sans produire de bugs logiques.
+
+Une autre mauvaise solution possible serait d'ajouter une fonction `setTailleCote` dans `Carre` et de redéfinir les fonctions `setHauteur` et `setLargeur` dans `Carre` de façon à ce qu'elles ne fassent rien :
 
 ```java
 class Carre extends Rectangle {
@@ -736,13 +738,13 @@ class Carre extends Rectangle {
 }
 ```
 
-Mais dans ce cas, on ne peut plus utiliser `Carre` comme un `Rectangle` (one ne respecte toujours pas `LSP`) et en plus :
+Mais dans ce cas, on ne peut toujours pas utiliser `Carre` comme un `Rectangle` (one ne respecte toujours pas `LSP`) et en plus :
 * On crée des méthodes qui ne font rien et qui polluent le code.
 * On duplique le code de `setHauteur` et `setLargeur` dans `Carre` dans `setTailleCote` !
 
 Bref, cet héritage est une très mauvaise idée ! En fait, conceptuellement, en programmation, un carré n'est pas un rectangle spécialisé, car les règles pour la hauteur et la largeur sont différentes... Cela peut être un peu dur à accepter.
 
-Si on souhaite quand même utiliser un rectangle dans un carré (pour ne pas dupliquer le calcul de l'aire ou des autres méthodes, par exemple) on peut éventuellement utiliser une **composition** comme nous l'avons vu dans l'exercice sur les comptes bancaires, en interdisant à un `Carre` de redéfinir sa hauteur et sa largeur.
+Si on souhaite quand même utiliser un rectangle dans un carré (pour ne pas dupliquer le calcul de l'aire ou des autres méthodes, par exemple) on peut éventuellement utiliser une **composition**, en interdisant à un `Carre` de redéfinir sa hauteur et sa largeur.
 
 <div class="exercise">
 
@@ -1069,7 +1071,9 @@ Refactorez votre code pour respecter le **principe de ségrégation des interfac
 
 ### Principe d'inversion des dépendances (Dependency inversion)
 
-Enfin, il reste le **principe d'inversion des dépendances**. Ce principe dit que :
+Enfin, il reste le **principe d'inversion des dépendances**.
+
+Ce principe dit que :
 
 * Les différentes classes ne doivent pas dépendre d'implémentations concrètes, mais d'abstractions (classes abstraites/interfaces).
 
