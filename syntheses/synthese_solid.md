@@ -5,7 +5,19 @@ layout: tutorial
 lang: fr
 ---
 
+## Sommaire
+
+* [Introduction](#introduction)
+* [Les principes SOLID](#solid)
+  * [Principe de responsabilité unique](#srp)
+  * [Principe Ouvert/Fermé](#ocp)
+  * [Principe de substitution de Liskov](#lsp)
+  * [Principe de ségrégation des interfaces](#isp)
+  * [Principe d'inversion des dépendances](#dip)
+* [Conclusion](#conclusion)
+
 ## Introduction
+<div id="introduction"></div>
 
 L'objectif des synthèses de cours est de reprendre les différentes notions de cours présentées dans les TPs, mais sans les mélanger aux exercices, afin de proposer un document à part en entière, qui peut notamment vous aider dans vos révisions.
 
@@ -30,6 +42,7 @@ Les **frameworks** sont des outils qui englobent différents **design patterns**
 Bref, dans ce cours, nous allons commencer par nous intéresser aux **principes SOLID** qui constituent la porte d'entrée vers un programme bien conçu.
 
 ## Les principes SOLID
+<div id="solid"></div>
 
 Les **principes SOLID** représentent un acronyme lié aux 5 principes clés pour obtenir un logiciel qualitatif :
 
@@ -52,6 +65,7 @@ Dans un logiciel développé d'une telle manière, généralement, l'ajout d'une
 Dans ce cours, nous allons étudier chaque principe à travers divers exemples et voir comment il est possible de **refactorer** un code mal conçu. **Refactorer** du code (ou réusiner du code en français) signifie retravailler le code source du programme sans pour autant ajouter de nouvelles fonctionnalités à l'application. Il s'agit d'améliorer la qualité du code.
 
 ### Principe de responsabilité unique (Single Responsability)
+<div id="srp"></div>
 
 Pour mener à bien le déroulement d'une fonctionnalité, le programme va faire appel à diverses classes qui vont interagir entre elles (comme nous l'avons vu avec le DSI). Ces classes vont **traiter** la demande. Chaque classe possède la **responsabilité** d'effecteur une partie de ce traitement. 
 
@@ -102,6 +116,8 @@ class Main {
 }
 ```
 
+
+
 Ici, la classe **Email** a deux responsabilités clairement identifiables : **stocker** les informations d'un mail et **l'envoyer**. Le principe de responsabilité unique n'est donc pas respecté. Pour régler cela, il faudrait donc mettre en place une nouvelle classe qui se charge de l'envoi d'un mail :
 
 ```java
@@ -151,6 +167,7 @@ Le principe de responsabilité unique s'applique également aux **paquetages** :
 Ce principe semble assez facile à mettre en place, mais dans la réalité, on retrouve malheureusement des classes (et des paquetages) "fourre-tout" qui deviennent illisibles au fur et à mesure de l'évolution du programme. Si votre classe a trop de méthode, c'est peut-être qu'elle possède plus d'une responsabilité et que celles-ci pourraient être mieux réparties.
 
 ### Principe Ouvert/Fermé (Open/Close)
+<div id="ocp"></div>
 
 Le **principe ouvert/fermé** est défini comme suit :
 
@@ -289,7 +306,7 @@ class CarteArme extends Carte {
         this.materiau = materiau;
     }
 
-    public Mateirau getMateriau() {
+    public Materiau getMateriau() {
         return materiau;
     }
 
@@ -382,15 +399,21 @@ class Joueur {
 }
 ```
 
+<div style="text-align:center">
+![Synthèse Diagramme 1]({{site.baseurl}}/assets/syntheses/SOLID/SyntheseDiagramme1.svg){: width="50%" }
+</div>
+
 Cette implémentation est fonctionnelle, mais ne respecte pas le principe **ouvert/fermé** :
 
-* Joueur est dépendant des types **concrets** de cartes.
+* Joueur est dépendant des types **concrets** de cartes (et même de l'énumération `Materiau`).
 
 * Si la méthode de calcul des points que rapporte une carte change, il faut changer la classe `Joueur`.
 
 * Si on ajoute une nouvelle carte qui fait gagner ou qui rapporte des points, il faut changer la classe `Joueur`.
 
 * De même si on supprime une carte du jeu...
+
+De plus, on ne respecte pas la **loi de Déméter** que nous avions vu dans le premier cours de conception : la structure interne des différentes `Carte` et même celle de l'énumération `Materiau` sont exposées !
 
 Bref, il est possible d'exploiter correctement le **polymorphisme** afin que `Joueur` ne soit plus dépendant des différents sous-types de `Carte` :
 
@@ -556,9 +579,16 @@ interface Carte {
 }
 ```
 
-Bref, avec cette modélisation, les changements dans les divers cartes (modification de calcul, nouvelles cartes, suppression de cartes, etc n'impacteront plus la classe `Joueur`: on peut ajouter de nouvelles choses (**ouvert aux extensions**) sans modifier `Joueur` (**fermé aux modifications**).
+<div style="text-align:center">
+![Synthèse Diagramme 2]({{site.baseurl}}/assets/syntheses/SOLID/SyntheseDiagramme2.svg){: width="50%" }
+</div>
+
+Bref, avec cette modélisation, les changements dans les diverses cartes (modification de calcul, nouvelles cartes, suppression de cartes, etc) n'impacteront plus la classe `Joueur`: on peut ajouter de nouvelles choses (**ouvert aux extensions**) sans modifier `Joueur` (**fermé aux modifications**).
+
+Certains **designs patterns** aident à respecter le principe ouvert/fermé afin de résoudre des problèmes de conception. Par exemple, le pattern comportemental **décorateur** est utilisé pour ajouter dynamiquement de nouveaux **comportements** à un objet.
 
 ### Principe de substitution de Liskov (Liskov substitution)
+<div id="lsp"></div>
 
 Certains développeurs abusent de l'**héritage** par facilité au lieu d'utiliser d'autres solutions comme la **composition** d'objets. Un "mauvais" héritage est un héritage pour lequel il n'existe pas vraiment de relation de spécialisation entre la superclasse et la sous-classe. La sous-classe ne représente alors pas le même concept que sa classe mère, ce n'est pas réellement une spécialisation.
 
@@ -620,6 +650,10 @@ class Cercle extends Ellipse {
 }
 ```
 
+<div style="text-align:center">
+![Synthèse Diagramme 3]({{site.baseurl}}/assets/syntheses/SOLID/SyntheseDiagramme3.svg){: width="30%" }
+</div>
+
 Ici, le principe de substituions de Liskov n'est pas violé (c'est normal, nous n'avons pas encore réécrit de méthodes). Cependant, l’implémentation n'est pas valide, car **nous ne respectons pas le contrat** de `Cercle`.
 
 Une partie du **contrat** de la classe `Ellipse` est de pouvoir changer la hauteur et la largeur indépendamment. Alors que pour `Cercle`, son contrat stipule qu'on ne peut pas changer la hauteur et la largeur indépendamment : un cercle doit toujours avoir la même hauteur et la même largeur. En fait, on change son **diamètre**.
@@ -674,6 +708,11 @@ class Cercle extends Ellipse {
     }
 }
 ```
+
+<div style="text-align:center">
+![Synthèse Diagramme 4]({{site.baseurl}}/assets/syntheses/SOLID/SyntheseDiagramme4.svg){: width="30%" }
+</div>
+
 
 Avec cette implémentation, les tests précédents passent, le principe de substitution de Liskov n'est plus respecté ! On a **cassé** le contrat de `Ellipse` dans `Cercle`. `Cercle` est une `Ellipse` et on devrait pouvoir modifier sa hauteur et sa largeur librement ! Ainsi, le test suivant ne passerait pas : 
 
@@ -790,7 +829,7 @@ class Cercle implements FigureCirculaire {
 ```
 
 <div style="text-align:center">
-![Liskov substitution 2]({{site.baseurl}}/assets/TP3/LSP2.svg){: width="50%" }
+![Synthèse Diagramme 5]({{site.baseurl}}/assets/syntheses/SOLID/SyntheseDiagramme5.svg){: width="50%" }
 </div>
 
 Avec cette composition, les tests suivant n'ont plus lieu d'être (et ne compilent plus) :
@@ -870,6 +909,10 @@ class Deck extends ReserveDeCarte {
 }
 ```
 
+<div style="text-align:center">
+![Synthèse Diagramme 6]({{site.baseurl}}/assets/syntheses/SOLID/SyntheseDiagramme6.svg){: width="40%" }
+</div>
+
 Ici, on ne peut pas substituer un objet `ReserveDeCarte` par un objet `Deck`. Le contrat de la méthode `ajouter` n'est plus respecté (on ne peut plus ajouter autant de cartes qu'on souhaite).
 
 Ici aussi, on pourrait régler cela avec de la composition (par exemple) :
@@ -913,15 +956,15 @@ class Deck implements ConteneurCarte {
     }
 
     @Override
-    public void ajouter(Carte carte) {
-        if(getNombreCartesReserve() == 32) {
-            throw new RuntimeException("On ne peut pas ajouter plus de 32 cartes au deck!");
-        }
-        reserve.ajouter(carte);
+    public Carte piocher(Carte carte) {
+        return reserve.piocher();
     }
 
     @Override
     public void ajouter(Carte carte) {
+        if(getNombreCartesReserve() == 32) {
+            throw new RuntimeException("On ne peut pas ajouter plus de 32 cartes au deck!");
+        }
         reserve.ajouter(carte);
     }
 
@@ -933,9 +976,14 @@ class Deck implements ConteneurCarte {
 }
 ```
 
-Attention, la composition n'est pas forcément la solution à tous les problèmes de conception.
+<div style="text-align:center">
+![Synthèse Diagramme 7]({{site.baseurl}}/assets/syntheses/SOLID/SyntheseDiagramme7.svg){: width="50%" }
+</div>
+
+Attention, la composition n'est pas forcément la solution à tous les problèmes de conception. Néanmoins, elle revient souvent au cœur de divers **design patterns** comme **composite** ou bien encore **décorateur**.
 
 ### Principe de ségrégation des interfaces (Interface segregation)
+<div id="isp"></div>
 
 Le quatrième principe **SOLID** est le **principe de ségrégation des interfaces**.
 
@@ -1168,6 +1216,7 @@ Comme vous le constatez, plus aucune classe n'est forcée à implémenter des m�
 Bref, cela est en partie un mix entre le **principe de responsabilité unique** et une visualisation **hiérarchique** du problème. On note quand même le cas intéressant de la classe `D` qui permet à la fois d'avoir le type `I_Exemple`, `I_B` et `I_C` !
 
 ### Principe d'inversion des dépendances (Dependency inversion)
+<div id="dip"></div>
 
 Enfin, il reste le **principe d'inversion des dépendances**.
 
@@ -1183,24 +1232,126 @@ En fait, ce principe découle de la bonne application des autres principes et no
 
 Nous verrons aussi qu'il est essentiel de bien respecter ce principe quand on réalise des tests unitaires.
 
-Tout d'abord, illustrons ce principe avec un exemple : 
+Tout d'abord, illustrons ce principe avec un exemple : on se place dans le contexte d'une application de montage vidéo. Pour l'instant, on ne peut exporter les projets que sous le format `MP4`, ce qui demande un traitement complexe.
 
-<!--
-<div class="exercise">
+```java
+class Projet {
 
-1. Ouvrez le paquetage `dip`. Dans ce projet, il y a une classe `Etudiant` et une classe `CompteUniversitaire`. Un compte universitaire est détenu par un étudiant. On utilise son nom et son prénom pour générer un login.
+  private String nom;
 
-2. Ajoutez une classe **Enseignant** qui possède un nom, un prénom et définit des **getters** pour ces deux attributs.
+  private Video video;
 
-3. La logique pour créer un compte universitaire pour un enseignant est la même que pour un étudiant. On souhaite donc logiquement réutiliser la classe `CompteUniversitaire`. Mais ce n'est pas possible, car un enseignant n'est pas un étudiant !
+  public Projet(String nom) {
+    this.nom = nom;
+    video = new Video();
+  }
 
+  public void exporter() {
+    //Code complexe et spécifique exportant le projet au format MP4 en utilisant les objets nom et vidéo
+  }
+
+}
+```
+
+Déjà, cette implémentation n'est pas très bonne au niveau du principe de **responsabilité unique**. On va créer une classe dédiée pour l'export en `MP4` :
+
+```java
+class ExportMP4 {
+
+  public void exporterEnMP4(String nom, Video video) {
+    //Code complexe et spécifique exportant le projet au format MP4 en utilisant les objets nom et vidéo
+    //Utilise les méthodes privées traitementMP4SpecifiqueA et traitementMP4SpecifiqueB 
+    //(qui pourraient éventuellement être déléguées à d'autres classes...)
+  }
+
+  private void traitementMP4SpecifiqueA(Video video) {
+    //...
+  }
+
+  private void traitementMP4SpecifiqueB(Video video) {
+    //...
+  }
+
+}
+
+class Projet {
+
+  private String nom;
+
+  private Video video;
+
+  private ExportMP4 export;
+
+  public Projet(String nom) {
+    this.nom = nom;
+    video = new Video();
+    export = new ExportMp4();
+  }
+
+  public void exporter() {
+    export.exporterEnMP4(nom, video);
+  }
+
+}
+```
+
+Maintenant, on aimerait pouvoir exporter des objets au format `MP3` avec cette classe :
+
+```java
+class ExportMP3 {
+
+  public void exporterEnMP3(String nom, Video video) {
+    //Code complexe et spécifique exportant le projet au format MP3 en utilisant les objets nom et vidéo
+    //Utilise la méthode privée traitementAudio
+  }
+
+  private void traitementAudio(Video video) {
+    //...
+  }
+
+}
+```
+
+On aimerait pouvoir utiliser au choix `ExportMP3` dans `Projet`. Mais c'est impossible dans l'état actuel, car `Projet`  utilise un objet de type `ExportMP4` et un `ExportMP3` n'est pas un `ExportMP4`.
+
+<div style="text-align:center">
+![Synthèse Diagramme 8]({{site.baseurl}}/assets/syntheses/SOLID/SyntheseDiagramme8.svg){: width="50%" }
 </div>
 
-Le problème souligné ici est qu'on a utilisé une classe concrète (`Etudiant`) à la place d'une classe abstraite ou d'une interface, ce qui empêche son utilisation pour d'autres types de classes (ici, Enseignant).
--->
+Le problème souligné ici est qu'on a utilisé une **classe concrète** (`ExportMP4`) dans `Projet` à la place d'une **classe abstraite** ou d'une **interface**, ce qui empêche l'utilisation avec d'autres types de classes (ici, `ExportMP3`).
 
+Et il serait **hors de question** de proposer cette solution qui **viole le principe ouvert/fermé** :
 
-Illustrons ce problème avec un exemple :
+```java
+class Projet {
+
+  private String nom;
+
+  private Video video;
+
+  private String export;
+
+  public Projet(String nom, String export) {
+    this.nom = nom;
+    video = new Video();
+    this.export = export;
+  }
+
+  public void exporter() {
+    if(export == "MP4") {
+      ExportMP4 exportMP4 = new ExportMP4();
+      exportMP4.exporterEnMP4(nom, video);
+    }
+    else if(export == "MP3") {
+      ExportMP3 exportMP3 = new ExportMP3();
+      exportMP3.exporterEnMP3(nom, video);
+    }
+  }
+
+}
+```
+
+Normalement, avec tout ce que nous avons vu avant, vous devez déjà connaître la solution adéquate. Mais développons ce problème de manière plus théorique :
 
 ```java
 class A {
@@ -1285,7 +1436,9 @@ class Service {
 }
 ```
 
-Pour palier à ce problème, on utilise **l'injection de dépendance**. La classe concrète est injectée via le constructeur, au moment de l'instanciation de l'objet, mais la classe ne connaît que le type abstrait. Cela permet une modularité de la classe qui peut alors être utilisée avec n'importe quel service concret dérivé du type abstrait. Et on peut en ajouter dans le futur. C'est exactement ce que nous avions fait avec le paquet de cartes et les tris avec le pattern **stratégie**, mais également avec le **décorateur** dans l'exercice avec les produits. L'injection de dépendance est partout !
+Pour palier à ce problème, on utilise **l'injection de dépendance**. La classe concrète est injectée via le constructeur, au moment de l'instanciation de l'objet, mais la classe ne connaît que le type abstrait. Cela permet une modularité de la classe qui peut alors être utilisée avec n'importe quel service concret dérivé du type abstrait. Et on peut en ajouter dans le futur.
+
+Vous verrez par la suite que **l'injection de dépendances abstraites** est un concept qui revient un peu partout quand on parle de **conception de qualité**, des **principes SOLID** ou de **design patterns**.
 
 ```java
 class Service {
@@ -1320,4 +1473,438 @@ class Main {
 
 De cette manière, **l'inversion des dépendances** est respectée. La classe `Service` ne dépend plus d'aucun service concret, mais d'**abstractions**.
 
-<!-- Section à compléter>
+Pour notre problème initial, après refactoring, on aurait alors :
+
+```java
+interface Export {
+  void exporterProjet(String nom, Video video);
+}
+
+class ExportMP4 implements Export {
+
+  @Override
+  public void exporterProjet(String nom, Video video) {
+    //...
+  }
+
+  private void traitementMP4SpecifiqueA(Video video) {
+    //...
+  }
+
+  private void traitementMP4SpecifiqueB(Video video) {
+    //...
+  }
+
+}
+
+class ExportMP3 implements Export {
+
+  @Override
+  public void exporterProjet(String nom, Video video) {
+    //...
+  }
+
+  private void traitementAudio(Video video) {
+    //...
+  }
+
+}
+
+class Projet {
+
+  private String nom;
+
+  private Video video;
+
+  private Export export;
+
+  public Projet(String nom, Export export) {
+    this.nom = nom;
+    this.export = export;
+    video = new Video();
+  }
+
+  public void exporter() {
+    export.exporterProjet(nom, video);
+  }
+
+  public void setExport(Export export) {
+    this.export = export;
+  }
+
+}
+
+class Main {
+
+  public static void main(String[] args) {
+    Projet p1 = new Projet("Exemple 1", new ExportMP4());
+    Projet p2 = new Projet("Exemple 2", new ExportMP3());
+    p3.setExport(new ExportMP4());
+  }
+
+}
+```
+
+<div style="text-align:center">
+![Synthèse Diagramme 9]({{site.baseurl}}/assets/syntheses/SOLID/SyntheseDiagramme9.svg){: width="50%" }
+</div>
+
+Cette solution est d'ailleurs un **design pattern comportemental** connu, appelé **stratégie**. Ce pattern permet **d'injecter** un comportement spécifique dans une classe sans en modifier le code source (et éventuellement, le modifier plus tard). Ce pattern s'appuie sur **ouvert/fermé**, **l'inversion des dépendances** et aide à renforcer **responsabilité unique**. C'est exactement ce que vous venez de faire : la méthode d'export du projet est modulable et on peut même en ajouter de nouveaux types d'export dans le futur ! Et tout cela, sans modifier `Projet`.
+
+**L'inversion des dépendances** et plus globalement, le fait qu'une classe **dépende d'abstractions** plutôt que de classes concrètes est aussi très important dans le cadre de la **testabilité** d'un projet.
+
+Prenons l'exemple suivant :
+
+```java
+class Produit {
+
+  //Généré par la base de données
+  private int id;
+
+  private String nom;
+
+  private double prix;
+
+  public Produit(String nom, double prix) {
+    this.nom = nom;
+    this.prix = prix;
+  }
+
+  //Getters et setters...
+
+}
+
+class ProduitRepository {
+
+  //Classe permettant de communiquer avec la base de données
+  private ConnexionBDD connexionBDD;
+
+  public ProduitRepository() {
+    connexionBDD = new ConnexionBDD();
+  }
+
+  public void enregistrerProduit(Produit produit) {
+    //Enregistre réellement le produit dans la base de données
+  }
+
+  public List<Produit> recupererProduits() {
+    //Récupère tous les produits enregistrés dans la base de données
+  }
+
+  public Produit recupererProduit(int id) {
+    //Récupère un produit enregistré dans la base de données
+  }
+
+  public void modifierProduit(Produit produit) {
+    //Modifie un produit enregistré dans la base de données
+  }
+
+  public void supprimerProduit(int id) {
+    //Supprime un produit enregistré dans la base de données
+  }
+
+}
+
+class ServiceFichierLog {
+
+  public void logger(String contenu) {
+    //Ecrit le contenu du log dans un fichier
+  }
+
+}
+
+class ServiceProduit {
+
+  private ProduitRepository repository;
+
+  private ServiceFichierLog logger;
+
+  public ServiceProduit() {
+    repository = new ProduitRepository();
+    logger = new ServiceFichierLog();
+  }
+
+  public void ajouterUnProduit(String nom, double prix) {
+    if(nom.length() < 3) {
+      throw new ServiceProduitException("Le nom du produit est trop court.");
+    }
+    if(nom.length() > 20) {
+      throw new ServiceProduitException("Le nom du produit est trop long.");
+    }
+    if(prix <= 0) {
+      throw new ServiceProduitException("Le prix ne peut pas être nul ou négatif.");
+    }
+    repository.enregistrerProduit(new Produit(nom, prix));
+    logger.logger(String.format("Produit %s enregistré, prix : %s", nom, prix));
+  }
+
+}
+```
+
+<div style="text-align:center">
+![Synthèse Diagramme 10]({{site.baseurl}}/assets/syntheses/SOLID/SyntheseDiagramme10.svg){: width="50%" }
+</div>
+
+On pourrait se dire que s'il n'y a pas d'autres sources de données (d'autres bases de données etc) ou d'autres systèmes de logger, ce n'est pas bien grave (ce qui est déjà mal en soi, car cela ne respecte pas le principe ouvert/fermé).
+
+Mais que se passe-t-il si on essaye d'écrire des **tests unitaires** pour la classe `ServiceProduit` ?
+
+```java
+@Test
+public void testAjouterProduitValide() {
+  ServiceProduit service = new ServiceProduit();
+  assertDoesNotThrow(() -> service.ajouterUnProduit("Test", 5.0));
+}
+
+@Test
+public void testAjouterProduitNomTropCourt() {
+  ServiceProduit service = new ServiceProduit();
+  assertThrows(ServiceProduitException.class, () -> service.ajouterUnProduit("Te", 5.0));
+}
+
+@Test
+public void testAjouterProduitNomTropLong() {
+  ServiceProduit service = new ServiceProduit();
+  assertThrows(ServiceProduitException.class, () -> service.ajouterUnProduit("Test Test Test Test Test Test Test", 5.0));
+}
+
+@Test
+public void testAjouterProduitPrixNul() {
+  ServiceProduit service = new ServiceProduit();
+  assertThrows(ServiceProduitException.class, () -> service.ajouterUnProduit("Test", 0.0));
+}
+
+@Test
+public void testAjouterProduitPrixNegatif() {
+  ServiceProduit service = new ServiceProduit();
+  assertThrows(ServiceProduitException.class, () -> service.ajouterUnProduit("Test", -5.0));
+}
+```
+Après l’exécution de ces tests... Il y aura quatre produits qui auront été réellement enregistrés dans la base de données ! Et un fichier de log réellement écrit sur le système également !
+
+L'architecture proposée ne respecte pas le principe d'inversion des dépendances, car la classe `ServiceProduit` possède des dépendances vers des classes **concrètes** qui, de plus, ne sont pas injectées.
+
+On se rend compte que cela pose un véritable problème au niveau des **tests unitaire**. Un test **unitaire**, comme son nom l'indique, teste le fonctionnement d'**une classe**, une **unité**. Or, quand on exécute les tests sur `ServiceUtilisateur`, les méthodes des dépendances concrètes utilisées sont aussi appelées ! Ce qui déclenche donc réellement l'enregistrement du produit créé pour les tests dans la base de donnée, et l'écriture de fichiers de log, alors qu'on souhaitait simplement vérifier la méthode `ajouterUnProduit`.
+
+Imaginez-vous dans un contexte plus concret, par exemple, dans un projet web : avec une telle conception, vos tests unitaires déclencheraient l'enregistrement de produits de test sur votre base de données réelle ! Ce n'est pas envisageable.
+
+Les tests unitaires **ne doivent pas dépendre de l'environnement de production**. Ils doivent pouvoir être lancé seulement à partir du code de la classe testée, sans dépendre de rien d'autre.
+
+L'écriture non désirée dans le fichier de log pendant les tests est aussi problématique.
+
+Pour palier à cela, les testeurs mettent en place des **stubs**. Il s'agit de classes **bouchons** qui ne réalisent pas réellement l'action demandée, ou alors pas de manière persistante. Aucun effet de bord est produit.
+
+Plus tard, dans l'année, vous découvrirez les **mocks** qui permettent de créer de "fausses" classes destinées aux tests dont on peut facilement éditer les méthodes.
+
+Bref, réorganisons notre code en respectant le principe d'inversion des dépendances :
+
+```java
+
+interface ProduitRepositoryInterface {
+  void enregistrerProduit(Produit produit);
+  List<Produit> recupererProduits();
+  Produit recupererProduit(int id);
+  void modifierProduit(Produit produit);
+  void supprimerProduit(int id);
+}
+
+class ProduitRepository implements ProduitRepositoryInterface {
+
+  //Classe permettant de communiquer avec la base de données
+  private ConnexionBDD connexionBDD;
+
+  public ProduitRepository() {
+    connexionBDD = new ConnexionBDD();
+  }
+
+  @Override
+  public void enregistrerProduit(Produit produit) {
+    //Enregistre réellement le produit dans la base de données
+  }
+
+  @Override
+  public List<Produit> recupererProduits() {
+    //Récupère tous les produits enregistrés dans la base de données
+  }
+
+  @Override
+  public Produit recupererProduit(int id) {
+    //Récupère un produit enregistré dans la base de données
+  }
+
+  @Override
+  public void modifierProduit(Produit produit) {
+    //Modifie un produit enregistré dans la base de données
+  }
+
+  @Override
+  public void supprimerProduit(int id) {
+    //Supprime un produit enregistré dans la base de données
+  }
+
+}
+
+class FakeProduitRepository implements ProduitRepositoryInterface {
+
+  private static int ID = 0;
+  private static Map<Integer, Produit> produits = new HashMap<>();
+
+  @Override
+  public void enregistrerProduit(Produit produit) {
+    //N'enregistre pas le produit dans la base de données réelle
+    ID++;
+    produit.setId(ID);
+    produits.put(ID, produit);
+  }
+
+  @Override
+  public List<Produit> recupererProduits() {
+    //Ne récupère pas les produits réellement enregistrés dans la base de données
+    return produits.values();
+  }
+
+  @Override
+  public Produit recupererProduit(int id) {
+    //Ne récupère pas le produit réellement enregistrés dans la base de données
+    return produits.get(id);
+  }
+
+  @Override
+  public void modifierProduit(Produit produit) {
+    //Ne modifie pas réellement le produit enregistré dans la base de données
+    produits.put(produit.getId(), produit);
+  }
+
+  @Override
+  public void supprimerProduit(int id) {
+    //Ne supprime pas réellement le produit enregistré dans la base de données
+    return produits.remove(id);
+  }
+}
+
+interface ServiceLogInterface {
+  void logger(String contenu);
+}
+
+class ServiceFichierLog implements ServiceLogInterface {
+
+  @Override
+  public void logger(String contenu) {
+    //Ecrit le contenu du log dans un fichier
+  }
+
+}
+
+class FakeServiceLog implements ServiceLogInterface {
+
+  private String dernierMessage;
+
+  @Override
+  public void logger(String contenu) {
+    //N'écrit pas vraiment le contenu du log dans un fichier
+    dernierMessage = contenu;
+  }
+
+  public String getDernierMessage() {
+    return dernierMessage;
+  }
+
+}
+
+class ServiceProduit {
+
+  private ProduitRepositoryInterface repository;
+
+  private ServiceLogInterface logger;
+
+  public ServiceProduit(ProduitRepositoryInterface repository, ServiceLogInterface logger) {
+    this.repository = repository;
+    this.logger = logger;
+  }
+
+  public void ajouterUnProduit(String nom, double prix) {
+    if(nom.length() < 3) {
+      throw new ServiceProduitException("Le nom du produit est trop court.");
+    }
+    if(nom.length() > 20) {
+      throw new ServiceProduitException("Le nom du produit est trop long.");
+    }
+    if(prix <= 0) {
+      throw new ServiceProduitException("Le prix ne peut pas être nul ou négatif.");
+    }
+    repository.enregistrerProduit(new Produit(nom, prix));
+    logger.logger(String.format("Produit %s enregistré, prix : %s", nom, prix));
+  }
+
+}
+```
+
+<div style="text-align:center">
+![Synthèse Diagramme 11]({{site.baseurl}}/assets/syntheses/SOLID/SyntheseDiagramme11.svg){: width="75%" }
+</div>
+
+Ici, la classe `FakeProduitRepository` agit comme un **stub** qu'on peut utiliser pour les tests sans risque. Dans un environnement réel, on utiliserait un stockage avec une base de données dédiée aux tests, comme `SQLite`, qu'on viderait ensuite. On a le même système pour `FakeServiceLog`.
+
+Ainsi, dans l'application principale, on aura le code suivant :
+
+```java
+class Main {
+  public static void main(String[]args) {
+    ServiceProduit service = new ServiceProduit(new ProduitRepository(), new ServiceFichierLog());
+    //Code utilisant le service...
+  }
+}
+```
+
+Et dans les tests unitaires :
+
+```java
+@Test
+public void testAjouterProduitValide() {
+  ServiceProduit service = new ServiceProduit(new FakeProduitRepository(), new FakeServiceLog());
+  assertDoesNotThrow(() -> service.ajouterUnProduit("Test", 5.0));
+}
+
+@Test
+public void testAjouterProduitNomTropCourt() {
+  ServiceProduit service = new ServiceProduit(new FakeProduitRepository(), new FakeServiceLog());
+  assertThrows(ServiceProduitException.class, () -> service.ajouterUnProduit("Te", 5.0));
+}
+
+@Test
+public void testAjouterProduitNomTropLong() {
+  ServiceProduit service = new ServiceProduit(new FakeProduitRepository(), new FakeServiceLog());
+  assertThrows(ServiceProduitException.class, () -> service.ajouterUnProduit("Test Test Test Test Test Test Test", 5.0));
+}
+
+@Test
+public void testAjouterProduitPrixNul() {
+  ServiceProduit service = new ServiceProduit(new FakeProduitRepository(), new FakeServiceLog());
+  assertThrows(ServiceProduitException.class, () -> service.ajouterUnProduit("Test", 0.0));
+}
+
+@Test
+public void testAjouterProduitPrixNegatif() {
+  ServiceProduit service = new ServiceProduit(new FakeProduitRepository(), new FakeServiceLog());
+  assertThrows(ServiceProduitException.class, () -> service.ajouterUnProduit("Test", -5.0));
+}
+```
+
+A priori, `ServiceProduit` aurait pour vocation d'être utilisé dans diverses classes type **contrôleurs**, ou même dans d’autres services. Il serait donc judicieux que ce service soit aussi utilisé au travers d'une **abstraction** (une **interface** dans notre cas) afin qu'on puisse en produire un **stub** ou pour facilement changer le service utilisé si un autre service ou une autre classe en dépend :
+
+```java
+interface ServiceProduitInterface {
+  void ajouterUnProduit(String nom, double prix);
+}
+
+class ServiceProduit implements ServiceProduitInterface {
+  //...
+}
+```
+
+## Conclusion
+<div id="conclusion"></div>
+
+Voilà, maintenant, vous savez tout des principes **SOLID** ! Vous êtes donc plus proche d'un ingénieur logiciel qu'un codeur. Il existe un acronyme opposé : les principes **STUPID** qui sont six pratiques qui rendent le code très peu qualitatif, intestable, non évolutif et qu'il faut donc absolument éviter ! Bref, des **mauvaises pratiques** qui sont souvent observées. Vous pouvez consulter de la documentation à ce propos [sur cette page](https://openclassrooms.com/en/courses/5684096-use-mvc-solid-principles-and-design-patterns-in-java/6417836-avoid-stupid-practices-in-programming).
+
+Dorénavant, pour vos futurs projets (ou ceux actuels, comme la SAE) il faut systématiquement vous poser et réfléchir à la conception de votre programme **à long terme**. Il n'est jamais trop tard pour faire du **refactoring**, mais ne pas avoir besoin d'en faire en respectant une certaine qualité logicielle d'entrée de jeu est encore mieux.

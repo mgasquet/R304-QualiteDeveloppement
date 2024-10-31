@@ -1097,7 +1097,7 @@ Tout d'abord, illustrons ce principe avec un exemple.
 
 </div>
 
-Le problème souligné ici est qu'on a utilisé une classe concrète (`Etudiant`) à la place d'une classe abstraite ou d'une interface, ce qui empêche son utilisation pour d'autres types de classes (ici, Enseignant).
+Le problème souligné ici est qu'on a utilisé une classe concrète (`Etudiant`) dans `CompteUniversitaire` à la place d'une classe abstraite ou d'une interface, ce qui empêche l'utilisation avec d'autres types de classes (ici, `Enseignant`).
 
 Illustrons ce problème avec un exemple :
 
