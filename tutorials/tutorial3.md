@@ -538,7 +538,7 @@ class SalarieResponsableDeStagiaires extends Salarie {
 }
 ```
 
-Ici, même problème que pour les produits, si je veux un salarié qui est à la fois chef de projet et responsable de stagiaire, cela est impossible !
+Ici, même problème que pour les produits, si je veux un salarié qui a à la fois les responsabilités de chef de projet et de responsable de stagiaire, cela est impossible !
 
 Comme souvent, l'héritage est le problème ici. Au lieu de faire un simple héritage entre les classes, nous pourrions plutôt utiliser des **compositions** sur les sous-types et créer ainsi des salariés incluant des salariés, incluant des salariés... ce qui permet de combiner la logique de chaque type ! 
 
@@ -644,6 +644,22 @@ abstract class SalarieDecorateur implements SalarieInterface {
    }
 }
 
+class SalarieChefProjet extends SalarieDecorateur {
+
+  private int nombreProjetsGeres;
+
+  public SalarieChefProjet(SalarieInterface salarie, int nombreProjetsGeres) {
+    super(salarie);
+    this.nombreProjetsGeres = nombreProjetsGeres;
+  }
+
+  @Override
+  public double getSalaire() {
+    return super.getSalaire() + 100 * (nombreProjetsGeres);
+  }
+
+}
+
 class SalarieResponsableStagiaires extends SalarieDecorateur {
 
   private int nombreStagiairesGeres;
@@ -660,7 +676,26 @@ class SalarieResponsableStagiaires extends SalarieDecorateur {
 
 }
 
-//Pareil pour SalarieChefProjet
+class Main {
+    public static void main(String[]args) {
+        SalarieInterface s1 = new Salarie(2000);
+        SalarieInterface s2 = new SalarieChefProjet(s1, 3);
+        SalarieInterface s3 = new SalarieResponsableStagiaires(s1, 2);
+        SalarieInterface s4 = new SalarieChefProjet(SalarieResponsableStagiaires(s1, 2), 3);
+
+        //Affiche 2000
+        System.out.println(s1.getSalaire());
+
+        //Affiche 2300
+        System.out.println(s2.getSalaire());
+
+        //Affiche 2100
+        System.out.println(s3.getSalaire());
+
+        //Affiche 2400
+        System.out.println(s4.getSalaire());
+    }
+}
 ```
 
 <div style="text-align:center">
