@@ -324,10 +324,10 @@ class FigureGeometrique {
    }
 
    public void dessiner() {
-      if(typeFigure == "rectangle") {
+      if(typeFigure.equals("rectangle")) {
          dessinerRectangle();
       }
-      else if(typeFigure == "triangle") {
+      else if(typeFigure.equals("triangle")) {
          dessinerTriangle();
       }
    }

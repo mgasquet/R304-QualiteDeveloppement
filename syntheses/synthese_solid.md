@@ -195,10 +195,10 @@ class FigureGeometrique {
    }
 
    public void dessiner() {
-      if(typeFigure == "rectangle") {
+      if(typeFigure.equals("rectangle")) {
          dessinerRectangle();
       }
-      else if(typeFigure == "triangle") {
+      else if(typeFigure.equals("triangle")) {
          dessinerTriangle();
       }
    }
@@ -585,7 +585,7 @@ interface Carte {
 
 Bref, avec cette modélisation, les changements dans les diverses cartes (modification de calcul, nouvelles cartes, suppression de cartes, etc) n'impacteront plus la classe `Joueur`: on peut ajouter de nouvelles choses (**ouvert aux extensions**) sans modifier `Joueur` (**fermé aux modifications**).
 
-Certains **designs patterns** aident à respecter le principe ouvert/fermé afin de résoudre des problèmes de conception. Par exemple, le pattern comportemental **décorateur** est utilisé pour ajouter dynamiquement de nouveaux **comportements** à un objet.
+Certains **designs patterns** aident à respecter le principe ouvert/fermé afin de résoudre des problèmes de conception. Par exemple, le pattern comportemental [décorateur]({{site.baseurl}}/syntheses/synthese_patterns_decorateur) est utilisé pour ajouter dynamiquement de nouveaux **comportements** à un objet.
 
 ### Principe de substitution de Liskov (Liskov substitution)
 <div id="lsp"></div>
@@ -856,7 +856,7 @@ public void testerAgrandirCercle() {
 
 C'est normal, car un `Cercle` n'est plus une `Ellipse`. Le principe de substitution de Liskov ainsi que le cotnrat propre à `Cercle` sont respectés !
 
-La **composition forte** entre `Cercle` et `Ellipse` (initialisée dans `Cercle` et n'en sort pas) est en opposition avec la **composition faible**, qui indique aussi une composition, mais dans laquelle la dépendance est injectée (comme avec le pattern **décorateur**, par exemple).
+La **composition forte** entre `Cercle` et `Ellipse` (initialisée dans `Cercle` et n'en sort pas) est en opposition avec la **composition faible**, qui indique aussi une composition, mais dans laquelle la dépendance est injectée (comme avec le pattern [décorateur]({{site.baseurl}}/syntheses/synthese_patterns_decorateur), par exemple).
 
 Bien sûr, nous aurions pu quand même conserver la logique d'agrandissement d'une `FigureCirculaire`. À ce moment-là, il faudrait rajouter une méthode `agrandir(int facteur)` dans l'interface `FigureCirculaire` et implémenter les méthodes dans `Ellipse` et `Cercle`.
 
@@ -980,7 +980,7 @@ class Deck implements ConteneurCarte {
 ![Synthèse Diagramme 7]({{site.baseurl}}/assets/syntheses/SOLID/SyntheseDiagramme7.svg){: width="50%" }
 </div>
 
-Attention, la composition n'est pas forcément la solution à tous les problèmes de conception. Néanmoins, elle revient souvent au cœur de divers **design patterns** comme **composite** ou bien encore **décorateur**.
+Attention, la composition n'est pas forcément la solution à tous les problèmes de conception. Néanmoins, elle revient souvent au cœur de divers **design patterns** comme **composite** ou bien encore [décorateur]({{site.baseurl}}/syntheses/synthese_patterns_decorateur).
 
 ### Principe de ségrégation des interfaces (Interface segregation)
 <div id="isp"></div>
@@ -1337,12 +1337,16 @@ class Projet {
     this.export = export;
   }
 
+  public void setExport(String export) {
+    this.export = export;
+  }
+
   public void exporter() {
-    if(export == "MP4") {
+    if(export.equals("MP4")) {
       ExportMP4 exportMP4 = new ExportMP4();
       exportMP4.exporterEnMP4(nom, video);
     }
-    else if(export == "MP3") {
+    else if(export.equals("MP3")) {
       ExportMP3 exportMP3 = new ExportMP3();
       exportMP3.exporterEnMP3(nom, video);
     }
@@ -1549,7 +1553,7 @@ class Main {
 ![Synthèse Diagramme 9]({{site.baseurl}}/assets/syntheses/SOLID/SyntheseDiagramme9.svg){: width="50%" }
 </div>
 
-Cette solution est d'ailleurs un **design pattern comportemental** connu, appelé **stratégie**. Ce pattern permet **d'injecter** un comportement spécifique dans une classe sans en modifier le code source (et éventuellement, le modifier plus tard). Ce pattern s'appuie sur **ouvert/fermé**, **l'inversion des dépendances** et aide à renforcer **responsabilité unique**. C'est exactement ce que vous venez de faire : la méthode d'export du projet est modulable et on peut même en ajouter de nouveaux types d'export dans le futur ! Et tout cela, sans modifier `Projet`.
+Cette solution est d'ailleurs un **design pattern comportemental** connu, appelé [stratégie]({{site.baseurl}}/syntheses/synthese_patterns_strategie). Ce pattern permet **d'injecter** un comportement spécifique dans une classe sans en modifier le code source (et éventuellement, le modifier plus tard). Ce pattern s'appuie sur **ouvert/fermé**, **l'inversion des dépendances** et aide à renforcer **responsabilité unique**. C'est exactement ce que vous venez de faire : la méthode d'export du projet est modulable et on peut même en ajouter de nouveaux types d'export dans le futur ! Et tout cela, sans modifier `Projet`.
 
 **L'inversion des dépendances** et plus globalement, le fait qu'une classe **dépende d'abstractions** plutôt que de classes concrètes est aussi très important dans le cadre de la **testabilité** d'un projet.
 
