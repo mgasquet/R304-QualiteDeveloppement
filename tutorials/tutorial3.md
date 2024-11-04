@@ -458,7 +458,7 @@ Le principe de responsabilités unique n'est pas respecté. Pour le `toString`, 
 
 Les principes **SOLID** se combinent naturellement entre eux. D'ailleurs, si vous avez refactoré proprement le dernier exercice, vous avez même déjà utilisé le principe **d'inversion des dépendances** dont nous parlerons plus tard ! 
 
-Encore mieux, vous venez d'utiliser votre premier **design pattern** au niveau des tris : **Stratégie**. Ce pattern permet **d'injecter** un comportement spécifique dans une classe sans en modifier le code source (et éventuellement, le modifier plus tard). Ce pattern s'appuie sur **ouvert/fermé**, **l'inversion des dépendances** et aide à renforcer **responsabilité unique**. C'est exactement ce que vous venez de faire : la méthode de tri du paquet est modulable et on peut même en ajouter des nouvelles dans le futur ! Et tout cela, sans modifier `Paquet`.
+Encore mieux, vous venez d'utiliser un **design pattern** au niveau des tris (et des mélanges) : **Stratégie**. Ce pattern permet d'encapsuler un ensemble de comportements (algorithmes de tris) dans des classes et rendre ces algorithmes interchangeables dans une classe cliente (`Paquet`). Ainsi, le comportement spécifique est **injecté** dans la classe cliente sans modifier le code source de celle-ci. Ce pattern s'appuie sur **ouvert/fermé**, **l'inversion des dépendances** et aide à renforcer **responsabilité unique**. C'est exactement ce que vous venez de faire : la méthode de tri du paquet est modulable et on peut même en ajouter des nouvelles dans le futur ! Et tout cela, sans modifier `Paquet`.
 
 À partir du diagramme de classes de conception que vous venez de générer, vous devriez être en mesure de généraliser le pattern **stratégie** à tout type de problème.
 
