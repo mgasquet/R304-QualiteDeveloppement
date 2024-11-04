@@ -245,7 +245,7 @@ En d'autres termes, il doit être possible d'étendre les fonctionnalités/le **
 Ce principe est un pilier fondamental de qualité de code. Avec ce principe, même une classe ou une librairie compilée (non modifiable) autorise le développeur à étendre les fonctionnalités proposées.
 
 Malheureusement, dans de nombreux projets, on rencontre fréquemment des classes violant ce principe, car mal conçues. Les symptômes sont généralement :
-* Utilisation d'énormes blocs `if/else if/else` ou de blocs `switch case` qui grossisent au fur et à mesure qu'on ajoute de nouvelles choses. Avec l'utilisation de `classes` et de l'héritage, on va en plus certainement se retrouver à utiliser des instructions `instanceof` (pour vérifier le type de l'objet) et de `cast` pour pouvoir utiliser des méthodes précises.
+* Utilisation d'énormes blocs `if/else if/else` ou de blocs `switch case` qui grossissent au fur et à mesure qu'on ajoute de nouvelles choses. Avec l'utilisation de `classes` et de l'héritage, on va en plus certainement se retrouver à utiliser des instructions `instanceof` ou `getClass()` (pour vérifier le type de l'objet) et de `cast` pour pouvoir utiliser des méthodes précises.
 * Nécessité de dupliquer du code pour ajouter une nouvelle fonctionnalité (non-respect du principe [_DRY_](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself)).
 * Une classe mère qui dépend de ses classes filles.
 
