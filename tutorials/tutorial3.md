@@ -475,17 +475,17 @@ Maintenant, voyons une nouvelle situation, où les choses risquent d'être plus 
 3. Maintenant, nous voulons qu'un produit puisse à la fois être un produit qui périme bientôt et un produit avec une réduction. C'est-à-dire que les deux **comportements** (réductions) soient appliqués lors du calcul du prix (lors d'un appel à `getPrix`) et que les messages correspondants aux deux types de produit soient affichés (lors d'un appel à `afficherDescription`). Est-il possible de créer une telle classe ou un tel comportement ?
 </div>
 
-Si vous vous êtes contenté uniquement de faire hériter `ProduitAvecDatePeremptionProche` de `Produit`, vous remarquerez qu'il est compliqué d'avoir un même produit possédant ces deux fonctionnalités à la fois, notamment car le multihéritage de classes n'est pas possible.
+Si vous vous êtes contenté uniquement de faire hériter `ProduitAvecDatePeremptionProche` de `Produit`, vous remarquerez qu'il est compliqué d'avoir un même produit possédant ces deux fonctionnalités à la fois, notamment, car le multihéritage de classes n'est pas possible en Java.
 
 Peut-être que vous avez été plus malin et que vous avez pensé à implémenter une classe héritant de `Produit` et implémentant les deux comportements. Mais dans ce cas, il y a de la **duplication de code**.
 
-Ou alors, peut-être que vous avez été encore plus malin et que vous avez pensé à faire une classe **composée** de deux instances des types de produit concernés. C'est déjà beaucoup mieux ! Mais que se passe-t-il si d'autres types de produit sont ajoutés ? Par exemple, si on a cinq types de produits différents et qu'on veut mixer au choix certaines fonctionnalités de certains types ? Il va quand même y avoir une duplication, à terme.
+Ou alors, peut-être que vous avez été encore plus malin et que vous avez pensé à faire une classe **composée** de deux instances des types de produit concernés. C'est déjà beaucoup mieux ! Mais que se passe-t-il si d'autres types de produit sont ajoutés ? Par exemple, si on a cinq types de produits différents et qu'on veut mixer au choix certaines fonctionnalités de certains types ? La classe composée sera de plus en difficile à gérer et ne sera jamais fermée aux modifications.
 
 Tout en respectant le **principe ouvert/fermé**, il existe une méthode générale pour construire un `Produit` possédant autant de comportements mixtes que nous souhaitons. Si de nouveaux comportements sont ajoutés dans le futur, il n'y aura pas de modification du code existant. On peut implémenter un tel système en [favorisant la **composition** au lieu d'un **héritage**](https://en.wikipedia.org/wiki/Composition_over_inheritance). L'idée est la suivante :
 
-* La classe "mère" définie une interface (abstraction) qu'elle implémente : elle définit son contrat, ce que tous les objets du même type qu'elle, doivent pouvoir faire.
+* La classe "mère", disons `I`, définie une abstraction (typiquement une interface) : elle définit son contrat, à savoir ce que tous les objets du même type qu'elle, doivent pouvoir faire.
 
-* La classe "fille" **n'hérite pas** de la classe mère en redéfinissant simplement les fonctions, mais possède à la place **un attribut stockant une instance de l’interface de la classe mère**. Elle implémente elle-même l'interface de la classe mère. Cette classe fille **délègue** une partie de l’exécution des **opérations** à l'instance qu'elle agrège et ajoute son propre **comportement**.
+* La classe "fille" implémente cette interface et redéfinit les fonctions afin de respecter le contrat. En plus possède, la classe fille possède **un attribut stockant une réference vers une instance de `I`**. Ainsi, la classe fille **délègue** une partie de l’exécution des **opérations** à l'instance qu'elle agrège et ajoute son propre **comportement**.
 
 * On peut ainsi développer plusieurs classes "filles" sous le même format et les concaténer lors de la création de l'objet, ajoutant ainsi plusieurs comportements de manière dynamique.
 
