@@ -485,7 +485,7 @@ Tout en respectant le **principe ouvert/fermé**, il existe une méthode génér
 
 * La classe "mère", disons `I`, définie une abstraction (typiquement une interface) : elle définit son contrat, à savoir ce que tous les objets du même type qu'elle, doivent pouvoir faire.
 
-* La classe "fille" implémente cette interface et redéfinit les fonctions afin de respecter le contrat. En plus possède, la classe fille possède **un attribut stockant une réference vers une instance de `I`**. Ainsi, la classe fille **délègue** une partie de l’exécution des **opérations** à l'instance qu'elle agrège et ajoute son propre **comportement**.
+* La classe "fille" implémente cette interface et redéfinit les fonctions afin de respecter le contrat. En plus, la classe fille possède **un attribut stockant une réference vers une instance de `I`**. Ainsi, la classe fille **délègue** une partie de l’exécution des **opérations** à l'instance qu'elle agrège et ajoute son propre **comportement**.
 
 * On peut ainsi développer plusieurs classes "filles" sous le même format et les concaténer lors de la création de l'objet, ajoutant ainsi plusieurs comportements de manière dynamique.
 
