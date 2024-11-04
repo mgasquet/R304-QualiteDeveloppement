@@ -41,7 +41,7 @@ Les **principes SOLID** représentent un acronyme lié aux 5 principes clés pou
 
 Le respect de ces principes permet d'améliorer le principe de **faible couplage** et de **forte cohésion** des classes (que nous avons abordé précédemment), l'évolutivité du logiciel, la réduction du risque de bugs liés à l'architecture...
 
-Les **design patterns** sont des solutions à des problèmes bien définis qui fournissent des modèles réutilisables et adaptables sur n'importe quel projet. Ces patterns permettent notamment de respecter les principes **SOLID**.
+Les **design patterns** sont des solutions à des problèmes bien définis qui fournissent des modèles réutilisables et adaptables à de nombreux projets. Ces patterns contribuent notamment à mieux respecter les principes **SOLID**. En revanche, utiliser **design patterns** ne garantit pas toujours une qualité de code respectant **SOLID** et peut même être contre-productif — il faut donc savoir les utiliser au bon endroit et au bon moment.
 
 Dans un logiciel développé d'une telle manière, généralement, l'ajout d'une nouvelle fonctionnalité se résume à l'ajout de nouvelles classes ou de méthodes **sans avoir besoin de modifier ou de récrire les classes existantes**. Le programme est ouvert à l'extension, mais fermé aux modifications (qui pourraient entraîner elles-mêmes d'autres modifications...).
 
@@ -54,7 +54,7 @@ Dans ce TP, nous allons étudier chaque principe et nous allons vous fournir du 
 
 Ensuite, nous allons voir comme un des principes **SOLID** permet de régler cela, et vous allez donc devoir **refactorer** les différentes applications. **Refactorer** du code (ou réusiner du code en français) signifie retravailler le code source du programme sans pour autant ajouter de nouvelles fonctionnalités à l'application. Il s'agit d'améliorer la qualité du code.
 
-**Attention** : Dans plusieurs exercices, il vous sera demandé de **générer un diagramme de classes** (avec `IntelliJ`). Il est fortement conseillé de prendre des **captures d'écran** de chaque diagramme de classes et de les sauvegarder dans un sous-dossier de votre dépôt. Certains diagrammes permettent de comparer l'évolution de l'architecture et des dépendances avant/après **refactoring**.
+**Attention** : Dans plusieurs exercices, il vous sera demandé de **générer un diagramme de classes** (avec `IntelliJ` ou autre IDE qui propose cette fonctionnalité). Bien que les diagrammes générés puissent être parfois erronés, et il vaut mieux faire le dessin soit-même, cela vous fera gagner du temps. Il est fortement conseillé de prendre des **captures d'écran** de chaque diagramme de classes et de les sauvegarder dans un sous-dossier de votre dépôt. Certains diagrammes permettent de comparer l'évolution de l'architecture et des dépendances avant/après **refactoring**.
 
 <div class="exercise">
 
@@ -483,7 +483,7 @@ Ou alors, peut-être que vous avez été encore plus malin et que vous avez pens
 
 Tout en respectant le **principe ouvert/fermé**, il existe une méthode générale pour construire un `Produit` possédant autant de comportements mixtes que nous souhaitons. Si de nouveaux comportements sont ajoutés dans le futur, il n'y aura pas de modification du code existant. On peut implémenter un tel système en [favorisant la **composition** au lieu d'un **héritage**](https://en.wikipedia.org/wiki/Composition_over_inheritance). L'idée est la suivante :
 
-* La classe "mère" définie une interface (abstraction) qu'elle implémente : elle définit son contrat, ce que tous les objets du même type qu'elle doivent pouvoir faire.
+* La classe "mère" définie une interface (abstraction) qu'elle implémente : elle définit son contrat, ce que tous les objets du même type qu'elle, doivent pouvoir faire.
 
 * La classe "fille" **n'hérite pas** de la classe mère en redéfinissant simplement les fonctions, mais possède à la place **un attribut stockant une instance de l’interface de la classe mère**. Elle implémente elle-même l'interface de la classe mère. Cette classe fille **délègue** une partie de l’exécution des **opérations** à l'instance qu'elle agrège et ajoute son propre **comportement**.
 
