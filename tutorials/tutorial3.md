@@ -624,7 +624,7 @@ Aussi, le salarie n'est pas instancié dans la classe, il est **injecté** (autr
 
 </div>
 
-Attention, même si nous pouvons maintenant rajouter un nouveau type de produit et le combiner aux autres pour calculer le prix adéquat, quand on instancie l'objet, il faut faire attention à l'ordre de combinaison des objets.
+Attention, **dans cet exemple précis**, même si nous pouvons maintenant rajouter un nouveau type de produit et le combiner aux autres pour calculer le prix adéquat, quand on instancie l'objet, il faut faire attention à l'ordre de combinaison des objets, à cause de la méthode de calcul du prix du produit avec une réduction. Si la méthode de calcul avait été un pourcentage pour ce type de produit (-X% du prix) comme pour le produit avec une date de péremption proche, l'ordre n'aurait pas eu d'importance. Bref, cela est à prendre en compte quand vous concevez et que vous utilisez des décorateurs. 
 
 Bon, tout fonctionne bien, mais le code est encore un peu redondant : A priori, tous nos produits "dérivés" vont posséder un objet `I_Produit`. Il est alors possible de factoriser cela avec une **classe abstraite** dont vont hériter tous les sous-produits.
 
