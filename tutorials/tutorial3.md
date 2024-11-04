@@ -281,7 +281,7 @@ De même, dans la classe `Pokemon`, pour que le pokémon puisse se présenter av
 
     * En plus des attributs d'un `Pokemon` classique, un pokémon **électrique** possède un attribut entier `chargeMax` et un attribut booléen `superDecharge`.
 
-    * Son nom d'attaque est **Eclair** et elle fait entre **20 dégâts** plus un **bonus de dégâts** entre **0** et la valeur de `chargeMax`. Si l'attribut `superDecharge` du pokémon vaut `true`, alors un autre **bonus de dégâts** de 20 est ajouté.
+    * Son nom d'attaque est **Eclair** et il fait **20 dégâts** plus un **bonus de dégâts** entre **0** et la valeur de `chargeMax` (tiré au hasard). Si l'attribut `superDecharge` du pokémon vaut `true`, alors **bonus de dégâts** supplémentaire de 20 est ajouté.
   
     * Faites en sorte de prendre en charge ce nouveau type, **sans refactorer le code existant**, en créant une nouvelle classe `PokemonElectrique` et en ajoutant le code nécessaire là où il faut.
 
