@@ -261,7 +261,7 @@ Pour vous mettre dans le bain et vous montrer la problématique derrière tout c
 
 </div>
 
-Votre programme fonctionne ? C'est super ! Mais votre code serait-il encore lisible s'il y avait une centaine d'animaux ?
+Votre programme fonctionne ? C'est super ! Mais votre code serait-il encore lisible s'il y avait une centaine d'animaux ? Aussi, la classe `Animal` ne sera jamais finie, car il faudra en permanence modifier la méthode `cri` pour ajouter de nouveaux animaux. Elle n'est donc pas fermée aux modifications lorsqu'on veut étendre l'application à d'autres animaux.
 
 Continuons maintenant avec de petits monstres bien populaires : les **pokémons**.
 
