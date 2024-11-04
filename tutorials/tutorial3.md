@@ -748,7 +748,7 @@ Voici un scénario illustrant plus en détail le problème de non-respect du pri
 
 Avec cette modification, le principe de substitution de Liskov n'est plus respecté ! On a **cassé** le contrat de `Rectangle` dans `Carre`. `Carre` est un `Rectangle` et on devrait pouvoir modifier sa hauteur et sa largeur librement !
 
-De plus, si on utilise `Carre` comme un `Rectangle`, des bugs étranges surviennent quand on utilise une méthode prévue pour un `Rectangle` (ici, la méthode **agrandirRectangle**). On ne peut pas substituer le rectangle par un carré sans produire de bugs logiques.
+De plus, si on utilise `Carre` comme un `Rectangle`, des bugs étranges surviennent quand on utilise une méthode prévue pour un `Rectangle`(ici, la méthode **agrandirRectangle**). On ne peut pas substituer le rectangle par un carré sans produire de bugs logiques. Ajouter des nouvelles méthodes dans la classe `Rectangle` force à ajouter du code dans `Carre` pour éviter les bugs et essayer de continuer à respecter le contrat de `Rectangle`.
 
 Une autre mauvaise solution possible serait d'ajouter une fonction `setTailleCote` dans `Carre` et de redéfinir les fonctions `setHauteur` et `setLargeur` dans `Carre` de façon à ce qu'elles ne fassent rien :
 
@@ -773,13 +773,13 @@ class Carre extends Rectangle {
 }
 ```
 
-Mais dans ce cas, on ne peut toujours pas utiliser `Carre` comme un `Rectangle` (one ne respecte toujours pas `LSP`) et en plus :
+Mais dans ce cas, on ne peut toujours pas utiliser `Carre` comme un `Rectangle` (on ne respecte toujours pas `LSP`) et en plus :
 * On crée des méthodes qui ne font rien et qui polluent le code.
 * On duplique le code de `setHauteur` et `setLargeur` dans `Carre` dans `setTailleCote` !
 
 Bref, cet héritage est une très mauvaise idée ! En fait, conceptuellement, en programmation, un carré n'est pas un rectangle spécialisé, car les règles pour la hauteur et la largeur sont différentes... Cela peut être un peu dur à accepter.
 
-Si on souhaite quand même utiliser un rectangle dans un carré (pour ne pas dupliquer le calcul de l'aire ou des autres méthodes, par exemple) on peut éventuellement utiliser une **composition**, en interdisant à un `Carre` de redéfinir sa hauteur et sa largeur.
+Si on souhaite quand même utiliser un rectangle dans un carré (pour ne pas dupliquer le calcul de l'aire ou des autres méthodes, par exemple) on peut éventuellement utiliser une **composition** à la place, ce qui nous éviterait à gérer les méthodes indésirables de changement d'hauteur/largeur imposées par héritage.
 
 <div class="exercise">
 
