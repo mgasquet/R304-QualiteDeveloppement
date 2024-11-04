@@ -430,7 +430,7 @@ Nous allons maintenant tester votre compréhension des deux principes (`S` et `O
 
 Comme vous l'avez sans doute déduit, dans un premier temps, le principe **ouvert/fermé** n'est pas respecté : ajouter un nouveau tri demande de modifier le code source de la classe `Paquet` et notamment la méthode `trier`.
 
-Dans un second temps, on remarque aussi que la classe `Paquet` a peut-être un peu trop de responsabilités : cela ne devrait pas être à elle de trier les cartes ! On pourrait aussi dire la même chose pour le mélange, et peut-être même pour l'affichage ! La vérification peut se faire facilement :
+Dans un second temps, on remarque aussi que la classe `Paquet` a trop de responsabilités : cela ne devrait pas être à elle de gérer les différents algorithmes de tri de cartes. On pourrait aussi dire la même chose pour le mélange, et peut-être même pour l'affichage ! La vérification peut se faire facilement :
 
 * Si la méthode de tri change, la classe `Paquet` doit être modifiée.
 
