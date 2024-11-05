@@ -174,7 +174,7 @@ Ce principe semble assez facile à mettre en place, mais dans la réalité, on r
 2. Refactorez le code pour répartir les responsabilités de `Client` en trois nouvelles classes distinctes (sans compter `Client`). Pensez notamment qu'après votre refactoring, les diverses demandes de modifications futures soient mieux cloisonnées. Ainsi les demandes de changements suivants du code ne devraient pas toucher le code de votre nouvelle classe `Client` :
 
      * remplacer l'opération de soustraction par une autre opération (avec 2 opérandes pour simplifier)
-     * changer l’affichage final du résultat et le faire par exemple dans un fichier (plutôt qu'à la de la console)
+     * changer l’affichage final du résultat et le faire par exemple dans un fichier (plutôt qu'à la console)
      * changer la saisie des nombres en utilisant un `Scanner` et la méthode `nextInt` au lieu d'un `BufferedReader`. Il faudra enlever le **catch** de `IOException` et `NumberFormatException` ainsi que les `parseInt`. À la place, on attrapera une exception `InputMismatchException`. Pour rappel, pour définir un `Scanner` :
 
          ```java
@@ -630,7 +630,7 @@ Bon, tout fonctionne bien, mais le code est encore un peu redondant : A priori, 
 Par exemple, pour l'exemple des salariés :
 
 ```java
-//Nous reviendrons sur le nom "decorateur" plus tard.
+//Nous reviendrons sur le nom "décorateur" plus tard.
 abstract class SalarieDecorateur implements SalarieInterface {
    private SalarieInterface salarie;
 
@@ -778,7 +778,7 @@ Mais dans ce cas, on ne peut toujours pas utiliser `Carre` comme un `Rectangle` 
 
 Bref, cet héritage est une très mauvaise idée ! En fait, conceptuellement, en programmation, un carré n'est pas un rectangle spécialisé, car les règles pour la hauteur et la largeur sont différentes... Cela peut être un peu dur à accepter.
 
-Si on souhaite quand même utiliser un rectangle dans un carré (pour ne pas dupliquer le calcul de l'aire ou des autres méthodes, par exemple) on peut éventuellement utiliser une **composition** à la place, ce qui nous éviterait à gérer les méthodes indésirables de changement d'hauteur/largeur imposées par héritage.
+Si on souhaite quand même utiliser un rectangle dans un carré (pour ne pas dupliquer le calcul de l'aire ou des autres méthodes, par exemple) on peut éventuellement utiliser une **composition** à la place, ce qui nous éviterait à gérer les méthodes indésirables de changement de hauteur ou largeur imposées par héritage.
 
 <div class="exercise">
 
@@ -1296,7 +1296,7 @@ Dans cette section, vous allez travailler sur un ensemble d'exercices "bilan" qu
 
     * On doit pouvoir calculer le **score culturel d'une ville**. Le score culturel est calculé en fonction de tous les bâtiments que possède la ville, selon les règles suivantes :
 
-      * Pour chaque **musée** que comporte la ville, on ajoute au score le **nombre d'oeuvres** que possède le musée ainsi que le **bonus** associé au thème du musée.
+      * Pour chaque **musée** que comporte la ville, on ajoute au score le **nombre d'œuvres** que possède le musée ainsi que le **bonus** associé au thème du musée.
 
       * Pour chaque **théâtre** que comporte la ville, on ajoute au score le **nombre d'entrées** du théâtre.
 
