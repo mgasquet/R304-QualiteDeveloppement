@@ -173,7 +173,7 @@ Ce principe semble assez facile à mettre en place, mais dans la réalité, on r
 
 2. Refactorez le code pour répartir les responsabilités de `Client` en trois nouvelles classes distinctes (sans compter `Client`). Pensez notamment qu'après votre refactoring, les diverses demandes de modifications futures soient mieux cloisonnées. Ainsi les demandes de changements suivants du code ne devraient pas toucher le code de votre nouvelle classe `Client` :
 
-     * remplacer l'opération de soustraction par une autre opération (avec 2 opérandes pour simplifier)
+     * remplacer l'opération d'addition par une autre opération (avec 2 opérandes pour simplifier)
      * changer l’affichage final du résultat et le faire par exemple dans un fichier (plutôt qu'à la console)
      * changer la saisie des nombres en utilisant un `Scanner` et la méthode `nextInt` au lieu d'un `BufferedReader`. Il faudra enlever le **catch** de `IOException` et `NumberFormatException` ainsi que les `parseInt`. À la place, on attrapera une exception `InputMismatchException`. Pour rappel, pour définir un `Scanner` :
 
