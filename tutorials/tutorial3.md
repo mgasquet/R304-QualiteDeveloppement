@@ -171,20 +171,19 @@ Ce principe semble assez facile à mettre en place, mais dans la réalité, on r
 
 1. Ouvrez le paquetage `srp1`. Examinez le code. Il s'agit d'un programme qui permet de faire un simple calcul (pour le moment, une addition). Actuellement, la classe `Client` possède trois responsabilités (certaines sont très simples et tiennent sur une ligne). Identifiez-les.
 
-2. Refactorez le code pour répartir les responsabilités de `Client` en **trois nouvelles classes distinctes** (sans compter `Client`). `Client` devra ensuite simplement utiliser ces nouveaux **services**.
+2. Refactorez le code pour répartir les responsabilités de `Client` en trois nouvelles classes distinctes (sans compter `Client`). Pensez notamment qu'après votre refactoring, les diverses demandes de modifications futures soient mieux cloisonnées. Ainsi les demandes de changements suivants du code ne devraient pas toucher le code de votre nouvelle classe `Client` :
 
-3. Assurez-vous qu'en effectuant les changements suivants, vous ne modifiez jamais `Client`, ni la même classe deux fois de suite :
+     * remplacer l'opération de soustraction par une autre opération (avec 2 opérandes pour simplifier)
+     * changer l’affichage final du résultat et le faire par exemple dans un fichier (plutôt qu'à la de la console)
+     * changer la saisie des nombres en utilisant un `Scanner` et la méthode `nextInt` au lieu d'un `BufferedReader`. Il faudra enlever le **catch** de `IOException` et `NumberFormatException` ainsi que les `parseInt`. À la place, on attrapera une exception `InputMismatchException`. Pour rappel, pour définir un `Scanner` :
 
-    * On veut que le calcul effectué soit une soustraction.
+         ```java
+         Scanner scanner = new Scanner(System.in);
+         int valeur = scanner.nextInt();
+         ```
 
-    * On veut que l'affichage final soit "Résultat : valeur".
+   Ainsi, la classe `Client` devra simplement utiliser ces nouveaux **services**.
 
-    * Pour la saisie des nombres, on veut plutôt utiliser un `Scanner` et la méthode `nextInt` au lieu d'un `BufferedReader`. Il faudra enlever le **catch** de `IOException` et `NumberFormatException` ainsi que les `parseInt`. À la place, on attrapera une exception `InputMismatchException`. Pour rappel, pour définir un `Scanner` :
-
-    ```java
-    Scanner scanner = new Scanner(System.in);
-    int valeur = scanner.nextInt();
-    ```
 
 </div>
 
