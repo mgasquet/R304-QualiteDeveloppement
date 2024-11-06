@@ -680,7 +680,7 @@ class Main {
         SalarieInterface s1 = new Salarie(2000);
         SalarieInterface s2 = new SalarieChefProjet(s1, 3);
         SalarieInterface s3 = new SalarieResponsableStagiaires(s1, 2);
-        SalarieInterface s4 = new SalarieChefProjet(SalarieResponsableStagiaires(s1, 2), 3);
+        SalarieInterface s4 = new SalarieChefProjet(new SalarieResponsableStagiaires(s1, 4), 3);
 
         //Affiche 2000
         System.out.println(s1.getSalaire());
@@ -691,7 +691,7 @@ class Main {
         //Affiche 2100
         System.out.println(s3.getSalaire());
 
-        //Affiche 2400
+        //Affiche 2500
         System.out.println(s4.getSalaire());
     }
 }
