@@ -5,6 +5,19 @@ layout: tutorial
 lang: fr
 ---
 
+**Attention, le TP a été légèrement mis à jour, il faut mettre à jour votre dépôt local avec les dernières modifications du dépôt d'origine !** :
+
+Pour cela, vous pouvez aller sur votre dépôt gitlab privé contenant le code du TP et appuyer sur le bouton **Update Fork** : [https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/etu/votre_login/tp3](https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/etu/votre_login/tp3) en remplaçant `votre_login` par le login.
+
+Ou bien, si cela ne fonctionne (conflits) pas ou si vous ne voulez pas passer par gitlab :
+
+```bash
+# Depuis le dossier de votre dépôt, en local.
+git remote add upstream git@gitlabinfo.iutmontp.univ-montp2.fr:qualite-de-developpement-semestre-3/tp3.git
+git fetch upstream
+git merge upstream/master master
+```
+
 Dans la première partie de cette ressource, nous avons parlé de **conception logicielle** et notamment comment modéliser cela à l'aide de **diagrammes de classes de conception** et de **diagrammes de séquences des interactions**.
 
 Cependant, savoir modéliser la conception ne garantit en rien la qualité de celle-ci. Un plan de construction d'un bâtiment peut être tout à fait valide d'un point de vue technique, mais donnera potentiellement une bâtisse qui s'écroulera dans quelques années si elle a été mal pensée.
