@@ -201,6 +201,7 @@ Commençons par une mise en application très simple.
 
 </div>
 
+<!--
 ### Dépendance commune
 
 Un cas un peu plus concret qui montre l'intérêt d'utiliser un `Singleton` est dans le contexte où deux objets différents dépendent de l'état d'une classe. Une classe `A` modifie l'état de `Service` et une classe `B` a besoin de connaître les modifications qu'a effectuées `A` dans `Service` pour fonctionner. Les deux classes `A` et `B` doivent alors dépendre de la même instance de `Service` !
@@ -220,7 +221,7 @@ Aussi, imaginons une classe d'accès à une base de données : celle-ci initial
 5. Le principe SOLID `D` (dependency inversion) est-il respecté sur les classes `CreationAnimal` et `LectureAnimaux` ? Si ce n'est pas le cas, refactorez votre code.
 
 </div>
-
+-->
 ### Classe statique VS Singleton
 
 En introduction de cette section, nous avions évoqué le fait d'utiliser une **classe statique** pour obtenir un résultat similaire au singleton. Une classe statique est une classe où il n'y a que des attributs et des méthodes **de classe** qui appartiennent donc à la classe et pas à une instance en particulier. Ainsi, tous les objets qui manipulent cette classe utilisent la même "entité" (en fait, il n'y a juste pas d'instance).
@@ -869,72 +870,69 @@ La fabrique connaît les différents types concrets à instancier, mais elle va 
 
 Dans une application où certaines classes sont instanciées à différents endroits, il est donc plutôt judicieux d'utiliser une fabrique pour réduire les dépendances de type _"create"_. Seule la fabrique est dépendante des objets concrets et les autres classes sont seulement dépendantes de la fabrique (et des abstractions).
 
-Voyons l'application de **Fabrique Simple** sur un exemple :
+Voyons l'application de **Fabrique Simple** sur un exemple. On se place dans le contexte d'un jeu dans lequel un joueur peut combattre des monstres dans une arène ou bien traverser une zone de jeu. Pour l'instant, l'application est configurée pour fonctionner intégralement avec le monstre **Slime** (c'est toujours ce type de monstre que rencontrera le joueur).
+
 ```java
-public abstract class Message {
+class Joueur {
 
-  private String contenu;
+  private String nom;
 
-  public Message(String contenu) {
-    this.contenu = contenu;
+  public Joueur(String nom) {
+    this.nom = nom;
   }
 
-  public String getContenu() {
-    return contenu;
+  public String getNom() {
+    return nom;
   }
 
-  public abstract void notifierAdmin();
-
-  public void logger() {
-    System.out.println("Enregistrement du message dans un fichier de log...");
-  }
 }
 
-public class MessageMail extends Message {
+public interface Monstre {
+  void combattre(Joueur joueur);
+}
 
-  public MessageMail(String contenu) {
-    super(contenu);
-  }
+public class Slime implements Monstre {
 
   @Override
-  public void notifierAdmin() {
-    System.out.println("Notification de l'administrateur par mail...");
+  public void combattre(Joueur joueur) {
+    System.out.println("Code de combat du slime contre le joueur...");
   }
 
 }
 
-public class MessageSMS extends Message {
-
-  public MessageSMS(String contenu) {
-    super(contenu);
-  }
+public class Fantome implements Monstre {
 
   @Override
-  public void notifierAdmin() {
-    System.out.println("Notification de l'administrateur par SMS...");
+  public void combattre(Joueur joueur) {
+    System.out.println("Code de combat du fantôme contre le joueur...");
   }
 
 }
 
-public class ServiceA {
+public class Arene {
 
-  public void action() {
-    Message msg = new MessageMail("Mon message...");
-    msg.notifierAdmin();
-    msg.logger();
+  private Joueur combattant;
+
+  public Arene(Joueur combattant) {
+    this.combattant = combattant;
+  }
+
+  public void nouveauCombat() {
+    Monstre monstre = new Slime();
+    monstre.combattre(combattant);
   }
 
 }
 
-public class ServiceB {
+public class Zone {
 
-  public void action() {
-    Message msg1 = new MessageMail("Mon message 1...");
-    msg1.notifierAdmin();
-
-    Message msg2 = new MessageMail("Mon message 2...");
-    msg2.notifierAdmin();
-    msg2.logger();
+  public void traverserZoneNormale(Joueur joueur) {
+    Random random = new Random();
+    int nbEnnemis = random.nextInt(3) + 1;
+    for(int i = 0; i < nbEnnemis; i++) {
+      Monstre monstre = new Slime();
+      monstre.combattre(joueur);
+    }
   }
 
 }
@@ -944,105 +942,108 @@ public class ServiceB {
 ![Fabrique 1]({{site.baseurl}}/assets/TP4/Fabrique1.svg){: width="80%" }
 </div>
 
-Dans cet exemple, notre application doit soit envoyer les messages par mail ou par SMS (mais pas les deux à la fois). Ici l'application est configurée pour envoyer des mails. `ServiceA` et `ServiceB` sont fortement dépendants de `MessageMail`. Et on ne peut pas simplement injecter les dépendances, car ces services ont besoin d'instancier ces classes dans leurs méthodes ! Si nous devons changer pour utiliser des `MessageSMS`, il faut modifier ces deux classes !
+Ici l'application est donc configurée pour faire apparaître des monstres **Slimes**. `Arene` et `Zone` sont fortement dépendants de `Slime`, car elles instancient des objets `Slime` dans son code. Et on ne peut pas simplement injecter les dépendances, car ces classes ont besoin de directement instancier ces objets dans leurs méthodes ! Si nous devons changer pour utiliser des objets `Fantome` à la place, il faut modifier ces deux classes !
 
 Nous pouvons mettre en place une **Fabrique** pour régler ce problème :
 
 ```java
 
-public class MessageFactory {
+public class MonstreFactory {
 
-  public Message creerMessage(String contenu) {
-    return new MessageMail(contenu);
+  public Monstre creerMonstre() {
+    return new Slime();
   }
 
 }
 
-public class ServiceA {
+public class Arene {
 
-  private MessageFactory factory = new MessageFactory();
+  private MonstreFactory factory = new MonstreFactory();
 
-  public void action() {
-    Message msg = factory.creerMessage("Mon message...");
-    msg.notifierAdmin();
-    msg.logger();
+  public Arene(Joueur combattant) {
+    this.combattant = combattant;
+  }
+
+  public void nouveauCombat() {
+    Monstre monstre = factory.creerMonstre();
+    monstre.combattre(combattant);
   }
 
 }
 
-public class ServiceB {
+public class Zone {
 
-  private MessageFactory factory = new MessageFactory();
+  private MonstreFactory factory = new MonstreFactory();
 
-  public void action() {
-    Message msg1 = factory.creerMessage("Mon message 1...");
-    msg1.notifierAdmin();
-
-    Message msg2 = factory.creerMessage("Mon message 2...");
-    msg2.notifierAdmin();
-    msg2.logger();
+  public void traverserZoneNormale(Joueur joueur) {
+    Random random = new Random();
+    int nbEnnemis = random.nextInt(3) + 1;
+    for(int i = 0; i < nbEnnemis; i++) {
+      Monstre monstre = factory.creerMonstre();
+      monstre.combattre(joueur);
+    }
   }
 
 }
 
 ```
 
-Maintenant, si nous voulons utiliser `MessageSMS` à la place de `MessageMail`, nous n'avons à faire ce changement que dans **une seule classe** : `MessageFactory` !
+Maintenant, si nous voulons utiliser des monstres type `Fantome` à la place de `Slime`, nous n'avons à faire ce changement que dans **une seule classe** : `MonstreFactory` !
 
-Ici, il semble judicieux de transformer `MessageFactory` en **Singleton** et de l'injecter comme dépendance pour éviter que chaque service instancie une version de la fabrique :
+Ici, il semble judicieux de transformer `MonstreFactory` en **Singleton** et de l'injecter comme dépendance pour éviter que chaque service instancie une version de la fabrique :
 
 ```java
 
-public class MessageFactory {
+public class MonstreFactory {
 
-  private static MessageFactory INSTANCE;
+  private static MonstreFactory INSTANCE;
 
-  private MessageFactory() {}
+  private MonstreFactory() {}
 
-  public synchronized static MessageFactory getInstance() {
+  public synchronized static MonstreFactory getInstance() {
     if(INSTANCE == null) {
-      INSTANCE = new MessageFactory();
+      INSTANCE = new MonstreFactory();
     }
     return INSTANCE;
   }
 
-  public Message creerMessage(String contenu) {
-    return new MessageMail(contenu);
+  public Monstre creerMonstre() {
+    return new Slime();
   }
 
 }
 
-public class ServiceA {
+public class Arene {
 
-  private MessageFactory factory;
+  private MonstreFactory factory;
 
-  public ServiceA(MessageFactory factory) {
+  public Arene(Joueur combattant, MonstreFactory factory) {
+    this.combattant = combattant;
     this.factory = factory;
   }
 
-  public void action() {
-    Message msg = factory.creerMessage("Mon message...");
-    msg.notifierAdmin();
-    msg.logger();
+  public void nouveauCombat() {
+    Monstre monstre = factory.creerMonstre();
+    monstre.combattre(combattant);
   }
 
 }
 
-public class ServiceB {
+public class Zone {
 
-  private MessageFactory factory;
+  private MonstreFactory factory;
 
-  public ServiceB(MessageFactory factory) {
+  public Zone(MonstreFactory factory) {
     this.factory = factory;
   }
 
-  public void action() {
-    Message msg1 = factory.creerMessage("Mon message 1...");
-    msg1.notifierAdmin();
-
-    Message msg2 = factory.creerMessage("Mon message 2...");
-    msg2.notifierAdmin();
-    msg2.logger();
+  public void traverserZoneNormale(Joueur joueur) {
+    Random random = new Random();
+    int nbEnnemis = random.nextInt(3) + 1;
+    for(int i = 0; i < nbEnnemis; i++) {
+      Monstre monstre = factory.creerMonstre();
+      monstre.combattre(joueur);
+    }
   }
 
 }
@@ -1050,8 +1051,11 @@ public class ServiceB {
 public class Main {
 
   public static void main(String[]args) {
-    ServiceA s1 = new ServiceA(MessageFactory.getInstance());
-    ServiceB s2 = new ServiceB(MessageFactory.getInstance());
+    Joueur j1 = new Joueur("Bob");
+    Arene arene = new Arene(j1, MonstreFactory.getInstance());
+    arene.nouveauCombat();
+    Zone zone = new Zone(MonstreFactory.getInstance());
+    zone.traverserZoneNormale(j1);
   }
 
 }
@@ -1225,102 +1229,104 @@ Le pattern **Méthode Fabrique** (Factory Method) va permettre à une **classe m
 
 Pour que l'utilisation de ce pattern soit justifié, il faut que la **classe mère** (abstraite) effectue **d'autres traitements que simplement créer l'objet** (sinon c'est juste une fabrique). Dans une (ou plusieurs) méthode(s) de la classe mère où un traitement est effectué, la méthode abstraite est appelée ce qui permet de récupérer un objet dont le type concret sera décidé par les sous-classes. Ainsi, le traitement peut être effectué dans la classe mère sans avoir besoin d'être dépendant d'une classe concrète.
 
-Reprenons notre exemple d'envoi de **messages** par **email** ou par **sms**.
+Reprenons notre exemple de l'application de jeu gérant des **monstres** de type **slime** ou **fantômes**.
 
 ```java
-public class MessageMail extends Message {
+public interface Monstre {
+  void combattre(Joueur joueur);
+}
 
-  public MessageMail(String contenu) {
-    super(contenu);
-  }
+public class Slime implements Monstre {
 
   @Override
-  public void notifierAdmin(String message) {
-    System.out.println("Notification de l'administrateur par mail...");
+  public void combattre(Joueur joueur) {
+    System.out.println("Code de combat du slime contre le joueur...");
   }
 
 }
 
-public class MessageSMS extends Message {
-
-  public MessageSMS(String contenu) {
-    super(contenu);
-  }
+public class Fantome implements Monstre {
 
   @Override
-  public void notifierAdmin(String message) {
-    System.out.println("Notification de l'administrateur par SMS...");
+  public void combattre(Joueur joueur) {
+    System.out.println("Code de combat du fantôme contre le joueur...");
   }
 
 }
 
-public class MessageFactory {
+public class MonstreFactory {
 
-  private static MessageFactory INSTANCE;
+  private static MonstreFactory INSTANCE;
 
-  private MessageFactory() {}
+  private MonstreFactory() {}
 
-  public synchronized static MessageFactory getInstance() {
+  public synchronized static MonstreFactory getInstance() {
     if(INSTANCE == null) {
-      INSTANCE = new MessageFactory();
+      INSTANCE = new MonstreFactory();
     }
     return INSTANCE;
   }
 
-  public Message creerMessage(String contenu) {
-    return new MessageMail(contenu);
+  public Monstre creerMonstre() {
+    return new Slime();
   }
 
 }
 
-public class Service {
+public class Zone {
 
-  private MessageFactory factory;
+  private MonstreFactory factory;
 
-  public ServiceA(MessageFactory factory) {
+  public Zone(MonstreFactory factory) {
     this.factory = factory;
   }
 
-  public void action() {
-    Message msg = factory.creerMessage("Mon message...");
-    msg.notifierAdmin();
-    msg.logger();
+  public void traverserZoneNormale(Joueur joueur) {
+    Random random = new Random();
+    int nbEnnemis = random.nextInt(3) + 1;
+    for(int i = 0; i < nbEnnemis; i++) {
+      Monstre monstre = factory.creerMonstre();
+      monstre.combattre(joueur);
+    }
   }
 
 }
 ```
 
-Nous avions utilisé une **fabrique simple** pour éviter d'avoir à instancier le type de **Message** dans le service. Cependant, avec cette configuration, il n'est pas possible d'avoir à la fois des instances de `Service` qui utilisent des mails et d'autres des SMS.
+Nous avions utilisé une **fabrique simple** pour éviter d'avoir à instancier le type de **Monstre** dans la `Zone`. Cependant, avec cette configuration, il n'est pas possible d'avoir à la fois des instances de `Zone` qui utilisent des **slimes** et d'autres des **fantômes**.
 
-Le pattern **méthode fabrique** permet de régler ce problème. L'idée est de rendre la création du message **abstrait** dans `Service` (et donc rendre `Service` abstrait) et de déléguer la création du type de message dans des classes dérivées.
+Le pattern **méthode fabrique** permet de régler ce problème. L'idée est de rendre la création du monstre **abstrait** dans `Zone` (et donc rendre `Zone` abstrait) et de déléguer la création du type de monstre dans des classes dérivées.
 
 ```java
-public abstract class Service {
+public abstract class Zone {
 
-  public void action() {
-    Message msg = creerMessage("Mon message...");
-    msg.notifierAdmin();
-    msg.logger();
+  public void traverserZoneNormale(Joueur joueur) {
+    Random random = new Random();
+    int nbEnnemis = random.nextInt(3) + 1;
+    for(int i = 0; i < nbEnnemis; i++) {
+      Monstre monstre = creerMonstre();
+      monstre.combattre(joueur);
+    }
   }
 
-  protected abstract Message creerMessage(String contenu);
+  protected abstract Monstre creerMonstre();
 
 }
 
-public class ServiceAvecEmail extends Service {
+public class ZonePlaine extends Zone {
 
   @Override
-  protected Message creerMessage() {
-    return new MessageMail(contenu);
+  protected Monstre creerMonstre() {
+    return new Slime();
   }
 
 }
 
-public class ServiceAvecSMS extends Service {
+public class ZoneChateauHante extends Service {
 
   @Override
-  protected Message creerMessage() {
-    return new MessageSMS(contenu);
+  protected Monstre creerMonstre() {
+    return new Fantome();
   }
 
 }
@@ -1328,18 +1334,19 @@ public class ServiceAvecSMS extends Service {
 public class Main {
 
   public static void main(String[]args) {
-    Service s1 = new ServiceAvecEmail();
-    s1.action();
-    Service s2 = new ServiceAvecSMS();
-    s2.action();
+    Joueur j1 = new Joueur("Bob");
+    Zone plaine = new ZonePlaine();
+    plaine.traverserZoneNormale(j1);
+    Zone chateau = new ZoneChateauHante();
+    chateau.traverserZoneNormale(j1);
   }
 
 }
 ```
 
-Le pattern s'appelle **méthode fabrique**, car la méthode abstraite implémentée par les classes filles sont elles-mêmes des fabriques ! D'ailleurs, dans l'exemple, nous avons supprimé `MessageFactory` qui ne nous est plus utile.
+Le pattern s'appelle **méthode fabrique**, car la méthode abstraite implémentée par les classes filles sont elles-mêmes des fabriques ! D'ailleurs, dans l'exemple, nous avons supprimé `MonstreFactory` qui ne nous est plus utile.
 
-Cependant, que se passe-t-il si plus d'un service doit créer des emails ou des SMS ? Il faut vraiment créer un sous-service par type de message ? Non, rassurez-vous ! C'est justement un point que permettra de régler la **fabrique abstraite**.
+Cependant, que se passe-t-il si plusieurs services différents doivent créer des **slimes** ou des **fantômes** (par exemple, la classe `Arene` que nous avions au début) ? Il faut vraiment créer une sous-classe par type de service et de monstre ? Non, rassurez-vous ! C'est justement un point que permettra de régler la **fabrique abstraite**.
 
 ### Age of Fantasy - Partie 1
 
@@ -1490,6 +1497,8 @@ Testons maintenant votre maîtrise du pattern **méthode fabrique** avec un nouv
 
   Actuellement, l'application fonctionne avec un seul type de classe `CheeseBurger` et `EggBurger` (qui sont les burgers du restaurant **Nîmois**). Une **fabrique simple** a été mise en place (mais vous allez peut-être devoir changer cela...?)
 
+  **On souhaite garder les différentes méthodes des burgers**, notamment la méthode `preparerIngredients`. Les ingrédients **ne doivent pas être initialisés via le constructeur**, mais lors de l'appel à la méthode `preparerIngredients` par le restaurant (c'est ce qu'on pourrait qualifier de **lazy loading**).
+
 3. Faites en sorte qu'il soit possible de gérer les deux types de restaurants : les **restaurants Nîmois** et les **restaurants Montpelliérains**. Vous ajouterez, adapterez et supprimerez les classes et le code nécessaire et vous compléterez la méthode `commanderBurger` de la classe `Restaurant` ainsi que le `main` de la classe `Main`.
 
 </div>
@@ -1531,23 +1540,388 @@ Par exemple, si l'armée orc vainc l'armée humaine, les unités humaines et les
 
 Il semble compliqué d'obtenir un tel fonctionnement facilement avec une **méthode fabrique**. La solution est alors de plutôt utiliser une **fabrique abstraite** !
 
-Prenons l'exemple suivant : 
+Reprenons l'exemple des **zones** qui créent et font combattre des **monstres** avec un joueur. Dans le jeu, il y a maintenant des **Boss** qui sont des monstres spéciaux pouvant charger une attaque spéciale et des **Items** qui ont des caractéristiques et un prix de revente.
+
+Dans une zone, un type de monstre "normal" est créé (comme avant) . On peut aussi traverser la zone du boss qui fait apparaitre deux monstres normaux et un boss et les font combattre. Quand le joueur ouvre un coffre dans cette zone, il obtient tout le temps un type d'item spécifique (pour simplifier).
+
+Nous allons définir deux configurations ("biomes") de zones :
+
+* La zone **Plaine** créée des monstres normaux de type `Slime`, des boss de type `Troll` (qui possèdent une puissance de massue aléatoire entre 5 et 10) et les coffres ouverts donnent des items type `Potion` qui peuvent être revendus pour 15 pièces d'or.
+
+* La zone **Château Hanté** créée des monstres normaux de type `Fantome`, des boss de type `Dracula` et les coffres ouverts donnent des items type `Parchemin` qui peuvent être revendus pour 30 pièces d'or.
+
+On souhaite pouvoir créer des zones avec ces configurations.
 
 ```java
-public interface Cla {
+public interface Boss extends Monstre {
+  void chargerAttaqueSpeciale();
+}
+
+public class Troll implements Boss {
+
+  private int puissanceMassue;
+
+  public Troll(int puissanceMassue) {
+    this.puissanceMassue = puissanceMassue;
+  }
+
+  @Override
+  public void combattre(Joueur joueur) {
+    System.out.println("Code de combat du Troll contre le joueur...");
+  }
+
+  @Override
+  public void chargerAttaqueSpeciale() {
+    System.out.printf("Chargement de l'attaque coup de massue, puissance : %s\n", puissanceMassue);
+  }
+}
+
+public class Dracula implements Boss {
+  @Override
+  public void combattre(Joueur joueur) {
+    System.out.println("Code de combat de Dracula contre le joueur...");
+  }
+
+  @Override
+  public void chargerAttaqueSpeciale() {
+    System.out.println("Chargement de l'attaque morsure mortelle...");
+  }  
+}
+
+public abstract class Item {
+
+  private int prixRevente;
+
+  public Item(int prixRevente) {
+    this.prixRevente = prixRevente;
+  }
+
+  public abstract void afficherCaracteristiques();
+
+  public int getPrixRevente() {
+    return this.prixRevente;
+  }
+}
+
+public class Potion implements Item {
+
+  public Potion(int prixRevente) {
+    super(prixRevente);
+  }
+
+  @Override
+  public void afficherCaracteristiques() {
+    System.out.println("Potion qui soigne complètement le joueur.");
+  }    
+}
+
+public class Parchemin implements Item {
+
+  public Parchemin(int prixRevente) {
+    super(prixRevente);
+  }
+
+  @Override
+  public void afficherCaracteristiques() {
+    System.out.println("Parchemin permettant d'invoquer une boule de feu.");
+  }    
+}
+
+public interface AbstractZoneFactory {
+
+  Monstre creerMonstreNormal();
+
+  Boss creerBoss(); 
+
+  Item creerRecompense();
 
 }
 
-public interface Telephone {
+public class ZonePlaineFactory implements AbstractZoneFactory {
+
+  Random random = new Random();
+
+  @Override
+  public Monstre creerMonstreNormal() {
+    return new Slime();
+  }
+
+  @Override
+  public Boss creerBoss() {
+    return new Troll(5 + random.nextInt(6));
+  }
+
+  @Override
+  public Item creerRecompense() {
+    return new Potion(15);
+  }
+
+}
+
+public class ZoneChateauHanteFactory implements AbstractZoneFactory {
+
+  @Override
+  public Monstre creerMonstreNormal() {
+    return new Fantome();
+  }
+
+  @Override
+  public Boss creerBoss() {
+    return new Dracula();
+  }
+
+  @Override
+  public Item creerRecompense() {
+    return new Parchemin(30);
+  }
+
+}
+
+class Joueur {
+
+  private String nom;
+
+  private List<Item> items;
+
+  public Joueur(String nom) {
+    this.nom = nom;
+  }
+
+  public String getNom() {
+    return nom;
+  }
+
+  public void ajouterItem(Item item) {
+    items.add(item);
+  }
+
+}
+
+public class Zone {
+
+  private AbstractZoneFactory factory;
+
+  public Zone(AbstractZoneFactory factory) {
+    this.factory = factory;
+  }
+
+  public void traverserZoneNormale(Joueur joueur) {
+    Random random = new Random();
+    int nbEnnemis = random.nextInt(3) + 1;
+    for(int i = 0; i < nbEnnemis; i++) {
+      Monstre monstre = factory.creerMonstreNormal();
+      monstre.combattre(joueur);
+    }
+  }
+
+  public void traverserZoneBoss(Joueur joueur) {
+    Monstre monstre1 = factory.creerMonstreNormal();
+    Monstre monstre2 = factory.creerMonstreNormal();
+    Boss boss = factory.creerBoss();
+    boss.chargerAttaqueSpeciale();
+    monstre1.combattre(joueur);
+    monstre2.combattre(joueur);
+    boss.combattre(joueur);
+  }
+
+  private void ouvrirCoffre(Joueur joueur) {
+    System.out.println("Le joueur ouvre un coffre!");
+    Item recompense = factory.creerRecompense();
+    recompense.afficherCaracteristiques();
+    System.out.printf("Prix de revente : %s\n", recompense.getPrixRevente());
+    joueur.ajouterItem(recompense);
+  }
+
+}
+
+public class Main {
+
+  public static void main(String[]args) {
+    Zone plaine = new Zone(new ZonePlaineFactory());
+    plaine.traverserZoneNormale();
+    plaine.ouvrirCoffre();
+    plaine.ouvrirCoffre();
+    plaine.traverserZoneBoss();
+
+    Zone chateau = new Zone(new ZoneChateauHanteFactory());
+    chateau.traverserZoneNormale();
+    chateau.ouvrirCoffre();
+    chateau.ouvrirCoffre();
+    chateau.traverserZoneBoss();
+  }
 
 }
 ```
+
+Cette solution aurait pu être implémentée en utilisant trois méthodes fabriques, mais nous avons préféré séparer la logique de création des objets dans une classe à part et l'injecter dans la classe `Zone` plutôt que de créer plusieurs sous-classes zones spécifiques (comme auparavant). Cette approche permet de renforcer l'application du principe **d'inversion des dépendances**, par ailleurs.
+
+Il est très facile d'adapter cette solution afin de **changer de famille utilisée dans la zone** (si besoin), sans avoir besoin de changer le code de notre fabrique. De plus, on respecte ainsi le principe ouvert/fermé, car si on souhaite créer une nouvelle famille de classes (un nouveau type de zone), on a juste à ajouter une nouvelle fabrique. Cela permet aussi de limiter la duplication de code si un autre type de **service** utilise notre fabrique.
+
+Adaptons un peu notre solution :
+
+```java
+public class Zone {
+
+  private AbstractZoneFactory factory;
+
+  public Zone(AbstractZoneFactory factory) {
+    this.factory = factory;
+  }
+
+  ...
+
+  //Permet de changer dynamiquement la fabrique utilisée
+  public void setFactory(AbstractZoneFactory factory) {
+    this.factory = factory;
+  }
+
+}
+
+public class Arene {
+
+  private AbstractZoneFactory factory;
+
+  public Arene(Joueur combattant, AbstractZoneFactory factory) {
+    this.combattant = combattant;
+    this.factory = factory;
+  }
+
+  public void nouveauCombat() {
+    Monstre monstre = factory.creerMonstreNormal();
+    monstre.combattre(combattant);
+    Item recompense = factory.creerRecompense();
+    item.afficherCaracteristiques();
+    joueur.ajouterItem(item);
+  }
+
+}
+
+public class Main {
+
+  public static void main(String[]args) {
+    Zone zone = new Zone(new ZonePlaineFactory());
+    zone.traverserZoneNormale();
+    zone.ouvrirCoffre();
+    zone.ouvrirCoffre();
+    zone.traverserZoneBoss();
+
+    //Le joueur change de zone...
+    zone.setFactory(new ZoneChateauHanteFactory());
+    zone.traverserZoneNormale();
+
+    //Arene dans une plaine...
+    Arene arenePlaine = new Arene(new ZonePlaineFactory());
+    arenePlaine.nouveauCombat();
+  }
+
+}
+```
+
+À noter qu'il est bien sûr possible de coupler cela avec des **singletons** pour les fabriques **concrètes** :
+
+```java
+public class ZonePlaineFactory implements AbstractZoneFactory {
+
+  private static AbstractZoneFactory INSTANCE;
+
+  private ZonePlaineFactory() {}
+
+  public synchronized static AbstractZoneFactory getInstance() {
+    if(INSTANCE == null) {
+      INSTANCE = new ZonePlaineFactory();
+    }
+    return INSTANCE;
+  }
+
+  ...
+
+}
+
+public class ZoneChateauHanteFactory implements AbstractZoneFactory {
+
+  private static AbstractZoneFactory INSTANCE;
+
+  private ZoneChateauHanteFactory() {}
+
+  public synchronized static AbstractZoneFactory getInstance() {
+    if(INSTANCE == null) {
+      INSTANCE = new ZoneChateauHanteFactory();
+    }
+    return INSTANCE;
+  }
+
+  ...
+}
+
+public class Main {
+
+  public static void main(String[]args) {
+    Zone plaine = new Zone(ZonePlaineFactory.getInstance());
+    plaine.traverserZoneNormale();
+    plaine.ouvrirCoffre();
+    plaine.ouvrirCoffre();
+    plaine.traverserZoneBoss();
+
+    Zone chateau = new Zone(ZoneChateauHanteFactory.getInstance());
+    chateau.traverserZoneNormale();
+    chateau.ouvrirCoffre();
+    chateau.ouvrirCoffre();
+    chateau.traverserZoneBoss();
+  }
+
+}
+```
+
+L'objectif du pattern **Fabrique Abstraite** est donc de disposer d'une abstraction (classe abstraite ou interface) qui définie le contrat que doivent remplir les fabriques concrètes. Pour chaque famille de classes, on crée une fabrique concrète qui implémente cette interface ou étend cette classe abstraite. Ensuite, toutes les classes qui souhaitent utiliser cette fabrique doivent dépendre de la **fabrique abstraite** et non plus d'une fabrique concrète. Couplé à de l'injection de dépendances, il est très facile de complètement changer le comportement d'une classe.
+
+C'est globalement l'idée du pattern **Stratégie** que vous avez déjà vu lors du dernier TP, mais appliqué pour des fabriques ! On pourrait voir la **fabrique abstraite** comme une **stratégie de création**.
+
+<div class="exercise">
+
+1. Refactorez le code de la classe `Armee` (toujours dans `fabrique2.v2`) afin d'utiliser une **fabrique abstraite** à la place de votre solution (certaines classes vont probablement disparaître...).
+
+2. Insérez et complétez la méthode suivante dans `Armee` :
+
+  ```java
+  /**
+   * Action : l'armée "this" bat l'armée "armee" passée en paramètre et lui impose sa stratégie de création de ressources (unites, armes, sort).
+   * L'armée vaincue doit donc changer de comportement : les ressources créées dans le futur correspondront à ceux de l'armée vainqueuse "this".
+   *
+   */
+  public void vaincre(Armee armee) {
+  
+  }
+  ```
+
+  Vous pouvez éventuellement ajouter une autre méthode, au besoin.
+
+3. Vérifiez que le code suivant fonctionne (à ajouter à la fin du `Main`) :
+
+  ```java
+  //L'armée humaine bat l'armée orc
+  armeeHumaine.vaincre(armeeOrc);
+
+  armeeOrc.fabriquerUneArmeDeSiege();
+  armeeOrc.recruterUnite();
+
+  System.out.println("Nouvelle attaque de l'ancienne armée orc battue par les humains");
+  //Il y a les anciennes catapultes et un canon
+  armeeOrc.attaquerAvecArmesDeSiege();
+
+  //Il y a les anciens orcs et un humain
+  armeeOrc.attaquerAvecUnites();
+
+  //C'est un sort de boule de feu
+  armeeOrc.utiliserSortSpecial();
+  ```
+
+</div>
 
 ### Construction de donjons
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `fabrique2`. Cette application permet de construire des **donjons** pour un jeu-vidéo. Un **donjon** est constitué de différentes salles (des pièces avec des coffres, des pièces avec des ennemis, des pièces avec des énigmes, des pièces avec des boss...). Une salle peut être complétée par le joueur ou non. Chaque donjon possède un algorithme de génération qui créé les salles dans un ordre précis (avec un peu d'aléatoire). Il est constitué de "salles normales", de "salles spéciales" et d'une "salle finale", dans cet ordre :
+1. Ouvrez le paquetage `fabrique4`. Cette application permet de construire des **donjons** pour un jeu-vidéo. Un **donjon** est constitué de différentes salles (des pièces avec des coffres, des pièces avec des ennemis, des pièces avec des énigmes, des pièces avec des boss...). Une salle peut être complétée par le joueur ou non. Chaque donjon possède un algorithme de génération qui créé les salles dans un ordre précis (avec un peu d'aléatoire). Il est constitué de "salles normales", de "salles spéciales" et d'une "salle finale", dans cet ordre :
 
     * Une salle normale
 
@@ -1561,7 +1935,7 @@ public interface Telephone {
 
     * Une salle finale
 
-    Pour l'instant, dans sa configuration actuelle on a les correspondances suivantes :
+    Pour l'instant, dans sa configuration actuelle, on a les correspondances suivantes :
 
     * Salle normale : Une salle avec un coffre
 
@@ -1569,9 +1943,7 @@ public interface Telephone {
 
     * Salle finale : Une salle avec un Boss avec un niveau entre 1 à 10.
 
-2. Mettez en place une **fabrique** pour que le `Donjon` n'ait pas à instancier les salles lui-même. Il y aura donc trois méthodes dans cette fabrique : `creerSalleNormale`, `creerSalleSpeciale` et `creerSalleFinale`. Pour cet exercice, il n'y a pas besoin de créer de sous-classes ou d'interfaces `SalleSpeciale`, `SalleFinale`, etc. La fabrique renverra simplement des objets `Salle` pour chaque méthode. Transformez également cette fabrique en **Singleton**. Adaptez le code de `Donjon` et de `Main` en conséquence.
-
-3. La configuration actuelle du Donjon est un mode "facile". On aimerait introduire le mode "difficile" où on a les correspondances suivantes :
+2. La configuration actuelle du Donjon est un mode "facile". On aimerait introduire le mode "difficile" (toujours en gardant le même algorithme/ordre de création des salles) où on a les correspondances suivantes :
 
     * Salle normale : Une salle contenant entre 20 et 40 ennemis.
 
@@ -1579,126 +1951,65 @@ public interface Telephone {
 
     * Salle finale : Une salle avec un Boss de niveau 80.
 
-    Comment pourriez-vous faire pour pouvoir facilement construire à la fois des donjons "faciles" et des donjons "difficiles" dans le programme ? Tout en respectant les principes SOLID ?
+    Refactorez votre code afin qu'il soit possible de construire des donjons "difficiles" en plus de donjons "facile" (qui est la configuration de salles implémentée par défaut).
+
+3. Dans le `Main`, construisez des donjons difficiles et des donjons faciles.
+
+4. La méthode `getInfosSalle` doit permettre de récupérer les informations d'une salle du donjon "à l'extérieur". Cependant, son implémentation est problématique... Par exemple, que pourriez-vous faire comme action indésirable en récupérant une salle d'un `Donjon` dans le `Main` (indice : seul le donjon devrait avoir le droit de modifier l'état de ses salles) ? Quel pattern que nous avons vu pendant ce TP pourriez-vous appliquer pour régler ce problème ? Refactorez votre code dans ce sens.
+
+5. Réalisez le **diagramme de classes de conception** de votre application.
 
 </div>
 
-Vous avez peut-être trouvé la solution par vous-même avec la dernière question, mais si vous commencez à maîtriser les bonnes pratiques de conception logicielle, il y a un concept qui revient souvent dans les patterns et lorsqu'on applique les principes SOLID : l'abstraction.
+### Restaurants de burgers - Partie 2
 
-L'idée du pattern **Fabrique Abstraite** est donc de disposer d'une abstraction (classe abstraite ou interface) qui définie le contrat que doivent remplir les fabriques concrètes. Pour chaque famille de classes, on crée une fabrique concrète qui implémente cette interface ou étend cette classe abstraite. Ensuite, toutes les classes qui souhaitent utiliser cette fabrique doivent dépendre de la **fabrique abstraite** et non plus d'une fabrique concrète. Couplé à de l'injection de dépendances, il est très facile de complétement changer le comportement d'une classe. C'est globalement l'idée du pattern **Stratégie** que vous avez déjà vu lors du dernier TP, mais appliqué pour des fabriques !
-
-Reprenons l'exemple des figures géométriques :
-
-```java
-
-public interface AbstractFigureGeometriqueFactory {
-
-  Carre creerCarre(int tailleCote);
-
-  Cercle creerCercle(int rayon);
-
-}
-
-public class FigureGeometriqueSimpleFactory implements AbstractFigureGeometriqueFactory {
-
-  private static FigureGeometriqueSimpleFactory INSTANCE;
-
-  private FigureGeometriqueSimpleFactory() {}
-
-  public synchronized static FigureGeometriqueSimpleFactory getInstance() {
-    if(INSTANCE == null) {
-      INSTANCE = new FigureGeometriqueSimpleFactory();
-    }
-    return INSTANCE;
-  }
-
-  public Carre creerCarre(int tailleCote) {
-    return new CarreSimple(tailleCote);
-  }
-
-  public Cercle creerCercle(int rayon) {
-    return new CercleSimple(rayon);
-  }
-
-}
-
-public class FigureGeometriqueGraphiqueFactory implements AbstractFigureGeometriqueFactory {
-
-  private static FigureGeometriqueGraphiqueFactory INSTANCE;
-
-  private FigureGeometriqueGraphiqueFactory() {}
-
-  public synchronized static FigureGeometriqueGraphiqueFactory getInstance() {
-    if(INSTANCE == null) {
-      INSTANCE = new FigureGeometriqueGraphiqueFactory();
-    }
-    return INSTANCE;
-  }
-
-  public Carre creerCarre(int tailleCote) {
-    return new CarreGraphique(tailleCote);
-  }
-
-  public Cercle creerCercle(int rayon) {
-    return new CercleGraphique(rayon);
-  }
-
-}
-
-public class ServiceA {
-
-  private AbstractFigureGeometriqueFactory factory;
-
-  public ServiceA(AbstractFigureGeometriqueFactory factory) {
-    this.factory = factory;
-  }
-
-  public void action() {
-    Cercle c = factory.creerCercle(10);
-    System.out.println(c.getAire());
-    c.afficherFigure();
-  }
-
-}
-
-public class Main {
-
-  public static void main(String[]args) {
-    //Le service utilise des figures géométriques simples
-    ServiceA s1 = new ServiceA(FigureGeometriqueSimpleFactory.getInstance());
-
-    //Le service utilise des figures géométriques graphiques
-    ServiceA s2 = new ServiceA(FigureGeometriqueGraphiqueFactory.getInstance());
-  }
-
-}
-```
-
-<div style="text-align:center">
-![Fabrique 3]({{site.baseurl}}/assets/TP4/Fabrique3.svg){: width="80%" }
-</div>
-
-Comme vous pouvez le constater, après refactoring, il est très facile de changer de famille utilisée dans le service, sans avoir besoin de changer le code de notre fabrique. De plus, on respecte ainsi le principe ouvert/fermé, car si on souhaite créer une nouvelle famille de classes, on a juste à ajouter une nouvelle fabrique.
+Revenons une dernière fois sur l'application de gestion de restaurants afin de l'améliorer.
 
 <div class="exercise">
 
-1. Refactorez votre code afin d'introduire une nouvelle fabrique permettant de construire des donjons "difficiles" en appliquant le pattern **Fabrique Abstraite**. Vous devez aussi logiquement légèrement adapter le code de la classe `Donjon` en introduisant une injection de dépendance vers la fabrique abstraite.
+1. Ouvrez le paquetage `fabrique3` puis `v2`. Il s'agit de la deuxième partie de l'exercice. Comme vous pouvez le constater, les différents ingrédients qui étaient jusqu'ici des **chaînes de caractères** sont remplacés par des **objets**.
 
-2. Dans le `Main`, construisez des donjons difficiles et des donjons faciles.
+  On a toujours les mêmes recettes que précédemment dans les restaurants **Nîmois** et les restaurants **Montpellierains** :
 
-3. La méthode `getInfosSalle` doit permettre de récupérer les informations d'une salle du donjon "à l'extérieur". Cependant, son implémentation est problématique... Par exemple, que pourriez-vous faire comme action indésirable en récupérant une salle d'un `Donjon` dans le `Main` (indice : seul le donjon devrait avoir le droit de modifier l'état de ses salles) ? Quel pattern que nous avons vu pendant ce TP pourriez-vous appliquer pour régler ce problème ? Refactorez votre code dans ce sens.
+  * Nîmes : 
+    * **Cheese Burger** : Boeuf Charolais, Sauce à burger de Nîmes et Cheddar.
+    * **Egg Burger** : Poulet Gardois, Sauce à burger de Nîmes et Oeuf de poule.
 
-4. Réalisez le **diagramme de classes de conception** de votre application.
+  * Montpellier :
+    * **Cheese Burger** : Boeuf Limousin, Sauce à burger de Montpellier et Maroilles.
+    * **Egg Burger** : Poulet de Bresse, Sauce à burger de Montpellier et Oeuf d'autruche.
+
+2. Commencez par importer et adapter votre ancien code afin de faire en sorte qu'il soit toujours possible de gérer les deux types de restaurants : les **restaurants Nîmois** et les **restaurants Montpelliérains** (la seule chose qui change sont les ingrédients qui sont maintenant des objets). Importez et/ou complétez aussi le code du `Main` et assurez-vous que tout fonctionne.
+
+3. On remarque que les restaurants Nîmois et les restaurants Montpellierains utilisent **un ensemble d'ingrédients spécifique en local** pour la composition de leurs burgers :
+
+  * Nîmes :
+    * Bœuf : Bœuf Charolais
+    * Poulet : Poulet Gardois
+    * Fromage : Cheddar
+    * Sauce : Sauce à burger de Nîmes
+
+  * Montpellier :
+    * Bœuf : Bœuf Limousin
+    * Poulet : Poulet de Bresse
+    * Fromage : Maroilles
+    * Sauce : Sauce à burger de Montpellier
+
+  Globalement, à Nîmes, tous les burgers qui auront besoin de fromage utiliseront du Cheddar et à Montpellier du Maroilles. Pareil pour le bœuf, le poulet et la sauce.
+
+  En sachant cela, il y a donc une duplication de code au niveau de la création des burgers. Par exemple, on sait très bien que chaque fois qu'un burger nîmois aura besoin de bœuf, on utilisera du bœuf Charolais. Pareil pour la sauce, etc. Et on veut pouvoir facilement changer le type de bœuf utilisé (ou autre) sans avoir à changer le code de tous les burgers !
+
+4. Proposez une solution adéquate pour faire en sorte d'utiliser un ensemble d'ingrédient spécifique (qui soit facile de changer) pour la création des burgers selon le type de restaurant (Nîmes / Montpellier). Vous adapterez au besoin le `main` de la classe `Main`.
 
 </div>
-
-Parfois, il n'est pas nécessairement souhaitable d'avoir la possibilité d'utiliser toutes les fabriques en même temps (on doit alors pointer l'instance de la fabrique qu'on souhaite utiliser). Il faut donc trouver un moyen d'en sélectionner une seule, mais aussi de pouvoir facilement changer la fabrique concrète utilisée. Nous allons voir cela dans le prochain exercice.
 
 ### Combats de monstres
 
+Parfois, il n'est pas nécessairement souhaitable d'avoir la possibilité d'utiliser toutes les fabriques en même temps (on doit alors pointer l'instance de la fabrique qu'on souhaite utiliser). Il faut donc trouver un moyen d'en sélectionner une seule, mais aussi de pouvoir facilement changer la fabrique concrète utilisée. Nous allons voir cela dans cet exercice.
+
 <div class="exercise">
 
-1. Ouvrez le paquetage `fabrique3`. C'est le retour des **pokémons** ! Mais il y a également une nouvelle famille de monstres : **les digimons** qui ont un fonctionnement similaire aux pokémons mais ont en plus un système d'énergie. En tout cas, ils se créent de la même manière que les pokémons ou plus généralement, qu'un "monstre".
+1. Ouvrez le paquetage `fabrique5`. C'est le retour des **pokémons** ! Mais il y a également une nouvelle famille de monstres : **les digimons** qui ont un fonctionnement similaire aux pokémons mais ont en plus un système d'énergie. En tout cas, ils se créent de la même manière que les pokémons ou plus généralement, qu'un "monstre".
 
 2. Actuellement, dans le `Main`, on crée des pokémons et on utilise le simulateur de combat pour en faire combattre deux. À la place des pokémons, on voudrait parfois utiliser des digimons. Maintenant que vous connaissez le pattern **Fabrique Abstraite** refactorez le code afin de pouvoir facilement switcher entre des combats avec divers pokémons et des combats avec divers digimons. Si vous rencontrez quelques petits problèmes, regardez les méthodes de `Digimon`... ne serait-il pas judicieux de lui faire implémenter une certaine interface ? Et pour les différentes sous-classes de `Digimon` ? (`DigimonEau`, `DigimonFeu`...). Vous devrez aussi adapter le `Main` et `SimulateurCombat`.
 
@@ -1710,76 +2021,60 @@ Nous sommes dans un cas particulier où tout le programme va utiliser une seule 
 
 Mais comment faire cela sans modifier l'instance concrète utilisée un peu partout ? (car elle est surement injectée à différentes classes). La réponse est simple : il faut regrouper la logique qui instancie la classe concrètement utilisée à un seul endroit. On peut ensuite mettre un système de paramétrage qui permet de changer la fabrique utilisée facilement. Les classes qui ont besoin de cette fabrique iront donc appeler une méthode de cette classe afin de récupérer la fabrique concrète à utiliser.
 
-La question est de savoir : où placer ce bout de code ? Il n'y a pas vraiment de réponse officielle à cette question. Cela pourrait être dans une classe indépendante avec une méthode statique. Cependant, dans la pratique, on retrouve parfois ce bout de code directement dans la **Fabrique Abstraite** qu'on mélange à un **Singleton** :
+La question est de savoir : où placer ce bout de code ? Il n'y a pas vraiment de réponse officielle à cette question. Cela pourrait être dans une classe indépendante avec une méthode statique. Cependant, dans la pratique, on retrouve parfois ce bout de code directement dans la **Fabrique Abstraite** qu'on mélange à un **Singleton**.
+
+Par exemple, imaginons que nous souhaitons que notre **Jeu**, à un instant T, ne fonctionne qu'avec des **Plaines** ou qu'avec des **Châteaux Hantés** :
 
 ```java
+//On transforme notre interface en classe abstraite, car elle contient du code
+//Elle stocke l'instance cocnrète de la fabrique utilisée
+public abstract class AbstractZoneFactory {
 
-public abstract class AbstractFigureGeometriqueFactory {
+  private static AbstractZoneFactory INSTANCE;
 
-  private static AbstractFigureGeometriqueFactory INSTANCE;
+  private String fabriqueSelectionee = "chateau";
 
-  private String fabriqueSelectionee = "graphique";
-
-  public synchronized static AbstractFigureGeometriqueFactory getInstance() {
+  public synchronized static AbstractZoneFactory getInstance() {
     if(INSTANCE == null) {
-      if(fabriqueSelectionee.equals("simple")) {
-        INSTANCE = new FigureGeometriqueSimpleFactory();
-      }
-      else if(fabriqueSelectionee.equals("graphique")) {
-        INSTANCE = new FigureGeometriqueGraphiqueFactory();
-      }
-      else {
-        throw new RuntimeException("Fabrique inconnue.");
+      switch (fabriqueSelectionee) {
+          case "plaine" :
+            INSTANCE = new ZonePlaineFactory();
+            break;
+          case "chateau" : 
+            INSTANCE = new ZoneChateauHanteFactory();
+            break;
+          default: 
+            throw new IllegalArgumentException(String.format("Type de zone inconnue : %s", fabriqueSelectionee));
       }
     }
     return INSTANCE;
   }
 
-  public abstract Carre creerCarre(int tailleCote);
+  public abstract Monstre creerMonstreNormal();
 
-  public abstract Cercle creerCercle(int rayon);
+  public abstract Boss creerBoss(); 
 
-}
-
-public class FigureGeometriqueSimpleFactory extends AbstractFigureGeometriqueFactory {
-
-  public Carre creerCarre(int tailleCote) {
-    return new CarreSimple(tailleCote);
-  }
-
-  public Cercle creerCercle(int rayon) {
-    return new CercleSimple(rayon);
-  }
+  public abstract Item creerRecompense();
 
 }
 
-public class FigureGeometriqueGraphiqueFactory extends AbstractFigureGeometriqueFactory {
-
-  public Carre creerCarre(int tailleCote) {
-    return new CarreGraphique(tailleCote);
-  }
-
-  public Cercle creerCercle(int rayon) {
-    return new CercleGraphique(rayon);
-  }
-
+//Les fabriques concrètes ne sont plus des singletons...
+public class ZonePlaineFactory extends AbstractZoneFactory {
+  ...
 }
 
-public class ServiceA {
-
-  private AbstractFigureGeometriqueFactory factory;
-
-  public ServiceA(AbstractFigureGeometriqueFactory factory) {
-    this.factory = factory;
-  }
-
+public class ZoneChateauHanteFactory extends AbstractZoneFactory {
+  ...
 }
-
 
 public class Main {
 
   public static void main(String[]args) {
-    ServiceA s = new ServiceA(AbstractFigureGeometriqueFactory.getInstance());
+    Zone zone = new Zone(AbstractZoneFactory.getInstance());
+    zone.traverserZoneNormale();
+    zone.ouvrirCoffre();
+    zone.ouvrirCoffre();
+    zone.traverserZoneBoss();
   }
 
 }
@@ -1790,50 +2085,52 @@ Avec cette nouvelle implémentation, il n'y a plus qu'à changer le paramètre `
 Encore mieux : dans les faits, il faut (légèrement) changer le code source de la fabrique abstraite pour changer de fabrique... Donc il faut recompiler. Pour éliminer ce dernier problème, on peut plutôt utiliser un **fichier de configuration** : lors de son initialisation, la fabrique abstraite va lire dans ce fichier pour déterminer quelle fabrique instancier.
 
 ```java
+public abstract class AbstractZoneFactory {
 
-public abstract class AbstractFigureGeometriqueFactory {
+  private static AbstractZoneFactory INSTANCE;
 
-  private static AbstractFigureGeometriqueFactory INSTANCE;
-
-  public synchronized static AbstractFigureGeometriqueFactory getInstance() {
-      if(INSTANCE == null) {
-          try {
-              InputStream stream = ClassLoader.getSystemResourceAsStream("config/figure_factory_config.txt");
-              if(stream == null) {
-                  throw new RuntimeException("Fichier de configuration manquant.");
-              }
-              BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-              String config = reader.readLine();
-              if(config.equals("simple")) {
-                  INSTANCE = new FigureGeometriqueSimpleFactory();
-              }
-              else if(config.equals("graphique")) {
-                  INSTANCE = new FigureGeometriqueGraphiqueFactory();
-              }
-              else {
-                  throw new RuntimeException("Fabrique inconnue.");
-              }
-
-          } catch (IOException e) {
-              throw new RuntimeException("Fichier de configuration corrompu.");
-          }
+  public synchronized static AbstractZoneFactory getInstance() {
+    if(INSTANCE == null) {
+      try {
+            InputStream stream = ClassLoader.getSystemResourceAsStream("config/zone_factory_config.txt");
+            if(stream == null) {
+                throw new RuntimeException("Fichier de configuration manquant.");
+            }
+            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+            String config = reader.readLine();
+            switch (config) {
+              case "plaine" :
+                INSTANCE = new ZonePlaineFactory();
+                break;
+              case "chateau" : 
+                INSTANCE = new ZoneChateauHanteFactory();
+                break;
+              default: 
+                throw new IllegalArgumentException(String.format("Type de zone inconnue : %s", config));
+            }
+      } catch (IOException e) {
+          throw new RuntimeException("Fichier de configuration corrompu.");
       }
-      return INSTANCE;
+    }
+    return INSTANCE;
   }
 
-  public abstract Carre creerCarre(int tailleCote);
+  public abstract Monstre creerMonstreNormal();
 
-  public abstract Cercle creerCercle(int rayon);
+  public abstract Boss creerBoss(); 
+
+  public abstract Item creerRecompense();
 
 }
 ```
-
 
 <div style="text-align:center">
 ![Fabrique 4]({{site.baseurl}}/assets/TP4/Fabrique4.svg){: width="80%" }
 </div>
 
-La fabrique abstraite vise un fichier qui se situe dans `src/main/resources/config/figure_factory_config.txt` qui contient simplement une chaîne de caractères. Par exemple : `simple`.
+La fabrique abstraite vise un fichier qui se situe dans `src/main/resources/config/zone_factory_config.txt` qui contient simplement une chaîne de caractères. Par exemple : `chateau`.
+
+Bien sûr, cette implémentation n'est pas forcément souhaitable dans tous les contextes ! C'est seulement si, à un instant T, on veut uniquement avoir un seul type de fabrique concrète utilisé et pouvoir en changer facilement (d'ailleurs, l'exemple donné est discutable, parce qu'on voudrait à priori pouvoir créer plusieurs types de zones différentes à la fois).
 
 <div class="exercise">
 
@@ -1853,53 +2150,62 @@ Les pokémons et les digimons sont des classes qui ont été créées par le dé
 
 Pour illustrer ce problème, reprenons notre exemple de figures géométriques. Imaginons que vous souhaitez pouvoir afficher des carrés et des cercles de manière "complexe" (à voir ce que "complexe" veut dire dans ce contexte). Au lieu de réinventer la roue, vous avez trouvé une librairie `FiguresComplexes` qui fait cela pour vous ! Via `Maven`, vous installez cette librairie sur votre projet.
 
-Vous ne pouvez pas modifier le code source de cette classe, mais vous pouvez étudier leur documentation. Vous êtes notamment intéressés par les deux classes suivantes :
-
 ```java
-public class ComplexSquare {
+interface Publicateur {
 
-  //Construit le carré en précisant la taille d'un côté
-  public ComplexSquare(int size) {
-    ...
+  public void connexion(String login, String motDePasse);
+
+  public void publierMessage(String contenu);
+
+}
+
+class PublicateurFacebook implements Publicateur {
+
+  public void connexion(String login, String motDePasse) {
+    System.out.println("Code de connexion au compte via l'API de Facebook...");
   }
 
-  //Retourne la taille du côté du carré complexe
-  public int getSize() {
-    ...
-  }
-
-  //Renvoie l'aire du carré
-  public int calculateArea() {
-    ...
-  }
-
-  //Affichage du carré
-  public void displaySquare() {
-
+  public void publierMessage(String contenu) {
+    System.out.println("Publication d'un message sur le compte via l'API de Facebook...");
   }
 
 }
 
-public class ComplexCircle {
+class PublicateurTwitter implements Publicateur {
 
-  //Construit le cercle en précisant son rayon
-  public ComplexCircle(int radius) {
-    ...
+  public void connexion(String login, String motDePasse) {
+    System.out.println("Code de connexion au compte via l'API de Twitter...");
   }
 
-  //Retourne le diamètre du cercle complexe
-  public int getDiameter() {
-    ...
+  public void publierMessage(String contenu) {
+    System.out.println("Publication d'un message sur le compte via l'API de Twitter...");
   }
 
-  //Renvoie l'aire du cercle
-  public int calculateArea() {
-    ...
+}
+```
+
+Vous ne pouvez pas modifier le code source de cette classe, mais vous pouvez étudier leur documentation. Vous êtes notamment intéressés par les deux classes suivantes :
+
+```java
+public class InstagramMessageSender {
+
+  private int apiVersion;
+
+  public InstagramMessageSender(int apiVersion) {
+    this.apiVersion = apiVersion;
   }
 
-  //Affichage du cercle
-  public void displayCircle() {
+  public void connect(String email, String password) {
+    System.out.printf("Connecting to API %s...\n", apiVersion);
+    System.out.println("Connecting to the instagram account using the provided email and password...");
+  }
 
+  public void logout() {
+    System.out.println("Logging out...");
+  }
+
+  public void publishMessage(String content, int timer) {
+    System.out.printf("Publishing content on the instagram account in %s seconds...\n", timer);
   }
 
 }
@@ -1930,76 +2236,20 @@ Voici comment appliquer ce pattern :
 Mettons cela en application sur notre exemple :
 
 ```java
-public class ComplexSquareAdapter implements Carre {
+public class InstagramMessageSenderAdapter implements Publicateur {
 
-  private ComplexSquare complexSquare;
+  private InstagramMessageSender delegue;
 
-  public ComplexSquareAdapter(ComplexSquare complexSquare) {
-    this.complexSquare = complexSquare;
+  public InstagramMessageSenderAdapter(InstagramMessageSender delegue) {
+    this.delegue = delegue;
   }
 
-  //Ou bien
-  /*
-  public ComplexSquareAdapter(int tailleCote) {
-    this.complexSquare = new ComplexSquare(tailleCote);
-  }*/
-
-  @Override
-  public int getTaille() {
-    return complexSquare.getSize();
+  public void connexion(String login, String motDePasse) {
+    delegue.connect(login, motDePasse);
   }
 
-  @Override
-  public int getAire() {
-    return complexSquare.getArea();
-  }
-
-  @Override
-  public void afficherFigure() {
-    complexSquare.displaySquare();
-  }
-
-}
-
-public class ComplexCircleAdapter implements Cercle {
-
-  private ComplexCircle complexCircle;
-
-  public ComplexCircleAdapter(ComplexCircle complexCircle) {
-    this.complexCircle = complexCircle;
-  }
-
-  //Ou bien
-  /*
-  public ComplexCircleAdapter(int rayon) {
-    this.complexCircle = new ComplexCircle(rayon);
-  }*/
-
-  @Override
-  public int getDiametre() {
-    return complexCircle.getDiameter();
-  }
-
-  @Override
-  public int getAire() {
-    return complexCircle.getArea();
-  }
-
-  @Override
-  public void afficherFigure() {
-    complexCircle.displayCircle();
-  }
-
-}
-
-public class FigureGeometriqueComplexeFactory extends AbstractFigureGeometriqueFactory {
-
-  public Carre creerCarre(int tailleCote) {
-    return new ComplexSquareAdapter(new ComplexSquare(tailleCote));
-  }
-
-  public Cercle creerCercle(int rayon) {
-    return new ComplexCircleAdapter(new ComplexCircle(rayon));
+  public void publierMessage(String contenu) {
+    delegue.publishMessage(contenu, 0);
   }
 
 }
@@ -2275,7 +2525,7 @@ Pour le moment, revenons à nos moutons et appliquons ce que nous avons appris s
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `fabrique4`. Il s'agit de la dernière application que vous aviez refactoré lors du dernier TP permettant de simuler l'inscription et la connexion d'un utilisateur. L'application est fonctionnelle. Lancez-la et explorer aussi les différentes classes mises à disposition si vous ne vous souvenez pas bien de son fonctionnement.
+1. Ouvrez le paquetage `fabrique6`. Il s'agit de la dernière application que vous aviez refactoré lors du dernier TP permettant de simuler l'inscription et la connexion d'un utilisateur. L'application est fonctionnelle. Lancez-la et explorer aussi les différentes classes mises à disposition si vous ne vous souvenez pas bien de son fonctionnement.
 
 2. Actuellement, si nous voulons changer la méthode de stockage (en mémoire ou dans un fichier) il faut éditer à la main `IHMUtilisateur` pour remplacer les paramètres injectés lors de la création de `ServiceUtilisateur`. On souhaite rendre cela plus modulable. Refactorez le code pour mettre en place et utiliser une **fabrique abstraite** et des **fabriques** pour gérer les deux types de méthodes stockage disponibles dans l'application. La configuration du type stockage utilisé devra se faire via un fichier de configuration textuel simple. Aussi, vos fabriques doivent stocker les **dépendances** qu'elles gèrent et ne pas les ré-instancier à chaque fois qu'on en a besoin. 
 
