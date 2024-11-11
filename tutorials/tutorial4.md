@@ -27,15 +27,15 @@ Dans ce TP, nous allons voir **tous les patterns créateurs** et allons les mett
 
 Nous verrons aussi un autre pattern **structurel** appelé **adaptateur**. En fait, nous allons voir que beaucoup de ces patterns peuvent (et doivent) être combinés dans un projet plus large. Nous traitons souvent des problèmes "simple" avec quelques classes pour illustrer le fonctionnement d'un pattern, mais sur un projet plus large, il est tout à fait naturel de faire travailler en concert les différents patterns.
 
+**Attention** : Dans plusieurs exercices, il vous sera demandé de **générer un diagramme de classes** (avec `IntelliJ` ou autre IDE qui propose cette fonctionnalité). Bien que les diagrammes générés puissent être parfois légèrement erronés, et qu'il vaut généralement mieux faire le dessin soit-même, cela vous fera gagner du temps. Il est fortement conseillé de prendre des **captures d'écran** de chaque diagramme de classes et de les sauvegarder dans un sous-dossier de votre dépôt. Certains diagrammes permettent de comparer l'évolution de l'architecture et des dépendances avant/après **refactoring**.
+
 <div class="exercise">
 
-1. Pour commencer, forkez [le dépôt GitLab suivant](https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/tp4) en le plaçant dans le namespace `qualite-de-developpement-semestre-3/etu/votrelogin`.
+1. Pour commencer, clonez en local le **dépôt gitlab** forké dans votre espace privé dans le cours de qualité de développement : [https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/etu/votre_login/tp4](https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/etu/votre_login/tp4) en remplaçant `votre_login` par le login que vous utilisez pour accéder au serveur gitlab du département.
 
-2. Clonez votre nouveau dépôt en local. Ouvrez le projet avec votre IDE et vérifiez qu'il n'y a pas d'erreur.
+2. Ouvrez le projet avec `IntelliJ` et vérifiez qu'il n'y a pas d'erreur.
 
-3. Pendant ce TP, on vous demandera de créer des **diagrammes UML** de conception (classes, séquences). Vous déposerez vos diagrammes dans un dossier `uml` (en image ou bien avec le fichier du projet **.mdj** si vous utilisez **StarUML**) que vous devrez créer à la racine du dépôt.
-
-4. À la fin de chaque séance, n'oubliez pas de faire un **push** vers votre dépôt distant sur **GitLab**.
+3. À la fin de chaque séance, n'oubliez pas de faire un **push** vers votre dépôt distant sur **GitLab**.
 
 </div>
 
@@ -859,133 +859,59 @@ L'objectif du pattern **prototype** est donc de définir un moyen d'obtenir des 
 
 **Remarque technique (pour Java) :** En Java, un mécanisme de clonage est prévu à travers la fonction `clone` de la classe `Object`. Pour l'utiliser sur une classe que vous développez, il faut implémenter l'interface [`Cloneable`](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Cloneable.html). Cette interface ne contient aucune méthode, mais elle permet de signaler que la classe peut être clonée. Le mécanisme interne de cette spécification est assez obscure et a été beaucoup critiqué (voir Item 13 du livre **Effective Java** de Joshua Bloch, ainsi que [les discussions en ligne](https://stackoverflow.com/questions/4081858/how-does-cloneable-work-in-java-and-how-do-i-use-it)). Il est donc préférable de ne pas utiliser cette interface et de définir votre propre méthode `cloner` comme nous l'avons fait dans l'exemple précédent.
 
-## La Fabrique - un concept très utile
+## La Fabrique Simple - un concept très utile
 
-Le concept de **Fabrique** permet de centraliser l'instanciation d'une famille de classes dans une classe spécialisée. Les classes ayant besoin d'instancier des objets de cette famille ne vont plus faire elle-même des **new**, mais vont plutôt passer par la fabrique. 
+Le concept de **Simple Fabrique** permet de centraliser l'instanciation d'une famille de classes dans une classe spécialisée. Les classes ayant besoin d'instancier des objets de cette famille ne vont plus faire elle-même des **new**, mais vont plutôt passer par la fabrique. Ainsi les dépendances vers les types **concrets** sont centralisées dans une seule classe, et les classes ayant besoin d'instancier des objets ne possèdent qu'une dépendance vers la fabrique.
 
-**Remarque importante :** Bien que le concept de **Fabrique** est extrêmement pratique (et utilisé dans différents __design patterns__), il ne s'agit pas d'un design pattern à proprement parler. Prenons-le plutôt comme une application de règles de bon sens. En l'occurrence, il ne faut pas confondre la **Fabrique** avec le design pattern [**Méthode Fabrique** (**Factory Method**)](https://en.wikipedia.org/wiki/Factory_method_pattern) du **GoF**, dont on ne parlera pas dans ce TD. Pour les curieux, vous pouvez lire l'exemple de l'URL (correspondant à la page Wikipédia en anglais), où l'exemple en Java pour ce design pattern est bien choisi.
+**Remarque importante :** Bien que le concept de **Fabrique Simple** est extrêmement pratique (et utilisé dans différents __design patterns__), il ne s'agit pas d'un design pattern à proprement parler. Prenons-le plutôt comme une application de règles de bon sens. En l'occurrence, il ne faut pas confondre la **Fabrique Simple** avec les patterns **Méthode Fabrique** (**Factory Method**) et **Fabrique Abstraite** (**Abstract Factory**) du **GoF**, dont nous allons parler dans ce TP.
 
 La fabrique connaît les différents types concrets à instancier, mais elle va généralement renvoyer des abstractions (classes abstraites/interfaces) pour que les classes ayant besoin de créer des objets ne dépendent plus du tout d'un objet concret, mais plutôt de son abstraction. Ainsi, l'impact du changement diminue (si on veut changer la classe concrète utilisée) ce qui renforce notamment le principe ouvert/fermé.
 
-Dans une application où certaines classes sont instanciées à différents endroits, il est donc plutôt judicieux d'utiliser une fabrique pour réduire les dépendances de type _"create"_. Seule la fabrique est dépendante des objets concrets et les autres classes sont seulement dépendante de la fabrique (et des abstractions).
+Dans une application où certaines classes sont instanciées à différents endroits, il est donc plutôt judicieux d'utiliser une fabrique pour réduire les dépendances de type _"create"_. Seule la fabrique est dépendante des objets concrets et les autres classes sont seulement dépendantes de la fabrique (et des abstractions).
 
-Voyons l'application de **Fabrique** sur un exemple :
+Voyons l'application de **Fabrique Simple** sur un exemple :
 ```java
+public abstract class Message {
 
-public interface FigureGeometrique {
+  private String contenu;
 
-  int getAire();
+  public Message(String contenu) {
+    this.contenu = contenu;
+  }
 
-  void afficherFigure();
+  public String getContenu() {
+    return contenu;
+  }
 
+  public abstract void notifierAdmin();
+
+  public void logger() {
+    System.out.println("Enregistrement du message dans un fichier de log...");
+  }
 }
 
-public interface Carre extends FigureGeometrique {
-  int getTailleCote();
-}
+public class MessageMail extends Message {
 
-public interface Cercle extends FigureGeometrique {
-  int getDiametre();
-}
-
-public class CarreSimple implements Carre {
-
-  private int tailleCote;
-
-  public CarreSimple(int tailleCote) {
-    this.tailleCote = tailleCote;
+  public MessageMail(String contenu) {
+    super(contenu);
   }
 
   @Override
-  public int getTailleCote() {
-    return tailleCote;
-  }
-
-  @Override
-  public int getAire() {
-    return tailleCote * tailleCote;
-  }
-
-  @Override
-  public void afficherFigure() {
-    //Affichage simple en console...
+  public void notifierAdmin() {
+    System.out.println("Notification de l'administrateur par mail...");
   }
 
 }
 
-public class CarreGraphique implements Carre {
+public class MessageSMS extends Message {
 
-  //Composition
-  private CarreSimple carre;
-
-  public CarreGraphique(int tailleCote) {
-    carre = new CarreSimple(tailleCote);
+  public MessageSMS(String contenu) {
+    super(contenu);
   }
 
   @Override
-  public int getTailleCote() {
-    return carre.getTailleCote();
-  }
-
-  @Override
-  public int getAire() {
-    return carre.getAire();
-  }
-
-  @Override
-  public void afficherFigure() {
-    //Affichage graphique du carré...
-  }
-
-}
-
-public class CercleSimple implements Cercle {
-
-  private int rayon;
-
-  public CercleSimple(int rayon) {
-    this.rayon = rayon;
-  }
-
-  @Override
-  public int getDiametre() {
-    return rayon*2;
-  }
-
-  @Override
-  public int getAire() {
-    return Math.PI * Math.pow(rayon, 2);
-  }
-
-  @Override
-  public void afficherFigure() {
-    //Affichage simple en console...
-  }
-
-}
-
-public class CercleGraphique implements Cercle {
-
-  //Composition
-  private Cercle cercle;
-
-  public CercleGraphique(int rayon) {
-    cercle = new CercleSimple(rayon);
-  }
-
-  @Override
-  public int getDiametre() {
-    return cercle.getDiametre();
-  }
-
-  @Override
-  public int getAire() {
-    return cercle.getAire();
-  }
-
-  @Override
-  public void afficherFigure() {
-    //Affichage graphique du cercle...
+  public void notifierAdmin() {
+    System.out.println("Notification de l'administrateur par SMS...");
   }
 
 }
@@ -993,8 +919,9 @@ public class CercleGraphique implements Cercle {
 public class ServiceA {
 
   public void action() {
-    Cercle c = new CercleSimple(10);
-    c.afficherFigure();
+    Message msg = new MessageMail("Mon message...");
+    msg.notifierAdmin();
+    msg.logger();
   }
 
 }
@@ -1002,13 +929,12 @@ public class ServiceA {
 public class ServiceB {
 
   public void action() {
-    Carre c1 = new CarreSimple(10);
-    c1.afficherFigure();
+    Message msg1 = new MessageMail("Mon message 1...");
+    msg1.notifierAdmin();
 
-    Cercle c2 = new CercleSimple(5);
-    c2.afficherFigure();
-
-    Sytem.out.println(c2.getAire());
+    Message msg2 = new MessageMail("Mon message 2...");
+    msg2.notifierAdmin();
+    msg2.logger();
   }
 
 }
@@ -1018,111 +944,114 @@ public class ServiceB {
 ![Fabrique 1]({{site.baseurl}}/assets/TP4/Fabrique1.svg){: width="80%" }
 </div>
 
-Dans cet exemple, `ServiceA` et `ServiceB` sont fortement dépendants de `CarreSimple` et `CercleSimple`. Et on ne peut pas simplement injecter les dépendances, car ces services ont besoin d'instancier ces classes dans leurs méthodes ! Si nous devons changer pour utiliser des `CarreGraphique` et des `CercleGraphique`, il faut modifier ces deux classes !
+Dans cet exemple, notre application doit soit envoyer les messages par mail ou par SMS (mais pas les deux à la fois). Ici l'application est configurée pour envoyer des mails. `ServiceA` et `ServiceB` sont fortement dépendants de `MessageMail`. Et on ne peut pas simplement injecter les dépendances, car ces services ont besoin d'instancier ces classes dans leurs méthodes ! Si nous devons changer pour utiliser des `MessageSMS`, il faut modifier ces deux classes !
 
 Nous pouvons mettre en place une **Fabrique** pour régler ce problème :
 
 ```java
 
-public class FigureGeometriqueFactory {
+public class MessageFactory {
 
-  public Carre creerCarre(int tailleCote) {
-    return new CarreSimple(tailleCote);
-  }
-
-  public Cercle creerCercle(int rayon) {
-    return new CercleSimple(rayon);
+  public Message creerMessage(String contenu) {
+    return new MessageMail(contenu);
   }
 
 }
 
 public class ServiceA {
 
-  private FigureGeometriqueFactory factory = new FigureGeometriqueFactory();
+  private MessageFactory factory = new MessageFactory();
 
   public void action() {
-    Cercle c = factory.creerCercle(10);
-    c.afficherFigure();
+    Message msg = factory.creerMessage("Mon message...");
+    msg.notifierAdmin();
+    msg.logger();
   }
 
 }
 
 public class ServiceB {
 
-  private FigureGeometriqueFactory factory = new FigureGeometriqueFactory();
+  private MessageFactory factory = new MessageFactory();
 
   public void action() {
-    Carre c1 = factory.creerCarre(10);
-    c1.afficherFigure();
+    Message msg1 = factory.creerMessage("Mon message 1...");
+    msg1.notifierAdmin();
 
-    Cercle c2 = factory.creerCercle(5);
-    c2.afficherFigure();
-
-    Sytem.out.println(c2.getAire());
+    Message msg2 = factory.creerMessage("Mon message 2...");
+    msg2.notifierAdmin();
+    msg2.logger();
   }
 
 }
 
 ```
 
-Maintenant, si nous voulons utiliser `CarreGraphique` et `CercleGraphique` à la place, nous n'avons à faire ce changement que dans **une seule classe** : `FigureGeometriqueFactory` !
+Maintenant, si nous voulons utiliser `MessageSMS` à la place de `MessageMail`, nous n'avons à faire ce changement que dans **une seule classe** : `MessageFactory` !
 
-Ici, il semble judicieux de transformer `FigureGeometriqueFactory` en **Singleton** et de l'injecter comme dépendance pour éviter que chaque service instancie une version de la fabrique :
+Ici, il semble judicieux de transformer `MessageFactory` en **Singleton** et de l'injecter comme dépendance pour éviter que chaque service instancie une version de la fabrique :
 
 ```java
 
-public class FigureGeometriqueFactory {
+public class MessageFactory {
 
-  private static FigureGeometriqueFactory INSTANCE;
+  private static MessageFactory INSTANCE;
 
-  private FigureGeometriqueFactory() {}
+  private MessageFactory() {}
 
-  public synchronized static FigureGeometriqueFactory getInstance() {
+  public synchronized static MessageFactory getInstance() {
     if(INSTANCE == null) {
-      INSTANCE = new FigureGeometriqueFactory();
+      INSTANCE = new MessageFactory();
     }
     return INSTANCE;
   }
 
-  public Carre creerCarre(int tailleCote) {
-    return new CarreSimple(tailleCote);
-  }
-
-  public Cercle creerCercle(int rayon) {
-    return new CercleSimple(rayon);
+  public Message creerMessage(String contenu) {
+    return new MessageMail(contenu);
   }
 
 }
 
 public class ServiceA {
 
-  private FigureGeometriqueFactory factory;
+  private MessageFactory factory;
 
-  public ServiceA(FigureGeometriqueFactory factory) {
+  public ServiceA(MessageFactory factory) {
     this.factory = factory;
   }
 
-  //...
+  public void action() {
+    Message msg = factory.creerMessage("Mon message...");
+    msg.notifierAdmin();
+    msg.logger();
+  }
 
 }
 
 public class ServiceB {
 
-  private FigureGeometriqueFactory factory;
+  private MessageFactory factory;
 
-  public ServiceB(FigureGeometriqueFactory factory) {
+  public ServiceB(MessageFactory factory) {
     this.factory = factory;
   }
 
-  //...
+  public void action() {
+    Message msg1 = factory.creerMessage("Mon message 1...");
+    msg1.notifierAdmin();
+
+    Message msg2 = factory.creerMessage("Mon message 2...");
+    msg2.notifierAdmin();
+    msg2.logger();
+  }
 
 }
 
 public class Main {
 
   public static void main(String[]args) {
-    ServiceA s1 = new ServiceA(FigureGeometriqueFactory.getInstance());
-    ServiceB s2 = new ServiceB(FigureGeometriqueFactory.getInstance());
+    ServiceA s1 = new ServiceA(MessageFactory.getInstance());
+    ServiceB s2 = new ServiceB(MessageFactory.getInstance());
   }
 
 }
@@ -1131,6 +1060,148 @@ public class Main {
 <div style="text-align:center">
 ![Fabrique 2]({{site.baseurl}}/assets/TP4/Fabrique2.svg){: width="80%" }
 </div>
+
+Il est possible d'adapter et d'étendre ce modèle :
+
+* On peut avoir plusieurs méthodes de création différentes dans la fabrique (mais attention au principe de responsabilité unique : on peut faire deux fabriques, au besoin).
+
+* Une méthode de création peut retourner plusieurs sous-types d'objets de la même famille.
+
+Prenons l'exemple suivant : on souhaite modéliser le fonctionnement de machines à café. 
+
+Il existe différents types de cafés : 
+
+* Café Expresso
+* Café Cappuccino
+
+Chaque café peut être composé d'un type de graine (arabica ou robusta) et le sucre versé dans le café appartient à une marque spécifique. Les types de graines peuvent venir de pays différents.
+
+Pour l'instant, nos graines arabica viendront du brésil, les graines robusta d'Asie et la marque de sucre utilisée est Daddy.
+
+Une fois l'instance d'un Café créé, il doit ensuite être **préparé** (c'est à ce moment qu'on initialisera les ingrédients utilisés).
+
+```java
+public abstract class Cafe {
+
+  protected String typeGraine;
+
+  protected String marqueSucre;
+
+  public abstract void preparer();
+
+  public void afficherComposition() {
+    System.out.println("Composition du café : ");
+    System.out.println(typeGraine);
+    System.out.println(marqueSucre);
+  }
+}
+
+public class Expresso extends Cafe {
+
+  @Override
+  public void preparer() {
+    System.out.println("Préparation d'un café Expresso");
+    this.typeGraine = "Graine Arabica Brésilienne";
+    this.marqueSucre = "Daddy";
+  }
+
+}
+
+public class Cappuccino extends Cafe {
+
+  @Override
+  public void preparer() {
+    System.out.println("Préparation d'un café Cappuccino");
+    this.typeGraine = "Graine Robusta Asiatique";
+    this.marqueSucre = "Daddy";
+  }
+
+}
+
+public class CafeFactory {
+
+  private static CafeFactory INSTANCE;
+
+  private CafeFactory() {}
+
+  public synchronized static CafeFactory getInstance() {
+    if(INSTANCE == null) {
+      INSTANCE = new CafeFactory();
+    }
+    return INSTANCE;
+  }
+
+  public Cafe creerCafe(String type) {
+      switch (type) {
+          case "expresso" : return new Expresso();
+          case "cappuccino" : return new Cappuccino();
+          default: throw new IllegalArgumentException(String.format("Type de café inconnu : %s", type));
+      }
+  }
+}
+
+public class MachineCafe {
+
+  private CafeFactory factory;
+
+  public MachineCafe(CafeFactory factory) {
+    this.factory = factory;
+  }
+
+  public void commanderCafe(String type) {
+      Cafe cafe = factory.creerCafe(type);
+      cafe.preparer();
+      cafe.afficherComposition();
+  }
+
+}
+
+public class Main {
+
+  public static void main(String[]args) {
+    MachineCafe machine = new MachineCafe(CafeFactory.getInstance());
+    machine.commanderCafe("expresso");
+    machine.commanderCafe("cappuccino");
+  }
+
+}
+```
+
+Dans **certains contextes**, il est éventuellement possible de diviser la méthode de création en plusieurs méthodes :
+
+```java
+public class CafeFactory {
+
+  private static CafeFactory INSTANCE;
+
+  private CafeFactory() {}
+
+  public synchronized static CafeFactory getInstance() {
+    if(INSTANCE == null) {
+      INSTANCE = new CafeFactory();
+    }
+    return INSTANCE;
+  }
+
+  public Cafe creerExpresso() {
+    return new Expresso();
+  }
+
+  public Cafe creerCappuccino() {
+    return new Cappuccino();
+  }
+}
+```
+
+**Cependant**, si les objets sont **de même nature** (ici, tous des **cafés**) et ont globalement besoin des mêmes entrées pour être instanciés, on préférera la première méthode et on préférera éviter celle-ci. On réservera le fait d'avoir plusieurs méthodes pour créer des objets de nature différentes (comme nous le ferons avec **la fabrique abstraite**).
+
+La première méthode (avec le bloc **switch**) pourrait ressembler à du mauvais code, mais il s'agit bien de l'implémentation **souhaitée**. De plus, la seconde méthode n'aurait pas bien fonctionné avec la classe `Machine` à moins de la coder autrement. On se serait soit retrouvé avec de la duplication de code, soit à gérer un autre `switch` dans la classe `Machine`. Dans cet exemple, il est donc préférable d'utiliser la première méthode.
+
+Avec notre implémentation, il est éventuellement possible d'utiliser une autre marque de café qui possède son propre type d'expresso et de cappuccino (avec des graines de provenances différentes, et une autre marque de sucre). Il suffira de changer la fabrique sans impacter le reste des classes. Mais que se passerait-il si on souhaitait faire cohabiter ces différentes **marques** de café, avec leur propre machine ? Il sera possible de régler ce problème avec les patterns **méthode fabrique** et/ou **fabrique abstraite**.
+
+### Animaux
+
+Pour l'instant, testons votre compréhension de la **fabrique simple** :
 
 <div class="exercise">
 
@@ -1148,39 +1219,329 @@ public class Main {
 
 </div>
 
-Dans certains exemples, vous pouvez rencontrer une fabrique avec une seule méthode `creerAnimal` se présentant ainsi : 
+## Le pattern Méthode Fabrique
+
+Le pattern **Méthode Fabrique** (Factory Method) va permettre à une **classe mère** souhaitant **créer un objet** (dérivé en plusieurs sous-types) lors d'une étape d'un traitement (dans une méthode) de **déléguer** l'instanciation (et donc le type concret utilisé) à ses **classes filles**. Ce pattern utilise le concept de **fabrique** au travers d'une **méthode abstraite** définie dans la classe mère et implémenté par les classes filles.
+
+Pour que l'utilisation de ce pattern soit justifié, il faut que la **classe mère** (abstraite) effectue **d'autres traitements que simplement créer l'objet** (sinon c'est juste une fabrique). Dans une (ou plusieurs) méthode(s) de la classe mère où un traitement est effectué, la méthode abstraite est appelée ce qui permet de récupérer un objet dont le type concret sera décidé par les sous-classes. Ainsi, le traitement peut être effectué dans la classe mère sans avoir besoin d'être dépendant d'une classe concrète.
+
+Reprenons notre exemple d'envoi de **messages** par **email** ou par **sms**.
 
 ```java
-public class AnimalFactory {
+public class MessageMail extends Message {
 
-  public Animal creerAnimal(String type, String nom) {
-      return switch (type) {
-          case "chat" -> new Chat(nom);
-          case "chien" -> new Chien(nom);
-          case "oiseau" -> new Oiseau(nom);
-          case "poule" -> new Poule(nom);
-          default -> throw new RuntimeException("Animal inconnu");
-      };
+  public MessageMail(String contenu) {
+    super(contenu);
   }
- 
+
+  @Override
+  public void notifierAdmin(String message) {
+    System.out.println("Notification de l'administrateur par mail...");
+  }
+
+}
+
+public class MessageSMS extends Message {
+
+  public MessageSMS(String contenu) {
+    super(contenu);
+  }
+
+  @Override
+  public void notifierAdmin(String message) {
+    System.out.println("Notification de l'administrateur par SMS...");
+  }
+
+}
+
+public class MessageFactory {
+
+  private static MessageFactory INSTANCE;
+
+  private MessageFactory() {}
+
+  public synchronized static MessageFactory getInstance() {
+    if(INSTANCE == null) {
+      INSTANCE = new MessageFactory();
+    }
+    return INSTANCE;
+  }
+
+  public Message creerMessage(String contenu) {
+    return new MessageMail(contenu);
+  }
+
+}
+
+public class Service {
+
+  private MessageFactory factory;
+
+  public ServiceA(MessageFactory factory) {
+    this.factory = factory;
+  }
+
+  public void action() {
+    Message msg = factory.creerMessage("Mon message...");
+    msg.notifierAdmin();
+    msg.logger();
+  }
+
 }
 ```
 
-Néanmoins, cette solution n'est pas forcément conseillée car :
+Nous avions utilisé une **fabrique simple** pour éviter d'avoir à instancier le type de **Message** dans le service. Cependant, avec cette configuration, il n'est pas possible d'avoir à la fois des instances de `Service` qui utilisent des mails et d'autres des SMS.
 
-* On est obligé de retourner une classe abstraite/interface plus générale (pas de `I_Chien`, `I_Chat`...).
+Le pattern **méthode fabrique** permet de régler ce problème. L'idée est de rendre la création du message **abstrait** dans `Service` (et donc rendre `Service` abstrait) et de déléguer la création du type de message dans des classes dérivées.
 
-* Elle implique que toutes les classes concrètes instanciées ont les mêmes paramètres (ce qui n'est pas toujours le cas, par exemple, si nous avions eu une figure `Rectangle` dans l'exemple des figures géométriques...)
+```java
+public abstract class Service {
 
-* Il faut gérer le cas où `type` n'est pas un type connu. Ceci ne peut pas arriver si on sépare les instanciations en différentes méthodes (et évite les bugs causés par des fautes de frappe...).
+  public void action() {
+    Message msg = creerMessage("Mon message...");
+    msg.notifierAdmin();
+    msg.logger();
+  }
 
-Bref, on préférera généralement séparer chaque instanciation dans une méthode distincte, comme ce que vous avez probablement fait sur l'exercice ou comme dans l'exemple des figures géométriques.
+  protected abstract Message creerMessage(String contenu);
 
-Pour l'instant, si nous voulons changer de "famille" de classes utilisée (animaux normaux / animaux robots) nous sommes obligés de changer le code de la classe `AnimalFactory`. Avec le design pattern **"Fabrique Abstraite"** de la section suivante du TP, nous allons pouvoir résoudre ce problème (et même faire cohabiter deux familles).
+}
+
+public class ServiceAvecEmail extends Service {
+
+  @Override
+  protected Message creerMessage() {
+    return new MessageMail(contenu);
+  }
+
+}
+
+public class ServiceAvecSMS extends Service {
+
+  @Override
+  protected Message creerMessage() {
+    return new MessageSMS(contenu);
+  }
+
+}
+
+public class Main {
+
+  public static void main(String[]args) {
+    Service s1 = new ServiceAvecEmail();
+    s1.action();
+    Service s2 = new ServiceAvecSMS();
+    s2.action();
+  }
+
+}
+```
+
+Le pattern s'appelle **méthode fabrique**, car la méthode abstraite implémentée par les classes filles sont elles-mêmes des fabriques ! D'ailleurs, dans l'exemple, nous avons supprimé `MessageFactory` qui ne nous est plus utile.
+
+Cependant, que se passe-t-il si plus d'un service doit créer des emails ou des SMS ? Il faut vraiment créer un sous-service par type de message ? Non, rassurez-vous ! C'est justement un point que permettra de régler la **fabrique abstraite**.
+
+### Age of Fantasy - Partie 1
+
+Nous allons tester votre compréhension du problème sur un premier exercice simple.
+
+<div class="exercise">
+
+1. Ouvrez le paquetage `fabrique2` puis `v1`. Il s'agit d'une application d'un **jeu de stratégie type heroic fantasy** permettant de gérer différentes armées (humaine et orc). L'exercice est divisé en deux parties : `v1` que nous allons traiter maintenant puis `v2` que vous allez traiter plus tard. 
+
+2. Une armée peut **recruter** des unités si elle possède assez d'argent. On souhaite pouvoir gérer **deux types d'armées** :
+
+  * L'armée **humaine** qui recrute des `Humain` avec 50 points de vie.
+  * L'armée **orc** qui recrute des `Orc` avec 80 points de vie.
+
+3. Faites en sorte qu'il soit possible de gérer les deux types d'armées citées dans le point précédent. Vous ajouterez les classes et le code nécessaire et vous compléterez la méthode `recruter` de la classe `Armee` ainsi que le `main` de la classe `Jeu`. Chaque fois qu'une unité est créée dans une armée, elle est ajoutée à la liste des unités de l'armée.
+
+</div>
+
+<!--
+Maintenant, voyons un exemple un peu plus complexe en reprenant le cas de la machine à café :
+
+* Il existe maintenant **deux marques** qui possèdent leurs propres machines à café : `Pokafe` et `Digikafe`.
+
+* Chaque marque ne prépare pas les cafés de la même manière (ils n'utilisent pas les mêmes ingrédients).
+
+* On veut pouvoir créer des machines `Pokafe` et des machines `Difikafe`.
+
+En refactorant le code initial et en appliquant le pattern **méthode fabrique** une telle implémentation est possible :
+
+```java
+public class ExpressoPokafe extends Cafe {
+
+  @Override
+  public void preparer() {
+    System.out.println("Préparation d'un café Expresso de Pokafe");
+    this.typeGraine = "Graine Arabica Brésilienne";
+    this.marqueSucre = "Daddy";
+  }
+
+}
+
+class CappuccinoPokafe extends Cafe {
+
+  @Override
+  public void preparer() {
+    System.out.println("Préparation d'un café Cappuccino Pokafe");
+    this.typeGraine = "Graine Robusta Asiatique";
+    this.marqueSucre = "Daddy";
+  }
+
+}
+
+public class ExpressoDigikafe extends Cafe {
+
+  @Override
+  public void preparer() {
+    System.out.println("Préparation d'un café Expresso de Digikafe");
+    this.typeGraine = "Graine Arabica Africaine";
+    this.marqueSucre = "Erstein";
+  }
+
+}
+
+class CappuccinoPokafe extends Cafe {
+
+  @Override
+  public void preparer() {
+    System.out.println("Préparation d'un café Cappuccino Digikafe");
+    this.typeGraine = "Graine Robusta Africaine";
+    this.marqueSucre = "Erstein";
+  }
+
+}
+
+public abstract class MachineCafe {
+
+  public void commanderCafe(String type) {
+      Cafe cafe = creerCafe(type);
+      cafe.preparer();
+      cafe.afficherComposition();
+  }
+
+  protected abstract Cafe creerCafe(String type);
+
+}
+
+public class MachinePokafe extends  MachineCafe {
+
+  @Override
+  protected Cafe creerCafe(String type) {
+      switch (type) {
+          case "expresso" : return new ExpressoPokafe();
+          case "cappuccino" : return new CappuccinoPokafe();
+          default: throw new IllegalArgumentException(String.format("Type de café inconnu : %s", type));
+      }
+  }
+
+}
+
+public class MachineDigikafe extends  MachineCafe {
+
+  @Override
+  protected Cafe creerCafe(String type) {
+      switch (type) {
+          case "expresso" : return new ExpressoDigikafe();
+          case "cappuccino" : return new CappuccinoDigikafe();
+          default: throw new IllegalArgumentException(String.format("Type de café inconnu : %s", type));
+      }
+  }
+
+}
+
+class Main {
+
+  public static void main(String[]args) {
+    MachineCafe machinePokekafe = new MachinePokafe();
+    machinePokekafe.commanderCafe("expresso");
+    machinePokekafe.commanderCafe("cappuccino");
+
+    MachineCafe machineDigikafe = new MachineDigikafe();
+    machineDigikafe.commanderCafe("expresso");
+    machineDigikafe.commanderCafe("cappuccino");
+  }
+
+}
+```
+
+Il y a quelques aspects du code qui vous paraissent encore superflus ou redondants ? C'est normal ! Nous allons encore améliorer cet exemple plus tard en utilisant une **fabrique abstraite**.
+-->
+
+### Restaurants de burgers - Partie 1
+
+Testons maintenant votre maîtrise du pattern **méthode fabrique** avec un nouvel exercice un peu plus complexe.
+
+<div class="exercise">
+
+1. Ouvrez le paquetage `fabrique3` puis `v1`. Il s'agit d'une application de restauration permettant de commander différents types de **burgers**. L'exercice est divisé en deux parties : `v1` que nous allons traiter maintenant puis `v2` que vous allez traiter plus tard. 
+
+2. Un **restaurant** peut créer différents types de **Burger** : des **Cheese Burgers** et des **Egg Burgers**. L'application fonctionne actuellement pour un **restaurant Nîmois** qui fabrique les burgers ainsi :
+
+  * **Cheese Burger** : Boeuf Charolais, Sauce à burger de Nîmes et Cheddar.
+  * **Egg Burger** : Poulet Gardois, Sauce à burger de Nîmes et Oeuf de poule.
+
+  Le restaurant cherche à se diversifier en ouvrant différents restaurants dans d'autres villes. Tous les restaurants devront proposer les **mêmes burgers**, mais les recettes pourront changer localement, dans une ville. Un nouveau restaurant a ouvert à **Montpellier** et propose les recettes suivantes :
+
+  * **Cheese Burger** : Boeuf Limousin, Sauce à burger de Montpellier et Maroilles.
+  * **Egg Burger** : Poulet de Bresse, Sauce à burger de Montpellier et Oeuf d'autruche.
+
+  Actuellement, l'application fonctionne avec un seul type de classe `CheeseBurger` et `EggBurger` (qui sont les burgers du restaurant **Nîmois**). Une **fabrique simple** a été mise en place (mais vous allez peut-être devoir changer cela...?)
+
+3. Faites en sorte qu'il soit possible de gérer les deux types de restaurants : les **restaurants Nîmois** et les **restaurants Montpelliérains**. Vous ajouterez, adapterez et supprimerez les classes et le code nécessaire et vous compléterez la méthode `commanderBurger` de la classe `Restaurant` ainsi que le `main` de la classe `Main`.
+
+</div>
 
 ## Le pattern Fabrique Abstraite
 
-Le pattern **Fabrique Abstraite** utilise des fabriques et va notamment permettre de les interchanger lorsqu'elles instancient différentes familles de classes concrètes. Ainsi, lorsqu'on souhaite changer la famille de classes à construire, au lieu de modifier le code de la fabrique, on changera plutôt l'instance de la fabrique concrète utilisée par le programme ou une classe en particulier. Cela peut paraître encore un peu abstrait... regardons donc directement l'exemple suivant.
+Le pattern **Fabrique Abstraite** (Abstract Factory) s’appuie aussi sur la notion de fabrique et va permettre de créer des **familles d'objets** qui sont plus ou moins liés et/ou dépendants (ou du moins, avec une thématique ou un but commun).
+
+Ce pattern va notamment permettre de créer et de sélectionner différents types de fabriques et de les interchanger lorsqu'elles instancient différentes **familles** de classes concrètes. Ainsi, lorsqu'on souhaite changer la famille de classes à construire, au lieu de modifier le code de la fabrique, on changera plutôt l'instance de la fabrique concrète utilisée par le programme ou une classe en particulier. Cela peut paraître encore un peu abstrait... regardons donc directement l'exemple suivant.
+
+### Age of Fantasy - Partie 2
+
+<div class="exercise">
+
+1. Ouvrez le paquetage `fabrique2` puis `v2`. Il s'agit de la deuxième partie du **jeu de stratégie type heroic fantasy**. De nouvelles classes sont à votre disposition :
+
+  * Diverses **armes de siège** : chaque armée peut construire des armes de siège spécifiques avec lesquelles elle peut attaquer.
+
+  * Divers **sorts** : chaque armée possède un **sort** de prédilection qu'elle peut déclencher.
+
+2. En plus du recrutement, chaque **armée** peut construire un type d'arme de siège spécifique et utiliser un type de sort spécifique.
+
+  * L'armée **humaine** construit des **canons** et utilise le sort **boule de feu** avec une puissance de feu de 10.
+  * L'armée **orc** construit des **catapultes** et utilise le sort **aveuglement** avec une durée de 30 secondes.
+
+3. Commencez par importer le code que vous aviez déjà réalisé afin de mettre en place le **recrutement** des unités (depuis le package `v1`).
+
+4. Maintenant, faites en sorte que chaque armée (humaine et orc) puisse créer ses armes de siège spécifiques et créer et utiliser leurs sorts spécifiques. Chaque arme de siège créée est ajoutée dans la liste correspondante. Un sort, quand il est créé est seulement déclenché (il n'est pas stocké). Normalement, vous devriez pouvoir trouver une solution avec vos connaissances actuelles et les patterns que nous avons vu jusqu'ici. Si vous n'y arrivez pas, passez à la suite des explications.
+
+</div>
+
+Vous avez probablement trouvé une solution exploitant plusieurs **méthodes fabriques** (une pour les unités, comme initialement, une pour les armes de siège et une pour les sorts...).
+
+Cependant, cette solution, même si globalement acceptable, n'est pas forcément la plus qualitative. En effet, quand on utilise la **méthode fabrique**, on s'attend plutôt à ce que la classe mère ne contienne **qu'une seule méthode fabrique** (responsable de la création des objets du même type). Ici, il y en a 3 : les classes filles commencent à avoir trop de responsabilités. De plus, on utilise fortement **l'héritage**, alors que nous avons vu qu'il est généralement préférable de favoriser **la composition** et **l'injection de dépendances**.
+
+Au-delà de l'aspect qualitatif, cette implémentation pourrait aussi poser un problème si on veut pouvoir **changer dynamiquement le comportement de création** souhaité. Par exemple, imaginons que nous souhaitons faire en sorte qu'une armée puisse être **vaincue** par une autre armée. L'armée vaincue n'est pas détruite et continue d'exister (et on conserve les soldats encore vivants et les armes). Cependant, l'armée vainqueuse impose son mode de fonctionnement à l'armée vaincue : elle produira maintenant les mêmes unités, les mêmes armes et les mêmes sorts que l'armée vainqueuse.
+
+Par exemple, si l'armée orc vainc l'armée humaine, les unités humaines et les canons restent (mais ils sont maintenant forcés de travailler pour les orcs) et les prochaines unités créées seront des orcs, les prochaines armes des catapultes et les prochains sorts des sorts d'aveuglement. En fait, l'armée **humaine** et l'armée **orc** ont leur propre **configuration** ! Et on voudrait pouvoir changer la **configuration** d'une armée dynamiquement.
+
+Il semble compliqué d'obtenir un tel fonctionnement facilement avec une **méthode fabrique**. La solution est alors de plutôt utiliser une **fabrique abstraite** !
+
+Prenons l'exemple suivant : 
+
+```java
+public interface Cla {
+
+}
+
+public interface Telephone {
+
+}
+```
 
 ### Construction de donjons
 
@@ -1938,6 +2299,7 @@ Pour le moment, revenons à nos moutons et appliquons ce que nous avons appris s
 
 Le **conteneur IoC** que nous allons utiliser dans le prochain TP permet de ne pas multiplier les fabriques pour gérer les différentes dépendances en centralisant le tout. C'est une sorte de super-fabrique hautement configurable gérant des dépendances (mais avec un objectif assez différent des fabriques que vous avez vues avant comme avec les figures géométriques, les pokémons ou les donjons).
 
+<!--
 ### Mise en pratique sur une application plus large
 
 Vous allez maintenant mettre en application ce que vous avez appris sur une application un peu plus large : l'application de gestion des étudiants (OGE) sur laquelle vous avez travaillé dans le cours de base de données.
@@ -1987,6 +2349,7 @@ Vous allez maintenant mettre en application ce que vous avez appris sur une appl
 </div>
 
 Avec votre refactoring, il devient très facile d'ajouter et d'utiliser une nouvelle source de stockage de données, comme un fichier XML par exemple ou une base de données `SQLite` dédiées aux tests ! Et passer d'une méthode à l'autre ne demande alors plus aucune modification du code source.
+-->
 
 ## Décorateur : Builder ou Fabrique ?
 
