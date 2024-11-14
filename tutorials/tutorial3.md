@@ -1335,7 +1335,7 @@ Dans cette section, vous allez travailler sur un ensemble d'exercices "bilan" qu
 
 4. Pour valider, exécutez les tests unitaires contenus dans les trois classes de tests dans `test/java/bilan2`. 
 
-5. Décommentez les tests `testDeposerCompteBancaireAvecPlafond` et `testRetirerCompteBancaireAvecNombreRetraitMaximum` puis exécutez-les. Pourquoi ne passent-ils pas ? Quel est le principe **SOLID** est violé par votre code ?
+5. Décommentez les tests `testDeposerCompteBancaireAvecPlafond` et `testRetirerCompteBancaireAvecNombreRetraitMaximum` de la classe `CompteBancaireTest`m puis exécutez-les. Pourquoi ne passent-ils pas ? Quel est le principe **SOLID** est violé par votre code ?
 
 6. Réfactorez votre code afin de supprimer l'héritage vers `CompteBancaire` et ainsi ne plus violer un *certain* principe SOLID. Les deux tests unitaires `testDeposerCompteBancaireAvecPlafond` et `testRetirerCompteBancaireAvecNombreRetraitMaximum` ne devraient plus compiler, vous pouvez les supprimer (car ils n'ont plus lieu d'être).
 
