@@ -2021,56 +2021,58 @@ Nous sommes dans un cas particulier où tout le programme va utiliser une seule 
 
 Mais comment faire cela sans modifier l'instance concrète utilisée un peu partout ? (car elle est surement injectée à différentes classes). La réponse est simple : il faut regrouper la logique qui instancie la classe concrètement utilisée à un seul endroit. On peut ensuite mettre un système de paramétrage qui permet de changer la fabrique utilisée facilement. Les classes qui ont besoin de cette fabrique iront donc appeler une méthode de cette classe afin de récupérer la fabrique concrète à utiliser.
 
-La question est de savoir : où placer ce bout de code ? Il n'y a pas vraiment de réponse officielle à cette question. Cela pourrait être dans une classe indépendante avec une méthode statique. Cependant, dans la pratique, on retrouve parfois ce bout de code directement dans la **Fabrique Abstraite** qu'on mélange à un **Singleton**.
+La question est de savoir : où placer ce bout de code ? Il n'y a pas vraiment de réponse officielle à cette question. Cela pourrait être dans une classe indépendante avec une méthode statique ou bien un singleton.
 
-Par exemple, imaginons que nous souhaitons que notre **Jeu**, à un instant T, ne fonctionne qu'avec des **Plaines** ou qu'avec des **Châteaux Hantés** :
+Par exemple, imaginons que nous souhaitons que notre **Jeu**, à un instant T, ne fonctionne qu'avec des **Plaines** ou qu'avec des **Châteaux Hantés**. On pourrait alors utiliser un **fichier de configuration** qui va lire automatiquement le type de la fabrique à instancier. Et regrouper la logique de récupération de la fabrique utilisée dans une nouvelle classe :
 
 ```java
-//On transforme notre interface en classe abstraite, car elle contient du code
-//Elle stocke l'instance cocnrète de la fabrique utilisée
-public abstract class AbstractZoneFactory {
+public class Configuration {
 
-  private static AbstractZoneFactory INSTANCE;
+  private static Configuration INSTANCE;
 
-  private String fabriqueSelectionee = "chateau";
+  private AbstractZoneFactory factory;
 
-  public synchronized static AbstractZoneFactory getInstance() {
-    if(INSTANCE == null) {
-      switch (fabriqueSelectionee) {
-          case "plaine" :
-            INSTANCE = new ZonePlaineFactory();
+  private Configuration() {
+    try {
+        InputStream stream = ClassLoader.getSystemResourceAsStream("config/zone_factory_config.txt");
+        if(stream == null) {
+            throw new RuntimeException("Fichier de configuration manquant.");
+        }
+        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+        String config = reader.readLine();
+        switch (config) {
+          //Dans cette implémentation, les fabriques concrètes ne sont plus des singletons (on peut donc les instancier)
+          case "plaine":
+            factory = new ZonePlaineFactory();
             break;
-          case "chateau" : 
-            INSTANCE = new ZoneChateauHanteFactory();
+          case "chateau":
+            factory = new ZoneChateauHanteFactory();
             break;
-          default: 
-            throw new IllegalArgumentException(String.format("Type de zone inconnue : %s", fabriqueSelectionee));
+          default: throw new IllegalArgumentException(String.format("Type de zone inconnue : %s", config));
+        }
+      } catch (IOException e) {
+          throw new RuntimeException("Fichier de configuration corrompu.");
       }
+  }
+
+  public synchronized static Configuration getInstance() {
+    if(INSTANCE == null) {
+      INSTANCE = new Configuration();
     }
     return INSTANCE;
   }
 
-  public abstract Monstre creerMonstreNormal();
+  public AbstractZoneFactory getZoneFactoryInstance() {
+      return factory;
+  }
 
-  public abstract Boss creerBoss(); 
-
-  public abstract Item creerRecompense();
-
-}
-
-//Les fabriques concrètes ne sont plus des singletons...
-public class ZonePlaineFactory extends AbstractZoneFactory {
-  ...
-}
-
-public class ZoneChateauHanteFactory extends AbstractZoneFactory {
-  ...
 }
 
 public class Main {
 
   public static void main(String[]args) {
-    Zone zone = new Zone(AbstractZoneFactory.getInstance());
+    Configuration config = Configuration.getInstance();
+    Zone zone = new Zone(config.getZoneFactoryInstance());
     zone.traverserZoneNormale();
     zone.ouvrirCoffre();
     zone.ouvrirCoffre();
@@ -2080,63 +2082,21 @@ public class Main {
 }
 ```
 
-Avec cette nouvelle implémentation, il n'y a plus qu'à changer le paramètre `fabriqueSelectionee` dans la fabrique abstraite pour changer la fabrique concrète manipulée dans tout le programme. On notera qu'il n'y a plus besoin que les sous-classes soient des **singletons**, car elles sont instanciées par la fabrique abstraite.
+On notera qu'on a retiré le fait d'utiliser un **singleton** sur chaque fabrique : on récupérera l'instance initialisée dans `Configuration`.
 
-Encore mieux : dans les faits, il faut (légèrement) changer le code source de la fabrique abstraite pour changer de fabrique... Donc il faut recompiler. Pour éliminer ce dernier problème, on peut plutôt utiliser un **fichier de configuration** : lors de son initialisation, la fabrique abstraite va lire dans ce fichier pour déterminer quelle fabrique instancier.
-
-```java
-public abstract class AbstractZoneFactory {
-
-  private static AbstractZoneFactory INSTANCE;
-
-  public synchronized static AbstractZoneFactory getInstance() {
-    if(INSTANCE == null) {
-      try {
-            InputStream stream = ClassLoader.getSystemResourceAsStream("config/zone_factory_config.txt");
-            if(stream == null) {
-                throw new RuntimeException("Fichier de configuration manquant.");
-            }
-            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-            String config = reader.readLine();
-            switch (config) {
-              case "plaine" :
-                INSTANCE = new ZonePlaineFactory();
-                break;
-              case "chateau" : 
-                INSTANCE = new ZoneChateauHanteFactory();
-                break;
-              default: 
-                throw new IllegalArgumentException(String.format("Type de zone inconnue : %s", config));
-            }
-      } catch (IOException e) {
-          throw new RuntimeException("Fichier de configuration corrompu.");
-      }
-    }
-    return INSTANCE;
-  }
-
-  public abstract Monstre creerMonstreNormal();
-
-  public abstract Boss creerBoss(); 
-
-  public abstract Item creerRecompense();
-
-}
-```
+Avec l'ajout de cette classe, on peut utiliser un fichier `src/main/resources/config/zone_factory_config.txt` qui contient simplement une chaîne de caractères. Par exemple : `chateau`. Il n'y a plus qu'à changer le texte contenu dans le fichier de configuration pour changer la fabrique concrète manipulée dans le programme (par contre, il faudra que les classes se servent de `Configuration`). Par ailleurs, avec cette solution, changer de fabrique ne nécessite plus de recompiler le code !
 
 <div style="text-align:center">
 ![Fabrique 4]({{site.baseurl}}/assets/TP4/Fabrique4.svg){: width="80%" }
 </div>
 
-La fabrique abstraite vise un fichier qui se situe dans `src/main/resources/config/zone_factory_config.txt` qui contient simplement une chaîne de caractères. Par exemple : `chateau`.
-
-Bien sûr, cette implémentation n'est pas forcément souhaitable dans tous les contextes ! C'est seulement si, à un instant T, on veut uniquement avoir un seul type de fabrique concrète utilisé et pouvoir en changer facilement (d'ailleurs, l'exemple donné est discutable, parce qu'on voudrait à priori pouvoir créer plusieurs types de zones différentes à la fois).
+Bien sûr, cette implémentation n'est pas forcément souhaitable dans tous les contextes ! C'est seulement si, à un instant T, on veut uniquement avoir un seul type de fabrique concrète utilisée pour tout le programme et pouvoir en changer facilement (d'ailleurs, l'exemple donné est discutable, parce qu'on voudrait à priori pouvoir utiliser plusieurs types de zones différentes à la fois).
 
 <div class="exercise">
 
 1. Créez un dossier `config` dans `src/main/resources/` puis, à l'intérieur de ce nouveau répertoire, un fichier `monstres_factory_config.txt`.
 
-2. Refactorez le code de l'application afin qu'il soit possible d'utiliser soit les pokémons, soit les digimons en changeant simplement le contenu du fichier de configuration.
+2. Refactorez le code de l'application afin qu'il soit possible d'utiliser soit les pokémons, soit les digimons en changeant simplement le contenu du fichier de configuration. Vous devrez probablement ajouter une nouvelle classe.
 
 3. Testez les deux versions !
 
@@ -2144,112 +2104,365 @@ Bien sûr, cette implémentation n'est pas forcément souhaitable dans tous les 
 
 </div>
 
+Ici, cet exemple d'implémentation avec un fichier de configuration n'est bien sûr pas spécifique au pattern fabrique abstraite. On pourrait l'appliquer sur tout ce qui est abstrait et qui n'a besoin que d'une instance lors de l'exécution du programme. On pourra faire la même chose couplée au pattern **Stratégie** par exemple.
+
+La gestion des instances concrète se fait généralement au travers d'un outil dédié appelé **conteneur de dépendances** (ou **conteneur IoC**) qui est utilisé dans de nombreux frameworks. Il permet notamment de limiter la multiplication des singletons inutilement.
+
 ### Intégrer une librairie externe
 
-Les pokémons et les digimons sont des classes qui ont été créées par le développeur de ce projet et où il est donc possible de réarranger le code pour que tout fonctionne. Mais que se passerait-il si nous voulions intégrer à notre système du code sur lequel nous n'avons pas la main (dont nous ne pouvons pas éditer le code source)? Par exemple, des classes compilées qui proviennent d'une librairie.
+Les pokémons et les digimons sont des classes qui ont été créées par le développeur de ce projet et où il est donc possible de réarranger le code pour que tout fonctionne. Mais que se passerait-il si nous voulions intégrer à notre système du code sur lequel nous n'avons pas la main (dont nous ne pouvons pas éditer le code source) ? Par exemple, des classes compilées qui proviennent d'une librairie.
 
-Pour illustrer ce problème, reprenons notre exemple de figures géométriques. Imaginons que vous souhaitez pouvoir afficher des carrés et des cercles de manière "complexe" (à voir ce que "complexe" veut dire dans ce contexte). Au lieu de réinventer la roue, vous avez trouvé une librairie `FiguresComplexes` qui fait cela pour vous ! Via `Maven`, vous installez cette librairie sur votre projet.
+Pour illustrer ce problème, voyons un nouvel exemple. Vous souhaitez développer une application qui permet à un utilisateur de saisir le titre d'un film afin d'afficher la note moyenne et les critiques (des utilisateurs) de ce dernier. Dans ce scénario, on considérera qu'il n'existe pas deux films avec le même titre.
+
+Pour récupérer les différentes informations (savoir si le film existe, note, critiques...) vous souhaitez vous servir du site **Allociné**. Il n'existe pas de librairie dédiée qui permet d'extraire les informations de ce site, il est donc nécessaire d'implémenter le code correspondant.
 
 ```java
-interface Publicateur {
+public class ClientFilm {
 
-  public void connexion(String login, String motDePasse);
+  private Scanner scan = new Scanner(System.in);
 
-  public void publierMessage(String contenu);
-
-}
-
-class PublicateurFacebook implements Publicateur {
-
-  public void connexion(String login, String motDePasse) {
-    System.out.println("Code de connexion au compte via l'API de Facebook...");
+  public void chercherInformationsFilm() {
+    System.out.print("Saisir le nom du film : ");
+    String nomFilm = scan.nextLine();
+    if(!filmExiste(nomFilm)) {
+      System.err.println("Le film n'existe pas");
+      return;
+    }
+    double note = recupererNoteMoyenneUtilisateurs(nom);
+    String[] avisUtilisateurs = recupererAvis(nom);
+    System.out.printf("Le film a une note de : %s\n", note);
+    System.out.println("Avis : ");
+    for(String avis : avisUtilisateurs) {
+      System.out.println(avis);
+    }
   }
 
-  public void publierMessage(String contenu) {
-    System.out.println("Publication d'un message sur le compte via l'API de Facebook...");
+  private boolean filmExiste(String nomFilm) {
+    //Code complexe permettant de déterminer si un film est bien repertorié sur Allociné
   }
 
-}
-
-class PublicateurTwitter implements Publicateur {
-
-  public void connexion(String login, String motDePasse) {
-    System.out.println("Code de connexion au compte via l'API de Twitter...");
+  private double recupererNoteMoyenneUtilisateurs(String nomFilm) {
+    //Code complexe permettant de récupérer la note moyenne du film, donnée par les utilisateurs sur Allociné
   }
 
-  public void publierMessage(String contenu) {
-    System.out.println("Publication d'un message sur le compte via l'API de Twitter...");
+  private String[] recupererAvis(String nomFilm) {
+    //Code complexe permettant de récupérer les avis des utilisateurs à propos du Film sur Allociné
   }
 
 }
 ```
 
-Vous ne pouvez pas modifier le code source de cette classe, mais vous pouvez étudier leur documentation. Vous êtes notamment intéressés par les deux classes suivantes :
+Comme vous êtes maintenant un expert des principes `SOLID`, vous vous rendez-compte que cette implémentation ne respecte pas bien le principe de **responsabilité unique**. En effet, si le code relatif à l'extraction des données du film change ou que le code interagissant avec l'utilisateur change, la classe `ClientFilm` doit changer. Elle possède trop de responsabilité.
+
+Vous proposez donc une nouvelle implémentation de meilleure qualité :
 
 ```java
-public class InstagramMessageSender {
+public class ExtracteurAllocine {
 
-  private int apiVersion;
-
-  public InstagramMessageSender(int apiVersion) {
-    this.apiVersion = apiVersion;
+  public boolean filmExiste(String nomFilm) {
+    //Code complexe permettant de déterminer si un film est bien repertorié sur Allociné
   }
 
-  public void connect(String email, String password) {
-    System.out.printf("Connecting to API %s...\n", apiVersion);
-    System.out.println("Connecting to the instagram account using the provided email and password...");
+  public double recupererNoteMoyenneUtilisateurs(String nomFilm) {
+    //Code complexe permettant de récupérer la note moyenne du film, donnée par les utilisateurs sur Allociné
   }
 
-  public void logout() {
-    System.out.println("Logging out...");
+  public String[] recupererAvis(String nomFilm) {
+    //Code complexe permettant de récupérer les avis des utilisateurs à propos du Film sur Allociné
   }
 
-  public void publishMessage(String content, int timer) {
-    System.out.printf("Publishing content on the instagram account in %s seconds...\n", timer);
+}
+
+public class ClientFilm {
+
+  private Scanner scan = new Scanner(System.in);
+
+  private ExtracteurAllocine extracteur = new ExtracteurAllocine();
+
+  public void chercherInformationsFilm() {
+    System.out.print("Saisir le nom du film : ");
+    String nomFilm = scan.nextLine();
+    if(!extracteur.filmExiste(nomFilm)) {
+      System.err.println("Le film n'existe pas");
+      return;
+    }
+    double note = extracteur.recupererNoteMoyenneUtilisateurs(nom);
+    String[] avisUtilisateurs = extracteur.recupererAvis(nom);
+    System.out.printf("Le film a une note de : %s\n", note);
+    System.out.println("Avis : ");
+    for(String avis : avisUtilisateurs) {
+      System.out.println(avis);
+    }
   }
 
 }
 ```
 
-Ces deux classes répondent à tous les besoins...mais, de prime abord, il semble impossible de les intégrer dans notre système de fabrique :
+Le code est déjà mieux, mais on pourrait encore améliorer cela en faisant en sorte que `ClientFilm` dépende plutôt d'une **abstraction** afin d'appliquer le principe **d'inversions des dépendances**. On pourrait aussi utiliser **l'injection de dépendances** plutôt que d'initialiser `ExtracteurAllocine` dans `ClientFilm`. Cela permettrait de rendre le code plus flexible (et testable) et prévoir l'ajout d'éventuelles extensions de l'application :
 
-* Les noms des méthodes ne sont pas les mêmes.
+```java
+public interface Extracteur {
+  boolean filmExiste(String nomFilm);
+  double recupererNoteMoyenneUtilisateurs(String nomFilm);
+  String[] recupererAvis(String nomFilm);
+}
 
-* On ne peut pas faire implémenter à ces classes `Carre` ou `Circle`...
+public class ExtracteurAllocine implements Extracteur {
 
-* On ne peut pas modifier le code source de ces classes...
+  @Override
+  public boolean filmExiste(String nomFilm) {
+    //Code complexe permettant de déterminer si un film est bien repertorié sur Allociné
+  }
+
+  @Override
+  public double recupererNoteMoyenneUtilisateurs(String nomFilm) {
+    //Code complexe permettant de récupérer la note moyenne du film, donnée par les utilisateurs sur Allociné
+  }
+
+  @Override
+  public String[] recupererAvis(String nomFilm) {
+    //Code complexe permettant de récupérer les avis des utilisateurs à propos du Film sur Allociné
+  }
+
+}
+
+public class ClientFilm {
+
+  private Scanner scan = new Scanner(System.in);
+
+  private Extracteur extracteur;
+
+  public ClientFilm(Extracteur extracteur) {
+    this.extracteur = extracteur;
+  }
+
+  public void setExtracteur(Extracteur extracteur) {
+    this.extracteur = extracteur;
+  }
+
+  public void chercherInformationsFilm() {
+    System.out.print("Saisir le nom du film : ");
+    String nomFilm = scan.nextLine();
+    if(!extracteur.filmExiste(nomFilm)) {
+      System.err.println("Le film n'existe pas");
+      return;
+    }
+    double note = extracteur.recupererNoteMoyenneUtilisateurs(nom);
+    String[] avisUtilisateurs = extracteur.recupererAvis(nom);
+    System.out.printf("Le film a une note de : %s\n", note);
+    System.out.println("Avis : ");
+    for(String avis : avisUtilisateurs) {
+      System.out.println(avis);
+    }
+  }
+
+}
+```
+
+Avec cette nouvelle implémentation, il est possible d'ajouter de nouvelles **stratégies** pour récupérer des informations. Par exemple, si on souhaite utiliser d'autres sites (à la place de **Allocine**). D'ailleurs, c'est ce que nous allons faire tout de suite ! 
+
+Vous souhaitez qu'on puisse aller extraire les informations du film cherché sur les plateformes **Sens Critique** et **Rotten Tomatoes**. Contrairement à **Allocine**, il existe des **librairies** (dans notre exemple) qui permettent de récupérer les informations des films sur ces deux sites ! Vous n'aurez donc pas à implémenter le code correspondant !
+
+Vous installez donc les deux librairies correspondantes au travers de `Maven`, ce qui installe et configure correctement le fichier `.jar` contenant les classes qui vont vous êtres utiles.
+
+Du côté de **Sens Critique**, on a une classe `SensCritiqueAPI` qui permet de réaliser les actions désirées (et d'autres qui sont inutiles). Lors de la création de l'objet, il faut préciser la version de l'API utilisée.
+
+```java
+public final class SensCritiqueAPI {
+
+  public SensCritiqueAPI(int versionApi) {
+    System.out.printf("Connexion à la version %s de l'API...\n", versionApi);
+  }
+
+  /**
+   * Renvoie 0 si le film n'existe pas et 1 si le film existe.
+   */
+  public int verifierFilm(String film) {
+    /* 
+      Code complexe permettant de savoir si un film existe ou non.
+      Le type de retour est étrange (il aurait été préférable de renvoyer un booléen) mais la librairie ne nous appartient pas, 
+      on ne peut pas modifier cela.
+    */
+  }
+
+  public double obtenirNoteUtilisateurs(String film) {
+    //Code complexe permettant de récupérer la note moyenne du film, donnée par les utilisateurs sur Sens Critique
+  }
+
+  public double obtenirNotePresse(String film) {
+    //Code complexe permettant de récupérer la note moyenne du film, donnée par la presse sur Sens Critique
+  }
+
+  public List<String> obtenirCritiquesUtilisateurs(String film) {
+    //Code complexe permettant de récupérer les critiques des utilisateurs à propos du Film sur Allociné
+  }
+
+  public Map<String, String> obtenirInformationsTechniquesFilm(String film) {
+    //Code complexe permettant d'obtenir les informations techniques du film (genre, annee, realisateur, etc...)
+  }
+
+}
+```
+
+Du côté de **Roten Tomatoes**, on a une classe `Movie` qui contient toutes les informations relatives à un film (dont celles désirées) et une classe `RottenTomatoesDataExtractor` qui permet d'obtenir des objets type `Movie` à partir de leur nom. Cette classe est d'ailleurs un **singleton**.
+
+```java
+public class Movie {
+
+  private String name;
+
+  private String category;
+
+  private double note;
+
+  private String[] reviews;
+
+  public Movie(String name, String category, double note, String[] reviews) {
+    this.name = name;
+    this.category = category;
+    this.note = note;
+    this.review = reviews;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public String getCategory() {
+    return category;
+  }
+
+  public double getNote() {
+    return note;
+  }
+
+  public String[] getReviews() {
+    return reviews;
+  }
+
+}
+
+public final class RottenTomatoesDataExtractor {
+
+  private static RottenTomatoesDataExtractor INSTANCE;
+
+  private RottenTomatoesDataExtractor() {}
+
+  public static synchronized RottenTomatoesDataExtractor getInstance() {
+    if(INSTANCE == null) {
+      INSTANCE = RottenTomatoesDataExtractor();
+    }
+    return INSTANCE;
+  }
+
+  /**
+   * Renvoie null si le film n'existe pas
+   */ 
+  public Movie getMovieInformation(String movieName) {
+    //Code complexe permettant d'obtenir un objet type "Movie" contenant les informations d'un film à partir du site Rotten Tomatoes
+  }
+
+}
+```
+
+Tout est donc parfait ! Non...?
+
+Peut-être que vous vous en êtes rendu compte, mais il est impossible de faire fonctionner ce code avec notre classe `ClientFilm`, elle attend des objets de type `Extracteur`. Or, les classes `SensCritiqueAPI` et `RottenTomatoesDataExtractor` n'implémentent pas cette interface (ce qui est normal : elles viennent d'une librairie externe). Et de toute manière les classes en question ont un fonctionnement un peu différent. Les types d'objets retournés et les méthodes utilisées ne sont pas forcément compatibles. Et il est bien sûr **impossible de modifier le code de ces classes** (toujours parce qu'elles viennent d'une librairie que vous ne pouvez pas éditer). Ces classes ne peuvent pas être utilisées en l'état, dans notre système.
+
+Que faire alors ? Laisser tomber ces librairies et écrire notre propre code (deux nouvelles classes implémentant `Extracteur`) ? Cela serait réinventer la roue. Ou bien copier/coller le code de ces classes ? Cela serait du plagiat (et donc du vol) ! Etendre les classes et faire implémenter l'interface `Extracteur` aux classes filles ? Cela ne sent pas très bon, et c'est de toute façon impossible, car les deux classes sont déclarées comme `final`.
 
 Cela semble compromis ! Mais pas de panique, un design pattern résout ce problème : `Adaptateur`.
 
-L'objectif de ce pattern est de faire en sorte qu'une classe "incompatible" avec notre architecture puisse tout de même être utilisée en passant par une classe dîte **adaptateur** qui fait le pont entre votre architecture et cette classe grâce à de la **composition** (encore et toujours !). C'est un peu comme quand vous voyagez au Royaume-Uni par exemple. Les prises électriques ne sont pas compatibles avec la prise de votre chargeur de téléphone. Vous devez alors utiliser un adaptateur entre la prise de votre chargeur et celle anglaise.
+L'objectif de ce pattern est de faire en sorte qu'une classe "incompatible" avec notre architecture puisse tout de même être utilisée en passant par une classe dite **adaptateur** qui fait le pont entre votre architecture et cette classe grâce à de la **composition** (encore et toujours !). C'est un peu comme quand vous voyagez au Royaume-Uni par exemple. Les prises électriques ne sont pas compatibles avec la prise de votre chargeur de téléphone. Vous devez alors utiliser un adaptateur entre la prise de votre chargeur et celle anglaise.
 
 Ici, la "prise du chargeur" est votre architecture, les interfaces, les abstractions, l'adaptateur la classe qui va être amenée par le pattern et la prise anglaise la classe "externe" que vous souhaitez utiliser.
 
 Voici comment appliquer ce pattern :
 
-1. Créer une classe dite "Adapter" qui possède un attribut du type de la classe à adapter. Cet attribut peut être injecté via le constructeur ou bien, dans certains cas, directement construit dans la classe Adapter.
+1. Créer une classe dite **Adapter** qui possède un attribut du type de la classe à adapter. Cet attribut peut être injecté via le constructeur ou bien, dans certains cas, directement construit dans la classe **Adapter**.
 
-2. Faire implémenter à notre Adapter l'interface souhaitée ou lui faire étendre la classe abstraite souhaitée.
+2. Faire implémenter à notre **Adapter** l'interface souhaitée ou lui faire implémenter l'interface souhaitée ou bien étendre la classe abstraite souhaitée.
 
-3. L'implémentation de chaque méthode abstraite se fera par **délégation** en appelant la méthode d'origine sur la classe cible.
+3. L'implémentation de chaque méthode de l'interface (ou méthodes abstraites) se fera par **délégation** en appelant des méthodes sur la classe cible. Le code de l'adaptateur fera donc une **adaptation** du code en réalisant des appels sur le **délégué** afin de réaliser la bonne action et/ou renvoyer la bonne information (bon type, bonne structure, etc).
 
-Mettons cela en application sur notre exemple :
+Ce pattern s'appelle `Adaptateur`, car il utilise et **adapte** les fonctionnalités (méthodes) fournies par une classe pour les rendre compatibles avec notre besoin. Dans certains cas, un simple appel de méthode au **délégué** ne suffit pas, il faut faire différentes opérations intermédiaires afin de réaliser l'action souhaitée.
+
+Donc notre exemple, nous allons donc créer deux **adaptateurs** : un pour la classe `SensCritiqueAPI` et l'autre pour `RottenTomatoesDataExtractor`. L'objectif est d'utiliser ces classes pour renvoyer les différentes informations souhaitées par l'interface `Extracteur` et ainsi rendre le tout compatible avec `ClientFilm` en profitant du code déjà écrit dans les librairies.
 
 ```java
-public class InstagramMessageSenderAdapter implements Publicateur {
+public class ExtracteurSensCritiqueAdaptateur implements Extracteur {
 
-  private InstagramMessageSender delegue;
+  private SensCritiqueAPI api;
 
-  public InstagramMessageSenderAdapter(InstagramMessageSender delegue) {
-    this.delegue = delegue;
+  public SensCritiqueAdaptateur(SensCritiqueAPI api) {
+    this.api = api;
   }
 
-  public void connexion(String login, String motDePasse) {
-    delegue.connect(login, motDePasse);
+  @Override
+  public boolean filmExiste(String nomFilm) {
+    return api.verifierFilm(nomFilm) == 1;
   }
 
-  public void publierMessage(String contenu) {
-    delegue.publishMessage(contenu, 0);
+  @Override
+  public double recupererNoteMoyenneUtilisateurs(String nomFilm) {
+    return api.obtenirNoteUtilisateurs(nomFilm);
+  }
+
+  @Override
+  public String[] recupererAvis(String nomFilm) {
+    List<String> avis = api.obtenirCritiquesUtilisateurs(nomFilm);
+    String[] avisTab = new String[avis.size()];
+    avis.toArray(avisTab);
+    return avisTab;
+  }
+
+}
+
+public class ExtracteurRottenTomatoesAdaptateur implements Extracteur {
+
+  private RottenTomatoesDataExtractor extractor;
+
+  public RottenTomatoesDataExtractor(RottenTomatoesDataExtractor extractor) {
+    this.extractor = extractor;
+  }
+
+  @Override
+  public boolean filmExiste(String nomFilm) {
+    return extractor.getMovieInformation(nomFilm) != null;
+  }
+
+  @Override
+  public double recupererNoteMoyenneUtilisateurs(String nomFilm) {
+    Movie movie = extractor.getMovieInformation(nomFilm);
+    return movie.getNote();
+  }
+
+  @Override
+  public String[] recupererAvis(String nomFilm) {
+    Movie movie = extractor.getMovieInformation(nomFilm);
+    return movie.getReviews();
+  }
+
+}
+
+public class Main {
+  
+  public static void main(String[] args) {
+    Extracteur allocine = new ExtracteurAllocine();
+    Extracteur sensCritique = new ExtracteurSensCritiqueAdaptateur(new SensCritiqueAPI(2));
+    Extracteur rottenTomatoes = new ExtracteurRottenTomatoesAdaptateur(RottenTomatoesDataExtractor.getInstance());
+    ClientFilm client = new ClientFilm(allocine);
+
+    //Recherche des informations d'un film sur Allociné
+    client.chercherInformationsFilm();
+
+    //Recherche des informations d'un film sur Sens Critique
+    client.setExtracteur(sensCritique);
+    client.chercherInformationsFilm();
+
+    //Recherche des informations d'un film sur Rotten Tomatoes
+    client.setExtracteur(rottenTomatoes);
+    client.chercherInformationsFilm();
   }
 
 }
@@ -2296,22 +2509,22 @@ public class PatternmonEauAdapter extends PatternmonAdapter implements MonstreEa
     }
 
     @Override
-    public int getDureeRespiration() {
+    public int getTemperatureMaxEau() {
         //Erreur !
-        return this.patternmon.getBreathingTime();
+        return this.patternmon.getWaterTemperature();
     }
 
 }
 ```
 
-Si vous avez bien une implémentation similaire (faites les changements nécessaires si ce n'est pas le cas) vous obtenez une erreur au niveau de la méthode `getDureeRespiration`. Cela est dû au fait que dans la classe mère, l'attribut `patternmon` est du type abstrait `Patternmon` et pas un `Waterpatternmon` ! Donc, dans la classe fille, impossible d'utiliser `getBreathingTime`.
+Si vous avez bien une implémentation similaire (faites les changements nécessaires si ce n'est pas le cas) vous obtenez une erreur au niveau de la méthode `getTemperatureMaxEau`. Cela est dû au fait que dans la classe mère, l'attribut `patternmon` est du type abstrait `Patternmon` et pas un `Waterpatternmon` ! Donc, dans la classe fille, impossible d'utiliser `getWaterTemperature`.
 
 La première solution "simple" serait de **caster** le patternmon. Normalement, comme on est sûr d'avoir passé au constructeur parent un `Waterpatternmon`, c'est un **cast** sans risques :
 
 ```java 
 @Override
-public int getDureeRespiration() {
-    return ((Waterpatternmon) this.patternmon).getBreathingTime();
+public int getTemperatureMaxEau() {
+    return ((Waterpatternmon) this.patternmon).getWaterTemperature();
 }
 ```
 
@@ -2349,9 +2562,9 @@ public class PatternmonEauAdapter extends PatternmonAdapter<Waterpatternmon> imp
     }
 
     @Override
-    public int getDureeRespiration() {
+    public int getTemperatureMaxEau() {
         //Plus d'erreurs, car l'attribut "patternmon" dans la classe mère est un Waterpatternmon !
-        return this.patternmon.getBreathingTime();
+        return this.patternmon.getWaterTemperature();
     }
 
 }
@@ -2371,11 +2584,19 @@ Si vous n'avez pas tout compris, n'hésitez pas à en parler avec votre enseigna
 
 </div>
 
-### Gestion des dépendances
+## Gestion des dépendances
 
-Jusqu'ici, nous avons vu des fabriques qui instancient systématiquement un objet à chaque appel d'une méthode type `creer...`. Cependant, ce fonctionnement n'est pas obligatoire. Par exemple, on pourrait avoir une fabrique qui **instancie** et stocke certains objets lors de son initialisation puis renvoie une référence vers ces objets lorsqu'on la sollicite.
+Suite à l'exercice des combats de monstres, nous avons vu qu'il est possible de charger une **fabrique** spécifique en fonction d'un paramétrage (fichier de configuration) sans avoir besoin de recompiler le programme si on souhaite changer de fabrique. On pourrait étendre cette idée afin de gérer les diverses **dépendances** d'un programme.
 
-Avec un tel fonctionnement, une **fabrique** permet alors de gérer les **dépendances** d'un programme. Elle pourrait par exemple stocker différentes instances de **services** concrets de l'application. Couplé avec le pattern **Fabrique Abstraite**, cela nous permet de rendre les dépendances de notre programme fortement modulables !
+En effet, lorsqu'on applique rigoureusement les différents principes de qualité étudiés depuis le début de ce cours, on se retrouve avec divers objets qui dépendent d'**abstractions** (classes abstraites, interfaces). Commes des **fabriques abstraites**, des **stratégies**, etc.
+
+Lors de l'exécution du programme, on pourrait vouloir ne travailler qu'avec un ensemble de services qui seront injectés comme dépendances des objets qui en ont besoin. Et pouvoir changer cet ensemble très facilement, au travers d'un fichier de configuration.
+
+On pourrait alors avoir des classes dont le rôle est d'**instancier**, **contenir** et **servir** les **dépendances** des objets du programme. En bref, un **conteneur de dépendances**. Cela serait, en quelque sorte, une **stratégie** de création et de stockage des dépendances du programme. L'idée globale est de rendre les dépendances de notre programme fortement modulables !
+
+Ce genre d'outil s'appelle **conteneur de dépendance**.
+
+Voici ce qu'on pourrait mettre en place :
 
 ```java
 interface ServiceA {
@@ -2418,80 +2639,95 @@ public class ServiceB2 implements ServiceB {
 
 }
 
-public class ServiceV1Factory extends AbstractServiceFactory {
+interface ConteneurService {
+  ServiceA getServiceA();
+  ServiceB getServiceB();
+}
+
+public class ConteneurServiceV1 implements ConteneurService {
 
   private ServiceA serviceA;
 
   private ServiceB serviceB;
 
-  public ServiceV1Factory() {
+  public ConteneurServiceV1() {
     this.serviceA = new ServiceA1();
     this.serviceB = new ServiceB1();
   }
 
+  @Override
   public ServiceA getServiceA() {
     return serviceA;
   }
 
+  @Override
   public ServiceB getServiceB() {
     return serviceB;
   }
 
 }
 
-public class ServiceV2Factory extends AbstractServiceFactory {
+public class ConteneurServiceV2 implements ConteneurService {
 
   private ServiceA serviceA;
 
   private ServiceB serviceB;
 
-  public ServiceV2Factory() {
+  public ConteneurServiceV2() {
     this.serviceA = new ServiceA2();
     this.serviceB = new ServiceB2();
   }
 
+  @Override
   public ServiceA getServiceA() {
     return serviceA;
   }
 
+  @Override
   public ServiceB getServiceB() {
     return serviceB;
   }
 
 }
 
-public abstract class AbstractServiceFactory {
+public class Configuration {
 
-  public abstract ServiceA getServiceA();
+  private static Configuration INSTANCE;
 
-  public abstract ServiceB getServiceB();
+  private ConteneurService conteneurServices;
 
-  private static AbstractServiceFactory INSTANCE;
-
-  public synchronized static AbstractServiceFactory getInstance() {
-      if(INSTANCE == null) {
-          try {
-              InputStream stream = ClassLoader.getSystemResourceAsStream("config/services.txt");
-              if(stream == null) {
-                  throw new RuntimeException("Fichier de configuration manquant.");
-              }
-              BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-              String config = reader.readLine();
-              if(config.equals("V1")) {
-                  INSTANCE = new ServiceV1Factory();
-              }
-              else if(config.equals("V2")) {
-                  INSTANCE = new ServiceV2Factory();
-              }
-              else {
-                  throw new RuntimeException("Fabrique inconnue.");
-              }
-
-          } catch (IOException e) {
-              throw new RuntimeException("Fichier de configuration corrompu.");
-          }
+  private Configuration() {
+    try {
+      InputStream stream = ClassLoader.getSystemResourceAsStream("config/services.txt");
+      if(stream == null) {
+          throw new RuntimeException("Fichier de configuration manquant.");
       }
-      return INSTANCE;
+      BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+      String config = reader.readLine();
+      switch(config) {
+        case "V1":
+          conteneurServices = new ConteneurServiceV1();
+          break;
+        case "V2":
+          conteneurServices = new ConteneurServiceV2();
+          break:
+        default:
+          throw new RuntimeException("Conteneur inconnu.");
+      }
+    } catch (IOException e) {
+        throw new RuntimeException("Fichier de configuration corrompu.");
+    }
+  }
+
+  public synchronized static Configuration getInstance() {
+    if(INSTANCE == null) {
+      INSTANCE = new Configuration();
+    }
+    return INSTANCE;
+  }
+
+  public ConteneurService getConteneurService() {
+    return conteneurServices;
   }
 
 }
@@ -2499,10 +2735,11 @@ public abstract class AbstractServiceFactory {
 public class Main {
 
   public static void main(String[]args) {
-    ServiceA s1 = AbstractServiceFactory.getInstance().getServiceA();
+    ConteneurService conteneurService = Configuration.getInstance().getConteneurService();
+    ServiceA s1 = conteneurService.getServiceA();
     s1.action();
 
-    ServiceB s2 = AbstractServiceFactory.getInstance().getServiceB();
+    ServiceB s2 = conteneurService.getServiceB();
     s2.action();
   }
 
@@ -2510,24 +2747,24 @@ public class Main {
 ```
 
 <div style="text-align:center">
-![Fabrique 5]({{site.baseurl}}/assets/TP4/Fabrique5.svg){: width="40%" }
+![Conteneur 1]({{site.baseurl}}/assets/TP4/Conteneur1.svg){: width="40%" }
 </div>
 
-Dans l'exemple ci-dessus, un simple changement dans le fichier de configuration permet de changer les services concrets utilisés pour `ServiceA` et `ServiceB`. Contrairement aux exercices précédents, dans le cas d'un service, il n'est pas utile (voire, il ne faut pas) le réinstancier chaque fois. Par exemple, dans le cas d'une classe "repository" permettant de faire des requêtes sur une base de données.
+Dans l'exemple ci-dessus, un simple changement dans le fichier de configuration permet de changer les services concrets utilisés pour `ServiceA` et `ServiceB`. Par exemple, un de ces services pourrait être une classe "repository" permettant de faire des requêtes sur une base de données. On pourrait en avoir en utilisant une base de données, un autre un fichier `XML`.
 
-C'est un peu comme si toutes les dépendances stockées dans ces fabriques étaient de singletons, car on ne manipule qu'une seule instance de ces objets dans le programme. Mais cela est encore mieux qu'un singleton, parce que ces classes (`ServiceA1`, `ServiceB1`, etc.) ne sont pas construites comme des singletons ! Elles sont donc beaucoup plus adaptées aux tests unitaires. Comme mentionné dans la section "Avertissement" sur les singletons, nous préférerons utiliser des fabriques plutôt que de multiplier les singletons dans l'application.
+C'est un peu comme si toutes les dépendances stockées dans ces **conteneurs** étaient de singletons, car on ne manipule qu'une seule instance de ces objets dans le programme. Mais cela est encore mieux qu'un singleton, parce que ces classes (`ServiceA1`, `ServiceB1`, etc.) ne sont pas construites comme des singletons ! Elles sont donc beaucoup plus adaptées aux tests unitaires. Comme mentionné dans la section "Avertissement" sur les singletons, nous préférerons utiliser des conteneurs plutôt que de multiplier les singletons dans l'application.
 
-Il est toléré d'avoir un **singleton** pour les classes telles que les fabriques abstraites ou leurs sous-classes, car elles n'ont pas vraiment pour but d'être testées (unitairement). Mais sur les services qui contiennent du code métier, il faut éviter le **singleton** quand cela est possible. Les fabriques et les fabriques abstraites répondent à ce problème.
+Il peut y avoir au besoin **plusieurs conteneurs abstraits différents** (au besoin) et la classe `Configuration` peut contenir divers types de **conteneur**. Ou bien, pour une meilleure répartition des responsabilités, on peut avoir **plusieurs classes de configurations** qui sont chargées de gérer un fichier de configuration et un type de conteneur abstrait spécifiques.
 
-Dans le prochain TP, nous verrons un outil encore plus puissant pour gérer les dépendances : le **conteneur IoC**.
+Même si cette implémentation permet déjà une meilleure modularité, il existe un outil encore plus puissant (et adapté) pour gérer les dépendances : le **conteneur IoC**.
 
 Pour le moment, revenons à nos moutons et appliquons ce que nous avons appris sur un nouvel exercice.
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `fabrique6`. Il s'agit de la dernière application que vous aviez refactoré lors du dernier TP permettant de simuler l'inscription et la connexion d'un utilisateur. L'application est fonctionnelle. Lancez-la et explorer aussi les différentes classes mises à disposition si vous ne vous souvenez pas bien de son fonctionnement.
+1. Ouvrez le paquetage `conteneur`. Il s'agit de la dernière application que vous aviez refactoré lors du dernier TP permettant de simuler l'inscription et la connexion d'un utilisateur. L'application est fonctionnelle. Lancez-la et explorer aussi les différentes classes mises à disposition si vous ne vous souvenez pas bien de son fonctionnement.
 
-2. Actuellement, si nous voulons changer la méthode de stockage (en mémoire ou dans un fichier) il faut éditer à la main `IHMUtilisateur` pour remplacer les paramètres injectés lors de la création de `ServiceUtilisateur`. On souhaite rendre cela plus modulable. Refactorez le code pour mettre en place et utiliser une **fabrique abstraite** et des **fabriques** pour gérer les deux types de méthodes stockage disponibles dans l'application. La configuration du type stockage utilisé devra se faire via un fichier de configuration textuel simple. Aussi, vos fabriques doivent stocker les **dépendances** qu'elles gèrent et ne pas les ré-instancier à chaque fois qu'on en a besoin. 
+2. Actuellement, si nous voulons changer la méthode de stockage (en mémoire ou dans un fichier) il faut éditer à la main `IHMUtilisateur` pour remplacer les paramètres injectés lors de la création de `ServiceUtilisateur`. On souhaite rendre cela plus modulable. Refactorez le code pour mettre en place et utiliser un **conteneur abstrait** et des **conteneurs concrets** pour gérer les deux types de méthodes stockage disponibles dans l'application. La configuration du type stockage utilisé devra se faire via un fichier de configuration textuel simple. Aussi, vos conteneurs doivent stocker les **dépendances** qu'ils gèrent et ne pas les ré-instancier à chaque fois qu'on en a besoin. 
 
     Normalement, vous n'avez pas besoin de toucher la classe `ServiceUtilisateur`, mais il faudra probablement adapter le code de `IHMUtilisateur`.
 
@@ -2541,71 +2778,21 @@ Pour le moment, revenons à nos moutons et appliquons ce que nous avons appris s
 
     Là aussi, on veut pouvoir facilement switcher entre ces deux configurations sans changer le code, mais en éditant simplement un fichier de configuration.
 
-    Mettez en place un système pour pouvoir gérer ces deux configurations. Encore une fois, vous ne devriez pas avoir besoin d'éditer d'autres classes que `IHMUtilisateur` après la mise en place de votre système.
+    Mettez en place un système pour pouvoir gérer ces deux configurations. Encore une fois, vous ne devriez pas avoir besoin d'éditer d'autres classes que `IHMUtilisateur` après la mise en place de votre système. Vous pouvez créer une nouvelle **classe de configuration** dédiée.
 
 5. Vérifiez que tout fonctionne en alternant entre les deux configurations.
 
 </div>
 
-Le **conteneur IoC** que nous allons utiliser dans le prochain TP permet de ne pas multiplier les fabriques pour gérer les différentes dépendances en centralisant le tout. C'est une sorte de super-fabrique hautement configurable gérant des dépendances (mais avec un objectif assez différent des fabriques que vous avez vues avant comme avec les figures géométriques, les pokémons ou les donjons).
+Le **conteneur IoC** que nous allons utiliser dans le prochain TP permet de ne pas multiplier les conteneurs (et classes et fichiers de configurations) pour gérer les différentes dépendances en centralisant le tout. C'est une sorte de super-conteneur hautement configurable gérant des dépendances.
 
-<!--
-### Mise en pratique sur une application plus large
+## Combinaison de patterns (bonus)
 
-Vous allez maintenant mettre en application ce que vous avez appris sur une application un peu plus large : l'application de gestion des étudiants (OGE) sur laquelle vous avez travaillé dans le cours de base de données.
-
-<div class="exercise">
-
-1. Forkez [le dépôt GitLab suivant](https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/tp4-qualite-oge) en le plaçant dans le namespace `qualite-de-developpement-semestre-3/etu/votrelogin`.
-
-2. Clonez votre nouveau dépôt en local. Ouvre le projet avec `IntelliJ` et vérifiez qu'il n'y a pas d'erreur. Si vous exécutez le programme, il y aura une erreur, c'est normal pour le moment.
-
-3. Pour rappel, ce programme peut se connecter à une base de données par deux moyens : en utilisant l'API `JDBC` en "brut" ou bien en passant par l'ORM `Hibernate`. Vous n'avez pas nécessairement besoin d'avoir fini ce TP dans son intégralité en base de données pour pouvoir faire cet exercice. Il y a un peu de configuration à faire pour que vous puissiez vous connecter à votre BDD par JDBC et Hibernate :
-
-    * Dans la classe `storage/jdbc/JDBCUtils`, remplacez les valeurs `aCompleter` par vos identifiants d'accès à la base de données `Oracle` de l'IUT.
-
-    * Faites de même dans le fichier `hibernate.cfg.xml` dans `src/main/java/resources`.
-
-    Lancez l'application et vérifiez que tout fonctionne.
-
-4. De base cette application est configurée pour utiliser `JDBC` et pas `Hibernate`. Si on souhaite changer la méthode de stockage en BDD utilisée, il faut changer le code source des classes `RessourceService`, `EtudiantService` et `NoteService`. On aimerait pouvoir plus facilement switcher entre `JDBC` et `Hibernate` en utilisant un simple **fichier de configuration**. On vous demande donc de **refactorer** le code afin de mettre en place un tel système (avec une **fabrique abstraite** gérant des dépendances, comme dans l'exercice précédent). Quelques commentaires :
-
-    * L'interface **Stockage** (dans le paquetage `storage`) permet de définir un repository. Vous pouvez notamment aller jeter un œil aux repositories **concrets** qui utilisent `JDBC` et implémentent cette interface dans `storage/jdbc`.
-
-    * Il faudra utiliser votre fabrique abstraite directement dans la méthode `getInstance` des trois services. Comme vous pouvez le constater, ces services sont des **singletons**. Ils sont donc difficilement testables...mais nous allons régler ce problème dans le prochain TP !
-
-    * Dans les trois services, vous avez des exemples d'instanciation des repositories JDBC simples (définis dans l'application).
-
-    * On accède aux repositories issus de `Hibernate` différemment. Pour rappel, ils sont fournis via une **librairie externe** nommée `HibernateRepositories`. Vous n'avez donc pas la main dessus ! De plus, les noms des méthodes différents de celle de votre interface `Stockage`... Quel pattern allez-vous utiliser pour résoudre ce problème ? Vous l'avez vu pendant ce TP. On rappelle comment manipuler les repositories de `Hibernate` (vous n'étiez peut-être pas allé jusque-là dans le TP) :
-
-      * La classe `EntityRepository<T>` permet de gérer un repository correspondant à une entité `T` (paramètre générique, qui peut être instancié, par exemple par `EntityRepository<Ressource>`).
-
-      * Les méthodes qu'on peut utiliser sur un tel **repository** sont : `create`, `update`, `deleteById`, `findById`, `findAll` qui sont similaires aux méthodes définies dans l'interface `Stockage`.
-
-      * On n'instancie pas directement ces repositories, on les récupère via l'instruction suivante :
-
-      ```java
-      EntityRepository<MonEntite> repository = RepositoryManager.getRepository(MonEntite.class);
-
-      //Par exemple :
-      EntityRepository<Ressource> repository = RepositoryManager.getRepository(Ressource.class);
-      ```
-
-      * Si vous gérez bien le concept de **généricité** adapter les `EntityRepository` à votre architecture ne devrait demander qu'une seule classe (peut-être un peu dure à trouver si vous n'êtes pas encore trop à l'aise avec cette notion). Sinon, il y a aussi une solution plus basique utilisant trois classes.
-
-5. Une fois le refactoring terminé, vérifiez que tout fonctionne en alternant entre `JDBC` et `Hibernate` en modifiant votre fichier de configuration. Comme les deux systèmes utilisent la même base, cela n'est pas forcément évident de repérer quand l'un ou l'autre est utilisé. au démarrage, `Hibernate` va vous mettre divers messages d'informations dans la console contrairement à `JDBC`. Sinon, essayez de mettre un mauvais mot de passe dans une des configurations (dans `JDBCUtils` ou bien le fichier de configuration d'Hibernate) et alternez entre les deux méthodes. L'application ne devrait pas fonctionner seulement dans un cas sur deux.
-
-6. N'oubliez pas de push ce projet sur GitLab. **Attention**, si vous ne voulez pas que vos identifiants soient visibles, supprimez-les avant de push. Mais, à priori, seuls les enseignants ont accès à vos dépôts GitLab si vous l'avez placé dans le bon `namespace`.
-</div>
-
-Avec votre refactoring, il devient très facile d'ajouter et d'utiliser une nouvelle source de stockage de données, comme un fichier XML par exemple ou une base de données `SQLite` dédiées aux tests ! Et passer d'une méthode à l'autre ne demande alors plus aucune modification du code source.
--->
-
-## Décorateur : Builder ou Fabrique ?
+### Décorateur avec Builder
 
 Dans le dernier TP, vous avez découvert le pattern **Décorateur** permettant d'ajouter des nouvelles fonctionnalités de manière dynamique. Nous avions notamment vu un exemple portant sur des salariés, puis un exercice portant sur différents types de produits.
 
-Comme l'objet créé avec le pattern **Décorateur** peut être assez complexe, il peut être intéressant de le coupler avec une **Fabrique** ou bien un **Builder**.
+Comme l'objet créé avec le pattern **Décorateur** peut être assez complexe, il peut être intéressant de le coupler avec un **Builder**.
 
 Reprenons l'exemple des salariés et essayons d'appliquer ces deux patterns :
 
@@ -2816,7 +3003,7 @@ class Main {
 
 La version utilisant le **builder** semble bien plus pratique que la **fabrique** ! C'est donc une solution plutôt satisfaisante pour ce problème qu'on pourra retenir.
 
-## Amélioration du générateur de donjons
+### Amélioration du générateur de donjons
 
 Et si nous essayons de combiner plus de patterns ? Nous avons l'application idéale pour ça : le générateur de donjon (paquetage `fabrique2`). Il y a déjà la **Fabrique Abstraite**, le **Singleton** et **Prototype**.
 
