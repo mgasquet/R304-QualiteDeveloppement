@@ -186,7 +186,7 @@ class Salarie implements SalarieInterface {
 abstract class SalarieDecorateur implements SalarieInterface {
    private SalarieInterface salarie;
 
-   public SalarieDecorator(SalarieInterface salarie) {
+   public SalarieDecorateur(SalarieInterface salarie) {
       this.salarie = salarie;
    }
 
@@ -232,7 +232,7 @@ class Main {
         SalarieInterface s1 = new Salarie(2000);
         SalarieInterface s2 = new SalarieChefProjet(s1, 3);
         SalarieInterface s3 = new SalarieResponsableStagiaires(s1, 2);
-        SalarieInterface s4 = new SalarieChefProjet(SalarieResponsableStagiaires(s1, 2), 3);
+        SalarieInterface s4 = new SalarieChefProjet(new SalarieResponsableStagiaires(s1, 2), 3);
 
         //Affiche 2000
         System.out.println(s1.getSalaire());

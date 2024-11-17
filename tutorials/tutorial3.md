@@ -647,7 +647,7 @@ Par exemple, pour l'exemple des salariés :
 abstract class SalarieDecorateur implements SalarieInterface {
    private SalarieInterface salarie;
 
-   public SalarieDecorator(SalarieInterface salarie) {
+   public SalarieDecorateur(SalarieInterface salarie) {
       this.salarie = salarie;
    }
 

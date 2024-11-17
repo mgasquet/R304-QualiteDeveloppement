@@ -189,28 +189,13 @@ Ce pattern s'avère très utile quand nous avons une classe (généralement un s
 
 ### Mise en application
 
-Commençons par une mise en application très simple.
+Commençons par une mise en application assez simple dans un cas qui montre l'intérêt d'utiliser un `Singleton` dans le contexte où deux objets différents dépendent de l'état d'une classe. Une classe `A` modifie l'état de `Service` et une classe `B` a besoin de connaître les modifications qu'a effectuées `A` dans `Service` pour fonctionner. Les deux classes `A` et `B` doivent alors dépendre de la même instance de `Service` !
+
+Aussi, imaginons une classe d'accès à une base de données : celle-ci initialise une connexion vers la base qui peut prendre plusieurs secondes. Il serait inconscient d'instancier cette classe à chaque endroit où on en a besoin (cela dégraderait les performances !). On va plutôt utiliser un **Singleton**.
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `singleton1`. Cette petite application dispose d'une classe `Calculatrice` permettant de réaliser des opérations de gérer un historique de résultat afin de pouvoir revenir en arrière.
-
-2. La classe `Calculatrice` est un service qui doit pouvoir être utilisé par toutes les classes de l'application (il n'y en a qu'une seule pour le moment, mais le programme va grandir dans le futur). On souhaite que pour réaliser des opérations, toutes les classes utilisent la même instance de la classe `Calculatrice`. Appliquez le pattern **Singleton** afin de transformer la classe `Calculatrice` en **Singleton**. 
-
-3. Normalement, si vous avez bien traité la question précédente, vous allez avoir des erreurs dans `Client`. Adaptez le code de cette classe pour que tout fonctionne.
-
-</div>
-
-<!--
-### Dépendance commune
-
-Un cas un peu plus concret qui montre l'intérêt d'utiliser un `Singleton` est dans le contexte où deux objets différents dépendent de l'état d'une classe. Une classe `A` modifie l'état de `Service` et une classe `B` a besoin de connaître les modifications qu'a effectuées `A` dans `Service` pour fonctionner. Les deux classes `A` et `B` doivent alors dépendre de la même instance de `Service` !
-
-Aussi, imaginons une classe d'accès à une base de données : celle-ci initialise une connexion vers la base qui peut prendre plusieurs secondes. Il serait inconscient d'instancier cette classe à chaque endroit où on en a besoin (cela dégraderait les performances !). On va plutôt utiliser un **Singleton**. C'est le cas de la classe `SQLUtils` que vous avez codé dans le TP "JDBC / Hibernate" en cours de base de données.
-
-<div class="exercise">
-
-1. Ouvrez le paquetage `singleton2`. Cette application permet de créer des animaux avec un nom et une vitesse, de les stocker dans la mémoire et de les lire.
+1. Ouvrez le paquetage `singleton1`. Cette application permet de créer des animaux avec un nom et une vitesse, de les stocker dans la mémoire et de les lire.
 
 2. Testez l'application. Créez plusieurs animaux puis tentez de les lire. Quels sont les deux problèmes que vous constatez ?
 
@@ -220,8 +205,10 @@ Aussi, imaginons une classe d'accès à une base de données : celle-ci initial
 
 5. Le principe SOLID `D` (dependency inversion) est-il respecté sur les classes `CreationAnimal` et `LectureAnimaux` ? Si ce n'est pas le cas, refactorez votre code.
 
+6. Pensez-vous qu'il serait possible de se passer intégralement de singletons dans une application bien construite ? Vous pouvez discuter de votre réponse avec votre enseignant.
+
 </div>
--->
+
 ### Classe statique VS Singleton
 
 En introduction de cette section, nous avions évoqué le fait d'utiliser une **classe statique** pour obtenir un résultat similaire au singleton. Une classe statique est une classe où il n'y a que des attributs et des méthodes **de classe** qui appartiennent donc à la classe et pas à une instance en particulier. Ainsi, tous les objets qui manipulent cette classe utilisent la même "entité" (en fait, il n'y a juste pas d'instance).
@@ -307,7 +294,7 @@ Si cette méthode pourrait paraître plus "facile" à mettre en place et à util
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `singleton3`. Cette application permet de simuler des services de création d'utilisateurs et de gestion de commandes. Dans une application concrète, ces deux services sont susceptibles d'envoyer des mails. Testez un peu l'application. Aussi, deux classes de tests sont disponibles dans le dossier `java/singleton3`.
+1. Ouvrez le paquetage `singleton2`. Cette application permet de simuler des services de création d'utilisateurs et de gestion de commandes. Dans une application concrète, ces deux services sont susceptibles d'envoyer des mails. Testez un peu l'application. Aussi, deux classes de tests sont disponibles dans le dossier `java/singleton2`.
 
 2. Il semble inutile d'instancier la classe `ServiceMail` à chaque fois. Cette fois-ci, au lieu d'utiliser un `Singleton`, nous allons transformer `ServiceMail` en **classe statique**. Faites ce changement et adaptez le code dans les classes `ServiceUtilisateur` et `ServiceCommande`.
 
@@ -339,7 +326,7 @@ En essayant de refactorer, vous avez dû rencontrer divers problèmes :
 
 Bref, l'utilisation d'une **classe statique** rend les services qui l'utilisent étroitement dépendant de la classe. Ce qui rend l'application intestable car ces services ne peuvent pas être testés indépendamment des services concrets qui sont utilisés dans l'application. On ne peut pas remplacer le service par un "faux" service utilisé pour les tests unitaires (un **stub** ou un **mock**).
 
-L'utilisation d'un **Singleton** résout tous ces problèmes :
+L'utilisation d'un **Singleton** résout ces problèmes :
 
 * L'instance de la classe est une véritable instance, un objet. Elle peut donc être passée en paramètre dans un constructeur, par exemple.
 
@@ -351,7 +338,6 @@ public interface Service {
   void action();
 
 }
-
 
 public class ServiceConcret implements Service {
 
@@ -405,7 +391,7 @@ class Main {
 
 6. Adaptez aussi les tests pour utiliser `FakeServiceMail`. Vérifiez que l'exécution des tests ne déclenche plus l'envoi (fictif) de mails.
 
-7. Réalisez le **diagramme de classes de conception** de l'application.
+7. Générez le **diagramme de classes de conception** de votre application (avec `IntelliJ`).
 
 </div>
 
@@ -419,9 +405,9 @@ Mais pourquoi est-il déconseillé d'utiliser "trop" de singletons :
 
 * Il n'est pas possible de passer des paramètres à un singleton pour son initialisation (comme un objet classique) car c'est lui-même qui se construit, cependant, on peut éventuellement mettre en place un fichier de configuration que le singleton ira lire lors de son initialisation.
 
-* Il est très difficile (voir impossible) de **tester** un singleton ! Comme le constructeur est **privé** et qu'il n'y a qu'une instance de l'objet dans l'application, on ne peut tester que cette instance. On ne peut pas instancier de nouveaux objets de cette classe pendant les tests unitaires.
+* Il est très difficile de **tester** un singleton ! Comme le constructeur est **privé** et qu'il n'y a qu'une instance de l'objet dans l'application, on ne peut tester que cette instance. On ne peut pas facilement instancier de nouveaux objets de cette classe pendant les tests unitaires.
 
-* Il existe des solutions bien meilleures pour gérer les dépendances de l'application de manière plus flexibles tout en conservant la possibilité de réaliser des tests unitaires : les fabriques abstraites (dont nous allons bientôt parler) et le conteneur d'inversion de contrôle (conteneur IoC, dont nous parlerons au prochain TP).
+* Il existe des solutions bien meilleures pour gérer les dépendances de l'application de manière plus flexibles tout en conservant la possibilité de réaliser des tests unitaires : les fabriques abstraites (dont nous allons bientôt parler) et le conteneur d'inversion de contrôle (par exemple, le **conteneur IoC**).
 
 Attention, tout cela ne veut pas dire que le singleton est inutile ! Seulement qu'il ne doit pas être utilisé pour tout et n'importe quoi. Il faut également se poser la question "_est-ce que cette instance doit pouvoir être accessible par tout le monde_" ?
 
@@ -679,11 +665,11 @@ class Exemple {
 
     * Burger avec du pain classique, avec de la salade, des tomates, de la viande de bœuf et du cheddar.
 
-3. Réalisez le **diagramme de classes de conception** de votre application.
+3. Générez le **diagramme de classes de conception** de votre application (avec `IntelliJ`).
 
 **NB :** Certains IDE (dont IntelliJ) permettent de générer automatiquement le code d'un Builder à partir d'une classe. Sur IntelliJ, il faut faire un clic droit sur le constructeur de la classe pour laquelle vous souhaitez générer le builder, puis aller dans _Replace constructor with builder_. Le Builder sera généré comme une classe à part. Pour la rendre interne à la classe cible, il suffira juste de faire un Drag & Drop du Builder dans sa classe cible.
 
-**Remarque :** lorsqu'il s'agit d'une hiérarchie de classes (par héritage) pour laquelle il faut créer des builders, la solution n'est pas forcément évidente. En effet, il faut faire une hiérarchie de builders pour éviter la duplication de code, tout en respectant le principe LSP, à savoir : les méthodes **with...** doivent retourner le bon type de builder. Pour plus de détails voir le [le dernier TP](https://gitlabinfo.iutmontp.univ-montp2.fr/dev-objets/tp11) de Développement Orienté Objets de première année).
+**Remarque :** lorsqu'il s'agit d'une hiérarchie de classes (par héritage) pour laquelle il faut créer des builders, la solution n'est pas forcément évidente. En effet, il faut faire une hiérarchie de builders pour éviter la duplication de code, tout en respectant le principe LSP, à savoir : les méthodes **with...** doivent retourner le bon type de builder. Pour plus de détails voir le [le dernier TP](https://gitlabinfo.iutmontp.univ-montp2.fr/dev-objets/tp11) de Développement Orienté Objets de première année.
 
 </div>
 
@@ -838,6 +824,57 @@ class Service {
 </div>
 
 
+L'application du prototype peut éventuellement être plus complexe dans des cas d'héritage. Par exemple, si un attribut dont a besoin une classe fille lors de sa construction est déclaré comme privé dans la classe mère, l'enfant n'y aura pas accès et ne pourra donc pas l'utiliser pour le clonage. Il faut donc prévoir cela et proposer des solutions pour que les classes filles puissent effectuer le clonage sans problème. On peut par exemple utiliser la visibilité `protected` sur l'attribut (dans ce cas, il faut bien organiser les **packages**) ou alors des **getters** (public ou `protected`) qui renvoient l'objet inaccessible désiré, ou bien le clonent (si c'est un objet et qu'il peut être cloné).
+
+```java
+abstract class ClasseMere {
+
+  private int valeur;
+
+  public ClasseMere(int valeur) {
+    this.valeur = valeur;
+  }
+
+  public abstract ClasseMere clone();
+
+}
+
+class ClasseFille extends ClasseMere {
+
+  private String texte;
+
+  public ClasseFille(int valeur, String texte) {
+    super(valeur, texte);
+  }
+
+  @Override
+  public ClasseFille cloner() {
+    //Erreur, valeur n'est pas accessible !
+    return this(valeur, texte);
+  }
+
+}
+```
+
+Solutions :
+
+```java
+//Avec la visibilité protected, seules les classes du même paquetages et les classes qui étendent ClasseMere ont accès à l'attribut/méthode. Il faut donc bien gérer les paquetages pour s'assurer qu'une classe ne puisse pas y acceder alors qu'elle n'est pas sensée pouvoir.
+abstract class ClasseMere {
+
+  //Permet à la classe fille de lire (mais d'aussi écrire) l'attribut valeur
+  protected int valeur;
+
+  //Ou bien : permet à la classe fille de lire l'attribut valeur
+  protected int getValeur() {
+    return valeur;
+  }
+
+  ...
+
+}
+```
+
 <div class="exercise">
 
 1. Refactorez votre code en appliquant le pattern **prototype** sur vos comptes bancaires. Adaptez aussi le code de `getInformationsCompteNumero` en conséquence.
@@ -990,6 +1027,10 @@ public class Zone {
 
 Maintenant, si nous voulons utiliser des monstres type `Fantome` à la place de `Slime`, nous n'avons à faire ce changement que dans **une seule classe** : `MonstreFactory` !
 
+<div style="text-align:center">
+![Fabrique 2]({{site.baseurl}}/assets/TP4/Fabrique2.svg){: width="80%" }
+</div>
+
 Ici, il semble judicieux de transformer `MonstreFactory` en **Singleton** et de l'injecter comme dépendance pour éviter que chaque service instancie une version de la fabrique :
 
 ```java
@@ -1062,7 +1103,13 @@ public class Main {
 ```
 
 <div style="text-align:center">
-![Fabrique 2]({{site.baseurl}}/assets/TP4/Fabrique2.svg){: width="80%" }
+![Fabrique 3]({{site.baseurl}}/assets/TP4/Fabrique3.svg){: width="80%" }
+</div>
+
+En bref, il est possible de généraliser ce modèle ainsi :
+
+<div style="text-align:center">
+![Fabrique Simple 2]({{site.baseurl}}/assets/TP4/FabriqueSimple2.svg){: width="80%" }
 </div>
 
 Il est possible d'adapter et d'étendre ce modèle :
@@ -1171,6 +1218,16 @@ public class Main {
 }
 ```
 
+<div style="text-align:center">
+![Fabrique 4]({{site.baseurl}}/assets/TP4/Fabrique4.svg){: width="80%" }
+</div>
+
+Ou bien, de manière plus générale :
+
+<div style="text-align:center">
+![Fabrique Simple 3]({{site.baseurl}}/assets/TP4/FabriqueSimple3.svg){: width="80%" }
+</div>
+
 Dans **certains contextes**, il est éventuellement possible de diviser la méthode de création en plusieurs méthodes :
 
 ```java
@@ -1201,7 +1258,7 @@ public class CafeFactory {
 
 La première méthode (avec le bloc **switch**) pourrait ressembler à du mauvais code, mais il s'agit bien de l'implémentation **souhaitée**. De plus, la seconde méthode n'aurait pas bien fonctionné avec la classe `Machine` à moins de la coder autrement. On se serait soit retrouvé avec de la duplication de code, soit à gérer un autre `switch` dans la classe `Machine`. Dans cet exemple, il est donc préférable d'utiliser la première méthode.
 
-Avec notre implémentation, il est éventuellement possible d'utiliser une autre marque de café qui possède son propre type d'expresso et de cappuccino (avec des graines de provenances différentes, et une autre marque de sucre). Il suffira de changer la fabrique sans impacter le reste des classes. Mais que se passerait-il si on souhaitait faire cohabiter ces différentes **marques** de café, avec leur propre machine ? Il sera possible de régler ce problème avec les patterns **méthode fabrique** et/ou **fabrique abstraite**.
+Avec notre implémentation, il est éventuellement possible d'utiliser une autre marque de café qui possède son propre type d'expresso et de cappuccino (avec des graines de provenances différentes, et une autre marque de sucre). Il suffira de changer la fabrique sans impacter le reste des classes. Mais que se passerait-il si on souhaitait faire cohabiter ces différentes **marques** de café, avec leur propre machine ? Il est possible de régler ce problème avec les patterns **méthode fabrique** et/ou **fabrique abstraite** (nous détaillerons plutôt cela dans la **synthèse de cours** dédiée).
 
 ### Animaux
 
@@ -1344,7 +1401,17 @@ public class Main {
 }
 ```
 
+<div style="text-align:center">
+![Fabrique 5]({{site.baseurl}}/assets/TP4/Fabrique5.svg){: width="80%" }
+</div>
+
 Le pattern s'appelle **méthode fabrique**, car la méthode abstraite implémentée par les classes filles sont elles-mêmes des fabriques ! D'ailleurs, dans l'exemple, nous avons supprimé `MonstreFactory` qui ne nous est plus utile.
+
+On peut généraliser ce **pattern** ainsi :
+
+<div style="text-align:center">
+![Méthode Fabrique 1]({{site.baseurl}}/assets/TP4/MethodeFabrique1.svg){: width="80%" }
+</div>
 
 Cependant, que se passe-t-il si plusieurs services différents doivent créer des **slimes** ou des **fantômes** (par exemple, la classe `Arene` que nous avions au début) ? Il faut vraiment créer une sous-classe par type de service et de monstre ? Non, rassurez-vous ! C'est justement un point que permettra de régler la **fabrique abstraite**.
 
@@ -1479,7 +1546,7 @@ Il y a quelques aspects du code qui vous paraissent encore superflus ou redondan
 
 ### Restaurants de burgers - Partie 1
 
-Testons maintenant votre maîtrise du pattern **méthode fabrique** avec un nouvel exercice un peu plus complexe.
+Testons maintenant votre maîtrise du pattern **méthode fabrique** avec un nouvel exercice un peu plus complexe. Cet exercice (et sa suite) sont inspirés d'un exercice issu de l'excellent livre **Head First Design Patterns** qui propose une illustration des patterns **méthode fabrique** puis **fabrique abstraite** avec un exemple se basant sur des restaurants de **pizzas** (les exemples donnés dans ce livre sont d'ailleurs en Java).
 
 <div class="exercise">
 
@@ -1495,9 +1562,12 @@ Testons maintenant votre maîtrise du pattern **méthode fabrique** avec un nouv
   * **Cheese Burger** : Boeuf Limousin, Sauce à burger de Montpellier et Maroilles.
   * **Egg Burger** : Poulet de Bresse, Sauce à burger de Montpellier et Oeuf d'autruche.
 
+  On est dans une conception où un burger contient tous les éléments dont il peut être composé. S'il n'est pas composé d'un élément (par exemple, pas de fromage), cet élément vaudra simplement `null`. Ce n'est pas nécessairement une très bonne conception, mais elle est acceptable dans le cadre de l'exercice (et vous ne devrez pas modifier cette logique).
+
   Actuellement, l'application fonctionne avec un seul type de classe `CheeseBurger` et `EggBurger` (qui sont les burgers du restaurant **Nîmois**). Une **fabrique simple** a été mise en place (mais vous allez peut-être devoir changer cela...?)
 
   **On souhaite garder les différentes méthodes des burgers**, notamment la méthode `preparerIngredients`. Les ingrédients **ne doivent pas être initialisés via le constructeur**, mais lors de l'appel à la méthode `preparerIngredients` par le restaurant (c'est ce qu'on pourrait qualifier de **lazy loading**).
+
 
 3. Faites en sorte qu'il soit possible de gérer les deux types de restaurants : les **restaurants Nîmois** et les **restaurants Montpelliérains**. Vous ajouterez, adapterez et supprimerez les classes et le code nécessaire et vous compléterez la méthode `commanderBurger` de la classe `Restaurant` ainsi que le `main` de la classe `Main`.
 
@@ -1753,6 +1823,10 @@ public class Main {
 }
 ```
 
+<div style="text-align:center">
+![Fabrique 6]({{site.baseurl}}/assets/TP4/Fabrique6.svg){: width="80%" }
+</div>
+
 Cette solution aurait pu être implémentée en utilisant trois méthodes fabriques, mais nous avons préféré séparer la logique de création des objets dans une classe à part et l'injecter dans la classe `Zone` plutôt que de créer plusieurs sous-classes zones spécifiques (comme auparavant). Cette approche permet de renforcer l'application du principe **d'inversion des dépendances**, par ailleurs.
 
 Il est très facile d'adapter cette solution afin de **changer de famille utilisée dans la zone** (si besoin), sans avoir besoin de changer le code de notre fabrique. De plus, on respecte ainsi le principe ouvert/fermé, car si on souhaite créer une nouvelle famille de classes (un nouveau type de zone), on a juste à ajouter une nouvelle fabrique. Cela permet aussi de limiter la duplication de code si un autre type de **service** utilise notre fabrique.
@@ -1817,7 +1891,7 @@ public class Main {
 }
 ```
 
-À noter qu'il est bien sûr possible de coupler cela avec des **singletons** pour les fabriques **concrètes** :
+À noter qu'il est bien sûr possible de coupler cela avec des **singletons** pour les fabriques **concrètes** (même si ce 'nest pas du tout obligatoire et qu'on pourrait s'en passer):
 
 ```java
 public class ZonePlaineFactory implements AbstractZoneFactory {
@@ -1872,9 +1946,19 @@ public class Main {
 }
 ```
 
+<div style="text-align:center">
+![Fabrique 7]({{site.baseurl}}/assets/TP4/Fabrique7.svg){: width="80%" }
+</div>
+
 L'objectif du pattern **Fabrique Abstraite** est donc de disposer d'une abstraction (classe abstraite ou interface) qui définie le contrat que doivent remplir les fabriques concrètes. Pour chaque famille de classes, on crée une fabrique concrète qui implémente cette interface ou étend cette classe abstraite. Ensuite, toutes les classes qui souhaitent utiliser cette fabrique doivent dépendre de la **fabrique abstraite** et non plus d'une fabrique concrète. Couplé à de l'injection de dépendances, il est très facile de complètement changer le comportement d'une classe.
 
 C'est globalement l'idée du pattern **Stratégie** que vous avez déjà vu lors du dernier TP, mais appliqué pour des fabriques ! On pourrait voir la **fabrique abstraite** comme une **stratégie de création**.
+
+On peut généraliser ce **pattern** ainsi :
+
+<div style="text-align:center">
+![Fabrique Abstraite 1]({{site.baseurl}}/assets/TP4/FabriqueAbstraite1.svg){: width="80%" }
+</div>
 
 <div class="exercise">
 
@@ -1921,7 +2005,7 @@ C'est globalement l'idée du pattern **Stratégie** que vous avez déjà vu lors
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `fabrique4`. Cette application permet de construire des **donjons** pour un jeu-vidéo. Un **donjon** est constitué de différentes salles (des pièces avec des coffres, des pièces avec des ennemis, des pièces avec des énigmes, des pièces avec des boss...). Une salle peut être complétée par le joueur ou non. Chaque donjon possède un algorithme de génération qui créé les salles dans un ordre précis (avec un peu d'aléatoire). Il est constitué de "salles normales", de "salles spéciales" et d'une "salle finale", dans cet ordre :
+1. Ouvrez le paquetage `fabrique4`. Cette application permet de construire des **donjons** pour un jeu-vidéo. Un **donjon** est constitué de différentes salles (des pièces avec des coffres, des pièces avec des ennemis, des pièces avec des énigmes, des pièces avec des boss...). Une salle peut être complétée par le joueur ou non. Chaque donjon possède un algorithme de génération qui permet de l'agrandir en créant de nouvelles salles. Quand on étend le donjon, on crée et on ajoute des salles au donjon dans un ordre précis (avec un peu d'aléatoire). Une extension du donjon ajoute des "salles normales", des "salles spéciales" et une "salle finale", dans cet ordre :
 
     * Une salle normale
 
@@ -1943,7 +2027,7 @@ C'est globalement l'idée du pattern **Stratégie** que vous avez déjà vu lors
 
     * Salle finale : Une salle avec un Boss avec un niveau entre 1 à 10.
 
-2. La configuration actuelle du Donjon est un mode "facile". On aimerait introduire le mode "difficile" (toujours en gardant le même algorithme/ordre de création des salles) où on a les correspondances suivantes :
+2. Actuellement, le donjon est configuré pour créer des configurations de salles "faciles" quand il est étendu. On aimerait introduire le fait d'étendre le donjon avec des configurations de salles "difficile" (toujours en gardant le même algorithme/ordre de création des salles) où on a les correspondances suivantes :
 
     * Salle normale : Une salle contenant entre 20 et 40 ennemis.
 
@@ -1951,13 +2035,13 @@ C'est globalement l'idée du pattern **Stratégie** que vous avez déjà vu lors
 
     * Salle finale : Une salle avec un Boss de niveau 80.
 
-    Refactorez votre code afin qu'il soit possible de construire des donjons "difficiles" en plus de donjons "facile" (qui est la configuration de salles implémentée par défaut).
+    Refactorez votre code afin qu'il soit possible d'étendre le donjon avec des salles "difficiles" en plus du fait de pouvoir l'étendre avec des salles faciles (qui est la configuration des salles ajoutées actuellement dans la méthode `etendreDonjon`).
 
-3. Dans le `Main`, construisez des donjons difficiles et des donjons faciles.
+3. Dans le `Main`, adaptez le code pour faire en sorte d'étendre le donjon d'exemple fournit une fois avec des salles **faciles** et deux fois avec des salles **difficiles**. 
 
 4. La méthode `getInfosSalle` doit permettre de récupérer les informations d'une salle du donjon "à l'extérieur". Cependant, son implémentation est problématique... Par exemple, que pourriez-vous faire comme action indésirable en récupérant une salle d'un `Donjon` dans le `Main` (indice : seul le donjon devrait avoir le droit de modifier l'état de ses salles) ? Quel pattern que nous avons vu pendant ce TP pourriez-vous appliquer pour régler ce problème ? Refactorez votre code dans ce sens.
 
-5. Réalisez le **diagramme de classes de conception** de votre application.
+5. Générez le **diagramme de classes de conception** de votre application (avec `IntelliJ`).
 
 </div>
 
@@ -2021,58 +2105,66 @@ Nous sommes dans un cas particulier où tout le programme va utiliser une seule 
 
 Mais comment faire cela sans modifier l'instance concrète utilisée un peu partout ? (car elle est surement injectée à différentes classes). La réponse est simple : il faut regrouper la logique qui instancie la classe concrètement utilisée à un seul endroit. On peut ensuite mettre un système de paramétrage qui permet de changer la fabrique utilisée facilement. Les classes qui ont besoin de cette fabrique iront donc appeler une méthode de cette classe afin de récupérer la fabrique concrète à utiliser.
 
-La question est de savoir : où placer ce bout de code ? Il n'y a pas vraiment de réponse officielle à cette question. Cela pourrait être dans une classe indépendante avec une méthode statique ou bien un singleton.
+La question est de savoir : où placer ce bout de code ? Il n'y a pas vraiment de réponse officielle à cette question. Cela pourrait être dans une classe indépendante (qui gère la **configuration** du programme) avec une méthode statique. Parfois, on retrouve aussi ce bout de code directement dans la **Fabrique Abstraite** par exemple en stockant l'instance de la fabrique concrète utilisée, couplé à une méthode statique permettant de renvoyer l'instance. C'est une sorte de dérivé du pattern `Singleton` (sans l'être réellement).
 
-Par exemple, imaginons que nous souhaitons que notre **Jeu**, à un instant T, ne fonctionne qu'avec des **Plaines** ou qu'avec des **Châteaux Hantés**. On pourrait alors utiliser un **fichier de configuration** qui va lire automatiquement le type de la fabrique à instancier. Et regrouper la logique de récupération de la fabrique utilisée dans une nouvelle classe :
+Pour gérer l'instance concrète utilisée, on pourrait par exemple utiliser un **fichier de configuration** : lors de son initialisation, le code chargé de déterminer quelle est la fabrique à utiliser va lire dans ce fichier pour déterminer quelle fabrique instancier et stocker.
+
+Par exemple, imaginons que nous souhaitons que notre **Jeu**, à un instant T, ne fonctionne qu'avec des **Plaines** ou qu'avec des **Châteaux Hantés** :
 
 ```java
-public class Configuration {
+//On transforme notre interface en classe abstraite, car elle contient du code
+//Elle stocke l'instance cocnrète de la fabrique utilisée
+public abstract class AbstractZoneFactory {
 
-  private static Configuration INSTANCE;
+private static AbstractZoneFactory INSTANCE;
 
-  private AbstractZoneFactory factory;
-
-  private Configuration() {
-    try {
-        InputStream stream = ClassLoader.getSystemResourceAsStream("config/zone_factory_config.txt");
-        if(stream == null) {
-            throw new RuntimeException("Fichier de configuration manquant.");
-        }
-        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-        String config = reader.readLine();
-        switch (config) {
-          //Dans cette implémentation, les fabriques concrètes ne sont plus des singletons (on peut donc les instancier)
-          case "plaine":
-            factory = new ZonePlaineFactory();
-            break;
-          case "chateau":
-            factory = new ZoneChateauHanteFactory();
-            break;
-          default: throw new IllegalArgumentException(String.format("Type de zone inconnue : %s", config));
-        }
+  public synchronized static AbstractZoneFactory getInstance() {
+    if(INSTANCE == null) {
+      try {
+            InputStream stream = ClassLoader.getSystemResourceAsStream("config/zone_factory_config.txt");
+            if(stream == null) {
+                throw new RuntimeException("Fichier de configuration manquant.");
+            }
+            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+            String config = reader.readLine();
+            switch (config) {
+              case "plaine" :
+                INSTANCE = new ZonePlaineFactory();
+                break;
+              case "chateau" : 
+                INSTANCE = new ZoneChateauHanteFactory();
+                break;
+              default: 
+                throw new IllegalArgumentException(String.format("Type de zone inconnue : %s", config));
+            }
       } catch (IOException e) {
           throw new RuntimeException("Fichier de configuration corrompu.");
       }
-  }
-
-  public synchronized static Configuration getInstance() {
-    if(INSTANCE == null) {
-      INSTANCE = new Configuration();
     }
     return INSTANCE;
   }
 
-  public AbstractZoneFactory getZoneFactoryInstance() {
-      return factory;
-  }
+  public abstract Monstre creerMonstreNormal();
 
+  public abstract Boss creerBoss(); 
+
+  public abstract Item creerRecompense();
+
+}
+
+//Les fabriques concrètes ne sont plus des singletons (si c'était le cas avant)
+public class ZonePlaineFactory extends AbstractZoneFactory {
+  ...
+}
+
+public class ZoneChateauHanteFactory extends AbstractZoneFactory {
+  ...
 }
 
 public class Main {
 
   public static void main(String[]args) {
-    Configuration config = Configuration.getInstance();
-    Zone zone = new Zone(config.getZoneFactoryInstance());
+    Zone zone = new Zone(AbstractZoneFactory.getInstance());
     zone.traverserZoneNormale();
     zone.ouvrirCoffre();
     zone.ouvrirCoffre();
@@ -2082,31 +2174,33 @@ public class Main {
 }
 ```
 
-On notera qu'on a retiré le fait d'utiliser un **singleton** sur chaque fabrique : on récupérera l'instance initialisée dans `Configuration`.
-
-Avec l'ajout de cette classe, on peut utiliser un fichier `src/main/resources/config/zone_factory_config.txt` qui contient simplement une chaîne de caractères. Par exemple : `chateau`. Il n'y a plus qu'à changer le texte contenu dans le fichier de configuration pour changer la fabrique concrète manipulée dans le programme (par contre, il faudra que les classes se servent de `Configuration`). Par ailleurs, avec cette solution, changer de fabrique ne nécessite plus de recompiler le code !
-
 <div style="text-align:center">
-![Fabrique 4]({{site.baseurl}}/assets/TP4/Fabrique4.svg){: width="80%" }
+![Fabrique 8]({{site.baseurl}}/assets/TP4/Fabrique8.svg){: width="80%" }
 </div>
 
-Bien sûr, cette implémentation n'est pas forcément souhaitable dans tous les contextes ! C'est seulement si, à un instant T, on veut uniquement avoir un seul type de fabrique concrète utilisée pour tout le programme et pouvoir en changer facilement (d'ailleurs, l'exemple donné est discutable, parce qu'on voudrait à priori pouvoir utiliser plusieurs types de zones différentes à la fois).
+La fabrique abstraite vise un fichier qui se situe dans `src/main/resources/config/zone_factory_config.txt` qui contient simplement une chaîne de caractères. Par exemple : `chateau`.
+
+Avec cette nouvelle implémentation, il n'y a plus qu'à changer le contenu du fichier de configuration pour changer la fabrique concrète manipulée dans tout le programme. On notera qu'il n'y a plus besoin que les sous-classes soient des **singletons** (si c'était le cas avant), car elles sont instanciées par la fabrique abstraite. Cependant, on pourrait empêcher le fait que n'importe qui puisse instancier les fabriques concrètes en passant leurs constructeurs en visibilité `protected` (afin que seule `AbstractZoneFactory` puisse les instancier).
+
+Bien sûr, cette implémentation n'est pas forcément souhaitable dans tous les contextes ! C'est seulement si, à un instant T, on veut uniquement avoir un seul type de fabrique concrète utilisé et pouvoir en changer facilement (d'ailleurs, l'exemple donné est discutable, parce qu'on voudrait à priori pouvoir créer plusieurs types de zones différentes à la fois).
+
+De plus, on peut aussi discuter du fait que le code gérant la sélection de la fabrique concrète soit stocké dans la fabrique abstraite. Pour obtenir une meilleure répartition des **responsabilités**, on pourrait éventuellement déléguer cela à une classe dédiée (et donc laisser la fabrique abstraite comme une interface).
 
 <div class="exercise">
 
 1. Créez un dossier `config` dans `src/main/resources/` puis, à l'intérieur de ce nouveau répertoire, un fichier `monstres_factory_config.txt`.
 
-2. Refactorez le code de l'application afin qu'il soit possible d'utiliser soit les pokémons, soit les digimons en changeant simplement le contenu du fichier de configuration. Vous devrez probablement ajouter une nouvelle classe.
+2. Refactorez le code de l'application afin qu'il soit possible d'utiliser soit les pokémons, soit les digimons en changeant simplement le contenu du fichier de configuration.
 
 3. Testez les deux versions !
 
-4. Réalisez le **diagramme de classes de conception** de votre application. Pour ne pas trop perdre de temps, ne mettez que deux pokémons, deux digimons (et les fabriques), ne détaillez pas les méthodes et les attributs. Le plus important est de faire apparaitre les associations et les dépendances.
+4. Générez le **diagramme de classes de conception** de votre application (avec `IntelliJ`).
 
 </div>
 
 Ici, cet exemple d'implémentation avec un fichier de configuration n'est bien sûr pas spécifique au pattern fabrique abstraite. On pourrait l'appliquer sur tout ce qui est abstrait et qui n'a besoin que d'une instance lors de l'exécution du programme. On pourra faire la même chose couplée au pattern **Stratégie** par exemple.
 
-La gestion des instances concrète se fait généralement au travers d'un outil dédié appelé **conteneur de dépendances** (ou **conteneur IoC**) qui est utilisé dans de nombreux frameworks. Il permet notamment de limiter la multiplication des singletons inutilement.
+La gestion des instances concrète se fait généralement au travers d'un outil dédié appelé **conteneur de dépendances** (ou **conteneur IoC**) qui est utilisé dans de nombreux **frameworks**. Il permet notamment de limiter la multiplication des singletons inutiles.
 
 ### Intégrer une librairie externe
 
@@ -2584,209 +2678,7 @@ Si vous n'avez pas tout compris, n'hésitez pas à en parler avec votre enseigna
 
 </div>
 
-## Gestion des dépendances
-
-Suite à l'exercice des combats de monstres, nous avons vu qu'il est possible de charger une **fabrique** spécifique en fonction d'un paramétrage (fichier de configuration) sans avoir besoin de recompiler le programme si on souhaite changer de fabrique. On pourrait étendre cette idée afin de gérer les diverses **dépendances** d'un programme.
-
-En effet, lorsqu'on applique rigoureusement les différents principes de qualité étudiés depuis le début de ce cours, on se retrouve avec divers objets qui dépendent d'**abstractions** (classes abstraites, interfaces). Commes des **fabriques abstraites**, des **stratégies**, etc.
-
-Lors de l'exécution du programme, on pourrait vouloir ne travailler qu'avec un ensemble de services qui seront injectés comme dépendances des objets qui en ont besoin. Et pouvoir changer cet ensemble très facilement, au travers d'un fichier de configuration.
-
-On pourrait alors avoir des classes dont le rôle est d'**instancier**, **contenir** et **servir** les **dépendances** des objets du programme. En bref, un **conteneur de dépendances**. Cela serait, en quelque sorte, une **stratégie** de création et de stockage des dépendances du programme. L'idée globale est de rendre les dépendances de notre programme fortement modulables !
-
-Ce genre d'outil s'appelle **conteneur de dépendance**.
-
-Voici ce qu'on pourrait mettre en place :
-
-```java
-interface ServiceA {
-  void actionA();
-}
-
-interface ServiceB {
-  void actionB();
-}
-
-public class ServiceA1 implements ServiceA {
-
-  public void actionA() {
-    //...
-  }
-
-}
-
-public class ServiceA2 implements ServiceA {
-
-  public void actionA() {
-    //...
-  }
-
-}
-
-public class ServiceB1 implements ServiceB {
-
-  public void actionB() {
-    //...
-  }
-
-}
-
-public class ServiceB2 implements ServiceB {
-
-  public void actionB() {
-    //...
-  }
-
-}
-
-interface ConteneurService {
-  ServiceA getServiceA();
-  ServiceB getServiceB();
-}
-
-public class ConteneurServiceV1 implements ConteneurService {
-
-  private ServiceA serviceA;
-
-  private ServiceB serviceB;
-
-  public ConteneurServiceV1() {
-    this.serviceA = new ServiceA1();
-    this.serviceB = new ServiceB1();
-  }
-
-  @Override
-  public ServiceA getServiceA() {
-    return serviceA;
-  }
-
-  @Override
-  public ServiceB getServiceB() {
-    return serviceB;
-  }
-
-}
-
-public class ConteneurServiceV2 implements ConteneurService {
-
-  private ServiceA serviceA;
-
-  private ServiceB serviceB;
-
-  public ConteneurServiceV2() {
-    this.serviceA = new ServiceA2();
-    this.serviceB = new ServiceB2();
-  }
-
-  @Override
-  public ServiceA getServiceA() {
-    return serviceA;
-  }
-
-  @Override
-  public ServiceB getServiceB() {
-    return serviceB;
-  }
-
-}
-
-public class Configuration {
-
-  private static Configuration INSTANCE;
-
-  private ConteneurService conteneurServices;
-
-  private Configuration() {
-    try {
-      InputStream stream = ClassLoader.getSystemResourceAsStream("config/services.txt");
-      if(stream == null) {
-          throw new RuntimeException("Fichier de configuration manquant.");
-      }
-      BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-      String config = reader.readLine();
-      switch(config) {
-        case "V1":
-          conteneurServices = new ConteneurServiceV1();
-          break;
-        case "V2":
-          conteneurServices = new ConteneurServiceV2();
-          break:
-        default:
-          throw new RuntimeException("Conteneur inconnu.");
-      }
-    } catch (IOException e) {
-        throw new RuntimeException("Fichier de configuration corrompu.");
-    }
-  }
-
-  public synchronized static Configuration getInstance() {
-    if(INSTANCE == null) {
-      INSTANCE = new Configuration();
-    }
-    return INSTANCE;
-  }
-
-  public ConteneurService getConteneurService() {
-    return conteneurServices;
-  }
-
-}
-
-public class Main {
-
-  public static void main(String[]args) {
-    ConteneurService conteneurService = Configuration.getInstance().getConteneurService();
-    ServiceA s1 = conteneurService.getServiceA();
-    s1.action();
-
-    ServiceB s2 = conteneurService.getServiceB();
-    s2.action();
-  }
-
-}
-```
-
-<div style="text-align:center">
-![Conteneur 1]({{site.baseurl}}/assets/TP4/Conteneur1.svg){: width="40%" }
-</div>
-
-Dans l'exemple ci-dessus, un simple changement dans le fichier de configuration permet de changer les services concrets utilisés pour `ServiceA` et `ServiceB`. Par exemple, un de ces services pourrait être une classe "repository" permettant de faire des requêtes sur une base de données. On pourrait en avoir en utilisant une base de données, un autre un fichier `XML`.
-
-C'est un peu comme si toutes les dépendances stockées dans ces **conteneurs** étaient de singletons, car on ne manipule qu'une seule instance de ces objets dans le programme. Mais cela est encore mieux qu'un singleton, parce que ces classes (`ServiceA1`, `ServiceB1`, etc.) ne sont pas construites comme des singletons ! Elles sont donc beaucoup plus adaptées aux tests unitaires. Comme mentionné dans la section "Avertissement" sur les singletons, nous préférerons utiliser des conteneurs plutôt que de multiplier les singletons dans l'application.
-
-Il peut y avoir au besoin **plusieurs conteneurs abstraits différents** (au besoin) et la classe `Configuration` peut contenir divers types de **conteneur**. Ou bien, pour une meilleure répartition des responsabilités, on peut avoir **plusieurs classes de configurations** qui sont chargées de gérer un fichier de configuration et un type de conteneur abstrait spécifiques.
-
-Même si cette implémentation permet déjà une meilleure modularité, il existe un outil encore plus puissant (et adapté) pour gérer les dépendances : le **conteneur IoC**.
-
-Pour le moment, revenons à nos moutons et appliquons ce que nous avons appris sur un nouvel exercice.
-
-<div class="exercise">
-
-1. Ouvrez le paquetage `conteneur`. Il s'agit de la dernière application que vous aviez refactoré lors du dernier TP permettant de simuler l'inscription et la connexion d'un utilisateur. L'application est fonctionnelle. Lancez-la et explorer aussi les différentes classes mises à disposition si vous ne vous souvenez pas bien de son fonctionnement.
-
-2. Actuellement, si nous voulons changer la méthode de stockage (en mémoire ou dans un fichier) il faut éditer à la main `IHMUtilisateur` pour remplacer les paramètres injectés lors de la création de `ServiceUtilisateur`. On souhaite rendre cela plus modulable. Refactorez le code pour mettre en place et utiliser un **conteneur abstrait** et des **conteneurs concrets** pour gérer les deux types de méthodes stockage disponibles dans l'application. La configuration du type stockage utilisé devra se faire via un fichier de configuration textuel simple. Aussi, vos conteneurs doivent stocker les **dépendances** qu'ils gèrent et ne pas les ré-instancier à chaque fois qu'on en a besoin. 
-
-    Normalement, vous n'avez pas besoin de toucher la classe `ServiceUtilisateur`, mais il faudra probablement adapter le code de `IHMUtilisateur`.
-
-3. Testez que tout fonctionne en alternant entre les deux méthodes de stockage via votre fichier de configuration.
-
-4. Il existe divers autres services que nous utilisons fréquemment dans l'application : le service permettant d'envoyer des mails (mailer) et le service de chiffrement (hasheur). On voudrait définir deux configurations correspondantes à ces deux "familles" de services :
-
-    * Une configuration "basique" utilisant `ServiceMailerBasique` et `HasheurMD5`.
-
-    * Une configuration "sécurisée" utilisant `ServiceMailerChiffre` et `HasheurSHA256`.
-
-    Là aussi, on veut pouvoir facilement switcher entre ces deux configurations sans changer le code, mais en éditant simplement un fichier de configuration.
-
-    Mettez en place un système pour pouvoir gérer ces deux configurations. Encore une fois, vous ne devriez pas avoir besoin d'éditer d'autres classes que `IHMUtilisateur` après la mise en place de votre système. Vous pouvez créer une nouvelle **classe de configuration** dédiée.
-
-5. Vérifiez que tout fonctionne en alternant entre les deux configurations.
-
-</div>
-
-Le **conteneur IoC** que nous allons utiliser dans le prochain TP permet de ne pas multiplier les conteneurs (et classes et fichiers de configurations) pour gérer les différentes dépendances en centralisant le tout. C'est une sorte de super-conteneur hautement configurable gérant des dépendances.
-
-## Combinaison de patterns (bonus)
+## Combinaison de patterns
 
 ### Décorateur avec Builder
 
@@ -2797,14 +2689,14 @@ Comme l'objet créé avec le pattern **Décorateur** peut être assez complexe, 
 Reprenons l'exemple des salariés et essayons d'appliquer ces deux patterns :
 
 ```java
-interface I_Salarie {
+interface SalarieInterface {
   double getSalaire();
   //Prototype
-  I_Salarie clone();
+  SalarieInterface clone();
 }
 
 
-class Salarie implements I_Salarie {
+class Salarie implements SalarieInterface {
 
   private double salaire;
 
@@ -2820,66 +2712,73 @@ class Salarie implements I_Salarie {
     return salaire;
   }
 
-  public I_Salarie clone() {
+  public SalarieInterface clone() {
     return new Salarie(this);
   }
 
 }
 
-abstract class SalarieDecorator implements I_Salarie {
-   protected I_Salarie salarie;
+abstract class SalarieDecorateur implements SalarieInterface {
 
-   public SalarieDecorator(I_Salarie salarie) {
-      this.salarie = salarie;
-   }
+  //Visibilité "protected" nécessaire afin que les classe filles puissent le cloner
+  //On aurait aussi pu définir une méthode protected qui clone le salarie délégué (pour que les classes filles ne puissent pas le modifier)
+  protected SalarieInterface salarie;
+
+  public SalarieDecorateur(SalarieInterface salarie) {
+    this.salarie = salarie;
+  }
+
+  public double getSalaire() {
+    return salarie.getSalaire();
+  }
 }
 
-class ChefProjet extends SalarieDecorator {
+class SalarieChefProjet extends SalarieDecorateur {
 
   private int nombreProjetsGeres;
 
-  public ChefProjet(I_Salarie salarie, int nombreProjetsGeres) {
+  public SalarieChefProjet(SalarieInterface salarie, int nombreProjetsGeres) {
     super(salarie);
     this.nombreProjetsGeres = nombreProjetsGeres;
   }
 
-  private ChefProjet(ChefProjet chefProjetACopier) {
+  private SalarieChefProjet(SalarieChefProjet chefProjetACopier) {
     this(chefProjetACopier.salarie.clone(), chefProjetACopier.nombreProjetsGeres);
   }
 
   @Override
   public double getSalaire() {
-    return salarie.getSalaire() + 100 * (nombreProjetsGeres);
+    return super.getSalaire() + 100 * (nombreProjetsGeres);
   }
 
   @Override
-  public I_Salarie clone() {
-    return new ChefProjet(this);
+  public SalarieInterface clone() {
+    return new SalarieChefProjet(this);
   }
 
 }
 
-class ResponsableDeStagiaires extends SalarieDecorator {
+class SalarieResponsableDeStagiaires extends SalarieDecorateur {
 
   private int nombreStagiairesGeres;
 
-  public ResponsableDeStagiaires(I_Salarie salarie, int nombreStagiairesGeres) {
+  public SalarieResponsableDeStagiaires(I_Salarie salarie, int nombreStagiairesGeres) {
     super(salarie);
     this.nombreStagiairesGeres = nombreStagiairesGeres;
   }
 
-  private ResponsableDeStagiaires(ResponsableDeStagiaires responsableACopier) {
+  private SalarieResponsableDeStagiaires(SalarieResponsableDeStagiaires responsableACopier) {
     this(responsableACopier.salarie.clone(), responsableACopier.nombreStagiairesGeres);
   }
 
   @Override
   public double getSalaire() {
-    return salarie.getSalaire() + 50 * nombreStagiairesGeres;
+    return super.getSalaire() + 50 * nombreStagiairesGeres;
   }
 
   @Override
   public I_Salarie clone() {
-    return new ResponsableDeStagiaires(this);
+    return new SalarieResponsableDeStagiaires(this);
   }
 
 }
@@ -2890,38 +2789,45 @@ On peut créer : des salariés simples, des salariés chefs de projet, des salar
 Sans pattern créateur, il faut donc créer les salariés ainsi :
 
 ```java
-I_Salarie salarie1 = new Salarie(2000);
-I_Salarie salarie2 = new SalarieChef(new Salarie(2500), 3);
-I_Salarie salarie3 = new ResponsableDeStagiaires(new Salarie(2300), 5);
-I_Salarie salarie4 = new SalarieChef(new ResponsableDeStagiaires(new Salarie(1800), 4), 2); 
+SalarieInterface salarie1 = new Salarie(2000);
+SalarieInterface salarie2 = new SalarieChefProjet(new Salarie(2500), 3);
+SalarieInterface salarie3 = new SalarieResponsableDeStagiaires(new Salarie(2300), 5);
+SalarieInterface salarie4 = new SalarieChefProjet(new SalarieResponsableDeStagiaires(new Salarie(1800), 4), 2); 
 ```
 
-Essayons d'abord d'utiliser le concept de **Fabrique** :
+Essayons de mettre en place un `Builder` !
+
+Attention, l'implémentation de `Builder` que nous allons présenter est une **adaptation** du pattern `Builder` tel que nous l'avons présenté dans l'exercice correspondant, afin de rendre le tout compatible avec le décorateur :
+
+  * La classe `Builder` va se trouver à l'extérieur de `Produit`. Autrement, cela voudrait dire que `Produit` dépendrait de toutes ses classes filles, et cela ne semble pas très adéquat.
+
+  * Le produit va être instancié dès le départ puis augmenté au fur et à mesure alors que normalement, la cible du builder n'est instanciée que quand on appelle la méthode `build`.
+
+  * La méthode `build` renvoie une **copie** (clone) de l'instance (prototype).
+
+Bref, retenez simplement que c'est une adaptation un peu particulière et qui s'éloigne un peu du pattern de base. Néanmoins, nous allons voir que cette adaptation s'emboîte assez bien avec **décorateur** :
 
 ```java
-class SalarieFactory {
+class SalarieBuilder {
 
-  private static SalarieFactory INSTANCE;
+  private SalarieInterface salarie;
 
-  private SalarieFactory() {}
-
-  public static SalarieFactory getInstance() {
-    if(INSTANCE == null) {
-      INSTANCE = new SalarieFactory();
-    }
-    return INSTANCE;
+  public SalarieBuilder(double salaire) {
+    salarie = new Salarie(salaire);
   }
 
-  public Salarie creerSalarie(double salaire) {
-    return new Salarie(salaire);
+  public SalarieBuilder withChefProjet(int nombreProjetsGeres) {
+    salarie = new SalarieChefProjet(salarie, nombreProjetsGeres);
+    return this;
   }
 
-  public SalarieChef creerSalarieChef(I_Salarie salarie, double nombreProjetsGeres) {
-    return new SalarieChef(salarie, nombreProjetsGeres);
+  public SalarieBuilder withResponsableStagiaires(int nombreStagiairesGeres) {
+    salarie = new SalarieResponsableDeStagiaires(salarie, nombreStagiairesGeres);
+    return this;
   }
 
-  public ResponsableDeStagiaires creerResponsableStagiaires(I_Salarie salarie, int nombreStagiairesGeres) {
-    return new ResponsableDeStagiaires(salarie, nombreStagiairesGeres);
+  public SalarieInterface build() {
+    return salarie.clone();
   }
 
 }
@@ -2929,8 +2835,10 @@ class SalarieFactory {
 class Main {
 
   public static void main(String[]args) {
-    SalarieFactory factory = SalarieFactory.getInstance();
-    I_Salarie salarie = factory.creerSalarieChef(factory.creerResponsableStagiaires(factory.creerSalarie(1800), 4), 2);
+    SalarieInterface salarie1 = new SalarieBuilder(2000).build();
+    SalarieInterface salarie2 = new SalarieBuilder(2500).withChefProjet(3).build();
+    SalarieInterface salarie3 = new SalarieBuilder(2300).withResponsableStagiaires(5).build();
+    SalarieInterface salarie4 = new SalarieBuilder(1800).withChefProjet(4).withResponsableStagiaires(2).build();
   }
 
 }
@@ -2940,76 +2848,17 @@ class Main {
 
 1. Ouvrez le paquetage `decorateur`. Il s'agit du code complété de l'exercice sur les **produits** du dernier TP où on a mis en place un décorateur pour pouvoir avoir à la fois des produits avec des réductions et des produits qui périment bientôt.
 
-2. Comme dans l'exemple des salariés, refactorez votre code pour mettre en place une **fabrique** qui permettant de construire vos produits. Adaptez le code de `Main` en conséquence.
+2. Comme dans l'exemple des salariés, refactorez votre code pour mettre en place un **builder** (adapté) qui doit permettre de construire vos produits décorés. Adaptez le code de `Main` en conséquence.
 
 </div>
-
-Bon, cela fonctionne, mais à part déplacer la création dans la fabrique, il est toujours assez complexe de créer l'objet comme quand nous utilisions les `new` directement dans `Main`... Essayons plutôt avec un `Builder` !
-
-Attention, l'implémentation de `Builder` que nous allons présenter ici n'est pas un vrai `Builder` comme nous l'avons fait dans l'exercice des builders, mais plutôt une **adaptation** pour fonctionner avec le décorateur :
-
-  * La classe `Builder` va se trouver à l'extérieur de `Produit`. Autrement, cela voudrait dire que `Produit` dépendrait de toutes ses classes filles, et cela ne semble pas très adéquat.
-
-  * Le produit va être instancié dès le départ puis augmenté au fur et à mesure alors que normalement, la cible du builder n'est instanciée que quand on appelle la méthode `build`.
-
-  * La méthode `build` renvoie une **copie** (clone) de l'instance (prototype).
-
-Bref, retenez simplement que c'est une adaptation un peu particulière et qui s'éloigne quand même pas mal du pattern de base (retenez plutôt l'exemple des burgers). Néanmoins, nous allons voir que cette adaptation s'emboîte assez bien avec **décorateur** :
-
-```java
-class SalarieBuilder {
-
-  private I_Salarie salarie;
-
-  public SalarieBuilder(double salaire) {
-    salarie = new Salarie(salaire);
-  }
-
-  public SalarieBuilder withChefProjet(int nombreProjetsGeres) {
-    salarie = new SalarieChef(salarie, nombreProjetsGeres);
-    return this;
-  }
-
-  public SalarieBuilder withResponsableStagiaires(int nombreStagiairesGeres) {
-    salarie = new ResponsableDeStagiaires(salarie, nombreStagiairesGeres);
-    return this;
-  }
-
-  public I_Salarie build() {
-    return salarie.clone();
-  }
-
-}
-
-class Main {
-
-  public static void main(String[]args) {
-    I_Salarie salarie1 = new SalarieBuilder(2000).build();
-    I_Salarie salarie2 = new SalarieBuilder(2500).withChefProjet(3).build();
-    I_Salarie salarie3 = new SalarieBuilder(2300).withResponsableStagiaires(5).build();
-    I_Salarie salarie4 = new SalarieBuilder(1800).withChefProjet(4).withResponsableStagiaires(2).build();
-  }
-
-}
-```
-
-<div class="exercise">
-
-1. Refactorez le code de votre application pour ajouter un builder (adapté) pour vos **produits**.
-
-2. Adaptez le code de `Main` pour utiliser votre builder au lieu de la fabrique.
-
-</div>
-
-La version utilisant le **builder** semble bien plus pratique que la **fabrique** ! C'est donc une solution plutôt satisfaisante pour ce problème qu'on pourra retenir.
 
 ### Amélioration du générateur de donjons
 
-Et si nous essayons de combiner plus de patterns ? Nous avons l'application idéale pour ça : le générateur de donjon (paquetage `fabrique2`). Il y a déjà la **Fabrique Abstraite**, le **Singleton** et **Prototype**.
+Et si nous essayons de combiner plus de patterns ? Nous avons l'application idéale pour ça : le générateur de donjon (paquetage `fabrique4`). Il y a déjà la **Fabrique Abstraite**, peut-être le **Singleton** et **Prototype**.
 
 <div class="exercise">
 
-1. Nous aimerions maintenant que les différentes salles puissent être combinées afin de créer une "super-salle". Par exemple, on aimerait avoir des salles avec des coffres et 20 ennemis, une salle avec une énigme et un boss, une salle avec tout à la fois...! Quel design pattern pouvez-vous utiliser pour mettre en place une telle fonctionnalité ? La seule méthode qui nous intéresse est `toString`. À l'affichage, on doit avoir les informations de toutes les salles qui composent une salle. Après vos refactoring, vous devrez logiquement adapter le code de vos deux **fabriques**. Pour la configuration **difficile**, on souhaite faire des changements supplémentaires :
+1. Nous aimerions maintenant que les différentes salles puissent être combinées afin de créer une "super-salle". Par exemple, on aimerait avoir des salles avec des coffres et 20 ennemis, une salle avec une énigme et un boss, une salle avec tout à la fois...! Quel design pattern pouvez-vous utiliser pour mettre en place une telle fonctionnalité ? La seule méthode qui nous intéresse est `toString`. À l'affichage, on doit avoir les informations de toutes les salles qui composent une salle. Après vos refactoring, vous devrez logiquement adapter le code de vos deux **fabriques**. Pour la configuration des salles **difficile**, on souhaite faire des changements supplémentaires :
 
     * Une salle normale est une salle avec un coffre et entre 20 et 40 ennemis.
 
@@ -3019,15 +2868,47 @@ Et si nous essayons de combiner plus de patterns ? Nous avons l'application idé
 
 2. On aimerait améliorer la création des **salles** composées. Par exemple, avec un **Builder** (adapté)...?
 
-3. Testez que tout fonctionne.
+3. On aimerait pouvoir changer dynamiquement la manière dont est étendu le donjon. C'est-à-dire, la manière et l'ordre dont les salles sont ajoutées. Par exemple, on considérera que l'algorithme actuel de répartition des salles est celui "classique". On a maintenant un algorithme dit "hardcore" qui répartit les nouvelles salles ajoutées ainsi :
 
-4. Mettez à jour le diagramme de classes de conception que vous aviez initialement produit pour cette application.
+    * Quatre salles spéciales
+
+    * Aléatoirement : soit deux salles normales (50%), soit deux salles spéciale (50%).
+
+    * Quatre salles finales
+
+    On doit pouvoir changer dynamiquement l'algorithme utilisé. C'est-à-dire étendre une fois avec l'algorithme classique, une autre fois avec l'algorithme hardcore, etc. D'autres algorithmes pourraient être ajoutés dans le futur.
+
+4. Si ce n'est pas déjà fait, adaptez le `Main` et testez que tout fonctionne.
+
+5. Rafraichissez le diagramme de classes de conception que vous aviez initialement généré pour cette application.
 </div>
 
 ## Conclusion
 
 Vous maîtrisez maintenant l'ensemble des **design patterns créateurs** ainsi que le pattern **Adaptateur**. Ce TP vous a aussi logiquement permis de renforcer votre pratique de la conception logicielle et de l'application des principes `SOLID`.
 
-Toutefois, attention à ne pas attraper la **patternité** : c'est une maladie connue qu'attrapent les jeunes ingénieurs logiciels qui découvrent les **design patterns**. Cela se manifeste par une envie de mettre des patterns partout à tort et à travers même quand cela n'est pas nécessaire. Comme pour le **singleton**, il faut se poser la question de savoir si un pattern est nécessaire ou non. Normalement, l'utilisation d'un pattern vient assez naturellement quand on souhaite résoudre le problème qui lui est lié. Si son utilisation semble un peu trop forcée, c'est que cela est probablement injustifié, ou pire : on est en train de construire un [anti-pattern](https://en.wikipedia.org/wiki/Anti-pattern), une solution non-seulement injustifiée, mais aussi qui a plus de conséquences négatives que positives. Bref, comme toujours, il faut avoir une vision générale et sur le long terme !
+Toutefois, attention à ne pas attraper la **patternite** : c'est une maladie connue qu'attrapent les jeunes ingénieurs logiciels qui découvrent les **design patterns**. Cela se manifeste par une envie de mettre des patterns partout à tort et à travers même quand cela n'est pas nécessaire. Comme pour le **singleton**, il faut se poser la question de savoir si un pattern est nécessaire ou non. Normalement, l'utilisation d'un pattern vient assez naturellement quand on souhaite résoudre le problème qui lui est lié. Si son utilisation semble un peu trop forcée, c'est que cela est probablement injustifié, ou pire : on est en train de construire un [anti-pattern](https://en.wikipedia.org/wiki/Anti-pattern), une solution non-seulement injustifiée, mais aussi qui a plus de conséquences négatives que positives. Bref, comme toujours, il faut avoir une vision générale et sur le long terme !
 
-Dans le prochain TP, nous verrons comment encore plus optimiser la **gestion des dépendances** de notre programme en construisant notre propre **conteneur IoC** afin de gérer dynamiquement les dépendances majeures de nos applications.
+Bref, ce TP conclut le cours de **Qualité de développement** du semestre 3. 
+
+Voici un bilan de ce que vous avez appris :
+
+* Utilisation plus poussée de git, notamment plus conforme à ce qui est attendu dans le monde professionnel : travail sur plusieurs branches, nommage des commits et des branches, merging, réécriture d'historique, automatisation de tâches et déploiement continu.
+
+* Modélisation de la conception d'un logiciel à l'aide de **diagrammes de classes** et de **séquences**.
+
+* Organisation de l'**architecture** d'un logiciel en différentes **couches**.
+
+* Les principes `SOLID` et le **refactoring** de code. Deux notions clés à retenir : exploiter les **compositions d'objets** (faibles ou fortes) notamment à la place de certains héritages et préférer **dépendre d'abstractions plutôt que de classes concrètes**.
+
+* La notion de **design pattern** et les différents patterns **créateurs** : `singleton`, `builder`, `prototype`, `méthode fabrique` et `fabrique abstraite`.
+
+* D'autres **design patterns** : `stratégie`, `décorateur`, `adaptateur`.
+
+Concernant les **desgin patterns GoF**, n'hésitez pas à aller consulter (et expérimenter) ceux que nous n'avons pas abordés dans ce cours (ceux comportementaux et architecturaux). Pour rappel, il y en a 23 ! Il peut être particulièrement intéressant d'aller voir **observateur**, **état**, **itérateur**, **visiteur**.
+
+Il peut aussi être intéressant que vous vous renseignez sur le concept de **conteneur de dépendances** (ou bien **cotneneur IoC**) qui est au coeur de nobmreux frameworks et permet de gérer facilement toutes les dépendances d'un programme sans avoir besoin de gérer pleins de singletons (et donc, être moins [STUPID](https://openclassrooms.com/en/courses/5684096-use-mvc-solid-principles-and-design-patterns-in-java/6417836-avoid-stupid-practices-in-programming)!).
+
+Vous devez maîtriser toutes ces notions abordées dans ce cours pour la suite de votre cursus (et de votre carrière) et ainsi développer dès le début d'un projet un code d'une certaine qualité qui prévoit l'évolutivité et la modularité du projet sur le long terme. Si vous réussissez à appliquer cela, vous n'êtes alors plus un "simple" codeur, mais véritablement un "développeur", voir un **ingénieur logiciel**. 
+
+À vous de jouer !
