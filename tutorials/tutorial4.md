@@ -820,7 +820,7 @@ class Service {
 ```
 
 <div style="text-align:center">
-![Prototype 1]({{site.baseurl}}/assets/TP4/Prototype1.svg){: width="50%" }
+![Prototype 1]({{site.baseurl}}/assets/TP4/Prototype1.svg){: width="40%" }
 </div>
 
 
@@ -976,7 +976,7 @@ public class Zone {
 ```
 
 <div style="text-align:center">
-![Fabrique 1]({{site.baseurl}}/assets/TP4/Fabrique1.svg){: width="80%" }
+![Fabrique 1]({{site.baseurl}}/assets/TP4/Fabrique1.svg){: width="65%" }
 </div>
 
 Ici l'application est donc configurée pour faire apparaître des monstres **Slimes**. `Arene` et `Zone` sont fortement dépendants de `Slime`, car elles instancient des objets `Slime` dans son code. Et on ne peut pas simplement injecter les dépendances, car ces classes ont besoin de directement instancier ces objets dans leurs méthodes ! Si nous devons changer pour utiliser des objets `Fantome` à la place, il faut modifier ces deux classes !
@@ -1028,7 +1028,7 @@ public class Zone {
 Maintenant, si nous voulons utiliser des monstres type `Fantome` à la place de `Slime`, nous n'avons à faire ce changement que dans **une seule classe** : `MonstreFactory` !
 
 <div style="text-align:center">
-![Fabrique 2]({{site.baseurl}}/assets/TP4/Fabrique2.svg){: width="80%" }
+![Fabrique 2]({{site.baseurl}}/assets/TP4/Fabrique2.svg){: width="65%" }
 </div>
 
 Ici, il semble judicieux de transformer `MonstreFactory` en **Singleton** et de l'injecter comme dépendance pour éviter que chaque service instancie une version de la fabrique :
@@ -1103,13 +1103,13 @@ public class Main {
 ```
 
 <div style="text-align:center">
-![Fabrique 3]({{site.baseurl}}/assets/TP4/Fabrique3.svg){: width="80%" }
+![Fabrique 3]({{site.baseurl}}/assets/TP4/Fabrique3.svg){: width="65%" }
 </div>
 
 En bref, il est possible de généraliser ce modèle ainsi :
 
 <div style="text-align:center">
-![Fabrique Simple 2]({{site.baseurl}}/assets/TP4/FabriqueSimple2.svg){: width="80%" }
+![Fabrique Simple 2]({{site.baseurl}}/assets/TP4/FabriqueSimple2.svg){: width="50%" }
 </div>
 
 Il est possible d'adapter et d'étendre ce modèle :
@@ -1219,13 +1219,13 @@ public class Main {
 ```
 
 <div style="text-align:center">
-![Fabrique 4]({{site.baseurl}}/assets/TP4/Fabrique4.svg){: width="80%" }
+![Fabrique 4]({{site.baseurl}}/assets/TP4/Fabrique4.svg){: width="40%" }
 </div>
 
 Ou bien, de manière plus générale :
 
 <div style="text-align:center">
-![Fabrique Simple 3]({{site.baseurl}}/assets/TP4/FabriqueSimple3.svg){: width="80%" }
+![Fabrique Simple 3]({{site.baseurl}}/assets/TP4/FabriqueSimple3.svg){: width="50%" }
 </div>
 
 Dans **certains contextes**, il est éventuellement possible de diviser la méthode de création en plusieurs méthodes :
@@ -1402,7 +1402,7 @@ public class Main {
 ```
 
 <div style="text-align:center">
-![Fabrique 5]({{site.baseurl}}/assets/TP4/Fabrique5.svg){: width="80%" }
+![Fabrique 5]({{site.baseurl}}/assets/TP4/Fabrique5.svg){: width="40%" }
 </div>
 
 Le pattern s'appelle **méthode fabrique**, car la méthode abstraite implémentée par les classes filles sont elles-mêmes des fabriques ! D'ailleurs, dans l'exemple, nous avons supprimé `MonstreFactory` qui ne nous est plus utile.
@@ -1410,7 +1410,7 @@ Le pattern s'appelle **méthode fabrique**, car la méthode abstraite implément
 On peut généraliser ce **pattern** ainsi :
 
 <div style="text-align:center">
-![Méthode Fabrique 1]({{site.baseurl}}/assets/TP4/MethodeFabrique1.svg){: width="80%" }
+![Méthode Fabrique 1]({{site.baseurl}}/assets/TP4/MethodeFabrique1.svg){: width="65%" }
 </div>
 
 Cependant, que se passe-t-il si plusieurs services différents doivent créer des **slimes** ou des **fantômes** (par exemple, la classe `Arene` que nous avions au début) ? Il faut vraiment créer une sous-classe par type de service et de monstre ? Non, rassurez-vous ! C'est justement un point que permettra de régler la **fabrique abstraite**.
@@ -1957,7 +1957,7 @@ C'est globalement l'idée du pattern **Stratégie** que vous avez déjà vu lors
 On peut généraliser ce **pattern** ainsi :
 
 <div style="text-align:center">
-![Fabrique Abstraite 1]({{site.baseurl}}/assets/TP4/FabriqueAbstraite1.svg){: width="80%" }
+![Fabrique Abstraite 1]({{site.baseurl}}/assets/TP4/FabriqueAbstraite1.svg){: width="60%" }
 </div>
 
 <div class="exercise">
@@ -2175,7 +2175,7 @@ public class Main {
 ```
 
 <div style="text-align:center">
-![Fabrique 8]({{site.baseurl}}/assets/TP4/Fabrique8.svg){: width="80%" }
+![Fabrique 8]({{site.baseurl}}/assets/TP4/Fabrique8.svg){: width="70%" }
 </div>
 
 La fabrique abstraite vise un fichier qui se situe dans `src/main/resources/config/zone_factory_config.txt` qui contient simplement une chaîne de caractères. Par exemple : `chateau`.
@@ -2460,7 +2460,7 @@ public final class RottenTomatoesDataExtractor {
 ```
 
 <div style="text-align:center">
-![Adaptateur 1]({{site.baseurl}}/assets/TP4/Adaptateur1.svg){: width="80%" }
+![Adaptateur 1]({{site.baseurl}}/assets/TP4/Adaptateur1.svg){: width="70%" }
 </div>
 
 Tout est donc parfait ! Non...?
@@ -2567,7 +2567,7 @@ public class Main {
 ```
 
 <div style="text-align:center">
-![Adaptateur 2]({{site.baseurl}}/assets/TP4/Adaptateur2.svg){: width="80%" }
+![Adaptateur 2]({{site.baseurl}}/assets/TP4/Adaptateur2.svg){: width="90%" }
 </div>
 
 Maintenant, revenons à nos petits monstres...

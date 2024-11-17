@@ -21,11 +21,7 @@ Cours de Qualité de développement (R3.04) en 2ème année d'IUT.
 ### Qualité du code et de la conception
 
 1. [TP3](tutorials/tutorial3) -- Les principes SOLID
-
-<!--
-[TP4](tutorials/tutorial4) -- Les design patterns créateurs
-[TP5](tutorials/tutorial5) -- Le conteneur de dépendances IoC
--->
+2. [TP4](tutorials/tutorial4) -- Les design patterns créateurs
 
 ## Synthèses de cours
 
