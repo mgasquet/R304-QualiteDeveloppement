@@ -2459,6 +2459,10 @@ public final class RottenTomatoesDataExtractor {
 }
 ```
 
+<div style="text-align:center">
+![Adaptateur 1]({{site.baseurl}}/assets/TP4/Adaptateur1.svg){: width="80%" }
+</div>
+
 Tout est donc parfait ! Non...?
 
 Peut-être que vous vous en êtes rendu compte, mais il est impossible de faire fonctionner ce code avec notre classe `ClientFilm`, elle attend des objets de type `Extracteur`. Or, les classes `SensCritiqueAPI` et `RottenTomatoesDataExtractor` n'implémentent pas cette interface (ce qui est normal : elles viennent d'une librairie externe). Et de toute manière les classes en question ont un fonctionnement un peu différent. Les types d'objets retournés et les méthodes utilisées ne sont pas forcément compatibles. Et il est bien sûr **impossible de modifier le code de ces classes** (toujours parce qu'elles viennent d'une librairie que vous ne pouvez pas éditer). Ces classes ne peuvent pas être utilisées en l'état, dans notre système.
@@ -2563,7 +2567,7 @@ public class Main {
 ```
 
 <div style="text-align:center">
-![Adaptateur 1]({{site.baseurl}}/assets/TP4/Adaptateur1.svg){: width="80%" }
+![Adaptateur 2]({{site.baseurl}}/assets/TP4/Adaptateur2.svg){: width="80%" }
 </div>
 
 Maintenant, revenons à nos petits monstres...
