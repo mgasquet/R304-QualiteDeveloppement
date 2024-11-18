@@ -126,10 +126,10 @@ public class Service {
 
   private static Service INSTANCE;
 
-  //Interdit l'instanciation en dehors de la classe Service
+  // Interdit l'instanciation en dehors de la classe Service
   private Service() {}
 
-  //On appelle systématiquement cette méthode pour récupérer l'instance "globale"
+  // On appelle systématiquement cette méthode pour récupérer l'instance "globale"
   public synchronized static Service getInstance() {
     if(INSTANCE == null) {
       INSTANCE = new Service();
@@ -314,7 +314,7 @@ Si cette méthode pourrait paraître plus "facile" à mettre en place et à util
 
     * Injecter le `FakeServiceMail` quand on instancie `ServiceUtilisateur` et `ServiceCommande` dans nos tests unitaires.
 
-    Un tel refactoring est-il possible ici? Essayez de refactorer et relevez les problèmes que vous rencontrez.
+    Un tel refactoring est-il possible ici ? Essayez de refactorer et relevez les problèmes que vous rencontrez.
 
 </div>
 
@@ -645,8 +645,7 @@ class Exemple {
     //Des getters ici...
 
     public Exemple build() {
-      Exemple exemple = new Exemple(this);
-      return exemple;
+      return new Exemple(this);
     }
   }
 
@@ -669,7 +668,7 @@ class Exemple {
 
 **NB :** Certains IDE (dont IntelliJ) permettent de générer automatiquement le code d'un Builder à partir d'une classe. Sur IntelliJ, il faut faire un clic droit sur le constructeur de la classe pour laquelle vous souhaitez générer le builder, puis aller dans _Replace constructor with builder_. Le Builder sera généré comme une classe à part. Pour la rendre interne à la classe cible, il suffira juste de faire un Drag & Drop du Builder dans sa classe cible.
 
-**Remarque :** lorsqu'il s'agit d'une hiérarchie de classes (par héritage) pour laquelle il faut créer des builders, la solution n'est pas forcément évidente. En effet, il faut faire une hiérarchie de builders pour éviter la duplication de code, tout en respectant le principe LSP, à savoir : les méthodes **with...** doivent retourner le bon type de builder. Pour plus de détails voir le [le dernier TP](https://gitlabinfo.iutmontp.univ-montp2.fr/dev-objets/tp11) de Développement Orienté Objets de première année.
+**Remarque :** lorsqu'il s'agit d'une hiérarchie de classes (par héritage) pour laquelle il faut créer des builders, la solution n'est pas forcément évidente. En effet, il faut faire une hiérarchie de builders pour éviter la duplication de code, tout en respectant le principe LSP, à savoir : les méthodes **with...** doivent retourner le bon type de builder. Pour plus de détails voir le [dernier TP](https://gitlabinfo.iutmontp.univ-montp2.fr/dev-objets/tp11) du cours de Développement Orienté Objets de première année.
 
 </div>
 
@@ -859,7 +858,7 @@ class ClasseFille extends ClasseMere {
 Solutions :
 
 ```java
-//Avec la visibilité protected, seules les classes du même paquetages et les classes qui étendent ClasseMere ont accès à l'attribut/méthode. Il faut donc bien gérer les paquetages pour s'assurer qu'une classe ne puisse pas y acceder alors qu'elle n'est pas sensée pouvoir.
+// Avec la visibilité protected, seules les classes du même paquetage et les classes qui étendent ClasseMere ont accès à l'attribut/méthode. Il faut donc bien gérer les paquetages pour s'assurer qu'une classe ne puisse pas y accéder alors qu'elle n'est pas censée pouvoir.
 abstract class ClasseMere {
 
   //Permet à la classe fille de lire (mais d'aussi écrire) l'attribut valeur
@@ -1564,10 +1563,9 @@ Testons maintenant votre maîtrise du pattern **méthode fabrique** avec un nouv
 
   On est dans une conception où un burger contient tous les éléments dont il peut être composé. S'il n'est pas composé d'un élément (par exemple, pas de fromage), cet élément vaudra simplement `null`. Ce n'est pas nécessairement une très bonne conception, mais elle est acceptable dans le cadre de l'exercice (et vous ne devrez pas modifier cette logique).
 
-  Actuellement, l'application fonctionne avec un seul type de classe `CheeseBurger` et `EggBurger` (qui sont les burgers du restaurant **Nîmois**). Une **fabrique simple** a été mise en place (mais vous allez peut-être devoir changer cela...?)
+  Actuellement, l'application fonctionne avec un seul type de classe `CheeseBurger` et `EggBurger` (qui sont les burgers du restaurant **Nîmois**). Une **fabrique simple** a été mise en place (mais vous allez peut-être devoir changer cela... ?)
 
   **On souhaite garder les différentes méthodes des burgers**, notamment la méthode `preparerIngredients`. Les ingrédients **ne doivent pas être initialisés via le constructeur**, mais lors de l'appel à la méthode `preparerIngredients` par le restaurant (c'est ce qu'on pourrait qualifier de **lazy loading**).
-
 
 3. Faites en sorte qu'il soit possible de gérer les deux types de restaurants : les **restaurants Nîmois** et les **restaurants Montpelliérains**. Vous ajouterez, adapterez et supprimerez les classes et le code nécessaire et vous compléterez la méthode `commanderBurger` de la classe `Restaurant` ainsi que le `main` de la classe `Main`.
 
@@ -1891,7 +1889,7 @@ public class Main {
 }
 ```
 
-À noter qu'il est bien sûr possible de coupler cela avec des **singletons** pour les fabriques **concrètes** (même si ce 'nest pas du tout obligatoire et qu'on pourrait s'en passer):
+À noter qu'il est bien sûr possible de coupler cela avec des **singletons** pour les fabriques **concrètes** (même si ce 'nest pas du tout obligatoire et qu'on pourrait s'en passer) :
 
 ```java
 public class ZonePlaineFactory implements AbstractZoneFactory {
@@ -2053,11 +2051,11 @@ Revenons une dernière fois sur l'application de gestion de restaurants afin de 
 
 1. Ouvrez le paquetage `fabrique3` puis `v2`. Il s'agit de la deuxième partie de l'exercice. Comme vous pouvez le constater, les différents ingrédients qui étaient jusqu'ici des **chaînes de caractères** sont remplacés par des **objets**.
 
-  On a toujours les mêmes recettes que précédemment dans les restaurants **Nîmois** et les restaurants **Montpellierains** :
+ On a toujours les mêmes recettes que précédemment dans les restaurants **Nîmois** et les restaurants **Montpelliérains** :
 
   * Nîmes : 
     * **Cheese Burger** : Boeuf Charolais, Sauce à burger de Nîmes et Cheddar.
-    * **Egg Burger** : Poulet Gardois, Sauce à burger de Nîmes et Oeuf de poule.
+    * **Egg Burger** : Poulet Gardois, Sauce à burger de Nîmes et Œuf de poule.
 
   * Montpellier :
     * **Cheese Burger** : Boeuf Limousin, Sauce à burger de Montpellier et Maroilles.
@@ -2065,7 +2063,7 @@ Revenons une dernière fois sur l'application de gestion de restaurants afin de 
 
 2. Commencez par importer et adapter votre ancien code afin de faire en sorte qu'il soit toujours possible de gérer les deux types de restaurants : les **restaurants Nîmois** et les **restaurants Montpelliérains** (la seule chose qui change sont les ingrédients qui sont maintenant des objets). Importez et/ou complétez aussi le code du `Main` et assurez-vous que tout fonctionne.
 
-3. On remarque que les restaurants Nîmois et les restaurants Montpellierains utilisent **un ensemble d'ingrédients spécifique en local** pour la composition de leurs burgers :
+3. On remarque que les restaurants Nîmois et les restaurants Montpelliérains utilisent **un ensemble d'ingrédients spécifique en local** pour la composition de leurs burgers :
 
   * Nîmes :
     * Bœuf : Bœuf Charolais
@@ -2112,8 +2110,8 @@ Pour gérer l'instance concrète utilisée, on pourrait par exemple utiliser un 
 Par exemple, imaginons que nous souhaitons que notre **Jeu**, à un instant T, ne fonctionne qu'avec des **Plaines** ou qu'avec des **Châteaux Hantés** :
 
 ```java
-//On transforme notre interface en classe abstraite, car elle contient du code
-//Elle stocke l'instance cocnrète de la fabrique utilisée
+// On transforme notre interface en classe abstraite, car elle contient du code
+// Elle stocke l'instance concrète de la fabrique utilisée
 public abstract class AbstractZoneFactory {
 
 private static AbstractZoneFactory INSTANCE;
@@ -2232,15 +2230,15 @@ public class ClientFilm {
   }
 
   private boolean filmExiste(String nomFilm) {
-    //Code complexe permettant de déterminer si un film est bien repertorié sur Allociné
+    // Code complexe permettant de déterminer si un film est bien répertorié sur Allociné
   }
 
   private double recupererNoteMoyenneUtilisateurs(String nomFilm) {
-    //Code complexe permettant de récupérer la note moyenne du film, donnée par les utilisateurs sur Allociné
+    // Code complexe permettant de récupérer la note moyenne du film, donnée par les utilisateurs sur Allociné
   }
 
   private String[] recupererAvis(String nomFilm) {
-    //Code complexe permettant de récupérer les avis des utilisateurs à propos du Film sur Allociné
+    // Code complexe permettant de récupérer les avis des utilisateurs à propos du Film sur Allociné
   }
 
 }
@@ -2633,8 +2631,8 @@ Quand une classe enfant étend la classe mère, elle peut alors préciser la cla
 Petite démonstration sur `PatternmonAdapter` et `PatternmonEauAdapter` :
 
 ```java 
-//On définit le paramètre générique T lors de la déclaration de la classe
-//Je suis assuré que T est un objet qui étend la classe Patternmon
+// On définit le paramètre générique T lors de la déclaration de la classe
+// et on est assuré que T soit un objet qui étend la classe Patternmon
 public abstract class PatternmonAdapter<T extends Patternmon> implements Monstre {
 
     //Peut-être n'importe quel patternmon.
@@ -2862,7 +2860,7 @@ Et si nous essayons de combiner plus de patterns ? Nous avons l'application idé
 
 <div class="exercise">
 
-1. Nous aimerions maintenant que les différentes salles puissent être combinées afin de créer une "super-salle". Par exemple, on aimerait avoir des salles avec des coffres et 20 ennemis, une salle avec une énigme et un boss, une salle avec tout à la fois...! Quel design pattern pouvez-vous utiliser pour mettre en place une telle fonctionnalité ? La seule méthode qui nous intéresse est `toString`. À l'affichage, on doit avoir les informations de toutes les salles qui composent une salle. Après vos refactoring, vous devrez logiquement adapter le code de vos deux **fabriques**. Pour la configuration des salles **difficile**, on souhaite faire des changements supplémentaires :
+1. Nous aimerions maintenant que les différentes salles puissent être combinées afin de créer une "super-salle". Par exemple, on aimerait avoir des salles avec des coffres et 20 ennemis, une salle avec une énigme et un boss, une salle avec tout à la fois... ! Quel design pattern pouvez-vous utiliser pour mettre en place une telle fonctionnalité ? La seule méthode qui nous intéresse est `toString`. À l'affichage, on doit avoir les informations de toutes les salles qui composent une salle. Après vos refactoring, vous devrez logiquement adapter le code de vos deux **fabriques**. Pour la configuration des salles **difficile**, on souhaite faire des changements supplémentaires :
 
     * Une salle normale est une salle avec un coffre et entre 20 et 40 ennemis.
 
@@ -2870,13 +2868,13 @@ Et si nous essayons de combiner plus de patterns ? Nous avons l'application idé
 
     * La salle finale est une salle avec une énigme, un boss de niveau 80 et 30 ennemis.
 
-2. On aimerait améliorer la création des **salles** composées. Par exemple, avec un **Builder** (adapté)...?
+2. On aimerait améliorer la création des **salles** composées. Par exemple, avec un **Builder** (adapté)... ?
 
 3. On aimerait pouvoir changer dynamiquement la manière dont est étendu le donjon. C'est-à-dire, la manière et l'ordre dont les salles sont ajoutées. Par exemple, on considérera que l'algorithme actuel de répartition des salles est celui "classique". On a maintenant un algorithme dit "hardcore" qui répartit les nouvelles salles ajoutées ainsi :
 
     * Quatre salles spéciales
 
-    * Aléatoirement : soit deux salles normales (50%), soit deux salles spéciale (50%).
+    * Aléatoirement : soit deux salles normales (50%), soit deux salles spéciales (50%).
 
     * Quatre salles finales
 
@@ -2909,9 +2907,9 @@ Voici un bilan de ce que vous avez appris :
 
 * D'autres **design patterns** : `stratégie`, `décorateur`, `adaptateur`.
 
-Concernant les **desgin patterns GoF**, n'hésitez pas à aller consulter (et expérimenter) ceux que nous n'avons pas abordés dans ce cours (ceux comportementaux et architecturaux). Pour rappel, il y en a 23 ! Il peut être particulièrement intéressant d'aller voir **observateur**, **état**, **itérateur**, **visiteur**.
+Concernant les **design patterns GoF**, n'hésitez pas à aller consulter (et expérimenter) ceux que nous n'avons pas abordés dans ce cours (ceux comportementaux et architecturaux). Pour rappel, il y en a 23 ! Il peut être particulièrement intéressant d'aller voir **observateur**, **état**, **itérateur**, **visiteur**.
 
-Il peut aussi être intéressant que vous vous renseignez sur le concept de **conteneur de dépendances** (ou bien **cotneneur IoC**) qui est au coeur de nobmreux frameworks et permet de gérer facilement toutes les dépendances d'un programme sans avoir besoin de gérer pleins de singletons (et donc, être moins [STUPID](https://openclassrooms.com/en/courses/5684096-use-mvc-solid-principles-and-design-patterns-in-java/6417836-avoid-stupid-practices-in-programming)!).
+Il peut aussi être intéressant que vous vous renseignez sur le concept de **conteneur de dépendances** (ou bien **conteneur IoC**) qui est au cœur de nombreux frameworks et permet de gérer facilement toutes les dépendances d'un programme sans avoir besoin de gérer pleins de singletons (et donc, être moins [STUPID](https://openclassrooms.com/en/courses/5684096-use-mvc-solid-principles-and-design-patterns-in-java/6417836-avoid-stupid-practices-in-programming)!).
 
 Vous devez maîtriser toutes ces notions abordées dans ce cours pour la suite de votre cursus (et de votre carrière) et ainsi développer dès le début d'un projet un code d'une certaine qualité qui prévoit l'évolutivité et la modularité du projet sur le long terme. Si vous réussissez à appliquer cela, vous n'êtes alors plus un "simple" codeur, mais véritablement un "développeur", voir un **ingénieur logiciel**. 
 
