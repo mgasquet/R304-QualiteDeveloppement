@@ -41,15 +41,11 @@ Nous verrons aussi un autre pattern **structurel** appelé **adaptateur**. En fa
 
 ## Le pattern Singleton
 
-L'idée du pattern **Singleton** est très simple : on souhaite garantir **qu'il n'existe qu'une seule instance d'une classe dans le programme et fournir un point d'accès global à cette instance**. Dès qu'un autre objet souhaite utiliser cette classe, il utilise l'instance "globale" définie dans l'application et **ne doit pas pouvoir en instancier lui-même** (l'utilisation de **new** doit être bloqué en dehors de la classe). L'instance globale doit être accessible à n'importe quel endroit de l'application (à travers une méthode qui l'expose).
+L'idée du pattern **Singleton** est très simple : on souhaite garantir **qu'il n'existe qu'une seule instance d'une classe dans le programme et fournir un point d'accès global à cette instance**. Les autres objets/classes de l'application utilisent l'instance "globale" et **ne doivent pas pouvoir l'instancier directement** (l'utilisation de **new** doit être bloqué en dehors de la classe). L'instance globale doit être accessible à travers une méthode qui l'expose et qui a une visibilité appropriée.
 
-Pour faire cela, il existe deux solutions :
+On pourrait penser que l'utilisation d'une **classe statique** (toutes les méthodes et attributs statiques), pourrait aussi faire l'affaire. C'est une solution à éviter, nous verrons pourquoi par la suite.
 
-* Utilisation d'une **classe statique** (toutes les méthodes et attributs statiques). C'est une solution à éviter, nous verrons pourquoi par la suite.
-
-* Utilisation du pattern **Singleton**.
-
-Voyons un exemple :
+Commençons avec un exemple :
 
 ```java
 
@@ -104,9 +100,7 @@ public class ClasseExemple {
 ![Singleton 1]({{site.baseurl}}/assets/TP4/Singleton1.svg){: width="40%" }
 </div>
 
-Dans cet exemple, nous voyons qu'il y a au moins deux instances de la classe **Service** qui sont générées. Une dans `Client` et une autre dans `ClasseExemple`. S'il n'y a aucun intérêt à avoir plusieurs instances de la classe `Service`, nous pouvons alors la transformer en **Singleton** afin que toutes les classes qui souhaitent utiliser passent par la même instance.
-
-Pour cela, il y a trois changements à réaliser dans la classe qu'on veut transformer en **Singleton** :
+Dans cet exemple, il y a au moins deux instances de la classe **Service** qui sont générées. Une dans `Client` et une autre dans `ClasseExemple`. S'il n'y a aucun intérêt à avoir plusieurs instances de la classe `Service`, nous pouvons alors la transformer en **Singleton** afin que toutes les classes qui souhaitent utiliser passent par la même instance. Pour cela, il y a trois changements à réaliser dans la classe qu'on veut transformer en **Singleton** :
 
 * Changer la **visibilité** du ou des **constructeurs** de la classe en **privé**. Ainsi, plus aucune autre entité pourra créer des instances de cette classe (hormis la classe elle-même).
 
@@ -189,9 +183,9 @@ Ce pattern s'avère très utile quand nous avons une classe (généralement un s
 
 ### Mise en application
 
-Commençons par une mise en application assez simple dans un cas qui montre l'intérêt d'utiliser un `Singleton` dans le contexte où deux objets différents dépendent de l'état d'une classe. Une classe `A` modifie l'état de `Service` et une classe `B` a besoin de connaître les modifications qu'a effectuées `A` dans `Service` pour fonctionner. Les deux classes `A` et `B` doivent alors dépendre de la même instance de `Service` !
+Commençons par une mise en application assez simple dans un cas qui montre l'intérêt d'utiliser un `Singleton` dans le contexte où deux objets différents dépendent de l'état d'une classe. Un objet de classe `A` modifie l'état de `Service` et un objet de classe `B` a besoin de connaître les modifications qu'a effectuées `A` dans `Service` pour fonctionner. Les deux classes `A` et `B` doivent alors dépendre de la même instance de `Service` !
 
-Aussi, imaginons une classe d'accès à une base de données : celle-ci initialise une connexion vers la base qui peut prendre plusieurs secondes. Il serait inconscient d'instancier cette classe à chaque endroit où on en a besoin (cela dégraderait les performances !). On va plutôt utiliser un **Singleton**.
+Aussi, imaginons une classe d'accès à une base de données : celle-ci initialise une connexion vers la base qui peut prendre plusieurs secondes. Il serait inconscient d'instancier cette classe à chaque endroit où on en a besoin (cela dégraderait les performances !). On va plutôt utiliser un **Singleton**.
 
 <div class="exercise">
 
