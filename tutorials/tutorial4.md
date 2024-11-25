@@ -1549,8 +1549,8 @@ Testons maintenant votre maîtrise du pattern **méthode fabrique** avec un nouv
 
 2. Un **restaurant** peut créer différents types de **Burger** : des **Cheese Burgers** et des **Egg Burgers**. L'application fonctionne actuellement pour un **restaurant Nîmois** qui fabrique les burgers ainsi :
 
-  * **Cheese Burger** : Boeuf Charolais, Sauce à burger de Nîmes et Cheddar.
-  * **Egg Burger** : Poulet Gardois, Sauce à burger de Nîmes et Oeuf de poule.
+   * **Cheese Burger** : Boeuf Charolais, Sauce à burger de Nîmes et Cheddar.
+   * **Egg Burger** : Poulet Gardois, Sauce à burger de Nîmes et Oeuf de poule.
 
   Le restaurant cherche à se diversifier en ouvrant différents restaurants dans d'autres villes. Tous les restaurants devront proposer les **mêmes burgers**, mais les recettes pourront changer localement, dans une ville. Un nouveau restaurant a ouvert à **Montpellier** et propose les recettes suivantes :
 
