@@ -1579,14 +1579,14 @@ Ce pattern va notamment permettre de créer et de sélectionner différents type
 
 1. Ouvrez le paquetage `fabrique2` puis `v2`. Il s'agit de la deuxième partie du **jeu de stratégie type heroic fantasy**. De nouvelles classes sont à votre disposition :
 
-  * Diverses **armes de siège** : chaque armée peut construire des armes de siège spécifiques avec lesquelles elle peut attaquer.
+   * Diverses **armes de siège** : chaque armée peut construire des armes de siège spécifiques avec lesquelles elle peut attaquer.
 
-  * Divers **sorts** : chaque armée possède un **sort** de prédilection qu'elle peut déclencher.
+   * Divers **sorts** : chaque armée possède un **sort** de prédilection qu'elle peut déclencher.
 
 2. En plus du recrutement, chaque **armée** peut construire un type d'arme de siège spécifique et utiliser un type de sort spécifique.
 
-  * L'armée **humaine** construit des **canons** et utilise le sort **boule de feu** avec une puissance de feu de 10.
-  * L'armée **orc** construit des **catapultes** et utilise le sort **aveuglement** avec une durée de 30 secondes.
+   * L'armée **humaine** construit des **canons** et utilise le sort **boule de feu** avec une puissance de feu de 10.
+   * L'armée **orc** construit des **catapultes** et utilise le sort **aveuglement** avec une durée de 30 secondes.
 
 3. Commencez par importer le code que vous aviez déjà réalisé afin de mettre en place le **recrutement** des unités (depuis le package `v1`).
 
