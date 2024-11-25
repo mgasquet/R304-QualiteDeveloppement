@@ -874,7 +874,10 @@ abstract class ClasseMere {
 
 2. Vérifiez que le test unitaire passe toujours.
 
-3. Réalisez le **diagramme de séquence des interactions** permettant de modéliser ce qu'il se passe lors de l'éxécution du code suivant :
+</div>
+
+<!--
+Réalisez le **diagramme de séquence des interactions** permettant de modéliser ce qu'il se passe lors de l'éxécution du code suivant :
 
     ```java
     Banque banque = new Banque();
@@ -883,8 +886,7 @@ abstract class ClasseMere {
     CompteBancaire compte = banque.getInformationsCompteNumero(numeroCompte);
     compte.crediter(100);
     ```
-
-</div>
+-->
 
 L'objectif du pattern **prototype** est donc de définir un moyen d'obtenir des **copies** d'un objet, notamment dans un contexte où vos classes manipulent des abstractions (comme c'est souvent le cas quand on applique les principes **SOLID** et les **design patterns**). Si on souhaite pouvoir copier un objet abstrait manipulé, chaque classe concrète de la hiérarchie doit définir sa propre logique de copie via la méthode `cloner`.
 
