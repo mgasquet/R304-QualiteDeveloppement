@@ -927,7 +927,7 @@ public class Slime implements Monstre {
 
   @Override
   public void combattre(Joueur joueur) {
-    System.out.println("Code de combat du slime contre le joueur...");
+    System.out.println("Code de combat du slime contre le joueur..." + joueur.getNom());
   }
 
 }
@@ -936,7 +936,7 @@ public class Fantome implements Monstre {
 
   @Override
   public void combattre(Joueur joueur) {
-    System.out.println("Code de combat du fantôme contre le joueur...");
+    System.out.println("Code de combat du fantôme contre le joueur..." + joueur.getNom());
   }
 
 }
