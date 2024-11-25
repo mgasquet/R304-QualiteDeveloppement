@@ -1420,8 +1420,8 @@ Nous allons tester votre compréhension du problème sur un premier exercice sim
 
 2. Une armée peut **recruter** des unités si elle possède assez d'argent. On souhaite pouvoir gérer **deux types d'armées** :
 
-  * L'armée **humaine** qui recrute des `Humain` avec 50 points de vie.
-  * L'armée **orc** qui recrute des `Orc` avec 80 points de vie.
+   * L'armée **humaine** qui recrute des `Humain` avec 50 points de vie.
+   * L'armée **orc** qui recrute des `Orc` avec 80 points de vie.
 
 3. Faites en sorte qu'il soit possible de gérer les deux types d'armées citées dans le point précédent. Vous ajouterez les classes et le code nécessaire et vous compléterez la méthode `recruter` de la classe `Armee` ainsi que le `main` de la classe `Jeu`. Chaque fois qu'une unité est créée dans une armée, elle est ajoutée à la liste des unités de l'armée.
 
@@ -1550,18 +1550,18 @@ Testons maintenant votre maîtrise du pattern **méthode fabrique** avec un nouv
 2. Un **restaurant** peut créer différents types de **Burger** : des **Cheese Burgers** et des **Egg Burgers**. L'application fonctionne actuellement pour un **restaurant Nîmois** qui fabrique les burgers ainsi :
 
    * **Cheese Burger** : Boeuf Charolais, Sauce à burger de Nîmes et Cheddar.
-   * **Egg Burger** : Poulet Gardois, Sauce à burger de Nîmes et Oeuf de poule.
+   * **Egg Burger** : Poulet Gardois, Sauce à burger de Nîmes et Œuf de poule.
 
-  Le restaurant cherche à se diversifier en ouvrant différents restaurants dans d'autres villes. Tous les restaurants devront proposer les **mêmes burgers**, mais les recettes pourront changer localement, dans une ville. Un nouveau restaurant a ouvert à **Montpellier** et propose les recettes suivantes :
+    Le restaurant cherche à se diversifier en ouvrant différents restaurants dans d'autres villes. Tous les restaurants devront proposer les **mêmes burgers**, mais les recettes pourront changer localement, dans une ville. Un nouveau restaurant a ouvert à **Montpellier** et propose les recettes suivantes :
 
-  * **Cheese Burger** : Boeuf Limousin, Sauce à burger de Montpellier et Maroilles.
-  * **Egg Burger** : Poulet de Bresse, Sauce à burger de Montpellier et Oeuf d'autruche.
+   * **Cheese Burger** : Boeuf Limousin, Sauce à burger de Montpellier et Maroilles.
+   * **Egg Burger** : Poulet de Bresse, Sauce à burger de Montpellier et Œuf d'autruche.
 
-  On est dans une conception où un burger contient tous les éléments dont il peut être composé. S'il n'est pas composé d'un élément (par exemple, pas de fromage), cet élément vaudra simplement `null`. Ce n'est pas nécessairement une très bonne conception, mais elle est acceptable dans le cadre de l'exercice (et vous ne devrez pas modifier cette logique).
+    On est dans une conception où un burger contient tous les éléments dont il peut être composé. S'il n'est pas composé d'un élément (par exemple, pas de fromage), cet élément vaudra simplement `null`. Ce n'est pas nécessairement une très bonne conception, mais elle est acceptable dans le cadre de l'exercice (et vous ne devrez pas modifier cette logique).
 
-  Actuellement, l'application fonctionne avec un seul type de classe `CheeseBurger` et `EggBurger` (qui sont les burgers du restaurant **Nîmois**). Une **fabrique simple** a été mise en place (mais vous allez peut-être devoir changer cela... ?)
+    Actuellement, l'application fonctionne avec un seul type de classe `CheeseBurger` et `EggBurger` (qui sont les burgers du restaurant **Nîmois**). Une **fabrique simple** a été mise en place (mais vous allez peut-être devoir changer cela... ?)
 
-  **On souhaite garder les différentes méthodes des burgers**, notamment la méthode `preparerIngredients`. Les ingrédients **ne doivent pas être initialisés via le constructeur**, mais lors de l'appel à la méthode `preparerIngredients` par le restaurant (c'est ce qu'on pourrait qualifier de **lazy loading**).
+    **On souhaite garder les différentes méthodes des burgers**, notamment la méthode `preparerIngredients`. Les ingrédients **ne doivent pas être initialisés via le constructeur**, mais lors de l'appel à la méthode `preparerIngredients` par le restaurant (c'est ce qu'on pourrait qualifier de **lazy loading**).
 
 3. Faites en sorte qu'il soit possible de gérer les deux types de restaurants : les **restaurants Nîmois** et les **restaurants Montpelliérains**. Vous ajouterez, adapterez et supprimerez les classes et le code nécessaire et vous compléterez la méthode `commanderBurger` de la classe `Restaurant` ainsi que le `main` de la classe `Main`.
 
@@ -2047,35 +2047,35 @@ Revenons une dernière fois sur l'application de gestion de restaurants afin de 
 
 1. Ouvrez le paquetage `fabrique3` puis `v2`. Il s'agit de la deuxième partie de l'exercice. Comme vous pouvez le constater, les différents ingrédients qui étaient jusqu'ici des **chaînes de caractères** sont remplacés par des **objets**.
 
- On a toujours les mêmes recettes que précédemment dans les restaurants **Nîmois** et les restaurants **Montpelliérains** :
+    On a toujours les mêmes recettes que précédemment dans les restaurants **Nîmois** et les restaurants **Montpelliérains** :
 
-  * Nîmes : 
-    * **Cheese Burger** : Boeuf Charolais, Sauce à burger de Nîmes et Cheddar.
-    * **Egg Burger** : Poulet Gardois, Sauce à burger de Nîmes et Œuf de poule.
+   * Nîmes : 
+     * **Cheese Burger** : Boeuf Charolais, Sauce à burger de Nîmes et Cheddar.
+     * **Egg Burger** : Poulet Gardois, Sauce à burger de Nîmes et Œuf de poule.
 
-  * Montpellier :
-    * **Cheese Burger** : Boeuf Limousin, Sauce à burger de Montpellier et Maroilles.
-    * **Egg Burger** : Poulet de Bresse, Sauce à burger de Montpellier et Oeuf d'autruche.
+   * Montpellier :
+     * **Cheese Burger** : Boeuf Limousin, Sauce à burger de Montpellier et Maroilles.
+     * **Egg Burger** : Poulet de Bresse, Sauce à burger de Montpellier et Oeuf d'autruche.
 
 2. Commencez par importer et adapter votre ancien code afin de faire en sorte qu'il soit toujours possible de gérer les deux types de restaurants : les **restaurants Nîmois** et les **restaurants Montpelliérains** (la seule chose qui change sont les ingrédients qui sont maintenant des objets). Importez et/ou complétez aussi le code du `Main` et assurez-vous que tout fonctionne.
 
 3. On remarque que les restaurants Nîmois et les restaurants Montpelliérains utilisent **un ensemble d'ingrédients spécifique en local** pour la composition de leurs burgers :
 
-  * Nîmes :
-    * Bœuf : Bœuf Charolais
-    * Poulet : Poulet Gardois
-    * Fromage : Cheddar
-    * Sauce : Sauce à burger de Nîmes
+   * Nîmes :
+     * Bœuf : Bœuf Charolais
+     * Poulet : Poulet Gardois
+     * Fromage : Cheddar
+     * Sauce : Sauce à burger de Nîmes
 
-  * Montpellier :
-    * Bœuf : Bœuf Limousin
-    * Poulet : Poulet de Bresse
-    * Fromage : Maroilles
-    * Sauce : Sauce à burger de Montpellier
+   * Montpellier :
+     * Bœuf : Bœuf Limousin
+     * Poulet : Poulet de Bresse
+     * Fromage : Maroilles
+     * Sauce : Sauce à burger de Montpellier
 
-  Globalement, à Nîmes, tous les burgers qui auront besoin de fromage utiliseront du Cheddar et à Montpellier du Maroilles. Pareil pour le bœuf, le poulet et la sauce.
+    Globalement, à Nîmes, tous les burgers qui auront besoin de fromage utiliseront du Cheddar et à Montpellier du Maroilles. Pareil pour le bœuf, le poulet et la sauce.
 
-  En sachant cela, il y a donc une duplication de code au niveau de la création des burgers. Par exemple, on sait très bien que chaque fois qu'un burger nîmois aura besoin de bœuf, on utilisera du bœuf Charolais. Pareil pour la sauce, etc. Et on veut pouvoir facilement changer le type de bœuf utilisé (ou autre) sans avoir à changer le code de tous les burgers !
+    En sachant cela, il y a donc une duplication de code au niveau de la création des burgers. Par exemple, on sait très bien que chaque fois qu'un burger nîmois aura besoin de bœuf, on utilisera du bœuf Charolais. Pareil pour la sauce, etc. Et on veut pouvoir facilement changer le type de bœuf utilisé (ou autre) sans avoir à changer le code de tous les burgers !
 
 4. Proposez une solution adéquate pour faire en sorte d'utiliser un ensemble d'ingrédient spécifique (qui soit facile de changer) pour la création des burgers selon le type de restaurant (Nîmes / Montpellier). Vous adapterez au besoin le `main` de la classe `Main`.
 
