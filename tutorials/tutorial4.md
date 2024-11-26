@@ -843,7 +843,7 @@ class ClasseFille extends ClasseMere {
   @Override
   public ClasseFille cloner() {
     //Erreur, valeur n'est pas accessible !
-    return this(valeur, texte);
+    return new ClasseFille(valeur, texte);
   }
 
 }
