@@ -837,11 +837,12 @@ class ClasseFille extends ClasseMere {
   private String texte;
 
   public ClasseFille(int valeur, String texte) {
-    super(valeur, texte);
+    super(valeur);
+    this.texte = texte;
   }
 
   @Override
-  public ClasseFille cloner() {
+  public ClasseFille clone() {
     //Erreur, valeur n'est pas accessible !
     return new ClasseFille(valeur, texte);
   }
