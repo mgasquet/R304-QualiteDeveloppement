@@ -1375,7 +1375,7 @@ public class ZonePlaine extends Zone {
 
 }
 
-public class ZoneChateauHante extends Service {
+public class ZoneChateauHante extends Zone {
 
   @Override
   protected Monstre creerMonstre() {
