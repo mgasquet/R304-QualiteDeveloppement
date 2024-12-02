@@ -1609,11 +1609,11 @@ Au-delà de l'aspect qualitatif, cette implémentation pourrait aussi poser un p
 
 Par exemple, si l'armée orc vainc l'armée humaine, les unités humaines et les canons restent (mais ils sont maintenant forcés de travailler pour les orcs) et les prochaines unités créées seront des orcs, les prochaines armes des catapultes et les prochains sorts des sorts d'aveuglement. En fait, l'armée **humaine** et l'armée **orc** ont leur propre **configuration** ! Et on voudrait pouvoir changer la **configuration** d'une armée dynamiquement.
 
-Il semble compliqué d'obtenir un tel fonctionnement facilement avec une **méthode fabrique**. La solution est alors de plutôt utiliser une **fabrique abstraite** !
+Il semble compliqué d'obtenir un tel fonctionnement facilement avec une **méthode fabrique**. La solution est alors de plutôt d'utiliser une **fabrique abstraite** !
 
 Reprenons l'exemple des **zones** qui créent et font combattre des **monstres** avec un joueur. Dans le jeu, il y a maintenant des **Boss** qui sont des monstres spéciaux pouvant charger une attaque spéciale et des **Items** qui ont des caractéristiques et un prix de revente.
 
-Dans une zone, un type de monstre "normal" est créé (comme avant) . On peut aussi traverser la zone du boss qui fait apparaitre deux monstres normaux et un boss et les font combattre. Quand le joueur ouvre un coffre dans cette zone, il obtient tout le temps un type d'item spécifique (pour simplifier).
+Dans une zone, un type de monstre "normal" est créé (comme avant). On peut aussi traverser la zone du boss qui fait apparaitre deux monstres normaux et un boss et les font combattre. Quand le joueur ouvre un coffre dans cette zone, il obtient tout le temps un type d'item spécifique (pour simplifier).
 
 Nous allons définir deux configurations ("biomes") de zones :
 
