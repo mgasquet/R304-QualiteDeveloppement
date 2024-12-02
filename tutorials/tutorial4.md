@@ -1256,6 +1256,11 @@ La première méthode (avec le bloc **switch**) pourrait ressembler à du mauvai
 
 Avec notre implémentation, il est éventuellement possible d'utiliser une autre marque de café qui possède son propre type d'expresso et de cappuccino (avec des graines de provenances différentes, et une autre marque de sucre). Il suffira de changer la fabrique sans impacter le reste des classes. Mais que se passerait-il si on souhaitait faire cohabiter ces différentes **marques** de café, avec leur propre machine ? Il est possible de régler ce problème avec les patterns **méthode fabrique** et/ou **fabrique abstraite** (nous détaillerons plutôt cela dans la **synthèse de cours** dédiée).
 
+**Remarque :** observez, que vis-à-vis du principe **Ouvert/Fermé** cette solution n'est pas idéale, car :
+* le client doit correctement passer en paramètre la bonne chaîne de caractère pour désigner le type de café "_expresso_" ou "_cappuccino_"
+* si on souhaite ajouter un nouveau type de café, il faudra modifier la fabrique.
+
+Nous allons régler ces problèmes lorsqu'on abordera le pattern **Méthode Fabrique**.
 ### Animaux
 
 Pour l'instant, testons votre compréhension de la **fabrique simple** :
@@ -1278,9 +1283,11 @@ Pour l'instant, testons votre compréhension de la **fabrique simple** :
 
 ## Le pattern Méthode Fabrique
 
-Le pattern **Méthode Fabrique** (Factory Method) va permettre à une **classe mère** souhaitant **créer un objet** (dérivé en plusieurs sous-types) lors d'une étape d'un traitement (dans une méthode) de **déléguer** l'instanciation (et donc le type concret utilisé) à ses **classes filles**. Ce pattern utilise le concept de **fabrique** au travers d'une **méthode abstraite** définie dans la classe mère et implémenté par les classes filles.
+Le pattern **Méthode Fabrique** (Factory Method) définit une **classe mère** pour la **création d'objets**, mais **délègue** l'instanciation (et donc le choix du type concret d'objet) à ses **classes filles**. Ce pattern utilise le concept de **fabrique** au travers d'une **méthode abstraite** définie dans la classe mère et implémentée par les classes filles.
 
-Pour que l'utilisation de ce pattern soit justifié, il faut que la **classe mère** (abstraite) effectue **d'autres traitements que simplement créer l'objet** (sinon c'est juste une fabrique). Dans une (ou plusieurs) méthode(s) de la classe mère où un traitement est effectué, la méthode abstraite est appelée ce qui permet de récupérer un objet dont le type concret sera décidé par les sous-classes. Ainsi, le traitement peut être effectué dans la classe mère sans avoir besoin d'être dépendant d'une classe concrète.
+L'idée de ce pattern est de proposer un framework de création d'objets, où des hiérarchies de classes de fabriques simples sont créées, afin de donner plus de flexibilité pour la création d'objets.
+
+[//]: # (Pour que l'utilisation de ce pattern soit justifié, il faut que la **classe mère** &#40;abstraite&#41; effectue **d'autres traitements que simplement créer l'objet** &#40;sinon c'est juste une fabrique&#41;. Dans une &#40;ou plusieurs&#41; méthode&#40;s&#41; de la classe mère où un traitement est effectué, la méthode abstraite est appelée ce qui permet de récupérer un objet dont le type concret sera décidé par les sous-classes. Ainsi, le traitement peut être effectué dans la classe mère sans avoir besoin d'être dépendant d'une classe concrète.)
 
 Reprenons notre exemple de l'application de jeu gérant des **monstres** de type **slime** ou **fantômes**.
 
