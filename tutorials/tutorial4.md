@@ -975,9 +975,9 @@ public class Zone {
 ![Fabrique 1]({{site.baseurl}}/assets/TP4/Fabrique1.svg){: width="65%" }
 </div>
 
-Ici l'application est donc configurée pour faire apparaître des monstres **Slimes**. `Arene` et `Zone` sont fortement dépendants de `Slime`, car elles instancient des objets `Slime` dans son code. Et on ne peut pas simplement injecter les dépendances, car ces classes ont besoin de directement instancier ces objets dans leurs méthodes ! Si nous devons changer pour utiliser des objets `Fantome` à la place, il faut modifier ces deux classes !
+Ici l'application est donc configurée pour faire apparaître des monstres **Slimes**. `Arene` et `Zone` sont fortement dépendants de `Slime`, car elles instancient des objets `Slime` dans son code. Et on ne peut pas simplement injecter les dépendances, car ces classes ont besoin de directement instancier ces objets dans leurs méthodes ! Si nous devons changer le code des classes `Zone` ou `Arene`, pour utiliser des objets `Fantome` à la place, il faut modifier ces deux classes !
 
-Nous pouvons mettre en place une **Fabrique** pour régler ce problème :
+Pour régler ce problème de dépendance, nous pouvons refactorer le code précédent en mettant place une **Fabrique**, à savoir une classe dont le rôle est de produire des objets `Monstre` :
 
 ```java
 
@@ -1123,7 +1123,7 @@ Il existe différents types de cafés :
 
 Chaque café peut être composé d'un type de graine (arabica ou robusta) et le sucre versé dans le café appartient à une marque spécifique. Les types de graines peuvent venir de pays différents.
 
-Pour l'instant, nos graines arabica viendront du brésil, les graines robusta d'Asie et la marque de sucre utilisée est Daddy.
+Pour l'instant, nos graines arabica viendront du Brésil, les graines robusta d'Asie et la marque de sucre utilisée est Daddy.
 
 Une fois l'instance d'un Café créé, il doit ensuite être **préparé** (c'est à ce moment qu'on initialisera les ingrédients utilisés).
 
