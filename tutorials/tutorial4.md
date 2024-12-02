@@ -977,7 +977,7 @@ public class Zone {
 
 Ici l'application est donc configurée pour faire apparaître des monstres **Slimes**. `Arene` et `Zone` sont fortement dépendants de `Slime`, car elles instancient des objets `Slime` dans son code. Et on ne peut pas simplement injecter les dépendances, car ces classes ont besoin de directement instancier ces objets dans leurs méthodes ! Si nous devons changer le code des classes `Zone` ou `Arene`, pour utiliser des objets `Fantome` à la place, il faut modifier ces deux classes !
 
-Pour régler ce problème de dépendance, nous pouvons refactorer le code précédent en mettant place une **Fabrique**, à savoir une classe dont le rôle est de produire des objets `Monstre` :
+Pour régler ce problème de dépendance, nous pouvons refactorer le code précédent en mettant en place une **Fabrique**, à savoir une classe dont le rôle est de produire des objets `Monstre` :
 
 ```java
 
@@ -1272,7 +1272,7 @@ Pour l'instant, testons votre compréhension de la **fabrique simple** :
 
     * Utiliser cette fabrique dans `Main` au lieu de faire directement des `new`.
 
-3. Si votre implémentation est bonne, vous devriez être capable d'utiliser des animaux robots seulement en changeant le code de votre fabrique. Vérifiez que cela est bien possible.
+3. Si votre implémentation est correcte, vous devriez être capable d'utiliser des animaux robots à la place des animaux normaux seulement en changeant le code de `AnimalFactory` (et sans toucher la classe cliente `Main`). Vérifiez que cela est bien possible.
 
 </div>
 
