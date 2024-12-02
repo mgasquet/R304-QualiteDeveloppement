@@ -1257,8 +1257,8 @@ La première méthode (avec le bloc **switch**) pourrait ressembler à du mauvai
 Avec notre implémentation, il est éventuellement possible d'utiliser une autre marque de café qui possède son propre type d'expresso et de cappuccino (avec des graines de provenances différentes, et une autre marque de sucre). Il suffira de changer la fabrique sans impacter le reste des classes. Mais que se passerait-il si on souhaitait faire cohabiter ces différentes **marques** de café, avec leur propre machine ? Il est possible de régler ce problème avec les patterns **méthode fabrique** et/ou **fabrique abstraite** (nous détaillerons plutôt cela dans la **synthèse de cours** dédiée).
 
 **Remarque :** observez, que vis-à-vis du principe **Ouvert/Fermé** cette solution n'est pas idéale, car :
-* le client doit correctement passer en paramètre la bonne chaîne de caractère pour désigner le type de café "_expresso_" ou "_cappuccino_"
-* si on souhaite ajouter un nouveau type de café, il faudra modifier la fabrique.
+* Le client doit correctement passer en paramètre la bonne chaîne de caractère pour désigner le type de café "_expresso_" ou "_cappuccino_". Cela peut se résoudre en utilisant des types énumérés par exemple. Tout de même c'est au client d'aider la fabrique à créer le bon objet...
+* Pire, si on souhaite ajouter un nouveau type de café, il faudra modifier la fabrique, donc elle n'est pas fermée aux modifications.
 
 Nous allons régler ces problèmes lorsqu'on abordera le pattern **Méthode Fabrique**.
 ### Animaux
@@ -1431,7 +1431,7 @@ Nous allons tester votre compréhension du problème sur un premier exercice sim
    * L'armée **humaine** qui recrute des `Humain` avec 50 points de vie.
    * L'armée **orc** qui recrute des `Orc` avec 80 points de vie.
 
-3. Faites en sorte qu'il soit possible de gérer les deux types d'armées citées dans le point précédent. Vous ajouterez les classes et le code nécessaire et vous compléterez la méthode `recruter` de la classe `Armee` ainsi que le `main` de la classe `Jeu`. Chaque fois qu'une unité est créée dans une armée, elle est ajoutée à la liste des unités de l'armée.
+3. Faites en sorte qu'il soit possible de gérer les deux types d'armées citées dans le point précédent. Vous ajouterez les classes et le code nécessaire et vous compléterez la méthode `recruterUnite` de la classe `Armee` ainsi que le `main` de la classe `Jeu`. Chaque fois qu'une unité est créée dans une armée, elle est ajoutée à la liste des unités de l'armée.
 
 </div>
 
@@ -1577,7 +1577,7 @@ Testons maintenant votre maîtrise du pattern **méthode fabrique** avec un nouv
 
 ## Le pattern Fabrique Abstraite
 
-Le pattern **Fabrique Abstraite** (Abstract Factory) s’appuie aussi sur la notion de fabrique et va permettre de créer des **familles d'objets** qui sont plus ou moins liés et/ou dépendants (ou du moins, avec une thématique ou un but commun).
+Le pattern **Fabrique Abstraite** (Abstract Factory) s’appuie aussi sur la notion de fabrique et va permettre de créer des **familles d'objets** qui sont plus ou moins liés et/ou dépendants (ou du moins, avec une thématique ou un but commun), **sans spécifier leurs classes concrètes**.
 
 Ce pattern va notamment permettre de créer et de sélectionner différents types de fabriques et de les interchanger lorsqu'elles instancient différentes **familles** de classes concrètes. Ainsi, lorsqu'on souhaite changer la famille de classes à construire, au lieu de modifier le code de la fabrique, on changera plutôt l'instance de la fabrique concrète utilisée par le programme ou une classe en particulier. Cela peut paraître encore un peu abstrait... regardons donc directement l'exemple suivant.
 
@@ -1588,7 +1588,6 @@ Ce pattern va notamment permettre de créer et de sélectionner différents type
 1. Ouvrez le paquetage `fabrique2` puis `v2`. Il s'agit de la deuxième partie du **jeu de stratégie type heroic fantasy**. De nouvelles classes sont à votre disposition :
 
    * Diverses **armes de siège** : chaque armée peut construire des armes de siège spécifiques avec lesquelles elle peut attaquer.
-
    * Divers **sorts** : chaque armée possède un **sort** de prédilection qu'elle peut déclencher.
 
 2. En plus du recrutement, chaque **armée** peut construire un type d'arme de siège spécifique et utiliser un type de sort spécifique.
