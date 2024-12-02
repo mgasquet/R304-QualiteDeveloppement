@@ -2890,15 +2890,15 @@ Et si nous essayons de combiner plus de patterns ? Nous avons l'application idé
 
 ## Conclusion
 
-Vous maîtrisez maintenant l'ensemble des **design patterns créateurs** ainsi que le pattern **Adaptateur**. Ce TP vous a aussi logiquement permis de renforcer votre pratique de la conception logicielle et de l'application des principes `SOLID`.
+Vous maîtrisez maintenant l'ensemble des **design patterns créateurs** (du moins ceux du **GoF**) ainsi que le pattern **Adaptateur**. Ce TP vous a aussi logiquement permis de renforcer votre pratique de la conception logicielle et de l'application des principes `SOLID`.
 
-Toutefois, attention à ne pas attraper la **patternite** : c'est une maladie connue qu'attrapent les jeunes ingénieurs logiciels qui découvrent les **design patterns**. Cela se manifeste par une envie de mettre des patterns partout à tort et à travers même quand cela n'est pas nécessaire. Comme pour le **singleton**, il faut se poser la question de savoir si un pattern est nécessaire ou non. Normalement, l'utilisation d'un pattern vient assez naturellement quand on souhaite résoudre le problème qui lui est lié. Si son utilisation semble un peu trop forcée, c'est que cela est probablement injustifié, ou pire : on est en train de construire un [anti-pattern](https://en.wikipedia.org/wiki/Anti-pattern), une solution non-seulement injustifiée, mais aussi qui a plus de conséquences négatives que positives. Bref, comme toujours, il faut avoir une vision générale et sur le long terme !
+Toutefois, attention à ne pas attraper la **patternité** : c'est une maladie connue qu'attrapent les jeunes ingénieurs logiciels qui découvrent les **design patterns**. Cela se manifeste par une envie de mettre des patterns partout à tort et à travers même quand cela n'est pas nécessaire. Comme pour le **singleton**, il faut se poser la question de savoir si un pattern est nécessaire ou non. Normalement, l'utilisation d'un pattern vient assez naturellement quand on souhaite résoudre le problème qui lui est lié. Si son utilisation semble un peu trop forcée, c'est que cela est probablement injustifié, ou pire : on est en train de construire un [anti-pattern](https://en.wikipedia.org/wiki/Anti-pattern), une solution non-seulement injustifiée, mais aussi qui a plus de conséquences négatives que positives. Bref, comme toujours, il faut avoir une vision générale et sur le long terme !
 
 Bref, ce TP conclut le cours de **Qualité de développement** du semestre 3. 
 
 Voici un bilan de ce que vous avez appris :
 
-* Utilisation plus poussée de git, notamment plus conforme à ce qui est attendu dans le monde professionnel : travail sur plusieurs branches, nommage des commits et des branches, merging, réécriture d'historique, automatisation de tâches et déploiement continu.
+* Utilisation plus poussée de Git, notamment plus conforme à ce qui est attendu dans le monde professionnel : travail sur plusieurs branches, nommage des commits et des branches, merging, réécriture d'historique, automatisation de tâches et déploiement continu.
 
 * Modélisation de la conception d'un logiciel à l'aide de **diagrammes de classes** et de **séquences**.
 
