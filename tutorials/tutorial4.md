@@ -2028,7 +2028,7 @@ On peut généraliser ce **pattern** ainsi :
 
     * Salle finale : Une salle avec un Boss avec un niveau entre 1 à 10.
 
-2. Actuellement, le donjon est configuré pour créer des configurations de salles "faciles" quand il est étendu. On aimerait introduire le fait d'étendre le donjon avec des configurations de salles "difficile" (toujours en gardant le même algorithme/ordre de création des salles) où on a les correspondances suivantes :
+2. Actuellement, le donjon est configuré pour créer des configurations "faciles" quand il est étendu. On aimerait introduire le fait d'étendre le donjon avec des configurations "difficile" (toujours en gardant le même algorithme/ordre de création des salles) où on a les correspondances suivantes :
 
     * Salle normale : Une salle contenant entre 20 et 40 ennemis.
 
@@ -2036,7 +2036,7 @@ On peut généraliser ce **pattern** ainsi :
 
     * Salle finale : Une salle avec un Boss de niveau 80.
 
-    Refactorez votre code afin qu'il soit possible d'étendre le donjon avec des salles "difficiles" en plus du fait de pouvoir l'étendre avec des salles faciles (qui est la configuration des salles ajoutées actuellement dans la méthode `etendreDonjon`).
+    Refactorez votre code afin qu'il soit possible d'étendre le donjon avec une configuration "difficile", tout en laissant la possibilité d'étendre avec une configuration "facile" (comme c'est actuellement le cas dans la méthode `etendreDonjon`).
 
 3. Dans le `Main`, adaptez le code pour faire en sorte d'étendre le donjon d'exemple fournit une fois avec des salles **faciles** et deux fois avec des salles **difficiles**. 
 
