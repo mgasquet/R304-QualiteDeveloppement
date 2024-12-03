@@ -2028,7 +2028,7 @@ On peut généraliser ce **pattern** ainsi :
 
     * Salle finale : Une salle avec un Boss avec un niveau entre 1 à 10.
 
-2. Actuellement, le donjon est configuré pour créer des configurations "faciles" quand il est étendu. On aimerait introduire le fait d'étendre le donjon avec des configurations "difficile" (toujours en gardant le même algorithme/ordre de création des salles) où on a les correspondances suivantes :
+2. Actuellement, le donjon s'étend avec des configurations "faciles" : les salles normales n'ont pas d'ennemis, le boss de la salle finale est assez faible, etc. On aimerait introduire le fait d'étendre le donjon avec des configurations "difficile" (toujours en gardant le même algorithme/ordre de création des salles) où on a les correspondances suivantes :
 
     * Salle normale : Une salle contenant entre 20 et 40 ennemis.
 
