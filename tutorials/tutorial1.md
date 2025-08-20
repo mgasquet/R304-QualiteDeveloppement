@@ -248,7 +248,7 @@ hello
 ajouter; world
 hello world
 ```
-Vous l'aurez compris, votre objectif sera de doter notre document de **nouvelles fonctionnalités** accessibles au travers de nouvelles commandes.
+Vous l'aurez compris, votre objectif sera de doter notre éditeur de document de **nouvelles fonctionnalités** accessibles au travers de nouvelles commandes.
 
 <div class="exercise">
 
@@ -306,11 +306,13 @@ Pour le prochain exercice (et pour pouvoir vous montrer quelque chose d'intéres
 
     En vous inspirant de la classe `CommandeAjouter`, créez une classe `CommandeRemplacer`. Attention, les paramètres fournis dans la commande sont de type `String` et vous avez besoin de nombres entiers (`int`). Vous pouvez alors utiliser la méthode de classe `Integer.parseInt(...)` pour convertir une chaîne de caractères en `int`.
 
+    On vous demande de bien vérifier le nombre de paramètres et afficher un message d'erreur si ce n'est pas bon (comme pour `CommandeAjouter`) mais, afin d'économiser du temps, on ne vous demande pas de gérer les autres erreurs potentielles (index négatifs, invalides, etc) pour cette commande (et les suivantes). Bien sûr, ce n'est pas bien et il faudrait le faire en réalité ! Et avoir une batterie de tests unitaires. Seulement, l'objectif de ce TP se focalise sur `git` plutôt que sur le développement orienté objet.
+
     N'oubliez pas de faire plusieurs commits (comme demandé plus haut) pendant le développement de cette fonctionnalité ! Par exemple, vous pouvez en faire trois en laissant un bug volontairement dans le code du premier commit puis le fixer avec le second commit, et enfin ajouter des commentaires ou de la documentation avec le troisième commit.
 
     Techniquement (comme montré dans l'exemple), le paramètre contenant le texte peut être vide...à vous de gérer cela!
 
-3. Enregistrez cette nouvelle commande dans la méthode **createCommand** de `CommandeFactory`, en vous basant sur l'exemple de la commande `ajouter`.
+3. Enregistrez cette nouvelle commande dans la méthode **createCommand** de `CommandeFactory`, en vous basant sur l'exemple de la commande `ajouter` (là aussi, vous pouvez faire un commit).
 
 4. Testez que votre nouvelle commande fonctionne comme attendu.
 
@@ -321,7 +323,7 @@ Pour le prochain exercice (et pour pouvoir vous montrer quelque chose d'intéres
 
 Parfois, lors du développement d'une fonctionnalité, il arrive de faire plusieurs commits (et pas juste un seul, quand la fonctionnalité est terminée et fonctionnelle). Cela peut vite alourdir l'historique des commits et le rendre assez peu clair. Néanmoins, c'est une bonne chose de versionner régulièrement son travail ! Il faut juste ne pas le faire de manière excessive (pas un commit après chaque ligne de code !).
 
-Là aussi, git propose une solution : la **réécriture d'historique** aussi appelée **squash de commits**. Cette fonctionnalité permet de sélectionner un ensemble de commits (par exemple, les 5 derniers commits) et de le regrouper en un seul et même commit. Ainsi, quand une fonctionnalité a fini d'être développée, on peut regrouper tous les commits qui ont été réalisés lors du développement de cette partie en un seul commit et ainsi, rendre l'historique plus élégant.
+Là aussi, git propose une solution : la **réécriture d'historique** qui permet d'effectuer diverses modifications et changement sur l'arbre des commits de la branche courante. Une opération qui va nous intéresser tout particulièrement est le **squash de commits**. Cette opération consiste à sélectionner un ensemble de commits (par exemple, les 5 derniers commits) et de le regrouper en un seul et même commit. Ainsi, quand une fonctionnalité a fini d'être développée, on peut regrouper tous les commits qui ont été réalisés lors du développement de cette partie en un seul commit et ainsi, rendre l'historique plus élégant.
 
 Pour cela, on utilise la commande suivante :
 
@@ -340,7 +342,7 @@ pick f2ep173 chat fini
 pick t2du1z9 ah non en fait, fix du chat...
 ```
 
-Les commits sélectionnés sont présentés du plus ancien au plus récent. Il suffit alors de remplacer le mot clé `pick` par `s` (pour squash) pour tous les commits qu'on veut **squasher**. Tous les commits libellés par **s** seront alors fusionnés dans le premier commit libellé **pick** au-dessus d'eux. Il faut donc **obligatoirement libeller au moins un commit en pick**. 
+Les commits sélectionnés sont présentés du plus ancien au plus récent. Pour réaliser une fusion (squash) de commits, il suffit alors de remplacer le mot clé `pick` par `s` (pour squash) pour tous les commits qu'on veut **squasher** (fusionner). Tous les commits libellés par **s** seront alors fusionnés dans le premier commit libellé **pick** au-dessus d'eux. Il faut donc **obligatoirement libeller au moins un commit en pick**. 
 
 Sur nano/vim, on quitte ensuite cette interface en faisant `Echap` puis `:wq` (écrire et quitter). Sur une autre interface type éditeur de texte (par exemple, **gedit**) il suffit de sauvegarder et quitter.
 
@@ -411,7 +413,9 @@ Maintenant, nous allons ajouter une troisième commande ! Là aussi, effectuez p
 
 <div class="exercise">
 
-1. On souhaite ajouter une commande pour mettre en **majuscules** une portion du texte. Commencez par définir et compléter le code de la méthode suivante dans `Document` :
+1. On souhaite ajouter une commande pour mettre en **majuscules** une portion du texte. Ici aussi, vous penserez à faire **plusieurs commits** (au moins deux). 
+
+    Commencez par définir et compléter le code de la méthode suivante dans `Document` :
 
     ```java
     public void majuscules(int debut, int fin) {
@@ -436,7 +440,14 @@ Maintenant, nous allons ajouter une troisième commande ! Là aussi, effectuez p
 
 </div>
 
-L'intitulé de cette section contient **"réparer vos bêtises"** car ce mécanisme permet aussi d'er certains commits intermédiaires contenant des informations sensibles, entre autres.
+Quand on utilise `git rebase`, il existe d'autres options que le "squash" (`s`) ou le "pick" qu'on peut réaliser sur les commits de l'historique. Par exemple 
+
+* `reword` (ou `r`) : pour modifier le message d'un commit
+* `edit` (ou `e`) : l'opération rebasage fera une pause sur ce commit pour vous permettre d'en modifier le contenu (un peu plus technique)
+* `fixup` (ou `f`) : agit comme `squash`, mais supprime le message du commit
+* `drop` (ou `d`) : supprime le commit (attention toutefois, il y aura conflit si on tente de supprimer un commit dont dépendent d'autres commits qu'on conserve...)
+
+L'intitulé de cette section contient **"réparer vos bêtises"** car ce mécanisme permet aussi d'effacer certains commits intermédiaires contenant des informations sensibles, entre autres.
 
 Par exemple, imaginons le scénario suivant :
 
@@ -448,7 +459,9 @@ Par exemple, imaginons le scénario suivant :
 
 4. On fait un nouveau commit où le fichier est ajouté au .gitignore...on exécute la commande `git rm -r --cached .` pour prendre en compte cet ajout tardif, comme ça, le fichier de configuration ne sera plus versionné par git. Mais c'est trop tard, on peut remonter l'historique des commits et retourner à une version où ce fichier est bien là !
 
-5. Eurêka ! Avec la technique de rebasing, on peut regrouper mon dernier commit "sain" avec le commit précédent. Ainsi, il en résultera un seul commit où ce fichier de configuration n'a jamais été versionné... ! On force le `push`, l'incident est réparé !
+5. Eurêka ! Avec la technique de rebasing, on peut :
+    * soit regrouper mon dernier commit "sain" (qui ne contient plus le fichier avec les identifiants) avec le commit précédent. Ainsi, il en résultera un seul commit où ce fichier de configuration n'a jamais été versionné... ! On force le `push`, l'incident est réparé !
+    * soit supprimer le commit contenant le fichier de configuration (avec l'option `drop`) **seulement si le commit n'ajoute que ce fichier** et par d'autres fichiers/données importants.
 
 ### Conventions pour les commits
 
@@ -468,7 +481,7 @@ On y retrouve :
     - `docs` : un commit qui affecte seulement la documentation
     - Et bien d'autres !
 
-- La `portée` : paramètre **optionnel**, donne des informations supplémentaires sur le contexte (par exemple "sprint1").
+- La `portée` : paramètre **optionnel**, donne des informations supplémentaires sur le contexte si besoin (par exemple "commandes", "sprint1", etc).
 
 - La `description` : Une description rapide de ce qui a changé, ce qu'apporte le commit (presque équivalent aux messages de commits que vous avez écrit jusqu'ici).
 
@@ -608,7 +621,7 @@ Lors d'un merge, en cas de conflit (si le **merge** automatique échoue) il faut
         <<<<<<< HEAD
         <p>Du texte</p>
         =======
-        <p>Autre chose qui n'a rien à avoir</p>
+        <p>Autre chose qui n'a rien à voir</p>
         >>>>>>> 77976da35a11db4580b80ae27e8d65caf5208086
         ```
    
@@ -624,11 +637,13 @@ Ainsi, la sous-branche intégrera les derniers ajouts réalisés sur la branche 
 On peut donc avoir le processus suivant pour mettre en place le développement d'une nouvelle fonctionnalité :
 
 - Créer et se déplacer sur une nouvelle branche à partir de la branche `development`.
-- Faire des commits simples pendant le développement de la fonctionnalité.  
+- Faire des commits simples pendant le développement de la fonctionnalité.
 - À la fin du développement, regrouper les commits en un seul et appliquer un message respectant les conventions.
 - Fusionner la branche sur `development` puis la supprimer.
 
 Et, à la fin du sprint/cycle, fusionner la branche `development` sur `master`.
+
+On peut souligner que dans une sous-branche, tous les commits intermédiaires qui ont pour vocation d'être fusionnée à court terme n'ont pas *nécessairement* besoin de respecter les conventions de nommage. Seul le dernier commit regroupant tous les commits (après rebasage) à réellement besoin d'être correctement rédigé, car c'est celui-ci qui restera dans l'arbre final.
 
 ### Développement
 
@@ -640,7 +655,7 @@ Nous allons mettre en application ce que vous avez appris sur les **branches** e
 
 2. Dans l'éditeur, on souhaite ajouter une commande pour `effacer` une partie du texte (entre deux positions). Depuis `development`, créez et déplacez-vous dans une **nouvelle branche** nommée adéquatement et développez cette fonctionnalité (commencez par ajouter une fonction `effacer` dans `Document`, puis créez et enregistrez la commande).
 
-    Vous ferez attention aux **messages de commit** qui doivent respecter les conventions qui vous ont été présentées plus tôt (en tout cas, au moins le "dernier" regroupant tous vos commits, s'il y en a plusieurs).
+    Vous ferez attention à ce que le **message de commit** (qui regroupe tous vos commits s'il y en a plusieurs) respecte les conventions de nommage décrites précédemment.
 
     Pensez aussi au principe [DRY](https://fr.wikipedia.org/wiki/Ne_vous_r%C3%A9p%C3%A9tez_pas) (la fonction `effacer` de la classe `Document` devrait être toute petite !).
 
@@ -666,7 +681,7 @@ Vous et les autres étudiants de votre groupe ont inséré un mini bug lors de l
 
 Comment faire pour reporter ce bug au développeur ? GitLab propose simplement une rubrique `Issues` (dans le menu de gauche du dépôt) qui va servir à l'ouverture et la fermeture de **tickets**. Ces **tickets** sont souvent des signalements de bug, mais on peut aussi avoir des suggestions de fonctionnalités, etc. Un autre utilisateur peut même réaliser du code solution et le proposer en résolution du ticket, si le propriétaire du dépôt l'accepte !
 
-Pour la suite des exercices, trouvez-vous un binôme qui est au même point que vous. C'est très important, **vous ne pouvez pas faire le reste du TP seul**. Si l'attente est trop longue, vous pouvez directement passer à la section 4 **"Bonus (pour les plus rapides)"**, en attendant. Éventuellement, vous pouvez essayer de vous débrouiller à 3 si vous mettre en binôme n'est pas possible avec la configuration du groupe.
+Pour la suite des exercices, trouvez-vous un binôme qui est au même point que vous. C'est très important, **vous ne pouvez pas faire le reste du TP seul**. Si l'attente est trop longue, vous pouvez directement passer à la section 5 [Bonus (pour les plus rapides)](#bonus-pour-les-plus-rapides), en attendant. Éventuellement, vous pouvez essayer de vous débrouiller à 3 si vous mettre en binôme n'est pas possible avec la configuration du groupe.
 
 <div class="exercise">
 
@@ -676,9 +691,9 @@ Pour la suite des exercices, trouvez-vous un binôme qui est au même point que 
 
 3. Sur le dépôt **GitLab** de votre collègue, créez une `issue` et expliquez le bug que vous rencontrez. Une **issue** est en fait un fil de discussion où différentes personnes peuvent intervenir.
 
-4. Lorsque votre collègue a fait de même avec **votre dépôt**, **relevez l'identifiant** (numéro) de l'issue (normalement : `1`) puis retournez dans votre projet et développez un **bugfix** à partir d'une branche dérivée de `development`. Il faudra respecter les conventions citées plus tôt pour les branches. Pour le message final du commit, veillez à bien indiquer dans la description le texte suivant : `Closes #numeroIssue` (en remplaçant `numeroIssue`, bien sûr).
+4. Lorsque votre collègue a fait de même avec **votre dépôt**, **relevez l'identifiant** (numéro) de l'issue (normalement : `#1`) puis retournez dans votre projet et développez un **bugfix** à partir d'une branche dérivée de `development`. Il faudra respecter les conventions citées plus tôt pour les branches. Pour le message final du commit (qui doit aussi respecter les conventions !), veillez à bien indiquer dans la description le texte suivant : `Closes #numeroIssue` (en remplaçant `numeroIssue`, bien sûr).
 
-5. Une fois le **bugfix** publié puis ultimement intégré à `master` via la fusion de la branche `development`, retournez voir l'issue sur **GitLab**. Vous constaterez que votre commit a automatiquement été attaché à cette **issue** et qu'elle a même été fermée !
+5. Une fois que le **bugfix** est commit et intégré à `development` puis à `master` (via la fusion des branches), effectuez le push des branches `development` et `master` puis retournez voir l'issue sur **GitLab**. Vous constaterez que votre commit a automatiquement été attaché à cette **issue** et qu'elle a même été fermée ! (onglet **Closed** dans le menue **Issues**)
 
 </div>
 
@@ -694,7 +709,7 @@ Le fait de faire une demande d'intégration de son code dans le projet d'origine
 
 <div class="exercise">
 
-1. Encore une fois, rendez-vous dans le dépôt de votre collègue. En haut à droite, appuyez sur le bouton **fork**. Configurez le **namespace** pour le placer dans votre groupe `qualite-de-developpement-semestre-3/etu/votrelogin` puis validez. Un nouveau dépôt "forké" à partir de celui de votre collègue est alors disponible.
+1. Encore une fois, rendez-vous dans le dépôt de votre collègue (attendez bien qu'il ait terminé l'exercice précédent et que son bugfix soit donc publié). En haut à droite, appuyez sur le bouton **fork**. Configurez le **namespace** pour le placer dans votre groupe `qualite-de-developpement-semestre-3/etu/votrelogin` puis validez. Un nouveau dépôt "forké" à partir de celui de votre collègue est alors disponible.
 
 2. Clonez ce "nouveau" dépôt sur votre machine : comme ce dépôt forké vous appartient, vous aurez droit de faire des push dessus !
 
@@ -703,11 +718,13 @@ Le fait de faire une demande d'intégration de son code dans le projet d'origine
     ```bash
     ajouter;bonjour monde
     bonjour monde
-    inserer;6; le 
+    inserer;6; le
     bonjour le monde
     ```
 
     Il faudra bien respecter le fait d'aller sur la branche de développement puis une branche pour la fonctionnalité, etc. Poussez la branche contenant la fonctionnalité (sans la fusionner sur `development`).
+
+    Une fois cela fait, fermez ce projet forké dans votre IDE (afin de ne pas créer de confusion avec celui d'origine).
 
 4. Une fois la fonctionnalité prête et poussée sur GitLab, rendez-vous dans votre dépôt forké puis cliquez sur la rubrique **Code** et **Merge Requests**. Cliquez ensuite sur **New merge request**.
 
@@ -715,7 +732,7 @@ Le fait de faire une demande d'intégration de son code dans le projet d'origine
 
 6. Cliquez sur **Compare branches and continue**. Dans la nouvelle fenêtre, donnez un **titre** puis une **description** de votre nouvelle fonctionnalité dans les zones prévues à cet effet. Ensuite, cliquez simplement sur **Create merge request**
 
-7. Une fois que votre collègue aura fait la même chose pour vous, rendez-vous dans votre dépôt, également dans la catégorie **Merge Requests**. Vous pouvez alors consulter le détail de la requête. Cliquez sur le bouton **Merge** pour finaliser la fusion puis allez constater le changement, sur la branche `development`. N'oubliez pas de **pull** les modifications, en local !
+7. Une fois que votre collègue aura fait la même chose pour vous, rendez-vous dans votre dépôt d'origine (pas celui forké), également dans la catégorie **Merge Requests**. Vous pouvez alors consulter le détail de la requête. Cliquez sur le bouton **Merge** pour finaliser la fusion puis allez constater le changement, sur la branche `development`. N'oubliez pas de **pull** les modifications, en local (dans votre dépôt d'origine, sur la branche `development`) !
 
 </div>
 
@@ -723,13 +740,13 @@ Si jamais une `merge request` ne satisfait pas le(s) propriétaire(s) du dépôt
 
 ### Travailler en équipe
 
-Dans un projet où il y a plusieurs **collaborateurs** le processus de **merge request** est également utilisé et est même primordial : jusqu'ici, nous avons réalisé nous-même la fusion des sous-branches de type "features" vers la branche `development`. Néanmoins, dans un projet professionnel (avec plusieurs membres), vous n'êtes pas vraiment autorisé à faire cela seul. Vous devez créer une **merge request** en interne et **l'assigner** à un autre membre du projet.
+Dans un projet dans lequel il y a plusieurs **collaborateurs** le processus de **merge request** est également utilisé et est même primordial : jusqu'ici, nous avons réalisé nous-même la fusion des sous-branches de type "features" vers la branche `development`. Néanmoins, dans un projet professionnel (avec plusieurs membres), vous n'êtes pas vraiment autorisé à faire cela seul. Vous devez créer une **merge request** en interne et **l'assigner** à un autre membre du projet.
 
-La personne qui a été assignée à la `merge request` est chargée d'examiner le code de celle-ci et de la valider. C'est le moment d'avoir un œil neuf sur votre code. La personne assignée doit notamment vérifier si le code est bien commenté et documenté, s'il respecte les normes de nommage (CamelCase par exemple, ou bien des normes de l'entreprise), l'indentation... Bref, on vérifie d'abord que le code est propre. Il faut aussi vérifier que, a priori, le code fonctionne, ne contient pas de failles de sécurité potentielles, etc. Cela peut aussi être des problèmes relatifs au placement des fichiers, par exemple.
+La personne qui a été assignée à la `merge request` est chargée d'examiner le code de celle-ci et de la valider. C'est le moment d'avoir un œil neuf sur votre code. La personne assignée doit notamment vérifier si le code est bien commenté et documenté, s'il respecte les normes de nommage (camelCase par exemple, ou bien des normes de l'entreprise), l'indentation... Bref, on vérifie d'abord que le code est propre. Il faut aussi vérifier que, a priori, le code fonctionne, ne contient pas de failles de sécurité potentielles, etc. Cela peut aussi être des problèmes relatifs au placement des fichiers, par exemple.
 
 S'il y a des choses à corriger, le membre de l'équipe peut laisser plusieurs commentaires ce qui permet à l'auteur de la fonctionnalité de corriger et de faire une nouvelle merge request.
 
-Dans l'exercice précédent, vous avez collaboré avec un collègue mais celui-ci était "extérieur" au projet. Il est bien sûr tout à fait possible d'intégrer d'autres personnes à un dépôt pour qu'ils aient les mêmes droits que vous. C'est donc ce que nous allons faire dès maintenant !
+Dans l'exercice précédent, vous avez collaboré avec un collègue, mais celui-ci était "extérieur" au projet. Il est bien sûr tout à fait possible d'intégrer d'autres personnes à un dépôt pour qu'ils aient les mêmes droits que vous. C'est donc ce que nous allons faire dès maintenant !
 
 <div class="exercise">
 
@@ -739,17 +756,19 @@ Dans l'exercice précédent, vous avez collaboré avec un collègue mais celui-c
     
     * Dans votre dépôt GitLab (pas celui **forké**, celui original), donnez le rôle **Owner** à votre collègue.
 
-    * Ajoutez une **nouvelle fonctionnalité** permettant d'afficher la description de chaque commande. Pour cela, vous allez ajouter une méthode `getDescriptionCommande` (qui renvoie une donnée de type `String`) dans l'interface `Commande` et donc l'implémenter dans toutes les commandes (avec une description simple). Respectez bien le processus que vous avez jusqu'ici : création d'une sous-branche, commits conventionnels, rebasing, etc. Poussez la branche de votre fonctionnalité sur gitlab.
+    * Ajouter une méthode `decrireCommande` (type de retour `void`) dans l'interface `Commande`. Cette fonction a pour but de décrire simplement (en console, avec un print) ce que fait la `Commande`, puis ses paramètres (par exemple, pour une instance de `CommandeRemplacer` : "Remplacement de texte dans le document, paramètres : ['remplacer', '1', '5', 'hello']"). Implémentez cette fonction dans toutes les commandes de manière adéquate Respectez bien le processus que vous avez jusqu'ici : création d'une sous-branche, commits conventionnels, rebasing, etc. Poussez la branche de votre fonctionnalité sur gitlab. *Astuce* : la fonction `Arrays.toString(...)` peut vous être utile...
+
+    * Le but de cette fonction est de développer un système d'historique (dans le futur) afin de consulter tout ce qui a été fait sur le document jusqu'à présent. Nous ne le ferons pas pour le moment, mais il vous sera proposé de le faire à la fin du TP dans la section 5 [Bonus (pour les plus rapides)](#bonus-pour-les-plus-rapides).
     
-    * Une fois terminé, ne fusionnez pas tout de suite la branche de votre fonctionnalité sur `development`.
+    * Une fois terminé (après avoir poussé), ne fusionnez pas tout de suite la branche de votre fonctionnalité sur `development`.
 
 3. Pour le **collaborateur** :
 
-    * Le projet où vous avez été invité devrait apparaître à [la racine du gitlab du département](https://gitlabinfo.iutmontp.univ-montp2.fr/).
+    * Le projet dans lequel vous avez été invité devrait apparaître à [la racine du gitlab du département](https://gitlabinfo.iutmontp.univ-montp2.fr/).
 
     * Clonez ce dépôt. Vous avez maintenant les droits d'accès et surtout d'écriture.
 
-    * Sur ce dépôt, ajoutez une nouvelle commande `minuscules` similaire à `majuscules`, mais pour les minuscules (on utilise `toLowerCase`). Respectez bien le processus que vous avez jusqu'ici : création d'une sous-branche, commits conventionnels, rebasing, etc. Poussez la branche de votre fonctionnalité sur gitlab.
+    * Dans le projet correspondant à ce dépôt, ajoutez une nouvelle commande `minuscules` similaire à `majuscules`, mais pour les minuscules (on utilise `toLowerCase`). Respectez bien le processus que vous avez jusqu'ici : création d'une sous-branche, commits conventionnels, rebasing, etc. Poussez la branche de votre fonctionnalité sur gitlab.
     
     * Une fois terminé, ne fusionnez pas la branche de votre fonctionnalité sur `development`.
 
@@ -757,19 +776,19 @@ Dans l'exercice précédent, vous avez collaboré avec un collègue mais celui-c
 
 5. À partir de [la page principale du site](https://gitlabinfo.iutmontp.univ-montp2.fr/), cliquez sur la catégorie `Merge Requests` puis `Assigned`. Vous pouvez alors visualiser toutes les `merge requests` qui vous ont été assignées.
 
-6. Faites la review de la requête qui vous a été assignée (explorez l'onglet **Commits**, **Changes**) puis validez-la. Votre collègue ayant fait de même avec votre branche, tout devrait être fusionné sur `development` à ce stade ! Bien sûr, si nous avions un peu plus de temps, nous aurions pu refuser la requête, laisser des commentaires, recommencer... ce qui arrive souvent en entreprise (et c'est normal) ! Généralement, les **développeurs seniors** vérifient les `merge requests` des **développeurs juniors** (vous, bientôt). Les **seniors** se vérifient entre eux ou bien sont se considèrent comme assez expérimentés pour se passer de `merge request` et de revue de code... (mais cela est déconseillé).
+6. Faites la review de la requête qui vous a été assignée (explorez l'onglet **Commits**, **Changes**) puis validez-la (en cliquant sur `Merge`). Votre collègue ayant fait de même avec votre branche, tout devrait être fusionné sur `development` à ce stade ! Bien sûr, si nous avions un peu plus de temps, nous aurions pu refuser la requête, laisser des commentaires, recommencer... ce qui arrive souvent en entreprise (et c'est normal) ! Généralement, les **développeurs seniors** vérifient les `merge requests` des **développeurs juniors** (vous, bientôt). Les **seniors** se vérifient entre eux ou bien sont se considèrent comme assez expérimentés pour se passer de `merge request` et de revue de code... (mais cela est déconseillé).
 
 7. En local, récupérez les mises à jour sur la branche `development` en faisant un **pull**.
 
 8. Jetez un œil à votre code. Bien que le `merge` ait été réalisé avec succès, il ne devrait plus compiler. Pourquoi ? Choisissez un des membres de votre binôme qui devra corriger les erreurs sur une nouvelle branche (à lui de bien la nommer) puis faire une `merge request` en assignant l'autre membre... L'autre membre fait la revue de code et valide la requête.
 
-9. Chaque membre doit bien penser à récupérer toutes les modifications en local avec un `pull`.
+9. Chaque membre doit bien penser à récupérer toutes les modifications en local avec un `pull` (après fusion de la branche qui fix l'erreur de compilation dans `development`).
 
 </div>
 
 ### Gestion des conflits
 
-Jusqu'ici, nous n'avons fait que des **merge** sans conflits bloquants, c'est-à-dire qui pouvaient fusionner automatiquement sans problèmes. Nous allons maintenant simuler un conflit qui devra être résolu manuellement, par le développeur.
+Jusqu'ici, nous n'avons fait que des **merge** sans conflits bloquants, c'est-à-dire qui pouvaient fusionner automatiquement sans problème. Nous allons maintenant simuler un conflit qui devra être résolu manuellement, par le développeur.
 
 <div class="exercise">
 
@@ -777,17 +796,17 @@ Jusqu'ici, nous n'avons fait que des **merge** sans conflits bloquants, c'est-à
 
 2. Pour le **propriétaire** :
 
-    * Créez une nouvelle branche où vous changez le nom de l'attribut `texte` en `texteDocument` dans la classe `Document`.
+    * Créez une nouvelle branche où vous changerez le nom de l'attribut `texte` en `texteDocument` dans la classe `Document` (puis, faites un commit et poussez-la).
 
-    * Créez une `Merge Request` assignée à votre binôme.
+    * Créez une `Merge Request` (de votre nouvelle branche vers `development`) assignée à votre binôme.
 
     * Ne validez pas tout de suite la merge request que votre binôme vous a affecté une fois qu'il aura terminé.
 
 3. Pour le **collaborateur** :
 
-    * Créez une nouvelle branche où vous changez le nom de l'attribut `texte` en `contentDocument` dans la classe `Document`.
+    * Créez une nouvelle branche où vous changerez le nom de l'attribut `texte` en `contentDocument` dans la classe `Document` (puis, faites un commit et poussez-la).
 
-    * Créez une `Merge Request` assignée à votre binôme.
+    * Créez une `Merge Request` (de votre nouvelle branche vers `development`) assignée à votre binôme.
 
     * Validez la merge request que votre binôme vous a affecté une fois qu'il aura terminé.
 
@@ -797,11 +816,11 @@ Jusqu'ici, nous n'avons fait que des **merge** sans conflits bloquants, c'est-à
 
 En effet, comme les deux fonctionnalités développées touchent la même partie du code, il y a un conflit qui ne peut pas être résolu automatiquement. Quand cela arrive, il faut régler le conflit en local sur la branche concernée, pousser les modifications et re-valider la `merge request`.
 
-Pour l'exercice suivant, le membre ayant le rôle de **collaborateur** va principalement agir. Mettez-vous donc sur le même ordinateur (en pair programming) afin que le **proprietaire** puisse également suivre la résoltuion du conflict.
+Pour l'exercice suivant, le membre ayant le rôle de **collaborateur** va principalement agir. Mettez-vous donc sur le même ordinateur (en pair programming) afin que le **proprietaire** puisse également suivre la résolution du conflit.
 
 <div class="exercise">
 
-1. En local, le **collaborateur**, toujours sur sa branche dérivée (là où il a codé sa fonctionnalité) doit récupérer la dernière version de la branche `development` :
+1. En local, le **collaborateur**, toujours sur sa branche dérivée (là où il a changé le nom de la variable) doit récupérer la dernière version de la branche `development` :
 
     ```bash
     git pull origin development
@@ -809,11 +828,11 @@ Pour l'exercice suivant, le membre ayant le rôle de **collaborateur** va princi
 
     Git indique alors qu'il y a un conflit qu'il faut régler.
 
-2. De retour sur l'IDE, vous constatez alors que la classe `Document` (source du conflit) présente les modifications des deux fichiers. Vous pouvez vous servir des outils de l'IDE (clic droit sur `Document`, puis `git` et `Resolve Conflicts`) ou bien agir manuellement afin de produire la version "finale" de ce fichier : accepter les modifications de l'un ou l'autre des fichiers ou bien fusionner les deux quand cela est possible. Pour notre cas, vous ne garderez qu'un seul des noms pour l'attribut (soit `texteDocument` soit `contentDocument`).
+2. De retour sur l'IDE, vous constatez alors que la classe `Document` (source du conflit) présente les modifications des deux fichiers. Vous pouvez vous servir des outils de l'IDE (clic droit sur `Document`, puis `git` et `Resolve Conflicts`) ou bien agir manuellement afin de produire la version "finale" de ce fichier : accepter les modifications de l'un ou l'autre des fichiers ou bien fusionner les deux quand cela est possible. Pour notre cas, vous ne garderez qu'un seul des noms pour l'attribut (soit `texteDocument` soit `contentDocument`) ce qui peut être fait facilement sur IntelliJ dans la fenêtre des résolutions des conflits (**Accept Left/Right**).
 
 3. Une fois le fichier correctement édité, il ne reste plus qu'à faire un `add`, un `commit` et un `push` sur la branche de la fonctionnalité. Le message du `commit` doit indiquer qu'une résolution du conflit a eu lieu.
 
-4. Une fois que les modifications de la branche sont poussés, le **propriétaire** peut finalement valider la `merge request` de son côté ! Faites-le.
+4. Une fois que les modifications de la branche sont poussées, le **propriétaire** peut finalement valider la `merge request` de son côté ! Faites-le.
 
 5. Pour finir, vous pouvez fusionner la branche `development` dans `master` (en local après avoir récupéré les modifications de la branche `development`, ou bien en ligne avec une merge request).
 
@@ -821,12 +840,28 @@ Pour l'exercice suivant, le membre ayant le rôle de **collaborateur** va princi
 
 ## Bonus (pour les plus rapides)
 
-Si vous êtes en avance, imaginiez et codez une fonctionnalité `undo` permettant **d'annuler** la dernière commande exécutée (et donc, revenir à l'état précédent du document). Si vous arrivez à implémenter cette fonctionnalité, vous pouvez aussi implémenter le `redo`, c'est-à-dire **re-exécuter** une action qui a été annulée. En gros, le `CTRL+Z` et le `CTRL+Y`
+* Si vous êtes en avance, imaginiez et codez une fonctionnalité `undo` permettant **d'annuler** la dernière commande exécutée (et donc, revenir à l'état précédent du document).
+
+* Quelques astuces : il y a divers moyens d'arriver à cela, mais, dans l'idée, vous pouvez :
+
+    * Ajouter des getters/setters du texte du document.
+
+    * Faire en sorte que `CommandeDocument` conserve le texte du document avant exécution de la commande.
+
+    * Ajouter une méthode `undo` à l'interface `Commande` puis implémenter cette commande dans `CommandeDocument` (qui restaure le texte du document...).
+
+    * Ajouter une pile à `CommandeInvoker` qui sauvegarde chaque commande exécutée (par exemple avec une collection `Deque`, les méthodes `push` et `pop`...). Puis ajouter une méthode `annulerDerniereCommande` qui retire la dernière commande exécutée et l'annule...
+
+    * Modifier le `main` pour faire en sorte d'appeler la fonction `annulerDerniereCommande` que quand `undo` est tapé...
+
+* Si vous arrivez à implémenter cette fonctionnalité, vous pouvez aussi implémenter le `redo`, c'est-à-dire **re-exécuter** une action qui a été annulée. En gros, le `CTRL+Z` et le `CTRL+Y`. Attention, dans le scénario où on annule une commande mais qu'on éxécute une autre commande après, il est normalement impossible de ré-exécuter une ancienne commande annulée. (Vous pouvez essayer dans un éditeur de texte normal : si vous écrivez une phrase et que vous faites CTRL-Z puis CTRL-Y, la phrase revient, mais si vous écrivez une autre phrase avant de faire CTRL-Y, cela ne marchera pas.)
+
+* Enfin, si vous êtes très en avance, **à la fin du TP** (donc après les exercices) vous pouvez implémenter la fonctionnalité d'historique qui est évoquée dans le premier exercice de la section [Travailler en équipe](#travailler-en-equipe). Si vous avez déjà fait le reste, cela devrait être assez simple à faire, il suffit d'afficher la description de toutes les commandes exécutées jusqu'à présent (sans celles annulées, bien évidemment).
 
 ## Conclusion
 
 Si vous avez bien tout suivi et intégré, vous devez maintenant être beaucoup plus compétent dans la bonne gestion d'un projet git, notamment lorsqu'il s'agit de travailler en équipe. Vous devez maintenant impérativement respecter tout cela dans votre parcours étudiant (dans vos SAÉs et pour vos futurs projets) et vous y serez forcément confronté en entreprise, notamment dans les SSII. Il faut que les notions abordées lors de ce TP deviennent des automatismes.
 
-Dans le prochain TP, nous allons étudier les **workflows** permettant d'automatiser certaines tâches sur la plateforme en ligne, comme le **test**, le **déploiement** et la publication des programmes, à partir du dépôt. Pour cela, nous allons changer de plateforme et utiliser **GitHub**.
+Dans le [prochain TP]({{site.baseurl}}/tutorials/tutorial2), nous allons étudier les **workflows** permettant d'automatiser certaines tâches sur la plateforme en ligne, comme le **test**, le **déploiement** et la publication des programmes, à partir du dépôt. Pour cela, nous allons changer de plateforme et utiliser **GitHub**.
 
 Nous avons exploré pas mal de nouvelles commandes de **git** à travers ce premier TP, mais il en existe beaucoup d'autres et certaines très utiles ! Je vous conseille donc de vous informer sur ce sujet, en complément.
