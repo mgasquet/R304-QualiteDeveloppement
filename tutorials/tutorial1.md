@@ -856,7 +856,7 @@ Pour l'exercice suivant, le membre ayant le rôle de **collaborateur** va princi
 
 * Si vous arrivez à implémenter cette fonctionnalité, vous pouvez aussi implémenter le `redo`, c'est-à-dire **re-exécuter** une action qui a été annulée. En gros, le `CTRL+Z` et le `CTRL+Y`. Attention, dans le scénario où on annule une commande mais qu'on éxécute une autre commande après, il est normalement impossible de ré-exécuter une ancienne commande annulée. (Vous pouvez essayer dans un éditeur de texte normal : si vous écrivez une phrase et que vous faites CTRL-Z puis CTRL-Y, la phrase revient, mais si vous écrivez une autre phrase avant de faire CTRL-Y, cela ne marchera pas.)
 
-* Enfin, si vous êtes très en avance, **à la fin du TP** (donc après les exercices) vous pouvez implémenter la fonctionnalité d'historique qui est évoquée dans le premier exercice de la section [Travailler en équipe](#travailler-en-equipe). Si vous avez déjà fait le reste, cela devrait être assez simple à faire, il suffit d'afficher la description de toutes les commandes exécutées jusqu'à présent (sans celles annulées, bien évidemment).
+* Enfin, si vous êtes très en avance, **à la fin du TP** (donc après les exercices) vous pouvez implémenter la fonctionnalité d'historique qui est évoquée dans le premier exercice de la section [Travailler en équipe](#travailler-en-équipe). Si vous avez déjà fait le reste, cela devrait être assez simple à faire, il suffit d'afficher la description de toutes les commandes exécutées jusqu'à présent (sans celles annulées, bien évidemment).
 
 ## Conclusion
 
