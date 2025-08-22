@@ -1,6 +1,6 @@
 ---
 title: TP2 &ndash; Git avancé 2/2
-subtitle: Gitlab CI/CD, Tests automatisés, Intégration et déploiement continu
+subtitle: GitLab CI/CD, Tests et releases automatisés, Intégration et déploiement continu
 layout: tutorial
 lang: fr
 ---
@@ -20,8 +20,6 @@ Nous le verrons par la suite, il est possible de conditionner le déclenchement 
 Avec ce système, **GitLab** pourrait détecter automatiquement s'il y a des soucis quand, par exemple, deux branches sont **fusionnées** avec succès, mais que le code ne compile plus, ou ne passe pas les tests.
 
 Au-delà de ça, les **jobs** peuvent aussi servir à automatiser certaines tâches comme le déploiement d'un site web (ou autre), la mise en ligne de la documentation, etc.
-
-Les événements qui peuvent déclencher les workflows sont nombreux, on peut en retrouver la liste complète [ici](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows).
 
 ### Le fichier .gitlab-ci.yml
 
@@ -148,7 +146,7 @@ Vous allez maintenant créer votre premier pipeline (très simple) sur le projet
 
 5. Rendez-vous sur la page de votre projet sur GitLab [https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/editeur-de-texte/etu/votrelogin/editeur-de-texte](https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/editeur-de-texte/etu/votrelogin/editeur-de-texte) puis, à gauche, dans le menu `Build` → `Pipelines`.
 
-6. Dans ce nouveau menu, vous devriez voir votre pipeline en train de s'exécuter (soit en cours, soit terminée selon votre vitesse et les performances du serveur). Si le pipeline a échoué c'est que vous vous êtres trompés à un endroit, il faudra alors corriger et recommencer (nouveau commit, nouveau push). Si tout est bon (en attente ou terminé), cliquez sur le status du pipeline pour ouvrir une nouvelle fenêtre.
+6. Dans ce nouveau menu, vous devriez voir votre pipeline en train de s'exécuter (soit en cours, soit terminée selon votre vitesse et les performances du serveur). Si le pipeline a échoué, c'est que vous vous êtes trompés à un endroit, il faudra alors corriger et recommencer (nouveau commit, nouveau push). Si tout est bon (en attente ou terminé), cliquez sur le status du pipeline pour ouvrir une nouvelle fenêtre.
 
 7. Dans la nouvelle fenêtre, vous pouvez observer chaque job du pipeline (un seul dans votre cas). Cliquez sur votre job afin d'ouvrir les logs de la machine virtuelle, et vérifiez que votre message s'affiche bien à la fin de l'exécution.
 
@@ -158,7 +156,7 @@ Vous allez maintenant créer votre premier pipeline (très simple) sur le projet
 
 </div>
 
-## Automatisation des tests sur Gitlab
+## Automatisation des tests sur GitLab
 
 Vous allez maintenant améliorer votre pipeline afin de lui permettre de vérifier que votre programme **compile** bien puis pour qu'elle exécute les **tests unitaires** sur votre application. Mais tout d'abord... il vous faut des tests unitaires ! (comment, vous n'avez pas écrit de tests unitaires depuis le début?!)
 
@@ -408,7 +406,7 @@ Votre but est donc de créer un **stage** et un **job** associé qui fait suite 
 
 * Comme indiqué plus haut, vous devez utiliser l'image `registry.gitlab.com/gitlab-org/release-cli:latest`.
 
-* Redéfinissez les mêmes variables que dans le job `build` (numéro de version sans `v` et du nom de l'exécutable) dans ce nouveau job : vous aen aurez besoin un peu partout (pour `paths` dans `artifacts`, dans la section `release`, pour le nom du fichier et le lien de téléchargement, etc.).
+* Redéfinissez les mêmes variables que dans le job `build` (numéro de version sans `v` et du nom de l'exécutable) dans ce nouveau job : vous en aurez besoin un peu partout (pour `paths` dans `artifacts`, dans les différentes sous-sections de `release`, pour le nom du fichier et le lien de téléchargement, etc).
 
 * N'oubliez pas d'inclure une section `scripts` avec une commande simple (qui fait un écho ou autre).
 
@@ -429,80 +427,76 @@ Votre but est donc de créer un **stage** et un **job** associé qui fait suite 
 
 5. Enfin, si tout s'est bien passé, rendez-vous dans le menu `Deploy` → `Releases` au niveau du panneau latéral gauche. Vous devriez alors voir votre release! Vérifiez que l'exécutable `.jar` peut bien être téléchargé.
 
+6. En local, rendez-vous sur `master` et fusionnez la branche `development`. Poussez les changements sur le dépôt distant (sur la branche `master` donc).
+
 </div>
 
 Félicitations, vous avez automatisé le processus de release de votre application ! Dorénavant, dès qu'un tag est créé et poussé, une release sera créé et publié. On peut souligner le fait qu'il n'est pas nécessairement obligatoire de passer par le système d'artifact pour publier un fichier dans une release. On peut spécifier n'importe quel lien. On pourrait donc imaginer un job qui upload les fichiers désirés sur un serveur externe et on utiliserait alors ces liens dans la release.
 
 ## Déploiement d'un site web PHP
 
-Grâce à l'action [SFTP Deploy](https://github.com/marketplace/actions/sftp-deploy), nous pouvons uploader les fichiers du dépôt vers un répertoire dans un serveur accessible via FTP (par exemple, le serveur web de l'IUT !).
+Pour terminer, nous allons créer un nouveau projet de **site web **(qui ne contiendra qu'une page simple) qui sera automatiquement déployé sur le serveur web de l'IUT après chaque `push` sur la branche principale du dépôt. Cet exercice est intéressant, car il va nous permettre de voir comment utiliser des informations sensibles (nom d'utilisateur, mot de passe) de manière sécurisée au travers d'un pipeline.
 
-Voici l'allure générale d'un tel **workflow** :
+Globalement, on peut déployer le site web avec un seul job simple :
 
 ```yml
-name : nom_custom_workflow
+stages:
+  - deploy
 
-on:
-  push:
-    branches:
-      - master
-
-jobs:
-
-  deploy-website:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Upload files on FTP server
-        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
-        with:
-          # Adresse du serveur
-          server: sftp.exemple.com
-          # Numéro de port
-          port: 22
-          # Nom d'utilisateur
-          username: username
-          # Mot de passe
-          password: password
-          # Dossier de destination dans le serveur (absolu, ou relatif...)
-          remote_path: /public/www/
-          # Si on utilise sftp
-          sftp_only: true
+deploy:
+  stage: deploy
+  image: alpine:latest
+  script:
+    - apk add --no-cache openssh lftp 
+    - rm -rf .git
+    - rm .gitlab-ci.yml
+    - mkdir ~/.ssh
+    - ssh-keyscan -p numero_port_serveur adresse_serveur >> ~/.ssh/known_hosts
+    - lftp sftp://nom_utilisateur:$mot_de_passe@$adresse_serveur:numero_port_serveur -e "mirror -R -e ./ /chemin/destination ; quit"
 ```
 
-Attention, le dossier ciblé par `remote_path` doit déjà exister sur le serveur distant.
+Ce job va :
 
-Peut-être que vous êtes choqué de voir `password` et même `username` écrits en clair dans ce fichier, et vous savez raison ! Tout le monde peut lire les fichiers de **workflow**. Il est donc totalement exclu d'y placer des informations sensibles ! Alors comment faire ?
+* Installer les logiciels `openssh` et `lftp` dans le conteneur exécutant le job.
+* Supprimer les fichiers inutiles au dpéloiement (le dossier `.git` et le fichier `.gitlab-ci.yml`...).
+* Créer un dossier `.ssh` (afin de stocker le fichier `known_hosts`).
+* Exécuter la commande `ssh-keyscan` qui permet de récupérer la clé publique du serveur de destination (désigné par `adresse_serveur`) et de la stocker dans `know_hosts`. Sans ça, le programme `lftp` ne pourra pas se connecter au serveur **ftp** et tournera dans le vide.
+* Enfin, la commande `lftp` permet de se connecter sur le serveur puis d'exécuter la commande `mirror` sur celui-ci qui permet de copier les fichiers du dossier courant depuis le conteneur (désigné par `./`, donc, les fichiers du projet) vers un chemin de destination dans le serveur ftp (le chemin peut être relatif ou absolu...).
+* On utilise le protocole `sftp`.
+* Les options de `mirror` utilisées ici sont :
+  * `-R` : afin de copier les fichiers récursivement.
+  * `-e` : supprime les fichiers distants qui ne sont pas présent en local.
+* Dans une application réelle (en tout cas pour un site web complet), il faudrait sûrement aussi se connecter en `ssh` pour exécuter d'autres actions (par exemple, installer les dépendances, etc).
 
-GitHub permet d'associer des **variables secrètes** à notre dépôt et d'y faire référence dans nos **workflows**. Ainsi, à la lecture, personne ne pourra voir le contenu réel de ces données, mais lors de l'exécution, la bonne valeur sera utilisée.
+Peut-être que vous êtes choqué de voir `mot_de_passe`, `nom_utilisateur` et peut-être même `adresse_serveur` écrits en clair dans ce fichier, et vous avez raison ! Tous les utilisateurs ayant accès au dépôt (même en lecture) peuvent lire le fichier de **.gitlab-ci.yml**. Il est donc totalement exclu d'y placer des informations sensibles ! Alors comment faire ?
 
-Pour créer une **variable secrète** à partir de la page du dépôt, on se rend dans `Settings`, `Secrets and Variables` et `Actions`. Ensuite, il faut appuyer sur le bouton `New repository secret`. On donne alors un nom (qui sera celui utilisé dans le **workflow**) puis on place la valeur réelle de la variable (le mot de passe en clair, par exemple).
+GitLab permet d'associer des **variables CI/CD** à notre dépôt (que seuls les gestionnaires du dépôt peuvent éditer) et d'y faire référence dans nos **jobs**. Ainsi, à la lecture, selon le niveau de sécurité associé à la variable, personne ne pourra voir le contenu réel de ces données, mais lors de l'exécution, la bonne valeur sera utilisée. De plus, il est possible de configurer le degré de visibilité de ces variables pour faire en sorte qu'elles ne puissent pas être lues dans les logs ni dans l'interface de gestion après avoir été crées (on peut toutefois les supprimer).
 
-Il faut respecter quelques règles de nommage :
+Pour créer une **variable CI/CD** à partir de la page du dépôt, on se rend dans `Settings` → `CI/CD` dans le panneau latéral gauche. Ensuite, il faut se rendre dans la section `Variables` puis `Project variables`. L'ensemble des variables disponibles sont listées dans la section `CI/CD Variables` (vous en avez 0 pour le moment). Pour ajouter une nouvelle variable, il suffit alors d'appuyer sur le bouton `Add variable` à droite.
 
-* Les noms peuvent contenir uniquement des caractères alphanumériques et des underscores (`A-Z`, `a-z`, `0-9`, `_`). Les espaces ne sont pas autorisés.
+Lorsqu'on crée une variable, on doit préciser :
 
-* Les noms ne doivent pas commencer par un chiffre.
+* Sa visibilité : on choisit **Masked and hidden** pour un niveau de sécurité maximal.
+* Sa clé (`key`) : le nom de la variable
+* Sa valeur (`value`).
+* On peut aussi cocher la case *Protect variable* si on souhaite que la variable ne soit utilisée que dans les jobs qui se déclenchent sur des branches protégées ou lorsqu'on pousse un tag (nous n'utiliseront pas cette option).
 
-Ensuite, pour l'utiliser dans un **workflow**, on utilise ce format : {% raw %}`${{ secrets.nom_variable }}`{% endraw %}. Par exemple :
+Ensuite, pour l'utiliser dans un **job**, on y fait référence en préfixant sa clé (`key`) par un `$`. Par exemple :
 
-{% raw %}
 ```yml
-jobs:
+stages:
+  - exemple
 
-  deploy-website:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Upload files on FTP server
-        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
-        with:
-          ...
-          password: ${{ secrets.mdp }}
+exemple:
+  stage: exemple
+  image: alpine:latest
+  script:
+    - connection -u $USER_NAME -p $PASSWORD
 ```
-{% endraw %}
+
+Où `USER_NAME` et `PASSWORD` seraient deux variables CI/CD créés dans le dépôt (avec une visibilité "Masked and hidden").
+
+Bref, avec tout ça, vous êtes prêt à construire votre pipeline !
 
 Concernant les informations pour se connecter au serveur FTP de l'IUT :
 
@@ -510,44 +504,41 @@ Concernant les informations pour se connecter au serveur FTP de l'IUT :
 
 * Port : `22`
 
-* sftp_only : `true` (le serveur de l'IUT est uniquement accessible est SFTP)
-
-* username / password : vos identifiants de département **(à gérer avec des variables secrètes)**.
+* username / password : vos identifiants de département.
 
 <div class="exercise">
 
 1. Téléchargez le fichier [index.php]({{site.baseurl}}/assets/TP2/index.php) et placez-le dans un nouveau dossier de projet. Il s'agit d'une simple page web affichant "Hello world".
 
-2. Initialisez le dépôt git ce projet en local, puis sur GitHub, créez un nouveau dépôt vierge (privé ou public, comme vous voulez) et associez-le à votre dépôt local.
+2. Initialisez le dépôt git ce projet en local, puis sur GitLab, créez un nouveau dépôt vierge (privé) dans votre namespace `qualite-de-developpement-semestre-3/etu/votrelogin` et associez-le à votre dépôt local.
 
-3. A l'aide de [cette page](https://iutdepinfo.iutmontp.univ-montp2.fr/intranet/acces-aux-serveurs/) (il faut utiliser vos identifiants habituels du département, rechargez cette page après vous être connecté) connectez-vous en **SFTP** au serveur de l'iut (en utilisant le logiciel **FileZila**, par exemple). Ensuite, sur le serveur, rendez-vous dans le dossier `public_html` et créez un dossier `hello_world_site`.
+3. Sur votre dépôt GitLab (de ce nouveau projet), créez quatre nouvelles variables CI/CD **secrètes** :
+  * **FTP_HOST** : `ftpinfo.iutmontp.univ-montp2.fr` (adresse du serveur ftp du département informatique de l'IUT)
+  * **FTP_PORT** : 22 (on pourrait éventuellement ne pas mettre le port dans une variable...mais cela renforce la sécurité)
+  * **FTP_USERNAME** et **FTP_PASSWORD** : votre login et votre mot de passe du département informatique (les mêmes que vous utilisez pour vous connecter à GitLab normalement).
 
-4. Sur votre dépôt GitHub, créez deux nouvelles variables **secrètes**. Un pour le nom d'utilisateur et un pour le mot de passe. Il s'agit de vos identifiants SFTP qui sont les mêmes que vous utilisez pour vous connecter sur vos machines, à GitLab, etc...
+4. Créez un fichier `.gitlab-ci.yml` à la racine de votre projet.
 
-5. Créez un fichier `deploy.yml` dans un nouveau dossier `.github/workflows` placé dans votre dépôt.
+5. Configurez votre pipeline afin d'ajouter un stage (et un job associé) `deploy` qui se connecte au serveur FTP du département informatique de l'IUT puis publie les fichiers du projet dans le dossier `./public_html/hello_world_site/` (sur le serveur distant). Inspirez-vous des commandes de script données précédemment. Bien sûr, il faudra remplacer les éléments `nom_utilisateur`, `mot_de_passe`, `adresse_serveur`, et `numero_port_serveur` par vos variables secrètes...
 
-6. Faites en sorte que ce workflow s'exécute seulement quand on réalise un **push** sur la branche **master**.
+6. Faites en sorte que ce job ne se déclenche que quand on fait un push sur la **branche par défaut** (il y a un exemple incluant cette condition au début du TP).
 
-7. Ajoutez un **job** permettant de déployer votre projet vers le dossier `./public_html/hello_world_site/` du serveur FTP de l'IUT. Pensez à bien utiliser les variables secrètes définies plus tôt pour le nom d'utilisateur et le mot de passe !
+7. Faites un commit puis poussez le projet sur le dépôt distant. Suivez le déroulement de l'exécution du pipeline. Si tout se passe bien, alors, le site a été déployé et vous pouvez y accéder sur le serveur web de l'IUT : [https://webinfo.iutmontp.univ-montp2.fr/~login/hello_world_site/](https://webinfo.iutmontp.univ-montp2.fr/~login/hello_world_site/) (en remplaçant `login`, bien entendu).
 
-8. Poussez le projet sur le dépôt distant. Suivez son état. Si tout se passe bien, alors, le site a été déployé et vous pouvez y accéder sur le serveur web de l'IUT : [https://webinfo.iutmontp.univ-montp2.fr/~login/hello_world_site/](https://webinfo.iutmontp.univ-montp2.fr/~login/hello_world_site/) (en remplaçant `login`, bien entendu).
-
-9. Dans votre dépôt local, ajoutez la ligne de code suivante dans le fichier `index.php` :
+8. Dans votre dépôt local, ajoutez la ligne de code suivante dans le fichier `index.php` :
 
     ```php
     echo "<p>Nous sommes le <strong>{$date->format('j F Y')}</strong> et il est <strong>{$date->format('H:i')}</strong></p>";
     ```
 
-10. Poussez cette modification sur le dépôt distant, patientez et vérifiez que votre site a bien été mis à jour !
+9. Poussez cette modification sur le dépôt distant, patientez et vérifiez que votre site a bien été mis à jour à l'issue de l'exécution du pipeline !
 
 </div>
 
 Vous pouvez maintenant déployer vos projets web sur leur serveur de destination avec un simple **push** sur une branche !
 
-Ici, nous avons utilisé l'action **SFTP Deploy** car le serveur de l'IUT utilise SFTP. Pour un serveur utilisant seulement **FTP**, on utilisera plutôt l'action [FTP Deploy](https://github.com/marketplace/actions/ftp-deploy).
-
 ## Conclusion
 
 À travers ce dernier TP, vous avez donc appris à vous servir de certaines fonctionnalités plus poussées de la plateforme **GitLab**.
 
-Comme vous l'avez constaté, les techniques de `CI/CD` présentent beaucoup d'avantages dans le cadre du développement d'un projet. Dans ce TP, nous avons étudié seulement quelques exemples, mais il est possible de faire bien plus ! Les `actions` mises à disposition par la communauté ainsi que les événements permettant de déclencher les `workflows` sont très nombreux.
+Comme vous l'avez constaté, les techniques de `CI/CD` présentent beaucoup d'avantages dans le cadre du développement d'un projet. Dans ce TP, nous avons étudié seulement quelques exemples, mais il est possible de faire bien plus ! Vous êtes donc fortement invité à plus amplement explorer et utiliser ces outils afin d'automatiser certaines tâches de vos futurs projets, notamment dans le cadre de vos **SAEs** qui seront (pour la plupart) hébergées sur le serveur GitLab du département.
