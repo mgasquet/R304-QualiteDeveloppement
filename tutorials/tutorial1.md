@@ -15,7 +15,7 @@ Par exemple, dans un projet, plusieurs personnes vont travailler sur différente
 
 Comme vous le savez, différentes plateformes permettent de gérer des dépôts distants : **GitHub**, **GitLab**, **Bitbucket**.... En plus de gérer la "mise en cloud" du dépôt que vous connaissez déjà, ces plateformes proposent aussi des services que nous allons explorer durant les 2 TPs. Lors de la prochaine séance, nous parlerons notamment des fonctionnalités **d'intégration et de déploiement continu** qui permettent de tester, construire, publier notre programme de manière automatique et s'assurer que toutes les fonctionnalités s'intègrent bien ensemble.
 
-Lors des deux séances, le fil rouge sera une application **JAVA** (déjà existante mais incomplète) sur laquelle vous travaillerez. D'abord seul et ensuite en collaboration avec d'autres membres de votre groupe. Le but sera alors de versionner son projet et d'y ajouter des nouvelles fonctionnalités. Pendant le premier TP, nous allons utiliser la plateforme **GitLab** du département informatique, puis, lors du second TP, nous étudierons les **workflows** de la plateforme **GitHub** qui permettront de tester et déployer automatiquement cette application (et d'autres !).
+Lors des deux séances, le fil rouge sera une application **JAVA** (déjà existante mais incomplète) sur laquelle vous travaillerez. D'abord seul et ensuite en collaboration avec d'autres membres de votre groupe. Le but sera alors de versionner son projet et d'y ajouter des nouvelles fonctionnalités. Pendant le premier TP, nous allons utiliser la plateforme **GitLab** du département informatique, puis, lors du second TP, nous étudierons le mécanisme de **pipeline** qui nous permettra de tester, publier et déployer automatiquement cette application (et d'autres !).
 
 ## Rappels
 
@@ -94,7 +94,7 @@ La première commande va vous permettre d'ajouter dans _l'index_ ("_staging area
 git add element
 ```
 
-Par défaut, tous les changements de fichiers ne sont pas automatiquement versionnés par **git**. Avant d'effectuer un **commit**, il faut dire les fichiers qu'on ajoute à l'index. Si on précise un dossier, tous ses fichiers (et sous-dossiers) seront ajoutés, récursivement. Donc, si on souhaite ajouter tous les fichiers, il suffit de faire, depuis la racine du **dépôt** :
+Par défaut, tous les changements de fichiers ne sont pas automatiquement versionnés par **git**. Avant d'effectuer un **commit**, il faut dire les fichiers qu'on ajoute à l'index. Si on précise un dossier (**qui n'est pas vide**), tous ses fichiers (et sous-dossiers) seront ajoutés, récursivement. Donc, si on souhaite ajouter tous les fichiers, il suffit de faire, depuis la racine du **dépôt** :
 
 ```bash
 git add .
@@ -102,7 +102,15 @@ git add .
 
 En effet, le point "." désigne le dossier courant. Cette commande ajoute donc tous les fichiers du dossier courant et de ses sous-dossiers. Attention à ne pas inclure de fichiers indésirables (notamment des fichiers cachés n'apparaissant pas dans le navigateur) ! Faire `git add .` peut paraître la solution idéale et facile, mais néanmoins il est déconseillé de l'utiliser souvent, car on est presque certains d'ajouter des fichier indésirables à l'index et là, bonjour la galère...
 
+Si l'on souhaite ajouter un dossier sans contenu (qui n'est donc pas versionné par défaut), par convention, on ajoute un fichier **.gitkeep** à l'intérieur.
+
 On le rappelle encore, il faut systématiquement ajouter les fichiers qui ont subi des changements (si on souhaite toujours les versionner) avant de réaliser un **commit**. De toute façon, si aucun fichier n'est ajouté, **git** ne vous laissera pas faire de commit.
+
+Afin de vérifier l'état actuel de votre dépôt, les changements, les fichiers par encore ajoutés, etc, vous pouvez utiliser la commande suivante :
+
+```bash
+git status
+```
 
 **Commit**
 
@@ -148,7 +156,7 @@ Néanmoins, on préférera se déplacer vers une **branche** ou bien un **tag** 
 
 Parfois, dans l'environnement de travail, il y a des éléments (fichiers/dossiers) qu'il n'est pas souhaitable de versionner. Par exemple, les **dépendances** d'un projet (qui sont généralement lourdes et installées de manière externe) ou bien encore, les **fichiers de classes compilées** qui ne font pas partie du code source.
 
-Pour faire en sorte que **git** ne versionne pas certains éléments, il suffit de créer un fichier **.gitignore** à la racine du dépôt. On peut alors lui préciser des chemins de fichiers ou des chemins de dossiers à ignorer (chemin depuis la racine du dépôt). Les chemins des dossiers doivent se terminer par le séparateur **/**. On peut aussi utiliser le symbole **\*** pour filtrer des chaînes de caractères, et par exemple inclure tous les fichiers avec une certaine extension.
+Pour faire en sorte que **git** ne versionne pas certains éléments, il suffit de créer un fichier **.gitignore**. On peut alors lui préciser des chemins de fichiers ou des chemins de dossiers à ignorer (à partir du dossier où est stocké le fichier **.gitignore**). Les chemins des dossiers doivent se terminer par le séparateur **/**. On peut aussi utiliser le symbole **\*** pour filtrer des chaînes de caractères, et par exemple inclure tous les fichiers avec une certaine extension.
 Par exemple :
 
 ```bash
@@ -157,6 +165,9 @@ mon_fichier_inutile2.txt
 exemple/a/dossier_a_ignorer/
 *.class
 ```
+
+On peut créer plusieurs fichiers **.gitignore** dans un même dépôt (dans des dossiers différents). Par exemple, un à la racine du projet, un second pour ignorer certains éléments dans un sous-dossier, etc.
+
 ### Créer et publier un dépôt
 
 Au lieu de **cloner** un dépôt distant, on peut aussi en créer un en local puis le publier sur un dépôt distant vierge. Pour cela :
@@ -254,7 +265,7 @@ Vous l'aurez compris, votre objectif sera de doter notre éditeur de document de
 
 1. Si ce n'est pas déjà fait, ouvrez un terminal et rendez-vous dans le dossier de l'application que vous avez clonée. Laissez-le ouvert, de côté, afin d'exécuter vos commandes, plus tard.
 
-2. Ajoutez un fichier **.gitignore** permettant d'ignorer le dossier `target/`. Il s'agit de fichiers générés à chaque exécution du projet depuis l'IDE, cela ne doit pas être versionné. Faites aussi en sorte d'ignorer le dossier `.idea/` (fichiers caches relatifs à l'IDE).
+2. Ajoutez un fichier **.gitignore** à la racine du dépôt, permettant d'ignorer le dossier `target/`. Il s'agit de fichiers générés à chaque exécution du projet depuis l'IDE, cela ne doit pas être versionné. Faites aussi en sorte d'ignorer le dossier `.idea/` (fichiers caches relatifs à l'IDE).
 
 3. Ajoutez tous les nouveaux fichiers, afin qu'ils soient disponibles pour le **commit**.
 
@@ -342,7 +353,9 @@ pick f2ep173 chat fini
 pick t2du1z9 ah non en fait, fix du chat...
 ```
 
-Les commits sélectionnés sont présentés du plus ancien au plus récent. Pour réaliser une fusion (squash) de commits, il suffit alors de remplacer le mot clé `pick` par `s` (pour squash) pour tous les commits qu'on veut **squasher** (fusionner). Tous les commits libellés par **s** seront alors fusionnés dans le premier commit libellé **pick** au-dessus d'eux. Il faut donc **obligatoirement libeller au moins un commit en pick**. 
+Les commits sélectionnés sont présentés du plus ancien au plus récent avec leur **identifiant**. Cet identifiant est une version raccourcie du **hash** du commit (identifiant de 40 caractères qui est unique dans le dépôt). Généralement, git vous l'indique après avoir réalisé un commit en local, et vous pouvez le retrouver au complet dans l'historique avec `git log`.
+
+Pour réaliser une fusion (squash) de commits, il suffit alors de remplacer le mot clé `pick` par `s` (pour squash) pour tous les commits qu'on veut **squasher** (fusionner). Tous les commits libellés par **s** seront alors fusionnés dans le premier commit libellé **pick** au-dessus d'eux. Il faut donc **obligatoirement libeller au moins un commit en pick**. 
 
 Sur nano/vim, on quitte ensuite cette interface en faisant `Echap` puis `:wq` (écrire et quitter). Sur une autre interface type éditeur de texte (par exemple, **gedit**) il suffit de sauvegarder et quitter.
 
@@ -380,9 +393,13 @@ Le **rebasing** s'effectue alors. On peut consulter l'historique pour constater 
 
 Depuis cet état, votre dépôt distant va refuser d'intégrer vos changements, car des commits ont disparu... Il ne sait plus où vous en êtes. Vous pouvez alors forcer le changement en utilisant l'option `--force` lors du push. Attention à ne pas abuser de cette option, car il force le dépôt distant à se synchroniser sur votre version et donc, effacer les différences entre son contenu et votre dépôt. Il est donc conseillé d'utiliser cette option seulement dans le cas du rebase, comme nous venons de le voir. De plus, on va plutôt utiliser le **rebase** quasi-exclusivement sous les sous-branches (et jamais le `main`/ `master`) comme nous allons le voir bientôt.
 
-Attention, sur **Gitlab**, la branche **master** est protégée contre le `--force`, par défaut. Pour désactiver cette sécurité : sur la page du dépôt, dans le menu à gauche → **Settings** → **Repository** → **Protected Branches** → **Expand**. Un peu plus bas sont listées toutes les branches protégées. Si on veut annuler cette protection, il suffit d'activer l'option **Allowed to force push**. 
+Attention, sur **GitLab**, la branche **master** est protégée contre le `--force`, par défaut. Pour désactiver cette sécurité : sur la page du dépôt, dans le menu à gauche → **Settings** → **Repository** → **Protected Branches** → **Expand**. Un peu plus bas sont listées toutes les branches protégées. Si on veut annuler cette protection, il suffit d'activer l'option **Allowed to force push**. 
 
-La protection contre le `--force` a du sens dans un projet concret où on ne travaille jamais directement sur **master**, mais sur les sous-branches.
+La protection contre le `--force` a du sens dans un projet concret où on ne travaille jamais directement sur **master**, mais sur les sous-branches. 
+
+<!--
+Dans une configuration de projet à plusieurs collaborateurs, **effectuer un rebase ne devrait en pratique jamais être fait après avoir fusionné la branche contenant son code** (vers la branche de développement par exemple et/ou celle principale), c'est-à-dire une fois que le code est officiellement **intégré**. En effet, cela pourrait être problématique pour les collaborateurs, qui devraient aussi reconstruire l'historique. Par contre, il est tout à fait conseillé de l'utiliser avant une fusion, lorsque la fonctionnalité est terminée, afin de remettre "au propre" l'historique des commits avant qu'ils soient intégrés aux autres branches.
+-->
 
 Il est possible de faire plusieurs fusions avec un seul **rebase** en indiquant plusieurs commits en **pick** :
 
@@ -424,7 +441,7 @@ Maintenant, nous allons ajouter une troisième commande ! Là aussi, effectuez p
     ```
 
     **Astuces** : 
-    - Pour extraire une portion d'une chaîne de caractères, servez-vous de la méthode `substring`. Attention, dans cette fonction, le deuxième index (index de fin) est exclus (le caractère se trouvant a cette position n'est pas extrait).
+    - Pour extraire une portion d'une chaîne de caractères, servez-vous de la méthode `substring`. Attention, dans cette fonction, le deuxième index (index de fin) est exclu (le caractère se trouvant à cette position n'est pas extrait).
     - Pour passer l'intégralité d'une chaîne de caractères, on utilise la méthode `toUpperCase`.
     - Votre code respecte-t-il le principe [DRY](https://fr.wikipedia.org/wiki/Ne_vous_r%C3%A9p%C3%A9tez_pas) ? Pensez à réutiliser la méthode `remplacer`...
 
@@ -460,8 +477,8 @@ Par exemple, imaginons le scénario suivant :
 4. On fait un nouveau commit où le fichier est ajouté au .gitignore...on exécute la commande `git rm -r --cached .` pour prendre en compte cet ajout tardif, comme ça, le fichier de configuration ne sera plus versionné par git. Mais c'est trop tard, on peut remonter l'historique des commits et retourner à une version où ce fichier est bien là !
 
 5. Eurêka ! Avec la technique de rebasing, on peut :
-    * soit regrouper mon dernier commit "sain" (qui ne contient plus le fichier avec les identifiants) avec le commit précédent. Ainsi, il en résultera un seul commit où ce fichier de configuration n'a jamais été versionné... ! On force le `push`, l'incident est réparé !
-    * soit supprimer le commit contenant le fichier de configuration (avec l'option `drop`) **seulement si le commit n'ajoute que ce fichier** et par d'autres fichiers/données importants.
+    * soit regrouper mon dernier commit "sain" (qui ne contient plus le fichier avec les identifiants) avec le commit précédent. Ainsi, il en résultera un seul commit où ce fichier de configuration n'a jamais été versionné ! On force le `push`, l'incident est réparé !
+    * soit supprimer le commit contenant le fichier de configuration (avec l'option `drop`) **seulement si le commit n'ajoute que ce fichier** et pas d'autres fichiers/données importants.
 
 ### Conventions pour les commits
 
@@ -744,7 +761,7 @@ Dans un projet dans lequel il y a plusieurs **collaborateurs** le processus de *
 
 La personne qui a été assignée à la `merge request` est chargée d'examiner le code de celle-ci et de la valider. C'est le moment d'avoir un œil neuf sur votre code. La personne assignée doit notamment vérifier si le code est bien commenté et documenté, s'il respecte les normes de nommage (camelCase par exemple, ou bien des normes de l'entreprise), l'indentation... Bref, on vérifie d'abord que le code est propre. Il faut aussi vérifier que, a priori, le code fonctionne, ne contient pas de failles de sécurité potentielles, etc. Cela peut aussi être des problèmes relatifs au placement des fichiers, par exemple.
 
-S'il y a des choses à corriger, le membre de l'équipe peut laisser plusieurs commentaires ce qui permet à l'auteur de la fonctionnalité de corriger et de faire une nouvelle merge request.
+S'il y a des choses à corriger, le membre de l'équipe peut laisser plusieurs commentaires ce qui permet à l'auteur de la fonctionnalité de corriger, faire de nouveaux commits, ce qui mettra automatiquement à jour la merge request (qui pourra alors être acceptée, ou demandera encore du travail...). Il est bien sûr possible de complètement refuser un merge request et de la fermer.
 
 Dans l'exercice précédent, vous avez collaboré avec un collègue, mais celui-ci était "extérieur" au projet. Il est bien sûr tout à fait possible d'intégrer d'autres personnes à un dépôt pour qu'ils aient les mêmes droits que vous. C'est donc ce que nous allons faire dès maintenant !
 
@@ -862,6 +879,6 @@ Pour l'exercice suivant, le membre ayant le rôle de **collaborateur** va princi
 
 Si vous avez bien tout suivi et intégré, vous devez maintenant être beaucoup plus compétent dans la bonne gestion d'un projet git, notamment lorsqu'il s'agit de travailler en équipe. Vous devez maintenant impérativement respecter tout cela dans votre parcours étudiant (dans vos SAÉs et pour vos futurs projets) et vous y serez forcément confronté en entreprise, notamment dans les SSII. Il faut que les notions abordées lors de ce TP deviennent des automatismes.
 
-Dans le [prochain TP]({{site.baseurl}}/tutorials/tutorial2), nous allons étudier les **workflows** permettant d'automatiser certaines tâches sur la plateforme en ligne, comme le **test**, le **déploiement** et la publication des programmes, à partir du dépôt. Pour cela, nous allons changer de plateforme et utiliser **GitHub**.
+Dans le [prochain TP]({{site.baseurl}}/tutorials/tutorial2), nous allons étudier le mécanisme de **pipeline** de **GitLab** permettant d'automatiser certaines tâches sur la plateforme en ligne, comme le **test**, le **déploiement** et la publication des programmes, à partir du dépôt.
 
 Nous avons exploré pas mal de nouvelles commandes de **git** à travers ce premier TP, mais il en existe beaucoup d'autres et certaines très utiles ! Je vous conseille donc de vous informer sur ce sujet, en complément.
