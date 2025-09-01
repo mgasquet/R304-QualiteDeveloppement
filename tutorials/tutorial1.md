@@ -84,7 +84,7 @@ Pour le **Gitlab** du département, précisez votre nom/prénom pour `user.name`
 
 ### Les quatre commandes essentielles
 
-Quand on travaille sur un projet avec **git**, les trois commandes "basiques" que vous devez absolument maîtriser (depuis l'année dernière) sont : **add**, **commit**, **push** et **pull**.
+Quand on travaille sur un projet avec **git**, les quatre commandes "basiques" que vous devez absolument maîtriser (depuis l'année dernière) sont : **add**, **commit**, **push** et **pull**.
 
 **Add**
 
@@ -106,11 +106,12 @@ Si l'on souhaite ajouter un dossier sans contenu (qui n'est donc pas versionné 
 
 On le rappelle encore, il faut systématiquement ajouter les fichiers qui ont subi des changements (si on souhaite toujours les versionner) avant de réaliser un **commit**. De toute façon, si aucun fichier n'est ajouté, **git** ne vous laissera pas faire de commit.
 
-Afin de vérifier l'état actuel de votre dépôt, les changements, les fichiers par encore ajoutés, etc, vous pouvez utiliser la commande suivante :
+Afin de vérifier l'état actuel de votre dépôt, les changements, les fichiers non ajoutés, etc, vous pouvez utiliser la commande suivante :
 
 ```bash
 git status
 ```
+Il est recommandé de faire cette vérification avant de passer à la suite, afin de s'assurer que seuls les fichiers souhaités sont ajoutés aux commits.
 
 **Commit**
 
@@ -118,7 +119,7 @@ git status
 git commit -m "Message du commit"
 ```
 
-Cette commande permet donc de créer un **point d'ancrage** pour versionner l'état actuel de votre code. Une **référence** unique (à votre dépôt) est alors créée. On l'utilise donc comme une commande de sauvegarde.
+Cette commande permet de créer un **point d'ancrage** pour versionner l'état actuel de votre code. Une **référence** unique (à votre dépôt) est alors créée. On l'utilise donc comme une commande de sauvegarde.
 
 Le **message** est un élément obligatoire. Il indique ce qui a changé depuis le dernier commit, et s'affichera aussi dans l'historique.
 
@@ -245,7 +246,7 @@ On a le fonctionnement suivant :
 
 **Attention**, dans les commandes, le tableau des paramètres est passé tel quel, sans autre traitement. Donc, la première case de ce tableau (index 0) contient le **nom de la commande**. Pour obtenir les paramètres qui intéressent la commande, il faut aller chercher à partir de la seconde case (d'index 1).
 
-Au lancement, le programme contient un document "vide". Après l'exécution d'une commande, la chaîne de caractères est ré-affichée. Pour le moment, une seule commande est disponible, **la commande d'ajout**. Pour l'utiliser, il faut donc écrire (dans la console, une fois le programme lancé) : 
+Au lancement, le programme contient un document vide. Après l'exécution d'une commande, la chaîne de caractères est ré-affichée. Pour le moment, une seule commande est disponible, **la commande d'ajout**. Pour l'utiliser, il faut donc écrire (dans la console, une fois le programme lancé) : 
 
 ```bash
 ajouter;texte à ajouter
@@ -321,7 +322,7 @@ Pour le prochain exercice (et pour pouvoir vous montrer quelque chose d'intéres
 
     N'oubliez pas de faire plusieurs commits (comme demandé plus haut) pendant le développement de cette fonctionnalité ! Par exemple, vous pouvez en faire trois en laissant un bug volontairement dans le code du premier commit puis le fixer avec le second commit, et enfin ajouter des commentaires ou de la documentation avec le troisième commit.
 
-    Techniquement (comme montré dans l'exemple), le paramètre contenant le texte peut être vide...à vous de gérer cela!
+    Techniquement (comme montré dans l'exemple), le paramètre contenant le texte peut être vide... à vous de gérer cela!
 
 3. Enregistrez cette nouvelle commande dans la méthode **createCommand** de `CommandeFactory`, en vous basant sur l'exemple de la commande `ajouter` (là aussi, vous pouvez faire un commit).
 
@@ -610,7 +611,7 @@ git merge nom_branche_a_integrer
 
 Par exemple, si on se trouve sur la branche `development` et qu'on souhaite intégrer les changements de la branche `feature/chat` :
 
-- On se déplace sur la branche `development` (si on n'y ait pas déjà) :
+- On se déplace sur la branche `development` (si on n'y est pas déjà) :
 
 ```bash
 git checkout development
