@@ -35,6 +35,8 @@ L'objectif des **synthèses de cours** est de reprendre les différentes notions
 3. [Le pattern décorateur](syntheses/synthese_patterns_decorateur)
 -->
 
+<!--
 ## Cours et travaux dirigés
 
 Les documents relatifs au cours de conception (**diagramme de classes** de conception) et aux travaux dirigés sont disponibles sur [Moodle](https://moodle.umontpellier.fr/course/view.php?id=32478).
+-->
