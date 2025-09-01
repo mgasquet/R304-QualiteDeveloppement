@@ -23,6 +23,10 @@ Normalement, vous avez appris à vous servir de **git** (et du [**GitLab** de l'
 
 En complément, vous pouvez aussi aller consulter le [tutoriel d'introduction à git de première année](https://gitlabinfo.iutmontp.univ-montp2.fr/valicov/tutoGit1ereAnnee). Il existe également des nombreux tutoriels en ligne. Nous vous recommandons le [Git-it-electron](https://github.com/jlord/git-it-electron) qui est à la fois interactif et ludique.
 
+### Se connecter à GitLab
+
+Pour rappel, pour se connecter au GitLab de l'IUT, il faut utiliser vos identifiants LDAP du département (qui vous sert pour GitLab, Oracle, FTP, etc...). Si vous ne vous rappelez-plus de vos identifiants ou que vous venez de rejoindre l'IUT cette année, il faut vous rendre auprès du service technique pour réinitialiser/obtenir vos identifiants.
+
 ### Identification et clé de sécurité
 
 Pour que vous puissiez versionner vos projets avec le [**GitLab** de l'IUT](https://gitlabinfo.iutmontp.univ-montp2.fr/), il faut que vous soyez identifié grâce à une clé de sécurité (principe de clé de chiffrement publique/privée). Normalement, vous avez déjà réalisé cette étape l'année dernière ou en début de semestre (en cours de Développement Web - PHP), mais au cas où, voici les actions à réaliser :
@@ -45,7 +49,7 @@ clip < ~/.ssh/id_rsa.pub
 
 Connectez-vous ensuite au [GitLab de l'IUT](https://gitlabinfo.iutmontp.univ-montp2.fr/users/sign_in) en utilisant vos identifiants du département (même chose que pour accéder aux machines).
 
-En haut à gauche, cliquez sur votre image de profil puis `Preférences`. Sur la nouvelle page, cliquez sur `SSH Keys`. Dans la zone `SSH Fingerprints` collez votre clé publique. Donnez lui un titre et sauvegardez-la. Vous êtes prêt à travailler !
+En haut à gauche, cliquez sur votre image de profil puis `Preférences`. Sur la nouvelle page, cliquez sur `SSH Keys`. Dans la zone `SSH Fingerprints` collez votre clé publique. Donnez-lui un titre et sauvegardez-la. Vous êtes prêt à travailler !
 
 ### Créer et cloner un dépôt distant
 
@@ -80,7 +84,7 @@ Les différents **commits** réalisés doivent porter des informations sur leur 
 
 Ces commandes configurent l'identité du développeur de manière **globale** (pour tous les dépôts). Il est néanmoins possible de définir une identité **locale** (pour un dépôt en particulier) si on se place dans le dépôt concerné et qu'on exécute la commande sans spécifier le paramètre `--global`.
 
-Pour le **Gitlab** du département, précisez votre nom/prénom pour `user.name` et votre adresse mail universitaire pour `user.email`.
+Pour le **GitLab** du département, précisez votre nom/prénom pour `user.name` et votre adresse mail universitaire pour `user.email`.
 
 ### Les quatre commandes essentielles
 
@@ -208,19 +212,20 @@ Le but de cette première section est de prendre en main l'application qui vous 
 
 ### Installation du projet
 
-Afin de récupérer les **sources du projet** vous allez réaliser un **fork**.
+Afin de récupérer les **sources du projet**, vous allez cloner le **fork** du dépôt correspondant.
 
-Cette action consiste à copier un dépôt dans votre espace de travail, ce qui vous permet alors de travailler sur une version dérivée de l'application sans directement affecter le dépôt d'origine (où vous n'avez le plus souvent pas les droits).
+**Forker** un projet est une action qui consiste à copier un dépôt dans votre espace de travail, ce qui vous permet alors de travailler sur une version dérivée de l'application (le **fork**) sans directement affecter le dépôt d'origine (où vous n'avez le plus souvent pas les droits).
 
 À terme, vous pouvez proposer d'intégrer vos ajouts directement au dépôt principal. Ce mécanisme peut s'avérer utile si un développeur externe au projet veut proposer une amélioration ou bien simplement un **bugfix**. Le(s) propriétaire(s) du dépôt pourront intégrer automatiquement (ou refuser) les changements proposés.
 
-Pour l'instant, vous allez simplement utiliser un **fork** pour créer votre propre version dérivée du projet du TP.
+Pour l'instant, vous allez utiliser un **fork** dérivé du projet du TP qui a déjà été réalisé pour vous en amont et placé dans
+un sous-groupe privé dont vous êtes propriétaire.
 
 <div class="exercise">
 
-1. Comme vous avez l'habitude depuis le Semestre 2 (Dev-Objets, IHM, Intro Archi), le code source des TPs à faire sur GitLab va résider dans le groupe GitLab correspondant : [https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/](https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/). Dans ce groupe normalement, il y a un sous-groupe qui vous est dédié : `etu/votrelogin` (nom + première lettre du nom + éventuellement un chiffre). Ce **namespace** va permettre de regrouper vos projets liés à ce cours au même endroit. Rendez-vous sur [le dépôt du projet](https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/editeur-de-texte/) puis réalisez un **fork**. Sur GitLab, il s'agit du bouton en haut à droite du dépôt. Au niveau de **Project URL**, dans le champ **Select a namespace** précisez `qualite-de-developpement-semestre-3/etu/votrelogin` (nom + première lettre du nom + éventuellement un chiffre).
+1. Comme vous avez l'habitude depuis le Semestre 2 (Dev-Objets, IHM, Intro Archi), le code source des TPs à faire sur GitLab va résider dans le groupe GitLab correspondant : [https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/](https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/). Dans ce groupe normalement, il y a un sous-groupe qui vous est dédié : `etu/votrelogin` (nom + première lettre du nom + éventuellement un chiffre). Ce **namespace** va permettre de regrouper vos projets liés à ce cours au même endroit. Rendez-vous donc sur votre dépôt du projet : [https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/etu/votrelogin/editeur-de-texte/](https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/etu/votrelogin/editeur-de-texte/) en remplaçant `votrelogin` par votre login GitLab. Si jamais le groupe n'existe pas ou que vous n'en êtes pas propriétaire (par exemple, si vous venez de rejoindre l'IIUT cette année) appelez votre enseignant chargé de TD afin de vous aider.
 
-2. Une fois le **fork** achevé, vous obtenez alors un nouveau dépôt dans votre espace personnel. Sur votre machine, **clonez** ce dépôt (en utilisant la bonne commande git).
+2. Sur votre machine, **clonez** ce dépôt (en utilisant la bonne commande git).
 
 3. Configurez vos informations sur le dépôt courant (**username** et **email**)
 
@@ -398,9 +403,7 @@ Attention, sur **GitLab**, la branche **master** est protégée contre le `--for
 
 La protection contre le `--force` a du sens dans un projet concret où on ne travaille jamais directement sur **master**, mais sur les sous-branches. 
 
-<!--
-Dans une configuration de projet à plusieurs collaborateurs, **effectuer un rebase ne devrait en pratique jamais être fait après avoir fusionné la branche contenant son code** (vers la branche de développement par exemple et/ou celle principale), c'est-à-dire une fois que le code est officiellement **intégré**. En effet, cela pourrait être problématique pour les collaborateurs, qui devraient aussi reconstruire l'historique. Par contre, il est tout à fait conseillé de l'utiliser avant une fusion, lorsque la fonctionnalité est terminée, afin de remettre "au propre" l'historique des commits avant qu'ils soient intégrés aux autres branches.
--->
+Dans une configuration de projet à plusieurs collaborateurs, **effectuer un rebase ne devrait en pratique jamais être fait après avoir intégré son code avec celui des autres collaborateurs** (comme nous le verrons bientôt, quand on a fusionné la branche contenant son code vers une autre branche...). En effet, cela pourrait être problématique pour les collaborateurs, qui devraient aussi reconstruire l'historique. Par contre, il est tout à fait conseillé de l'utiliser avant d'intégrer son code, lorsque la fonctionnalité sur laquelle on travaille est terminée, afin de remettre "au propre" l'historique des commits avant qu'ils soient intégrés avec le code en commun.
 
 Il est possible de faire plusieurs fusions avec un seul **rebase** en indiquant plusieurs commits en **pick** :
 
@@ -421,7 +424,7 @@ Il ne restera alors que deux commits (dont on peut changer le message).
 
 2. Observez l'historique des commits.
 
-3. Sur **Gitlab**, désactivez la protection contre le `--force` sur la branche `master` (c'est une mauvaise pratique comme évoqué plus haut, mais pour l'instant, nous n'avons pas le choix, car nous ne travaillons que sur une seule branche.)
+3. Sur **GitLab**, désactivez la protection contre le `--force` sur la branche `master` (c'est une mauvaise pratique comme évoqué plus haut, mais pour l'instant, nous n'avons pas le choix, car nous ne travaillons que sur une seule branche.)
 
 4. Poussez sur votre dépôt sur GitLab **en forçant**.
 
@@ -464,6 +467,8 @@ Quand on utilise `git rebase`, il existe d'autres options que le "squash" (`s`) 
 * `edit` (ou `e`) : l'opération rebasage fera une pause sur ce commit pour vous permettre d'en modifier le contenu (un peu plus technique)
 * `fixup` (ou `f`) : agit comme `squash`, mais supprime le message du commit
 * `drop` (ou `d`) : supprime le commit (attention toutefois, il y aura conflit si on tente de supprimer un commit dont dépendent d'autres commits qu'on conserve...)
+
+Il est aussi possible de déplacer l'ordre des commits pour réorganiser complètement l'historique.
 
 L'intitulé de cette section contient **"réparer vos bêtises"** car ce mécanisme permet aussi d'effacer certains commits intermédiaires contenant des informations sensibles, entre autres.
 
@@ -656,7 +661,7 @@ On peut donc avoir le processus suivant pour mettre en place le développement d
 
 - Créer et se déplacer sur une nouvelle branche à partir de la branche `development`.
 - Faire des commits simples pendant le développement de la fonctionnalité.
-- À la fin du développement, regrouper les commits en un seul et appliquer un message respectant les conventions.
+- À la fin du développement, regrouper les commits en un seul (`rebase`) et appliquer un message respectant les conventions (avant de la fusionner et d'intégrer son code avec celui des autres collaborateurs !).
 - Fusionner la branche sur `development` puis la supprimer.
 
 Et, à la fin du sprint/cycle, fusionner la branche `development` sur `master`.
@@ -727,7 +732,7 @@ Le fait de faire une demande d'intégration de son code dans le projet d'origine
 
 <div class="exercise">
 
-1. Encore une fois, rendez-vous dans le dépôt de votre collègue (attendez bien qu'il ait terminé l'exercice précédent et que son bugfix soit donc publié). En haut à droite, appuyez sur le bouton **fork**. Configurez le **namespace** pour le placer dans votre groupe `qualite-de-developpement-semestre-3/etu/votrelogin` puis validez. Un nouveau dépôt "forké" à partir de celui de votre collègue est alors disponible.
+1. Encore une fois, rendez-vous dans le dépôt de votre collègue (attendez bien qu'il ait terminé l'exercice précédent et que son bugfix soit donc publié). En haut à droite, appuyez sur le bouton **fork**. Configurez le **namespace** (au niveau de **Project URL**) pour le placer dans votre groupe `qualite-de-developpement-semestre-3/etu/votrelogin` puis validez. Un nouveau dépôt "forké" à partir de celui de votre collègue est alors disponible.
 
 2. Clonez ce "nouveau" dépôt sur votre machine : comme ce dépôt forké vous appartient, vous aurez droit de faire des push dessus !
 
@@ -774,7 +779,7 @@ Dans l'exercice précédent, vous avez collaboré avec un collègue, mais celui-
     
     * Dans votre dépôt GitLab (pas celui **forké**, celui original), donnez le rôle **Owner** à votre collègue.
 
-    * Ajouter une méthode `decrireCommande` (type de retour `void`) dans l'interface `Commande`. Cette fonction a pour but de décrire simplement (en console, avec un print) ce que fait la `Commande`, puis ses paramètres (par exemple, pour une instance de `CommandeRemplacer` : "Remplacement de texte dans le document, paramètres : ['remplacer', '1', '5', 'hello']"). Implémentez cette fonction dans toutes les commandes de manière adéquate Respectez bien le processus que vous avez jusqu'ici : création d'une sous-branche, commits conventionnels, rebasing, etc. Poussez la branche de votre fonctionnalité sur gitlab. *Astuce* : la fonction `Arrays.toString(...)` peut vous être utile...
+    * Ajouter une méthode `decrireCommande` (type de retour `void`) dans l'interface `Commande`. Cette fonction a pour but de décrire simplement (en console, avec un print) ce que fait la `Commande`, puis ses paramètres (par exemple, pour une instance de `CommandeRemplacer` : "Remplacement de texte dans le document, paramètres : ['remplacer', '1', '5', 'hello']"). Implémentez cette fonction dans toutes les commandes de manière adéquate Respectez bien le processus que vous avez jusqu'ici : création d'une sous-branche, commits conventionnels, rebasing, etc. Poussez la branche de votre fonctionnalité sur GitLab. *Astuce* : la fonction `Arrays.toString(...)` peut vous être utile...
 
     * Le but de cette fonction est de développer un système d'historique (dans le futur) afin de consulter tout ce qui a été fait sur le document jusqu'à présent. Nous ne le ferons pas pour le moment, mais il vous sera proposé de le faire à la fin du TP dans la section 5 [Bonus (pour les plus rapides)](#bonus-pour-les-plus-rapides).
     
@@ -782,11 +787,11 @@ Dans l'exercice précédent, vous avez collaboré avec un collègue, mais celui-
 
 3. Pour le **collaborateur** :
 
-    * Le projet dans lequel vous avez été invité devrait apparaître à [la racine du gitlab du département](https://gitlabinfo.iutmontp.univ-montp2.fr/).
+    * Le projet dans lequel vous avez été invité devrait apparaître à [la racine du GitLab du département](https://gitlabinfo.iutmontp.univ-montp2.fr/).
 
     * Clonez ce dépôt. Vous avez maintenant les droits d'accès et surtout d'écriture.
 
-    * Dans le projet correspondant à ce dépôt, ajoutez une nouvelle commande `minuscules` similaire à `majuscules`, mais pour les minuscules (on utilise `toLowerCase`). Respectez bien le processus que vous avez jusqu'ici : création d'une sous-branche, commits conventionnels, rebasing, etc. Poussez la branche de votre fonctionnalité sur gitlab.
+    * Dans le projet correspondant à ce dépôt, ajoutez une nouvelle commande `minuscules` similaire à `majuscules`, mais pour les minuscules (on utilise `toLowerCase`). Respectez bien le processus que vous avez jusqu'ici : création d'une sous-branche, commits conventionnels, rebasing, etc. Poussez la branche de votre fonctionnalité sur GitLab.
     
     * Une fois terminé, ne fusionnez pas la branche de votre fonctionnalité sur `development`.
 
@@ -828,7 +833,7 @@ Jusqu'ici, nous n'avons fait que des **merge** sans conflits bloquants, c'est-à
 
     * Validez la merge request que votre binôme vous a affecté une fois qu'il aura terminé.
 
-4. Maintenant, le propriétaire doit essayer de valider la merge request sur laquelle il est assigné... cela ne marche pas ! Gitlab détecte immédiatement que la fusion ne sera pas possible et affiche un message d'erreur ("Merge blocked") sur la page.
+4. Maintenant, le propriétaire doit essayer de valider la merge request sur laquelle il est assigné... cela ne marche pas ! GitLab détecte immédiatement que la fusion ne sera pas possible et affiche un message d'erreur ("Merge blocked") sur la page.
 
 </div>
 
