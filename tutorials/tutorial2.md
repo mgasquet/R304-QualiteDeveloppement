@@ -218,6 +218,8 @@ Cela peut sembler lourd de séparer cela en deux stages/jobs, mais cela nous per
 
 4. Pour finir, modifiez légèrement la classe `Document` pour qu'un ou plusieurs tests ne passent plus. Attention, le programme doit compiler ! Faites un commit et un push puis vérifiez que le premier job de votre pipeline passe, mais pas le second. Enfin, remettez tout en ordre.
 
+**Remarque :** Dans cet exemple, pour les deux stages l'image utilisée est la même. Pour éviter la duplication dans le fichier `.gitlab-ci.yml`, on aurait pu indiquer `image: maven:3.9.5-eclipse-temurin-21` sur la première ligne de ce fichier, avant le mot-clé `stages`. Cela signifie que c'est l'image par défaut pour tous les stages et donc on peut omettre la déclaration de l'image dans chacun des jobs.
+
 </div>
 
 ## Automatisation des releases
