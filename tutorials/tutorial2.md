@@ -158,7 +158,7 @@ Vous allez maintenant créer votre premier pipeline (très simple) sur le projet
 
 ## Automatisation des tests sur GitLab
 
-Vous allez maintenant améliorer votre pipeline afin de lui permettre de vérifier que votre programme **compile** bien puis pour qu'elle exécute les **tests unitaires** sur votre application. Mais tout d'abord... il vous faut des tests unitaires ! (comment, vous n'avez pas écrit de tests unitaires depuis le début?!)
+Vous allez maintenant améliorer votre pipeline afin de lui permettre de vérifier que votre programme **compile** bien puis pour qu'elle exécute les **tests unitaires** sur votre application. Mais tout d'abord... il vous faut des tests unitaires ! (comment, vous n'avez pas écrit de tests unitaires depuis le début ?!)
 
 <div class="exercise">
 
@@ -438,7 +438,7 @@ Félicitations, vous avez automatisé le processus de release de votre applicati
 
 ## Déploiement d'un site web PHP
 
-Pour terminer, nous allons créer un nouveau projet de **site web **(qui ne contiendra qu'une page simple) qui sera automatiquement déployé sur le serveur web de l'IUT après chaque `push` sur la branche principale du dépôt. Cet exercice est intéressant, car il va nous permettre de voir comment utiliser des informations sensibles (nom d'utilisateur, mot de passe) de manière sécurisée au travers d'un pipeline.
+Pour terminer, nous allons créer un nouveau projet de site web, qui ne contiendra qu'une page simple, et qui sera automatiquement déployé sur le serveur web de l'IUT après chaque `push` sur la branche principale du dépôt. Cet exercice est intéressant, car il va nous permettre de voir comment utiliser des informations sensibles (nom d'utilisateur, mot de passe) de manière sécurisée au travers d'un pipeline.
 
 Globalement, on peut déployer le site web avec un seul job simple :
 
@@ -473,7 +473,7 @@ Ce job va :
 
 Peut-être que vous êtes choqué de voir `mot_de_passe`, `nom_utilisateur` et peut-être même `adresse_serveur` écrits en clair dans ce fichier, et vous avez raison ! Tous les utilisateurs ayant accès au dépôt (même en lecture) peuvent lire le fichier de **.gitlab-ci.yml**. Il est donc totalement exclu d'y placer des informations sensibles ! Alors comment faire ?
 
-GitLab permet d'associer des **variables CI/CD** à notre dépôt (que seuls les gestionnaires du dépôt peuvent éditer) et d'y faire référence dans nos **jobs**. Ainsi, à la lecture, selon le niveau de sécurité associé à la variable, personne ne pourra voir le contenu réel de ces données, mais lors de l'exécution, la bonne valeur sera utilisée. De plus, il est possible de configurer le degré de visibilité de ces variables pour faire en sorte qu'elles ne puissent pas être lues dans les logs ni dans l'interface de gestion après avoir été crées (on peut toutefois les supprimer).
+**GitLab** permet d'associer des **variables CI/CD** à notre dépôt (que seuls les gestionnaires du dépôt peuvent éditer) et d'y faire référence dans nos **jobs**. Ainsi, à la lecture, selon le niveau de sécurité associé à la variable, personne ne pourra voir le contenu réel de ces données, mais lors de l'exécution, la bonne valeur sera utilisée. De plus, il est possible de configurer le degré de visibilité de ces variables pour faire en sorte qu'elles ne puissent pas être lues dans les logs ni dans l'interface de gestion après avoir été crées (on peut toutefois les supprimer).
 
 Pour créer une **variable CI/CD** à partir de la page du dépôt, on se rend dans `Settings` → `CI/CD` dans le panneau latéral gauche. Ensuite, il faut se rendre dans la section `Variables` puis `Project variables`. L'ensemble des variables disponibles sont listées dans la section `CI/CD Variables` (vous en avez 0 pour le moment). Pour ajouter une nouvelle variable, il suffit alors d'appuyer sur le bouton `Add variable` à droite.
 
