@@ -5,25 +5,25 @@ layout: tutorial
 lang: fr
 ---
 
-Dans ce second (et dernier) TP portant sur **git**, nous allons étudier les outils de **CI/CD** (continuous integration/continuous delivery) proposés par GitLab. Globalement, il s'agit d'automatiser différentes tâches qui seraient fastidieuses (et chronophages) de faire "à la main" comme le fait de tester l'intégration de différents modules de code, la construction et la mise à disposition de l'exécutable de l'application, le déploiement d'un site web en production, etc.
+Dans ce second (et dernier) TP portant sur **Git**, nous allons étudier les outils de **CI/CD** (continuous integration/continuous delivery) proposés par GitLab. Globalement, il s'agit d'automatiser différentes tâches qui seraient fastidieuses (et chronophages) à faire "à la main". Par exemple : tester l'intégration de différents modules de code, construire et mettre à disposition l'exécutable de l'application, déployer un site web en production, etc.
 
 La plupart de ces outils sont aussi disponibles sur les autres plateformes comme **GitHub**, **Bitbucket**, etc (avec leurs propres spécificités).
 
 ## Découverte de GitLab CI/CD et des pipelines
 
-**GitLab** propose un outil appelé **GitLab CI/CD** (pour **continuous integration/continuous delivery**) disponible dans chaque repository qui permet notamment de détecter quand un événement survient sur un dépôt (par exemple, un **push** sur une branche spécifique...) et de déclencher automatiquement des **scripts** (appelés **jobs**) sur différents **conteneurs dockers** (machines virtuelles) contenant le code du projet. Tous ces **jobs** sont regroupés dans diverses étapes (appelées **stages**) et s'exécutent de manière ordonnée ou parallèle à travers un **pipeline**.
+**GitLab** propose un outil appelé **GitLab CI/CD** (pour **continuous integration/continuous delivery**), disponible dans chaque dépôt. Cet outil permet notamment de détecter quand un événement survient sur un dépôt (par exemple, un **push** sur une branche spécifique...) et de déclencher automatiquement des **scripts** (appelés **jobs**) sur différents **conteneurs dockers** (machines virtuelles) contenant le code du projet. Tous ces **jobs** sont regroupés dans diverses étapes (appelées **stages**) et s'exécutent de manière ordonnée ou en parallèle à travers un **pipeline**.
 
 Les **jobs** vont donc vous permettre de charger votre projet sur un système **Linux** virtuel pré-configuré de votre choix (par exemple, un conteneur qui contient java et Maven) et de réaliser des actions dessus (compilation, tests, publication d'un exécutable, et bien d'autres)...
 
-Nous le verrons par la suite, il est possible de conditionner le déclenchement des jobs. Quand un événement survient sur le repository (push, création de tag, etc) le pipeline exécute tous les jobs concernés. On peut suivre la progression des tâches en direct et, en cas d'échec (par exemple, un test ne passe pas, le programme ne compile pas...) **GitLab** prévient en ligne qu'il y a eu des erreurs, avec les détails (il est possible de consulter les logs de la machine virtuelle exécutant chaque job).
+Nous le verrons par la suite, il est possible de conditionner le déclenchement des jobs. Quand un événement survient sur le dépôt (push, création de tag, etc) le pipeline exécute tous les jobs concernés. On peut suivre la progression des tâches en direct et, en cas d'échec (par exemple, un test ne passe pas, le programme ne compile pas...) **GitLab** prévient en ligne qu'il y a eu des erreurs, avec les détails (il est possible de consulter les logs de la machine virtuelle exécutant chaque job).
 
-Avec ce système, **GitLab** pourrait détecter automatiquement s'il y a des soucis quand, par exemple, deux branches sont **fusionnées** avec succès, mais que le code ne compile plus, ou ne passe pas les tests.
+Avec ce système, **GitLab** pourrait détecter automatiquement s'il y a des problèmes. Par exemple, lorsque deux branches sont **fusionnées** avec succès, mais que le code ne compile plus ou ne passe pas les tests.
 
 Au-delà de ça, les **jobs** peuvent aussi servir à automatiser certaines tâches comme le déploiement d'un site web (ou autre), la mise en ligne de la documentation, etc.
 
 ### Le fichier .gitlab-ci.yml
 
-Le pipeline (et les différents **jobs**) d'un repository est défini au travers d'un fichier `.gitlab-ci.yml` (au format `YAML`) qui se place à la racine du dépôt.
+Le pipeline (et les différents **jobs**) d'un dépôt est défini à travers d'un fichier `.gitlab-ci.yml` (au format `YAML`) qui se place à la racine du dépôt.
 
 Voici l'allure générale d'un tel fichier et des options courantes qu'on peut utiliser :
 
@@ -67,17 +67,17 @@ Revenons maintenant sur la configuration d'un `job` et intéressons-nous à ses 
 
 * `image` (quasiment obligatoire tout le temps) : spécifie quelle est l'image docker utilisée par ce job. Il existe énormément d'images, on doit cibler en fonction des besoins du job. Par exemple, si on doit tester un programme `java` (qui tourne sur la version 21), on peut utiliser l'image `maven:3.9.5-eclipse-temurin-21` qui contient java 21 et Maven. On peut éventuellement spécifier une image par défaut qui sera utilisée par chaque job (dans des conteneurs différents), mais de manière générale, on spécifie par job. Si on ne précise rien, une image par défaut sera utilisée.
 
-* `script` (obligatoire) : c'est la partie la plus importante. Il s'agit d'une liste de commandes (comme si vous étiez dans un terminal) qui vont s'exécuter dans la machine virtuelle. Lorsque le job démarre et que le conteneur est initialisé, les sources du projet sont chargées et vous vous trouvez directement à sa racine. Vous pouvez donc directement interagir avec le projet. Si toutes les commandes s'exécutent sans problème, le job réussi, sinon il échoue.
+* `script` (obligatoire) : c'est la partie la plus importante. Il s'agit d'une liste de commandes (comme si vous étiez dans un terminal) qui vont s'exécuter dans la machine virtuelle. Lorsque le job démarre et que le conteneur est initialisé, les sources du projet sont chargées et vous vous trouvez directement à sa racine. Vous pouvez donc directement interagir avec le projet. Si toutes les commandes s'exécutent sans problème, le job réussit, sinon il échoue.
 
-* `artifacts` (optionnel) : lorsque qu'un job démarre, il est isolé dans un conteneur et contient seulement le code du projet. Tous les fichiers potentiellement créés par d'autres jobs ne sont donc pas accessibles par défaut. Cependant, il arrive parfois qu'un job ait besoin de fichiers créés lors d'un job/stage précédent pour s'exécuter. La directive `artifacts` permet de spécifier quels fichiers seront sauvegardés et transmis aux jobs d'un prochain **stage**. Attention toutefois, les jobs d'un même stage s'exécutent en parallèle et ne peuvent donc pas se transmettre de fichier de cette manière (par défaut, mais c'est éventuellement possible avec une configuration avancée). Ce sont donc seulement les jobs des stages suivants qui auront accès aux fichiers sauvegardés par les stages précédents. On peut également se servir de cette directive pour sauvegarder et exposer des fichiers importants lors de la publication de **releases** (nous y reviendrons plus tard). On pourrait donc traduire le terme **artifacts** par "fichiers exportés" (depuis un job).
+* `artifacts` (optionnel) : lorsqu'un job démarre, il est isolé dans un conteneur et contient seulement le code du projet. Tous les fichiers potentiellement créés par d'autres jobs ne sont donc pas accessibles par défaut. Cependant, il arrive parfois qu'un job ait besoin de fichiers créés lors d'un job/stage précédent pour s'exécuter. La directive `artifacts` permet de spécifier quels fichiers seront sauvegardés et transmis aux jobs d'un prochain **stage**. Attention toutefois, les jobs d'un même stage s'exécutent en parallèle et ne peuvent donc pas se transmettre de fichier de cette manière (par défaut, mais c'est éventuellement possible avec une configuration avancée). Ce sont donc seulement les jobs des stages suivants qui auront accès aux fichiers sauvegardés par les stages précédents. On peut également se servir de cette directive pour sauvegarder et exposer des fichiers importants lors de la publication de **releases** (nous y reviendrons plus tard). On pourrait donc traduire le terme **artifacts** par "fichiers exportés" (depuis un job).
 
 * `dependencies` (optionnel) : permet d'indiquer que ce job a besoin des artifacts (fichiers exportés) d'un certain `job` (d'un stage précédent). Cela n'est pas obligatoire de la préciser si le job correspondant intervient dans le stage qui suit celui qui a créé les `artifacts` (les artifacts seront transmis automatiquement).
 
-* `rules` (optionnel) : permet de spécifier des conditions pour que le job se déclenche. Par exemple, `job3` ne se déclenche qu'en cas de `push` sur la branche par défaut du repository (`main` ou `master` par exemple). Si rien n'est spécifié (comme pour `job1` et `job2`) le job s'exécute lors de chaque événement (par exemple, en cas de push sur n'importe quelle branche, la création d'un tag, etc). On peut aller dans le détail et écrire des conditions complexes, et même des conditions pour spécifier quand le job ne s'exécute pas, etc. Dans l'exemple de `job3` on aurait aussi pu spécifier une branche spécifique (par exemple `'$CI_COMMIT_BRANCH == development'`) ou bien `$CI_COMMIT_BRANCH` pour n'autoriser le job à s'exécuter seulement si on a un push de commits (pas de création de tags ou autre). On notera qu'un `merge` d'une branche résultera en un `push` à un moment donné, dans la branche qui intègre les changements de la branche fusionnée.
+* `rules` (optionnel) : permet de spécifier des conditions pour que le job se déclenche. Par exemple, `job3` ne se déclenche qu'en cas de `push` sur la branche par défaut du dépôt (`main` ou `master` par exemple). Si rien n'est spécifié (comme pour `job1` et `job2`) le job s'exécute lors de chaque événement (par exemple, en cas de push sur n'importe quelle branche, la création d'un tag, etc). On peut aller dans le détail et écrire des conditions complexes, et même des conditions pour spécifier quand le job ne s'exécute pas, etc. Dans l'exemple de `job3` on aurait aussi pu spécifier une branche spécifique (par exemple `'$CI_COMMIT_BRANCH == development'`) ou bien `$CI_COMMIT_BRANCH` pour n'autoriser le job à s'exécuter seulement si on a un push de commits (pas de création de tags ou autre). On notera qu'un `merge` d'une branche résultera en un `push` à un moment donné, dans la branche qui intègre les changements de la branche fusionnée.
 
-Il existe beaucoup d'autres options que nous n'aborderons pas dans ce TP, mais que vus pouvez retrouver [ici](https://docs.gitlab.com/ci/yaml/#keywords).
+Il existe beaucoup d'autres options que nous n'aborderons pas dans ce TP, mais que vous pouvez retrouver [ici](https://docs.gitlab.com/ci/yaml/#keywords).
 
-Aussi, diverses variables prédéfinies sont fournies par `GitLab` et accessibles dans tous les **jobs**. Ces variables permettent de récupérer et exploiter des informations sur l'événement ayant déclenché le pipeline (message de commit, nom du tag, nom de la branche, etc). Par exemple `$CI_COMMIT_BRANCH` contient le nom de la branche sur laquelle est effectué le push, `$CI_DEFAULT_BRANCH` contient le nom de la branche par défaut (main, master) ou autre, etc. Ces variables sont préfixées d'un `$`. On peut retrouver la liste des variables prédéfinies sur [cette page](https://docs.gitlab.com/ci/variables/predefined_variables/#predefined-variables).
+**GitLab** fournit également diverses variables prédéfinies accessibles dans tous les **jobs**. Ces variables permettent de récupérer et exploiter des informations sur l'événement ayant déclenché le pipeline (message de commit, nom du tag, nom de la branche, etc). Par exemple `$CI_COMMIT_BRANCH` contient le nom de la branche sur laquelle est effectué le push, `$CI_DEFAULT_BRANCH` contient le nom de la branche par défaut (main, master) ou autre, etc. Ces variables sont préfixées d'un `$`. On peut retrouver la liste des variables prédéfinies sur [cette page](https://docs.gitlab.com/ci/variables/predefined_variables/#predefined-variables).
 
 ### Exemple
 
@@ -122,17 +122,17 @@ Le premier job `test` :
   * Un message est affiché en console puis les tests unitaires sont exécutés.
 
 Le deuxième job `deploy` :
-  * S'exécute seulement si un push est réalisé sur la branche par défaut (principale) du repository.
+  * S'exécute seulement si un push est réalisé sur la branche par défaut (principale) du dépôt.
   * S'exécute après le stage `test` donc après le job du même nom.
   * Ne s'exécute pas si le job `test` échoue.
   * S'exécute sur l'image `alpine:latest` (machine virtuelle simple).
   * Supprime divers fichiers non utiles au déploiement
-  * Exécute une commande pour uploader les fichiers du projet vers un repository distant...
+  * Exécute une commande pour uploader les fichiers du projet vers un dépôt distant...
   * Se connecte en ssh à un serveur pour exécuter diverses commandes supplémentaires de déploiement...
 
 ### Premiers pas
 
-Vous allez maintenant créer votre premier pipeline (très simple) sur le projet d'**éditeur de texte** du TP précédent. Normalement, vous aviez travaillé à deux sur le même projet à la fin de ce TP, donc techniquement, un des deux membres du binôme à un projet plus avancé. Ici, vous travaillerez seul sur votre propre projet, mais ce n'est pas grave s'il manque les dernières fonctionnalités des exercices réalisés en binôme (si c'est le cas et que cela vous gêne vraiment, vous pouvez faire un fork du repository de votre collègue...).
+Vous allez maintenant créer votre premier pipeline (très simple) sur le projet d'**éditeur de texte** du TP précédent. Normalement, vous aviez travaillé à deux sur le même projet à la fin de ce TP, donc techniquement, un des deux membres du binôme a un projet plus avancé. Ici, vous travaillerez seul sur votre propre projet, mais ce n'est pas grave s'il manque les dernières fonctionnalités des exercices réalisés en binôme (si c'est le cas et que cela vous gêne vraiment, vous pouvez faire un fork du dépôt de votre collègue...).
 
 <div class="exercise">
 
@@ -191,9 +191,9 @@ Vous allez maintenant améliorer votre pipeline afin de lui permettre de vérifi
 
 </div>
 
-Maintenant que vous avez des tests unitaires prêts et fonctionnels, nous allons faire en sorte que **GitLab** vérifie que votre programme compile bien puis exécute les tests après n'importe quelle mise à jour sur le repository.
+Maintenant que vous avez des tests unitaires prêts et fonctionnels, nous allons faire en sorte que **GitLab** vérifie que votre programme compile bien puis exécute les tests après n'importe quelle mise à jour sur le dépôt.
 
-Dans votre **pipeline**, vous allez diviser le travail deux **stages** et deux **jobs** :
+Dans votre **pipeline**, vous allez diviser le travail en deux **stages** et deux **jobs** :
 
 1. Un premier stage (associé à un job) qui teste la compilation.
 
@@ -225,7 +225,7 @@ Cela peut sembler lourd de séparer cela en deux stages/jobs, mais cela nous per
 
 **GitLab** permet de publier des **releases** de notre application, c'est-à-dire publier une version fonctionnelle du logiciel dans un espace de notre dépôt en ligne, avec les exécutables et les ressources nécessaires.
 
-Sur **git** il est possible d'associer un **commit** à un **tag**. Un **tag** est une étiquette nommée. Généralement, on associe une `release` à un **tag**. Il est aussi possible de faire un `checkout` directement sur un tag !
+Sur **Git** il est possible d'associer un **commit** à un **tag**. Un **tag** est une étiquette nommée. Généralement, on associe une `release` à un **tag**. Il est aussi possible de faire un `checkout` directement sur un tag !
 
 Par convention, les tags s'utilisent donc pour indiquer la version d'un programme sous la forme `vX.Y.Z`. Ainsi, par exemple `v0.0.1`, `v1.0.0`, etc. `X` désigne les mises à jour majeures (le logiciel change quasi-complétement), `Y` les mises à jour intermédiaires (ajout de nouvelles fonctionnalités, par exemple après un sprint) et `Z` les mises à jour mineures (fixes de bugs par exemple).
 
@@ -346,7 +346,7 @@ Allez, il est temps de mettre en application !
 
 </div>
 
-Tout fonctionne jusqu'ici ? Parfait ! Il ne nous reste donc plus qu'une dernière étape : faire en sorte que notre pipeline exporte de manière définitive l'exécutable, créé une release et y attache le lien de téléchargement du fichier.
+Tout fonctionne jusqu'ici ? Parfait ! Il ne nous reste donc plus qu'une dernière étape : faire en sorte que notre pipeline exporte de manière définitive l'exécutable, crée une release et y attache le lien de téléchargement du fichier.
 
 Voyons comment faire cela :
 
@@ -408,7 +408,7 @@ Votre but est donc de créer un **stage** et un **job** associé qui fait suite 
 
 * Redéfinissez les mêmes variables que dans le job `build` (numéro de version sans `v` et du nom de l'exécutable) dans ce nouveau job : vous en aurez besoin un peu partout (pour `paths` dans `artifacts`, dans les différentes sous-sections de `release`, pour le nom du fichier et le lien de téléchargement, etc).
 
-* N'oubliez pas d'inclure une section `scripts` avec une commande simple (qui fait un écho ou autre).
+* N'oubliez pas d'inclure une section `script` avec une commande simple (qui fait un écho ou autre).
 
 * N'oubliez pas d'inclure la section `dependencies`.
 
@@ -431,7 +431,7 @@ Votre but est donc de créer un **stage** et un **job** associé qui fait suite 
 
 </div>
 
-Félicitations, vous avez automatisé le processus de release de votre application ! Dorénavant, dès qu'un tag est créé et poussé, une release sera créé et publié. On peut souligner le fait qu'il n'est pas nécessairement obligatoire de passer par le système d'artifact pour publier un fichier dans une release. On peut spécifier n'importe quel lien. On pourrait donc imaginer un job qui upload les fichiers désirés sur un serveur externe et on utiliserait alors ces liens dans la release.
+Félicitations, vous avez automatisé le processus de release de votre application ! Dorénavant, dès qu'un tag est créé et poussé, une release sera créée et publié. On peut souligner le fait qu'il n'est pas nécessairement obligatoire de passer par le système d'artifact pour publier un fichier dans une release. On peut spécifier n'importe quel lien. On pourrait donc imaginer un job qui upload les fichiers désirés sur un serveur externe et on utiliserait alors ces liens dans la release.
 
 ## Déploiement d'un site web PHP
 
@@ -458,14 +458,14 @@ deploy:
 Ce job va :
 
 * Installer les logiciels `openssh` et `lftp` dans le conteneur exécutant le job.
-* Supprimer les fichiers inutiles au dpéloiement (le dossier `.git` et le fichier `.gitlab-ci.yml`...).
+* Supprimer les fichiers inutiles au déploiement (le dossier `.git` et le fichier `.gitlab-ci.yml`...).
 * Créer un dossier `.ssh` (afin de stocker le fichier `known_hosts`).
-* Exécuter la commande `ssh-keyscan` qui permet de récupérer la clé publique du serveur de destination (désigné par `adresse_serveur`) et de la stocker dans `know_hosts`. Sans ça, le programme `lftp` ne pourra pas se connecter au serveur **ftp** et tournera dans le vide.
+* Exécuter la commande `ssh-keyscan` qui permet de récupérer la clé publique du serveur de destination (désigné par `adresse_serveur`) et de la stocker dans `known_hosts`. Sans ça, le programme `lftp` ne pourra pas se connecter au serveur **ftp** et tournera dans le vide.
 * Enfin, la commande `lftp` permet de se connecter sur le serveur puis d'exécuter la commande `mirror` sur celui-ci qui permet de copier les fichiers du dossier courant depuis le conteneur (désigné par `./`, donc, les fichiers du projet) vers un chemin de destination dans le serveur ftp (le chemin peut être relatif ou absolu...).
 * On utilise le protocole `sftp`.
 * Les options de `mirror` utilisées ici sont :
   * `-R` : afin de copier les fichiers récursivement.
-  * `-e` : supprime les fichiers distants qui ne sont pas présent en local.
+  * `-e` : supprime les fichiers distants qui ne sont pas présents en local.
 * Dans une application réelle (en tout cas pour un site web complet), il faudrait sûrement aussi se connecter en `ssh` pour exécuter d'autres actions (par exemple, installer les dépendances, etc).
 
 Peut-être que vous êtes choqué de voir `mot_de_passe`, `nom_utilisateur` et peut-être même `adresse_serveur` écrits en clair dans ce fichier, et vous avez raison ! Tous les utilisateurs ayant accès au dépôt (même en lecture) peuvent lire le fichier de **.gitlab-ci.yml**. Il est donc totalement exclu d'y placer des informations sensibles ! Alors comment faire ?
@@ -479,7 +479,7 @@ Lorsqu'on crée une variable, on doit préciser :
 * Sa visibilité : on choisit **Masked and hidden** pour un niveau de sécurité maximal.
 * Sa clé (`key`) : le nom de la variable
 * Sa valeur (`value`).
-* On peut aussi cocher la case *Protect variable* si on souhaite que la variable ne soit utilisée que dans les jobs qui se déclenchent sur des branches protégées ou lorsqu'on pousse un tag (nous n'utiliseront pas cette option).
+* On peut aussi cocher la case *Protect variable* si on souhaite que la variable ne soit utilisée que dans les jobs qui se déclenchent sur des branches protégées ou lorsqu'on pousse un tag (nous n'utiliserons pas cette option).
 
 Ensuite, pour l'utiliser dans un **job**, on y fait référence en préfixant sa clé (`key`) par un `$`. Par exemple :
 
@@ -494,7 +494,7 @@ exemple:
     - connection -u $USER_NAME -p $PASSWORD
 ```
 
-Où `USER_NAME` et `PASSWORD` seraient deux variables CI/CD créés dans le dépôt (avec une visibilité "Masked and hidden").
+Où `USER_NAME` et `PASSWORD` seraient deux variables CI/CD créées dans le dépôt (avec une visibilité "Masked and hidden").
 
 Bref, avec tout ça, vous êtes prêt à construire votre pipeline !
 
@@ -510,7 +510,7 @@ Concernant les informations pour se connecter au serveur FTP de l'IUT :
 
 1. Téléchargez le fichier [index.php]({{site.baseurl}}/assets/TP2/index.php) et placez-le dans un nouveau dossier de projet. Il s'agit d'une simple page web affichant "Hello world".
 
-2. Initialisez le dépôt git ce projet en local, puis sur GitLab, créez un nouveau dépôt vierge (privé) dans votre namespace `qualite-de-developpement-semestre-3/etu/votrelogin` et associez-le à votre dépôt local.
+2. Initialisez le dépôt Git ce projet en local, puis sur GitLab, créez un nouveau dépôt vierge (privé) dans votre namespace `qualite-de-developpement-semestre-3/etu/votrelogin` et associez-le à votre dépôt local.
 
 3. Sur votre dépôt GitLab (de ce nouveau projet), créez quatre nouvelles variables CI/CD **secrètes** :
   * **FTP_HOST** : `ftpinfo.iutmontp.univ-montp2.fr` (adresse du serveur ftp du département informatique de l'IUT)
