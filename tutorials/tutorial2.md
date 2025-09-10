@@ -164,11 +164,12 @@ Vous allez maintenant améliorer votre pipeline afin de lui permettre de vérifi
 
 1. Si ce n'est pas déjà fait, placez-vous dans votre branche `development`.
 
-2. Créez le dossier de tests `src/test/java` (il n'existe pas encore, parce que vous n'avez écrit aucun test). Pour le créer, depuis IntelliJ le plus simple est de cliquer droit sur le répertoire `src` → **New** → **Directory** → Choisissez `test/java`. Par convention, la couleur verte indique qu'il s'agit du répertoire contenant le code source des tests.
+2. Si le dossier de tests `src/test/java` n'existe pas encore (car vous n'avez écrit aucun test), alors il faudra le créer. Depuis IntelliJ le plus simple est de générer une classe de test, ce qui va provoquer la création du répértoire de tests : ouvrir la classe `Document` → clic droit sur la déclaration de la classe `public class Document`  → **Generate**   → **Test...** . Après avoir donné le nom à votre classe de test, disons `DocumentTest`, le dossier `src/test/java` la contenant va être généré. De plus, `DocumentTest` va être placée dans le même paquetage que la classe testée `Document` (d'après la convention standard). Si vous voulez créer le répertoire de tests avant d'y ajouter les classes de tests, alors c'est un peu plus lent : cliquer droit sur le répertoire `src` → **New** → **Directory** → Choisissez `test/java` → Créez un paquetage `fr.iut.editeur.document` dans `src/test/` → à l'intérieur, créez la classe `DocumentTest`.
 
-3. Créez un paquetage `fr.iut.editeur.document` dans `src/test/` puis, à l'intérieur, créez la classe `DocumentTest`. Remarquez, qu'en fait, vous n'avez pas vraiment créé ce paquetage... puisqu'il existe déjà ! Seule l'arborescence des répertoires a été créée dans `src/test/`. En effet, le paquetage est le même que celui de la classe `Document` (dans `src/main/java`). C'est normal, car une convention répandue dit que les tests unitaires doivent être écrits dans le même paquetage que les classes qu'ils testent.
+Par convention, la couleur verte indique qu'il s'agit du répertoire contenant le code source des tests.
 
-4. Écrire quelques méthodes pour tester les méthodes de la classe `Document`. Si vous ne vous rappelez plus comment faire, jetez un œil à vos cours de *Dev-Objets* de l'an dernier ! Voici un squelette de cette classe :
+ 
+3. Écrire quelques méthodes pour tester les méthodes de la classe `Document`. Si vous ne vous rappelez plus comment faire, jetez un œil à vos cours de *Dev-Objets* de l'an dernier ! Voici un squelette de cette classe :
 
   ```java
   package fr.iut.editeur.document;
@@ -187,7 +188,7 @@ Vous allez maintenant améliorer votre pipeline afin de lui permettre de vérifi
   }
   ```
 
-5. Pour exécuter les tests, **IntelliJ** vous permet de le faire simplement, en cliquant sur le bouton de lancement, à côté de la déclaration de la classe.
+4. Pour exécuter les tests, **IntelliJ** vous permet de le faire simplement, en cliquant sur le bouton de lancement, à côté de la déclaration de la classe.
 
 </div>
 
