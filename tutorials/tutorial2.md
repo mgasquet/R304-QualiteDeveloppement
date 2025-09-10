@@ -166,7 +166,7 @@ Vous allez maintenant améliorer votre pipeline afin de lui permettre de vérifi
 
 2. Si le dossier de tests `src/test/java` n'existe pas encore (car vous n'avez écrit aucun test), alors il faudra le créer. Depuis IntelliJ le plus simple est de générer une classe de test, ce qui va provoquer la création du répértoire de tests : ouvrir la classe `Document` → clic droit sur la déclaration de la classe `public class Document`  → **Generate**   → **Test...** . Après avoir donné le nom à votre classe de test, disons `DocumentTest`, le dossier `src/test/java` la contenant va être généré. De plus, `DocumentTest` va être placée dans le même paquetage que la classe testée `Document` (d'après la convention standard). Si vous voulez créer le répertoire de tests avant d'y ajouter les classes de tests, alors c'est un peu plus lent : cliquer droit sur le répertoire `src` → **New** → **Directory** → Choisissez `test/java` → Créez un paquetage `fr.iut.editeur.document` dans `src/test/` → à l'intérieur, créez la classe `DocumentTest`.
 
-Par convention, la couleur verte indique qu'il s'agit du répertoire contenant le code source des tests.
+   Par convention, la couleur verte indique qu'il s'agit du répertoire contenant le code source des tests.
 
  
 3. Écrire quelques méthodes pour tester les méthodes de la classe `Document`. Si vous ne vous rappelez plus comment faire, jetez un œil à vos cours de *Dev-Objets* de l'an dernier ! Voici un squelette de cette classe :
@@ -218,7 +218,7 @@ Cela peut sembler lourd de séparer cela en deux stages/jobs, mais cela nous per
 
 4. Pour finir, modifiez légèrement la classe `Document` pour qu'un ou plusieurs tests ne passent plus. Attention, le programme doit compiler ! Faites un commit et un push puis vérifiez que le premier job de votre pipeline passe, mais pas le second. Enfin, remettez tout en ordre.
 
-**Remarque :** Dans cet exemple, pour les deux stages l'image utilisée est la même. Pour éviter la duplication dans le fichier `.gitlab-ci.yml`, on aurait pu indiquer `image: maven:3.9.5-eclipse-temurin-21` sur la première ligne de ce fichier, avant le mot-clé `stages`. Cela signifie que c'est l'image par défaut pour tous les stages et donc on peut omettre la déclaration de l'image dans chacun des jobs.
+**Remarque :** Dans cet exemple, l'image utilisée pour les deux stages est la même. Ainsi, pour éviter la duplication dans le fichier `.gitlab-ci.yml`, on aurait pu indiquer `image: maven:3.9.5-eclipse-temurin-21` sur la première ligne de ce fichier, avant le mot-clé `stages`. Cela signifie que c'est l'image par défaut pour tous les stages et donc on peut omettre la déclaration de l'image dans chacun des jobs.
 
 </div>
 
