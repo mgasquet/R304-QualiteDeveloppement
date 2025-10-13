@@ -5,20 +5,7 @@ layout: tutorial
 lang: fr
 ---
 
-**Attention, le TP a été légèrement mis à jour, il faut mettre à jour votre dépôt local avec les dernières modifications du dépôt d'origine !** :
-
-Pour cela, vous pouvez aller sur votre dépôt gitlab privé contenant le code du TP et appuyer sur le bouton **Update Fork** : [https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/etu/votre_login/tp3](https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/etu/votre_login/tp3) en remplaçant `votre_login` par le login.
-
-Ou bien, si cela ne fonctionne (conflits) pas ou si vous ne voulez pas passer par gitlab :
-
-```bash
-# Depuis le dossier de votre dépôt, en local.
-git remote add upstream git@gitlabinfo.iutmontp.univ-montp2.fr:qualite-de-developpement-semestre-3/tp3.git
-git fetch upstream
-git merge upstream/master master
-```
-
-Dans la première partie de cette ressource, nous avons parlé de **conception logicielle** et notamment comment modéliser cela à l'aide de **diagrammes de classes de conception** et de **diagrammes de séquences des interactions**.
+Dans la première partie de cette ressource, nous avons parlé de **conception logicielle** et notamment comment modéliser cela à l'aide de **diagrammes de classes de conception**.
 
 Cependant, savoir modéliser la conception ne garantit en rien la qualité de celle-ci. Un plan de construction d'un bâtiment peut être tout à fait valide d'un point de vue technique, mais donnera potentiellement une bâtisse qui s'écroulera dans quelques années si elle a été mal pensée.
 
@@ -85,7 +72,7 @@ Ce projet contient divers **paquetages** contenant le code de base pour chaque e
 
 Pour mener à bien le déroulement d'une fonctionnalité, le programme va faire appel à diverses classes qui vont interagir entre elles (comme nous l'avons vu avec le DSI). Ces classes vont **traiter** la demande. Chaque classe possède la **responsabilité** d'effecteur une partie de ce traitement. 
 
-Le principe de **responsabilité unique** indique qu'une classe ne doit pas posséder plus d'une responsabilité. Une responsabilité concerne des **opérations** (traitement, méthodes) de **même nature**. Nous avions déjà abordé cela plus tôt dans le cours sur les diagrammes de séquences en parlant d'architecture centralisée et distribuée. Nous avions vu qu'une **distribution** du traitement (et donc des responsabilités) était plus conseillée. C'est un peu le même principe ici.
+Le principe de **responsabilité unique** indique qu'une classe ne doit pas posséder plus d'une responsabilité. Une responsabilité concerne des **opérations** (traitement, méthodes) de **même nature**.
 
 **Robert C. Martin** dit : "_Si une classe a plus d’une responsabilité, alors ces responsabilités deviennent couplées. Des modifications apportées à l’une des responsabilités peuvent porter atteinte ou inhiber la capacité de la classe de remplir les autres. Ce genre de couplage amène à des architectures fragiles qui dysfonctionnent de façon inattendue lorsqu’elles sont modifiées._"
 
@@ -182,22 +169,30 @@ Ce principe semble assez facile à mettre en place, mais dans la réalité, on r
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `srp1`. Examinez le code. Il s'agit d'un programme qui permet de faire un simple calcul (pour le moment, une addition). Actuellement, la classe `Client` possède trois responsabilités (certaines sont très simples et tiennent sur une ligne). Identifiez-les.
+1. Ouvrez le paquetage `fr.umontpellier.iut.srp1`. Examinez le code. Il s'agit d'un programme qui permet de faire un simple calcul (pour le moment, une addition). Actuellement, la classe `Client` possède trois responsabilités (certaines sont très simples et tiennent sur une ligne). Identifiez-les.
 
-2. Refactorez le code pour répartir les responsabilités de `Client` en trois nouvelles classes distinctes (sans compter `Client`). Pensez notamment qu'après votre refactoring, les diverses demandes de modifications futures soient mieux cloisonnées. Ainsi les demandes de changements suivants du code ne devraient pas toucher le code de votre nouvelle classe `Client` :
+2. Refactorez le code pour répartir les responsabilités de `Client` en trois nouvelles classes distinctes (sans compter `Client`). Pensez notamment qu'après votre refactoring, les diverses demandes de modifications futures soient mieux cloisonnées. La classe `Client` devra dorénavant utiliser ces nouveaux **services**.
 
-     * remplacer l'opération d'addition par une autre opération (avec 2 opérandes pour simplifier)
-     * changer l’affichage final du résultat et le faire par exemple dans un fichier (plutôt qu'à la console)
+3. Effectuez les changements suivants du code qui, **si vous avez bien traité la question précédente**, ne doivent pas toucher le code de votre classe `Client` :
+
+     * remplacer l'opération d'addition par une autre opération (par exemple, une soustraction)
+     * changer l’affichage final du résultat et l'écrire dans un fichier à la place (plutôt qu'à la console). Vous pouvez utiliser le code suivant :
+        ```java
+          try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("resultat.txt"));
+            writer.write(String.format("Résultat : %s%n", resultat));
+            writer.close();
+          }
+          catch(IOException e) {
+            throw new RuntimeException("Erreur lors de l'écriture dans le fichier...");
+          }
+        ```
      * changer la saisie des nombres en utilisant un `Scanner` et la méthode `nextInt` au lieu d'un `BufferedReader`. Il faudra enlever le **catch** de `IOException` et `NumberFormatException` ainsi que les `parseInt`. À la place, on attrapera une exception `InputMismatchException`. Pour rappel, pour définir un `Scanner` :
 
          ```java
          Scanner scanner = new Scanner(System.in);
          int valeur = scanner.nextInt();
          ```
-
-   Ainsi, la classe `Client` devra simplement utiliser ces nouveaux **services**.
-
-
 </div>
 
 Bien sûr, ce premier exercice est très simpliste (et donc assez peu concret), mais il faut vous imaginer que les différentes responsabilités sont généralement des traitements plus longs et/ou plus complexes !
@@ -206,7 +201,7 @@ Voyons maintenant un autre exemple.
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `srp2`. Il contient une classe `Rectangle` qui permet de créer des rectangles et de calculer leur aire.
+1. Ouvrez le paquetage `fr.umontpellier.iut.srp2`. Il contient une classe `Rectangle` qui permet de créer des rectangles et de calculer leur aire.
 
 2. Une application graphique souhaite pouvoir afficher les **rectangles**. Une première idée est d'utiliser la classe `JFrame` (de la librairie _Java Swing_), ce qui permettra de l'afficher :
 
@@ -244,6 +239,8 @@ Voyons maintenant un autre exemple.
 
 5. Assurez-vous que tout fonctionne (il faudra sans doute adapter le `main`) et qu'il est bien possible d'avoir de créer des rectangles ne contenant aucune logique d'affichage et des rectangles qu'il est possible d'afficher.
 
+6. Arrivez-vous à identifier quelle est le type de composition (faible ou forte) utilisée dans votre solution ?
+
 </div>
 
 ### Principe Ouvert/Fermé (Open/Close)
@@ -265,7 +262,7 @@ Pour vous mettre dans le bain et vous montrer la problématique derrière tout c
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `ocp1`. Dans ce projet, une classe `Animal` permet de gérer différents types d'animaux et leur cri, selon l'attribut `type` de l'objet.
+1. Ouvrez le paquetage `fr.umontpellier.iut.ocp1`. Dans ce projet, une classe `Animal` permet de gérer différents types d'animaux et leur cri, selon l'attribut `type` de l'objet.
 
 2. On aimerait prendre en charge les **chiens** et les **poules**. Modifiez la classe `Animal` en conséquence et testez dans le `Main`.
 
@@ -287,7 +284,7 @@ De même, dans la classe `Pokemon`, pour que le pokémon puisse se présenter av
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `ocp2`. Explorez les classes. Étudiez notamment la classe `SimulateurCombat`.
+1. Ouvrez le paquetage `fr.umontpellier.iut.ocp2`. Explorez les classes. Étudiez notamment la classe `SimulateurCombat`.
 
 2. Ajoutez un nouveau type de pokémon : le pokémon type **électricité** qui possède les caractéristiques suivantes :
 
@@ -391,17 +388,17 @@ L'ajout d'une nouvelle figure nécessite donc simplement l'ajout d'une nouvelle 
 
 Comme `FigureGeometrique` ne contient aucun attribut (qui pourraient être communs à toutes les figures) et définit simplement des méthodes `abstraites`, il serait plus judicieux d'utiliser une `interface` ! Par contre, si la classe abstraite possède des attributs et/ou définit un bout de comportement commun à toutes les sous-classes, on utilisera bien une classe abstraite.
 
-Ceci devrait vous permettre de refactorer le code du paquetage `ocp1` (animaux). Pour `ocp2` (pokémons) cela peut sembler un peu plus dur (car il y a déjà un système d'héritage), mais cela ne devrait pas être trop dur à adapter.
+Ceci devrait vous permettre de refactorer le code du paquetage `fr.umontpellier.iut.ocp1` (animaux). Pour `ocp2` (pokémons) cela peut sembler un peu plus dur (car il y a déjà un système d'héritage), mais cela ne devrait pas être trop dur à adapter.
 
 <div class="exercise">
 
-1. Refactorez le code du paquetage `ocp1` afin de respecter le principe ouvert/fermé. Adaptez le `Main` en conséquence et vérifiez que tout fonctionne. Il ne doit plus être possible de gérer des animaux inconnus, et c'est bien normal !
+1. Refactorez le code du paquetage `fr.umontpellier.iut.ocp1` afin de respecter le principe ouvert/fermé. Adaptez le `Main` en conséquence et vérifiez que tout fonctionne. Il ne doit plus être possible de gérer des animaux inconnus, et c'est bien normal !
 
-2. À l'aide d'`IntelliJ`, générez le **diagramme de classes de conception** de l'application du paquetage `ocp2` (avant refactoring). Pour cela, effectuez un **clic droit** sur le paquetage `ocp2` puis sélectionnez `Diagrams` et enfin `Show Diagrams`. Activez bien l'affichage de tous les éléments et notamment les **dépendances non triviales**.
+2. À l'aide d'`IntelliJ`, générez le **diagramme de classes de conception** de l'application du paquetage `fr.umontpellier.iut.ocp2` (avant refactoring). Pour cela, effectuez un **clic droit** sur le paquetage `ocp2` puis sélectionnez `Diagrams` et enfin `Show Diagrams`. Activez bien l'affichage de tous les éléments et notamment les **dépendances non triviales**.
 
-3. Refactorez le code du paquetage `ocp2` afin de respecter le principe ouvert/fermé. Adaptez le `Main` en conséquence et vérifiez que tout fonctionne.
+3. Refactorez le code du paquetage `fr.umontpellier.iut.ocp2` afin de respecter le principe ouvert/fermé. Adaptez le `Main` en conséquence et vérifiez que tout fonctionne.
 
-4. Générez maintenant le **diagramme de classes de conception** de l'application du paquetage `ocp2` (après refactoring). Activez bien l'affichage de tous les éléments et notamment les **dépendances non triviales**.
+4. Générez maintenant le **diagramme de classes de conception** de l'application du paquetage `fr.umontpellier.iut.ocp2` (après refactoring). Activez bien l'affichage de tous les éléments et notamment les **dépendances non triviales**.
 
 </div>
 
@@ -413,7 +410,7 @@ Nous allons maintenant tester votre compréhension des deux principes (`S` et `O
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `ocp3`. Ce projet permet de gérer un paquet de 52 cartes, de le trier, de le mélanger... Exécutez le programme pour observer le rendu. Deux méthodes de tri sont possibles. On définit la méthode de tri utilisée quand on construit l'objet et on peut la changer à tout moment avec un `setter`.
+1. Ouvrez le paquetage `fr.umontpellier.iut.ocp3`. Ce projet permet de gérer un paquet de 52 cartes, de le trier, de le mélanger... Exécutez le programme pour observer le rendu. Deux méthodes de tri sont possibles. On définit la méthode de tri utilisée quand on construit l'objet et on peut la changer à tout moment avec un `setter`.
 
 2. On aimerait ajouter une nouvelle méthode de tri par **bulles**. Voici cet algorithme illustré sur un simple tableau d'entiers :
 
@@ -464,7 +461,7 @@ Le principe de responsabilités unique n'est pas respecté. Pour le `toString`, 
 
 3. Testez que tout fonctionne, essayez plusieurs méthodes de tri sur le paquet, notamment. Normalement, vous ne devez jamais éditer la classe `Paquet` si vous changez le tri utilisé.
 
-4. Générez le diagramme de classes de conception du paquetage `ocp3` (avec `IntelliJ`).
+4. Générez le diagramme de classes de conception du paquetage `fr.umontpellier.iut.ocp3` (avec `IntelliJ`).
 
 </div>
 
@@ -480,7 +477,7 @@ Maintenant, voyons une nouvelle situation, où les choses risquent d'être plus 
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `ocp4`. Dans ce projet, il y a une classe `Produit` permettant de gérer des produits, leurs prix et afficher leur description (leur nom). Ensuite, on a souhaité définir une classe `ProduitAvecReduction`, car certains produits proposent des réductions. Tout fonctionne pour le moment, comme vous pouvez le constater dans le `Main`.
+1. Ouvrez le paquetage `fr.umontpellier.iut.ocp4`. Dans ce projet, il y a une classe `Produit` permettant de gérer des produits, leurs prix et afficher leur description (leur nom). Ensuite, on a souhaité définir une classe `ProduitAvecReduction`, car certains produits proposent des réductions. Tout fonctionne pour le moment, comme vous pouvez le constater dans le `Main`.
 
 2. On souhaite maintenant ajouter un nouveau type de produit : les produits avec une date de péremption proche. Sur un tel produit, le prix est calculé en faisant une réduction de 50% sur le prix d'origine. De plus, lors de l'affichage de la description du produit (son nom), on affiche en plus le message "Réduction de 50% appliquée". Implémentez donc une classe `ProduitAvecDatePeremptionProche` héritant de `Produit` et réécrivez les méthodes `getPrix` et `afficherDescription`. Testez que votre nouveau type de produit a bien le comportement attendu en testant dans le `Main` (ou encore mieux : avec des tests unitaires pour le prix !) en appelant les méthodes `getPrix` et `afficherDescription`.
 
@@ -720,7 +717,7 @@ class Main {
 
 2. Testez que tout fonctionne comme auparavant.
 
-3. Générez le **diagramme de classes de conception** (avec `IntelliJ`) du paquetage `ocp4`.
+3. Générez le **diagramme de classes de conception** (avec `IntelliJ`) du paquetage `fr.umontpellier.iut.ocp4`.
 
 </div>
 
@@ -736,11 +733,11 @@ Certains développeurs abusent de l'**héritage** par facilité au lieu d'utilis
 
 Tout cela occasionne parfois des problèmes inattendus qui sont mis en lumière par le principe de **substitution de Liskov** qui est fortement liée à la notion de **programmation par contrat**.
 
-Quand on parle de **programmation par contrat** cela signifie que chaque classe possède un ensemble de **règles** (implicites ou explicites) autour de ses **méthodes** : **pré-conditions**, **post-conditions**, **effet de bords**, etc. Globalement, quelqu'un qui utilise une instance d'une **classe** donnée sait à quoi s'attendre quand on appelle telle ou telle méthode. Par exemple, on sait qu'un appel à la méthode `add` sur une instance de `ArrayList` va ajouter l'élément à la fin de la collection.
+Quand on parle de **programmation par contrat** cela signifie que chaque classe possède un ensemble de **règles** (implicites ou explicites) autour de ses **méthodes** : **pré-conditions**, **post-conditions**, **effet de bords**, etc. Globalement, quelqu'un qui utilise une instance d'une **classe** donnée sait à quoi s'attendre quand on appelle telle ou telle méthode. Par exemple, on sait qu'un appel à la méthode `add` sur une instance de n'importe quelle classe implémentant l'interface `List` (comme `ArrayList`) va ajouter l'élément à la fin de la collection.
 
-Le principe de **substitution de Liskov** a été introduit par **Barbara Liskov** et énonce qu'un **objet** d'une superclasse donnée doit pouvoir être remplacée par une de ses **sous-classes** sans "casser" le fonctionnement du programme. Une méthode provenant à l'origine d'une superclasse et appelée sur la sous-classe devrait **respecter le contrat** défini dans la superclasse.
+Le principe de **substitution de Liskov** a été introduit par **Barbara Liskov** et énonce qu'un **objet** d'une superclasse donnée doit pouvoir être remplacée (dans les appels de méthodes, de fonction, etc) par une de ses **sous-classes** sans "casser" le fonctionnement du programme. Une méthode provenant à l'origine d'une superclasse et appelée sur la sous-classe devrait **respecter le contrat** défini dans la superclasse.
 
-Par exemple, si on étend `ArrayList` pour faire un sous-type de collection spécialisé `MonArrayList` : si on redéfinit la méthode `add` dans `MonArrayList`, à la fin d'un appel à cette méthode, l'élément ajouté doit se trouver à la fin de la collection, comme spécifié dans le **contrat** de `ArrayList`. Peut-être que le chemin et la manière de faire aura été différente de la classe mère, mais le résultat est le même : un code qui utiliserait une instance de `ArrayList` pourrait être remplacé par `MonArrayList` sans perturbation du contrat : des tests unitaires écrits en fonction du **contrat** spécifié par la classe mère passeraient toujours.
+Par exemple, si on étend `ArrayList` pour faire un sous-type de collection spécialisé `MonArrayList` : si on redéfinit la méthode `add` dans `MonArrayList`, à la fin d'un appel à cette méthode, l'élément ajouté doit se trouver à la fin de la collection, comme spécifié dans le **contrat** de `ArrayList`. Peut-être que le chemin et la manière de faire aura été différente de la classe mère, mais le résultat est le même : le code d'une fonction/méthode attendant une instance de `ArrayList` en paramètre doit pouvoir fonctionner si on lui donne une instance de `MonArrayList` sans perturbation du contrat : des tests unitaires (portant sur la fonction en question) écrits par rapport au **contrat** spécifié par la classe mère, passeraient toujours. En résumé, dans cete exemple `ArrayList` doit pouvoir être  sans problèmes par `MonArrayList`.
 
 L'utilisation inappropriée de l'héritage peut amener au non-respect de ce principe.
 
@@ -748,19 +745,19 @@ Voici un scénario illustrant plus en détail le problème de non-respect du pri
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `lsp1` et observez les classes mises à disposition. Dans cette application, nous avons considéré qu'un `Carre` est une spécialisation d'un `Rectangle`. Cependant, un carré possède une caractéristique particulière : **sa hauteur et sa largeur sont toujours identiques**. Bref, si on change la hauteur d'un carré, sa largeur change aussi. Ou plutôt, on ne devrait pas pouvoir changer la largeur d'un rectangle indépendamment de sa hauteur et vice-versa.
+1. Ouvrez le paquetage `fr.umontpellier.iut.lsp1` et observez les classes mises à disposition. Dans cette application, nous avons considéré qu'un `Carre` est une spécialisation d'un `Rectangle`. Cependant, un carré possède une caractéristique particulière : **sa hauteur et sa largeur sont toujours identiques**. Bref, si on change la hauteur d'un carré, sa largeur change aussi. Ou plutôt, on ne devrait pas pouvoir changer la largeur d'un rectangle indépendamment de sa hauteur et vice-versa.
 
-2. Dans le paquetage `lsp1` dans `src/test/java` vous trouverez deux classes de tests unitaires pour tester le rectangle et le carré. Lancez-les. Essayez de comprendre pourquoi les tests ne passent pas.
+2. Dans le paquetage `fr.umontpellier.iut.lsp1` dans `src/test/java` vous trouverez deux classes de tests unitaires pour tester le rectangle, le carré et la classe `Utils` qui permet de redimensionner un rectangle. Lancez-les. Essayez de comprendre pourquoi les tests ne passent pas.
 
 3. Les tests écrits sont bien valides. Si on change la hauteur d'un carré, alors sa largeur doit aussi changer. Une première solution peut donc être de récrire les méthodes `setLargeur` et `setHauteur` dans la classe `Carre` afin que quand on modifie la largeur, la hauteur soit mise à la même valeur et inversement. Faites cette modification (les attributs `hauteur` et `largeur` sont accessibles dans `Carre` car en `protected` dans la classe `Rectangle`).
 
-4. Relancez les tests unitaires. Un autre test ne passe plus ! Essayez de comprendre pourquoi.
+4. Relancez les tests unitaires. Un autre test (de la classe `Utils`) ne passe plus ! Essayez de comprendre pourquoi.
 
 </div>
 
 Avec cette modification, le principe de substitution de Liskov n'est plus respecté ! On a **cassé** le contrat de `Rectangle` dans `Carre`. `Carre` est un `Rectangle` et on devrait pouvoir modifier sa hauteur et sa largeur librement !
 
-De plus, si on utilise `Carre` comme un `Rectangle`, des bugs étranges surviennent quand on utilise une méthode prévue pour un `Rectangle`(ici, la méthode **agrandirRectangle**). On ne peut pas substituer le rectangle par un carré sans produire de bugs logiques. Ajouter des nouvelles méthodes dans la classe `Rectangle` force à ajouter du code dans `Carre` pour éviter les bugs et essayer de continuer à respecter le contrat de `Rectangle`.
+De plus, si on utilise `Carre` comme un `Rectangle`, des bugs étranges surviennent quand on utilise une méthode prévue pour un `Rectangle` (ici, la méthode **agrandirRectangle**). On ne peut pas substituer le rectangle par un carré sans produire de bugs logiques. Ajouter des nouvelles méthodes dans la classe `Rectangle` force à ajouter du code dans `Carre` pour éviter les bugs et essayer de continuer à respecter le contrat de `Rectangle`.
 
 Une autre mauvaise solution possible serait d'ajouter une fonction `setTailleCote` dans `Carre` et de redéfinir les fonctions `setHauteur` et `setLargeur` dans `Carre` de façon à ce qu'elles ne fassent rien :
 
@@ -813,17 +810,13 @@ Si on souhaite quand même utiliser un rectangle dans un carré (pour ne pas dup
 
     * On n'a plus besoin des méthodes `setHauteur` et `setLargeur` (on ne modifie pas indépendamment la largeur et la hauteur d'un carré).
 
-    * Les méthodes `getLargeur` et `getHauteur`et `aire` sont **déléguées** au `Rectangle`.
+    * Les méthodes `getLargeur` et `getHauteur` et `aire` sont **déléguées** au `Rectangle`.
 
     * Une nouvelle méthode `setTailleCote` permet de changer la taille du côté du carré (en utilisant le rectangle).
 
 3. Faites aussi implémenter l'interface `FigureRectangulaire` à `Rectangle`.
 
-4. Modifiez les **tests unitaires** portants sur `Carre` :
-
-    * Les méthodes `setLargeur` et `setHauteur` n'existent plus. On utilise à la place `setTailleCote`.
-
-    * Le test `testAireAgrandirCarre` n'a plus lieu d'être, car la méthode `agrandirRectangle` porte sur un `Rectangle` et dorénavant, un `Carre` n'est plus un `Rectangle`. Supprimez donc ce test.
+4. Modifiez les **tests unitaires** portants sur `Carre` : les méthodes `setLargeur` et `setHauteur` n'existent plus. On utilise à la place `setTailleCote`.
 
 5. Lancez les tests, vérifiez que tout fonctionne.
 
@@ -843,7 +836,7 @@ Mettons vos nouvelles connaissances en pratique avec un autre exercice.
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `lsp2`. On souhaite implémenter le fonctionnement d'une `Pile`. Une `Pile` est une structure de données `LIFO` (last in, first out) qui fonctionne comme une pile d'assiette. On peut globalement réaliser **quatre opérations** sur une pile :
+1. Ouvrez le paquetage `fr.umontpellier.iut.lsp2`. On souhaite implémenter le fonctionnement d'une `Pile`. Une `Pile` est une structure de données `LIFO` (last in, first out) qui fonctionne comme une pile d'assiette. On peut globalement réaliser **quatre opérations** sur une pile :
 
     * Vérifier si elle est vide.
 
@@ -865,19 +858,54 @@ Mettons vos nouvelles connaissances en pratique avec un autre exercice.
 
     * `add(index, valeur)` → permet d'insérer une valeur à la position ciblée par l'index.
 
-2. Ouvrez la classe de tests unitaires placée dans `test/java/lsp2/PileTest`. Exécutez les tests. Rien ne passe, c'est normal ! Vous n'avez pas encore implémenté le code de la classe `Pile` qui contient du code par défaut... Vous êtes donc en mode **TDD** (test driven development).
+2. Ouvrez la classe de tests unitaires `PileTest` placée dans le paquetage `fr.umontpellier.iut.lsp2` du dossier `src/test/java`. Exécutez les tests. Rien ne passe, c'est normal ! Vous n'avez pas encore implémenté le code de la classe `Pile` qui contient du code par défaut... Vous êtes donc en mode **TDD** (test driven development).
 
-3. Implémentez les méthodes de la classe `Pile` afin que les tests passent (ne décommentez pas le dernier test pour le moment).
+3. Implémentez les méthodes de la classe `Pile` afin que les tests passent (ne décommentez pas les quatre derniers tests pour le moment).
 
-4. Lisez et exécutez le test contenu dans `test/java/lsp2/VectorTest`. Comprenez-vous pourquoi ce test est valide et nécessaire ?
-
-5. Décommentez le test `testSupprimerIndex` de `test/java/lsp2/PileTest` et exécutez-le. Pourquoi ne passe-t-il pas ?
+4. Décommentez et exécutez les quatre tests contenus dans la classe `PileTest`. Ces tests semblent étranges, car ils ne testent pas seulement les méthodes de la pile. Essayez de comprendre pourquoi ils sont nécessaires puis lisez la suite.
 
 </div>
 
-Le dernier test n'est pas mal rédigé, car, selon le **contrat** de `Pile`, seules les opérations `estVide`, `empiler`, `depiler` et `sommetPile` doivent produire un effet. Or, comme `Pile` hérite de `Vector`, on a accès à toutes les opérations réalisables sur une liste classique... Donc, dans la logique, même s'il est possible d'appeler `remove` sur notre `Pile`, cela ne doit produire aucun effet ! Or, ce n'est pas le cas ici. Bref, **le contrat de la Pile** n'est pas respecté : on peut ajouter et supprimer des éléments autres part qu'au sommet.
+Les derniers tests ne sont pas mal rédigés, car, comme `Pile` hérite de `Vector`, cette classe doit respecter le contrat imposé par sa classe mère. Ces tests vérifient qu'il est bien possible de substituer un `Vector` par une `Pile` dans des algorithmes qui acceptent un `Vector` en paramètre. De plus, comme `Vector` implémente (par héritage) l'interface `List` qui étend elle-même l'interface `Collection` : on doit pouvoir substituer un objet de type `List` ou `Collection` par un objet de type `Pile` dans les fonctions et méthodes de **Java** qui prennent des collections ou des listes en paramètre, tout en conservant un comportement cohérent (donc, sans casser le contrat de `Vector`, des classes héritées et des interfaces implémentées).
 
-On pourrait redéfinir la méthode `remove` (et toutes les méthodes de `Vector` !) pour qu'elles ne fassent rien, mais le principe de substitution de Liskov ne serait alors plus respecté, car on casserait le **contrat** de `Vector` ! On ne pourrait pas substituer un `Vector` par une `Pile` et le test `testSubstitutionVectorParPile` (dans `test/java/lsp2/VectorTest`) ne fonctionnerait plus...
+Comme ces tests passent, on peut donc à priori en conclure que `Pile` respecte bien le contrat de `Vector`...C'est assez évident : nous n'avons redéfini aucune méthode de `Vector`, il y a donc peu de chances de casser quoi que ce soit !
+
+**Cependant** selon le **contrat** de `Pile`, seules les opérations `estVide`, `empiler`, `depiler` et `sommetPile` doivent produire un effet. Or, comme `Pile` hérite de `Vector`, on a accès à toutes les opérations réalisables sur une liste classique... Bref, ici, c'est **le contrat de la Pile** n'est pas respecté : on peut ajouter et supprimer des éléments autres part qu'au sommet, parcourir la pile, etc...
+
+
+Pour résoudre ce problème, on pourrait alors redéfinir toutes les méthodes de `Vector` (qui nous gêrnent) pour qu'elles ne fassent rien, afin de respecter le contrat de `Pile`. Par exemple, celles-ci :
+
+```java
+public class Pile<T> extends Vector<T> {
+
+    @Override
+    public synchronized Iterator<T> iterator() {
+        return null;
+    }
+
+    @Override
+    public synchronized T get(int index) {
+        return null;
+    }
+
+    @Override
+    public boolean remove(Object o) {
+        return false;
+    }
+
+    @Override
+    public synchronized T remove(int index) {
+        return null;
+    }
+
+    @Override
+    public void add(int index, T element) {}
+
+    //Etc...
+}
+```
+
+ Mais le principe de substitution de Liskov ne serait alors plus respecté, car on casserait le **contrat** de `Vector` ! On ne pourrait pas substituer un `Vector` par une `Pile` et les quatre derniers tests (dans la classe `VectorTest` du paquetage `fr.umontpellier.iut.lsp2` dans `src/test/java`) ne fonctionneraient plus...
 
 Bref, conceptuellement, une `Pile` n'est pas un `Vector` spécial, mais bien une structure indépendante... Néanmoins, il est possible d'utiliser une **composition** pour utiliser un `Vector` comme attribut, dans notre classe `Pile` et ainsi éviter un certain degré de duplication de code.
 
@@ -885,7 +913,7 @@ Bref, conceptuellement, une `Pile` n'est pas un `Vector` spécial, mais bien une
 
 1. Refactorez le code de la classe `Pile` en enlevant l'héritage et en utilisant une **composition** avec un `Vector` à la place.
 
-2. Les tests `testSupprimerIndex` et `testSubstitutionVectorParPile` ne compilent plus, c'est normal ! La pile n'est pas un `Vector`, on ne peut pas appeler `remove` dessus (et c'est tant mieux). Supprimez donc le test `testSupprimerIndex` ainsi que la classe `VectorTest`.
+2. Les quatre derniers tests ne compilent plus, c'est normal ! La pile n'est pas un `Vector`, on ne peut pas appeler `add`, `remove`, `clear`, `List.copyOf`, `Collections.replaceAll`, etc dessus (et c'est tant mieux). Supprimez donc les quatre derniers tests qui n'ont plus lieu d'être.
 
 3. Relancez les tests et vérifiez que tout passe.
 
@@ -907,7 +935,7 @@ Voyons comment ne pas respecter ce principe peut devenir très fastidieux au fur
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `isp`. Ce projet modélise un système de jeu où certaines créatures sont des **montures** toutes les montures du même type ont les mêmes caractéristiques type (vitesse, endurance...). Au début, le développeur a modélisé une créature `Cheval`. Pour cette monture, on veut connaître :
+1. Ouvrez le paquetage `fr.umontpellier.iut.isp`. Ce projet modélise un système de jeu où certaines créatures sont des **montures** toutes les montures du même type ont les mêmes caractéristiques type (vitesse, endurance...). Au début, le développeur a modélisé une créature `Cheval`. Pour cette monture, on veut connaître :
 
     * Le nom de la monture.
 
@@ -1136,7 +1164,7 @@ Tout d'abord, illustrons ce principe avec un exemple.
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `dip`. Dans ce projet, il y a une classe `Etudiant` et une classe `CompteUniversitaire`. Un compte universitaire est détenu par un étudiant. On utilise son nom et son prénom pour générer un login.
+1. Ouvrez le paquetage `fr.umontpellier.iut.dip`. Dans ce projet, il y a une classe `Etudiant` et une classe `CompteUniversitaire`. Un compte universitaire est détenu par un étudiant. On utilise son nom et son prénom pour générer un login.
 
 2. Ajoutez une classe **Enseignant** qui possède un nom, un prénom et définit des **getters** pour ces deux attributs.
 
@@ -1297,7 +1325,7 @@ Dans cette section, vous allez travailler sur un ensemble d'exercices "bilan" qu
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `bilan1`. Ce projet modélise le fonctionnement d'un jeu dans lequel on peut construire sa propre **ville** (qui peut être éventuellement attaquée par d'autres joueurs) :
+1. Ouvrez le paquetage `fr.umontpellier.iut.bilan1`. Ce projet modélise le fonctionnement d'un jeu dans lequel on peut construire sa propre **ville** (qui peut être éventuellement attaquée par d'autres joueurs) :
 
     * Une ville possède différents types de **bâtiments**. 
     
@@ -1319,7 +1347,7 @@ Dans cette section, vous allez travailler sur un ensemble d'exercices "bilan" qu
 
 2. Implémentez les méthodes `calculerScoreCulturel`, `compterBatimentsMajeurs` et `estMajeure` de la classe `Ville` en respectant les contraintes définies au point précédent. **Attention** dans le futur, on souhaitera éventuellement ajouter de nouveaux types de bâtiments qui pourraient influer sur le score culturel d'une ville, ou qui pourraient être majeurs. Dans ce cas, il faudra que votre conception permette cet ajout facilement sans avoir à modifier la classe `Ville`.
 
-3. Une classe de test unitaire est présente dans `test/java/bilan1`. Lisez les tests et exécutez-les afin de vérifier que votre solution fonctionne.
+3. Une classe de test unitaire est présente dans le paquetage `fr.umontpellier.iut.bilan1` du dossier `src/test/java`. Lisez les tests et exécutez-les afin de vérifier que votre solution fonctionne.
 
 </div>
 
@@ -1327,19 +1355,33 @@ Dans cette section, vous allez travailler sur un ensemble d'exercices "bilan" qu
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `bilan2`. Il s'agit d'une application de gestion de comptes bancaires. Le **contrat** de la classe `CompteBancaire` est qu'on puisse consulter son solde, retirer de l'argent d'un compte (sans passer son solde en négatif) et en déposer autant d'argent qu'on souhaite.
+1. Ouvrez le paquetage `fr.umontpellier.iut.bilan2`. Il s'agit d'une application de gestion de comptes bancaires. Le **contrat** de la classe `CompteBancaire` est qu'on puisse consulter son solde, retirer de l'argent d'un compte (sans passer son solde en négatif) et en déposer autant d'argent qu'on souhaite.
 
-2. Complétez la classe `CompteBancaireAvecPlafond` : cette classe doit lever une exception `throw new RuntimeException("On ne peut pas déposer plus que le plafond du compte.")` si on essaye d'ajouter de l'argent qui ferait dépasser au solde le plafond du compte. On souhaite garder l'héritage avec `CompteBancaire`.
+  En plus de ce compte bancaire, nous disposons de diverses classes :
 
-3. Complétez la classe `CompteBancaireAvecNombreRetraitMaximum` : cette classe doit compter le nombre de retraits effectués et lever une exception `throw new RuntimeException("Nombre maximal de retraits atteint!")` si on essaye de retirer trop de fois (si le nombre de retraits effectués est supérieur au nombre de retraits maximum). On souhaite garder l'héritage avec `CompteBancaire`.
+  * Des comptes bancaires spécialisés, qui héritent de `CompteBancaire` (pas encore complets).
+  * Des classes pour gérer les **exceptions**.
+  * Une classe `Banque` qui permet d'ouvrir et d'enregistrer et d'accéder à des comptes bancaires de tout type.
+  * Une classe `Employe` qui possède les informations d'un salarié et son salaire.
+  * Une classe `Entreprise` qui permet d'embaucher des employés et qui utilise un compte bancaire afin de recevoir de l'argent et verser le salaire des employés.
 
-4. Pour valider, exécutez les tests unitaires contenus dans les trois classes de tests dans `test/java/bilan2`. 
+2. Complétez la classe `CompteBancaireAvecPlafond` : cette classe doit lever une exception `PlafondDepotAtteintException` si on essaye d'ajouter de l'argent qui ferait dépasser au solde le plafond du compte. On souhaite garder l'héritage avec `CompteBancaire`.
 
-5. Décommentez les tests `testDeposerCompteBancaireAvecPlafond` et `testRetirerCompteBancaireAvecNombreRetraitMaximum` de la classe `CompteBancaireTest`m puis exécutez-les. Pourquoi ne passent-ils pas ? Quel est le principe **SOLID** est violé par votre code ?
+3. Complétez la classe `CompteBancaireAvecNombreRetraitMaximum` : cette classe doit compter le nombre de retraits effectués et lever une exception `LimiteRetraitAtteinteException` si on essaye de retirer trop de fois (si le nombre de retraits effectués est supérieur ou égal au nombre de retraits maximum lors de la tentative de retrait). On souhaite garder l'héritage avec `CompteBancaire`.
 
-6. Réfactorez votre code afin de supprimer l'héritage vers `CompteBancaire` et ainsi ne plus violer un *certain* principe SOLID. Les deux tests unitaires `testDeposerCompteBancaireAvecPlafond` et `testRetirerCompteBancaireAvecNombreRetraitMaximum` ne devraient plus compiler, vous pouvez les supprimer (car ils n'ont plus lieu d'être).
+</div>
 
-7. **Bonus** : comment pourrait-on faire pour avoir des comptes bancaires qui combinent les fonctionnalités de plafond et de nombre de retraits maximum, et peut-être d'autres fonctionnalités à l'avenir ? **Si et seulement si le temps le permet**, réfactorez votre code pour rendre cela possible (et adaptez vos tests unitaires en conséquence).
+Comme les classes `Entreprise` et `Banque` utilisent des objets de type `CompteBancaire`, ces classes sont garanties du comportement suivant pour les comptes bancaires : dépôt illimité, nombre de retraits illimité (si assez de fond). Notamment, les scénarios d'ajout de bénéfices et de paiement des employés de la classe `Entreprise` doit pouvoir se dérouler de la même manière avec n'importe quel type de compte bancaire qui doivent (normalement) tous garantirent le même contrat. Concernant la `Banque` cette dépendance semble un peu moins forte, car elle n'utilise pas les méthodes de `ComtpeBancaire`.
+
+<div class="exercise">
+
+1. Pour valider, exécutez les tests unitaires contenus dans la classe de test `Entreprise` du paquetage `fr.umontpellier.iut.bilan2` dans le dossier `src/test/java`. Pourquoi certains tests ne passent pas ? Analysez ces tests et comprenez pourquoi ils sont nécessaires, au vu du contrat imposé par `CompteBancaire`. À votre avis, quel sont les principes **SOLID** violés par votre code ?
+
+2. Réfactorez votre code afin de supprimer l'héritage vers `CompteBancaire` et ainsi ne plus violer un *certain* principe SOLID (voir plusieurs). Normalement, certains tests unitaires ne devraient plus compiler, c'est normal, ils n'ont plus lieu d'être. Vous pouvez les supprimer.
+
+3. Est-ce que votre `Main` fonctionne ? Si non, il faut corriger la classe `Banque`. A priori, cette classe n'a pas vraiment besoin de dépendre spécifiquement d'un compte bancaire "normal" (elle n'utilise pas ses méthodes) : on doit pouvoir ouvrir n'importe quel type de compte bancaire (normal, avec plafond, avec nombre de retraits maximum...).
+
+4. **Bonus** : comment pourrait-on faire pour avoir des comptes bancaires (ajoutables à la banque, mais pas à l'entreprise) qui combinent les fonctionnalités de plafond et de nombre de retraits maximum, et peut-être d'autres fonctionnalités à l'avenir ? **Si et seulement si le temps le permet**, réfactorez votre code pour rendre cela possible. Pour tester, dans votre `Main`, ajoutez dans la banque un nouveau compte bancaire avec 10 retraits maximum et un plafond de 100000€.
 
 </div>
 
@@ -1347,7 +1389,7 @@ Dans cette section, vous allez travailler sur un ensemble d'exercices "bilan" qu
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `bilan3`. Il s'agit d'une application de gestion d'une entreprise qui loue des **serveurs** dédiés. Chaque serveur possède notamment un certain montant de **mémoire vive** (en Go), un **processeur** et un **prix mensuel** (à payer par le client qui loue le serveur). L'entreprise propose trois **offres** de serveurs configurés différemment et avec des coûts mensuels plus ou moins élevés : un serveur **basique**, un serveur **intermédiaire** et un serveur **pro**. Sur chaque **serveur**, on peut réaliser certaines actions :
+1. Ouvrez le paquetage `fr.umontpellier.iut.bilan3`. Il s'agit d'une application de gestion d'une entreprise qui loue des **serveurs** dédiés. Chaque serveur possède notamment un certain montant de **mémoire vive** (en Go), un **processeur** et un **prix mensuel** (à payer par le client qui loue le serveur). L'entreprise propose trois **offres** de serveurs configurés différemment et avec des coûts mensuels plus ou moins élevés : un serveur **basique**, un serveur **intermédiaire** et un serveur **pro**. Sur chaque **serveur**, on peut réaliser certaines actions :
 
     * Calculer le montant mensuel à payer pour louer le serveur (`calculerPrixMensuel`).
 
@@ -1435,11 +1477,11 @@ Vous allez voir qu'en plus de rendre notre projet modulable, utiliser **l'invers
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `bilan4`. Cette application permet de créer des utilisateurs, de hacher leur mot de passe, de se connecter... Il y a aussi un système de gestion de diverses erreurs. Prenez le temps d'examiner l'architecture, la répartition des classes. Exécutez le programme avec le `Main`.
+1. Ouvrez le paquetage `fr.umontpellier.iut.bilan4`. Cette application permet de créer des utilisateurs, de hacher leur mot de passe, de se connecter... Il y a aussi un système de gestion de diverses erreurs. Prenez le temps d'examiner l'architecture, la répartition des classes. Exécutez le programme avec le `Main`.
 
-2. Générez un **diagramme de classes de conception** du paquetage `bilan4` (avec `IntelliJ`). Cela nous permettra de faire une comparaison après **refactoring**.
+2. Générez un **diagramme de classes de conception** du paquetage `fr.umontpellier.iut.bilan4` (avec `IntelliJ`). Cela nous permettra de faire une comparaison après **refactoring**.
 
-3. Une classe contenant des **tests unitaires** est présente dans `src/test/java/bilan4/service/utilisateur`. Lancez les tests deux fois, tout devrait bien se passer.
+3. Une classe contenant des **tests unitaires** est présente dans le paquetage `fr.umontpellier.iut.bilan4.service.utilisateur` du dossier `src/test/java`. Lancez les tests deux fois, tout devrait bien se passer.
 
 4. On aimerait effectuer quelques changements dans le programme, notamment au niveau de `ServiceUtilisateur` :
 
