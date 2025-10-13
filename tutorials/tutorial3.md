@@ -1375,9 +1375,9 @@ Comme les classes `Entreprise` et `Banque` utilisent des objets de type `CompteB
 
 <div class="exercise">
 
-1. Pour valider, exécutez les tests unitaires contenus dans la classe de test `Entreprise` du paquetage `fr.umontpellier.iut.bilan2` dans le dossier `src/test/java`. Pourquoi certains tests ne passent pas ? Analysez ces tests et comprenez pourquoi ils sont nécessaires, au vu du contrat imposé par `CompteBancaire`. À votre avis, quel sont les principes **SOLID** violés par votre code ?
+1. Pour valider, exécutez les tests unitaires contenus dans la classe de test `Entreprise` du paquetage `fr.umontpellier.iut.bilan2` dans le dossier `src/test/java`. Pourquoi certains tests ne passent pas ? Analysez ces tests et comprenez pourquoi ils sont nécessaires, au vu du contrat imposé par `CompteBancaire`. À votre avis, quel est les principe **SOLID** violé par votre code ?
 
-2. Réfactorez votre code afin de supprimer l'héritage vers `CompteBancaire` et ainsi ne plus violer un *certain* principe SOLID (voir plusieurs). Normalement, certains tests unitaires ne devraient plus compiler, c'est normal, ils n'ont plus lieu d'être. Vous pouvez les supprimer.
+2. Réfactorez votre code afin de supprimer l'héritage vers `CompteBancaire` et ainsi ne plus violer un *certain* principe SOLID. Normalement, certains tests unitaires ne devraient plus compiler, c'est normal, ils n'ont plus lieu d'être. Vous pouvez les supprimer.
 
 3. Est-ce que votre `Main` fonctionne ? Si non, il faut corriger la classe `Banque`. A priori, cette classe n'a pas vraiment besoin de dépendre spécifiquement d'un compte bancaire "normal" (elle n'utilise pas ses méthodes) : on doit pouvoir ouvrir n'importe quel type de compte bancaire (normal, avec plafond, avec nombre de retraits maximum...).
 
