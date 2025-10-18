@@ -320,6 +320,12 @@ De plus, ici, seules deux fonctions ont vraiment besoin de connaître les détai
 
 Le respect du principe **ouvert/fermé** va permettre de se limiter aux deux premières étapes : création d'une classe et implémentation des méthodes nécessaires dans cette même classe.
 
+<div class="exercise">
+
+Dans la suite du TP, nous allons donner un exemple de "mauvais code" similaire à celui présenté dans cet exercice puis une solution de refactorisation. Avant de lire ces explications, essayez de trouver par vous-même une solution pour refactorer le code du paquetage `fr.umontpellier.iut.ocp1` afin de respecter le principe **ouvert/fermé** (vous devrez aussi probablement adapter le `Main` en conséquence). Une fois que vous avez terminé, lisez la suite des explications. Si vous bloquez et/ou que vous n'arrivez pas à obtenir une solution satisfaisante, passez aussi à la suite des explications.
+
+</div>
+
 Considérons l'exemple suivant, similaire à ce que vous venez de faire :
 
 ```java
@@ -388,11 +394,11 @@ L'ajout d'une nouvelle figure nécessite donc simplement l'ajout d'une nouvelle 
 
 Comme `FigureGeometrique` ne contient aucun attribut (qui pourraient être communs à toutes les figures) et définit simplement des méthodes `abstraites`, il serait plus judicieux d'utiliser une `interface` ! Par contre, si la classe abstraite possède des attributs et/ou définit un bout de comportement commun à toutes les sous-classes, on utilisera bien une classe abstraite.
 
-Ceci devrait vous permettre de refactorer le code du paquetage `fr.umontpellier.iut.ocp1` (animaux). Pour `ocp2` (pokémons) cela peut sembler un peu plus dur (car il y a déjà un système d'héritage), mais cela ne devrait pas être trop dur à adapter.
+Si vous bloquiez, ceci devrait vous permettre de refactorer le code du paquetage `fr.umontpellier.iut.ocp1` (animaux). Nous allons également réfactorer `ocp2` (pokémons). Cela peut sembler un peu plus compliqué (car il y a déjà un système d'héritage), mais cela ne devrait pas être trop dur à adapter.
 
 <div class="exercise">
 
-1. Refactorez le code du paquetage `fr.umontpellier.iut.ocp1` afin de respecter le principe ouvert/fermé. Adaptez le `Main` en conséquence et vérifiez que tout fonctionne. Il ne doit plus être possible de gérer des animaux inconnus, et c'est bien normal !
+1. Si vous n'étiez pas arrivé à une solution satisfaisante (ou cohérente pas rapport à la soltuion présentée pour les figures géométriques), refactorez le code du paquetage `fr.umontpellier.iut.ocp1` afin de respecter le principe ouvert/fermé. Adaptez le `Main` en conséquence et vérifiez que tout fonctionne. Il ne doit plus être possible de gérer des animaux inconnus, et c'est bien normal !
 
 2. À l'aide d'`IntelliJ`, générez le **diagramme de classes de conception** de l'application du paquetage `fr.umontpellier.iut.ocp2` (avant refactoring). Pour cela, effectuez un **clic droit** sur le paquetage `ocp2` puis sélectionnez `Diagrams` et enfin `Show Diagrams`. Activez bien l'affichage de tous les éléments et notamment les **dépendances non triviales**.
 
@@ -490,7 +496,15 @@ Peut-être que vous avez été plus malin et que vous avez pensé à implémente
 
 Ou alors, peut-être que vous avez été encore plus malin et que vous avez pensé à faire une classe **composée** de deux instances des types de produit concernés. C'est déjà beaucoup mieux ! Mais que se passe-t-il si d'autres types de produit sont ajoutés ? Par exemple, si on a cinq types de produits différents et qu'on veut mixer au choix certaines fonctionnalités de certains types ? La classe composée sera de plus en difficile à gérer et ne sera jamais fermée aux modifications.
 
-Tout en respectant le **principe ouvert/fermé**, il existe une méthode générale pour construire un `Produit` possédant autant de comportements mixtes que nous souhaitons. Si de nouveaux comportements sont ajoutés dans le futur, il n'y aura pas de modification du code existant. On peut implémenter un tel système en [favorisant la **composition** au lieu d'un **héritage**](https://en.wikipedia.org/wiki/Composition_over_inheritance). L'idée est la suivante :
+Tout en respectant le **principe ouvert/fermé**, il existe une méthode générale pour construire un `Produit` possédant autant de comportements mixtes que nous souhaitons. Si de nouveaux comportements sont ajoutés dans le futur, il n'y aura pas de modification du code existant. On peut implémenter un tel système en [favorisant la **composition** au lieu d'un **héritage**](https://en.wikipedia.org/wiki/Composition_over_inheritance).
+
+<div class="exercise">
+
+Dans la suite du TP, nous allons donner un exemple et un contexte similaire à celui présenté dans cet exercice puis une solution. Avant de lire ces explications, essayez de trouver par vous-même une solution pour pouvoir créer des produits avec des comportements mixtes, tout en respectant le principe **ouvert/fermé**. Une fois que vous avez terminé, lisez la suite des explications. Si vous bloquez et/ou que vous n'arrivez pas à obtenir une solution satisfaisante, passez aussi à la suite des explications.
+
+</div>
+
+Pour résoudre le problème présenté dans cet exercice, l'idée est la suivante :
 
 * La classe "mère", disons `I`, définie une abstraction (typiquement une interface) : elle définit son contrat, à savoir ce que tous les objets du même type qu'elle, doivent pouvoir faire.
 
@@ -625,7 +639,7 @@ Aussi, le salarie n'est pas instancié dans la classe, il est **injecté** (autr
 
 <div class="exercise">
 
-1. Refactorez votre code afin de pouvoir créer un produit qui possède une réduction et qui a aussi une date de péremption proche.
+1. Si vous n'étiez pas arrivé à une solution satisfaisante (ou cohérente avec la solution présentée dans l'exemple avec les salariés), refactorez votre code afin de pouvoir créer un produit qui possède une réduction et qui a aussi une date de péremption proche.
 
 2. Créez un **Twix** avec pour prix de base **3€**, qui périme bientôt et qui a une réduction de 50 centimes. Testez que la valeur obtenue pour le prix est bien la bonne et que l'affiche de la description du produit affiche bien toutes les informations.
 
@@ -635,9 +649,15 @@ Aussi, le salarie n'est pas instancié dans la classe, il est **injecté** (autr
 
 Attention, **dans cet exemple précis**, même si nous pouvons maintenant rajouter un nouveau type de produit et le combiner aux autres pour calculer le prix adéquat, quand on instancie l'objet, il faut faire attention à l'ordre de combinaison des objets, à cause de la méthode de calcul du prix du produit avec une réduction. Si la méthode de calcul avait été un pourcentage pour ce type de produit (-X% du prix) comme pour le produit avec une date de péremption proche, l'ordre n'aurait pas eu d'importance. Bref, cela est à prendre en compte quand vous concevez et que vous utilisez des décorateurs. 
 
-Bon, tout fonctionne bien, mais le code est encore un peu redondant : A priori, tous nos produits "dérivés" vont posséder un objet `I_Produit`. Il est alors possible de factoriser cela avec une **classe abstraite** dont vont hériter tous les sous-produits.
+Bon, tout fonctionne bien, mais le code est encore un peu redondant : A priori, tous nos produits "dérivés" vont posséder un objet `I_Produit`...
 
-Par exemple, pour l'exemple des salariés :
+<div class="exercise">
+
+Avant de lire la suite, essayez de proposer une refactorisation pour éliminer la redondance et la répétition de code au niveau des sous-classes (`ProduitAvecReduction` et `ProduitAvecDatePeremptionProche`). Si vous bloquez et/ou que vous n'arrivez pas à obtenir une solution satisfaisante, passez aussi à la suite des explications.
+
+</div>
+
+Concentrant l'exemple des salariés, nous pourrions factoriser le code ainsi :
 
 ```java
 //Nous reviendrons sur le nom "décorateur" plus tard.
@@ -713,7 +733,7 @@ class Main {
 
 <div class="exercise">
 
-1. Réfactorez votre code pour introduire une classe abstraite et réduire la redondance et la répétition de code au niveau des sous-classes (`ProduitAvecReduction` et `ProduitAvecDatePeremptionProche`).
+1. Si vous n'étiez pas arrivé à une solution satisfaisante (ou cohérente avec la solution présentée dans l'exemple ci-dessus), réfactorez votre code pour introduire une classe abstraite et réduire la redondance et la répétition de code au niveau des sous-classes (`ProduitAvecReduction` et `ProduitAvecDatePeremptionProche`).
 
 2. Testez que tout fonctionne comme auparavant.
 
@@ -872,8 +892,7 @@ Comme ces tests passent, on peut donc à priori en conclure que `Pile` respecte 
 
 **Cependant** selon le **contrat** de `Pile`, seules les opérations `estVide`, `empiler`, `depiler` et `sommetPile` doivent produire un effet. Or, comme `Pile` hérite de `Vector`, on a accès à toutes les opérations réalisables sur une liste classique... Bref, ici, c'est **le contrat de la Pile** n'est pas respecté : on peut ajouter et supprimer des éléments autres part qu'au sommet, parcourir la pile, etc...
 
-
-Pour résoudre ce problème, on pourrait alors redéfinir toutes les méthodes de `Vector` (qui nous gêrnent) pour qu'elles ne fassent rien, afin de respecter le contrat de `Pile`. Par exemple, celles-ci :
+Pour résoudre ce problème, on pourrait alors redéfinir toutes les méthodes de `Vector` (qui nous gênent) pour qu'elles ne fassent rien, afin de respecter le contrat de `Pile`. Par exemple, celles-ci :
 
 ```java
 public class Pile<T> extends Vector<T> {
@@ -905,7 +924,7 @@ public class Pile<T> extends Vector<T> {
 }
 ```
 
- Mais le principe de substitution de Liskov ne serait alors plus respecté, car on casserait le **contrat** de `Vector` ! On ne pourrait pas substituer un `Vector` par une `Pile` et les quatre derniers tests (dans la classe `VectorTest` du paquetage `fr.umontpellier.iut.lsp2` dans `src/test/java`) ne fonctionneraient plus...
+Mais le principe de substitution de Liskov ne serait alors plus respecté, car on casserait le **contrat** de `Vector` ! On ne pourrait pas substituer un `Vector` par une `Pile` et les quatre derniers tests (dans la classe `VectorTest` du paquetage `fr.umontpellier.iut.lsp2` dans `src/test/java`) ne fonctionneraient plus...
 
 Bref, conceptuellement, une `Pile` n'est pas un `Vector` spécial, mais bien une structure indépendante... Néanmoins, il est possible d'utiliser une **composition** pour utiliser un `Vector` comme attribut, dans notre classe `Pile` et ainsi éviter un certain degré de duplication de code.
 
@@ -976,6 +995,12 @@ Voyons comment ne pas respecter ce principe peut devenir très fastidieux au fur
 C'était pénible, n'est-ce pas ? C'est normal, cette solution est très mauvaise et fastidieuse. À chaque nouvel ajout de type de monture avec ses spécificités, on doit modifier tous les autres types et les forcer à implémenter des méthodes qui ne les concernent pas... Le fait de lever tant d'erreurs indique une très mauvaise conception.
 
 Si le développeur avait bien raison de vouloir faire une interface lors de la création de la première monture, il a voulu regrouper trop de chose dans une seule et même interface : les méthodes communes à toutes les montures (nom, vitesse) et la méthode concernant l'endurance, spécifique aux montures terrestres. Par la suite, on a continué dans cette mauvaise logique. Il aurait dû dès le départ diviser cela en **deux interfaces** et on aurait dû créer plus d'interfaces à chaque nouveau type de monture ayant ses spécificités. 
+
+<div class="exercise">
+
+Avant de lire la suite des explications, tentez de refactorez votre code pour respecter le **principe de ségrégation des interfaces**. On veut garder les spécificités de chaque type de monture, mais éliminer toutes les levées d'erreurs. Soyez vigilant pour le dragon et la licorne ailée. Si vous bloquez et/ou que vous n'arrivez pas à obtenir une solution satisfaisante, passez aussi à la suite des explications.
+
+</div>
 
 On rappelle qu'une **interface** peut hériter d'une autre interface ! Et qu'une classe peut implémenter autant d'interfaces qu'elle le désire.
 
@@ -1140,7 +1165,7 @@ Bref, cela est en partie un mix entre le **principe de responsabilité unique** 
 
 <div class="exercise">
 
-Refactorez votre code pour respecter le **principe de ségrégation des interfaces**. On veut garder les spécificités de chaque type de monture, mais éliminer toutes les levées d'erreurs. Soyez vigilant pour le dragon et la licorne ailée.
+Si vous n'étiez pas à arriver à une solution satisfaisante, refactorez votre code de nouveau afin de respecter le **principe de ségrégation des interfaces**.
 
 </div>
 
@@ -1172,7 +1197,13 @@ Tout d'abord, illustrons ce principe avec un exemple.
 
 </div>
 
-Le problème souligné ici est qu'on a utilisé une classe concrète (`Etudiant`) dans `CompteUniversitaire` à la place d'une classe abstraite ou d'une interface, ce qui empêche l'utilisation avec d'autres types de classes (ici, `Enseignant`).
+<div class="exercise">
+
+Dans la suite du TP, nous allons donner un exemple et un contexte similaire à celui présenté dans cet exercice puis une solution de refactorisation. Avant de lire ces explications, essayez de trouver par vous-même une solution pour refactorer le code du paquetage `fr.umontpellier.iut.dip` afin de pouvoir utiliser la classe `CompteUniversitaire` pour les étudiants et les enseignants. Une fois que vous avez terminé, lisez la suite des explications. Si vous bloquez et/ou que vous n'arrivez pas à obtenir une solution satisfaisante, passez aussi à la suite des explications.
+
+</div>
+
+Le problème souligné dans cet exercice est qu'on a utilisé (à la base) une classe concrète (`Etudiant`) dans `CompteUniversitaire` à la place d'une classe abstraite ou d'une interface, ce qui empêche l'utilisation avec d'autres types de classes (ici, `Enseignant`).
 
 Illustrons ce problème avec un exemple :
 
@@ -1296,7 +1327,7 @@ De cette manière, **l'inversion des dépendances** est respectée. La classe `S
 
 <div class="exercise">
 
-1. Réfactorez votre code pour pouvoir utiliser `CompteUniversitaire` aussi bien avec un objet de type `Etudiant` qu'un objet de type `Enseignant`. Il faudra normalement adapter le code dans le `Main`.
+1. Si vous n'aviez pas obtenu une solution totalement satisfaisante (ou cohérente par rapport au principe **d'inversion des dépendances** que nous venons de développer), réfactorez votre code de nouveau pour pouvoir utiliser `CompteUniversitaire` aussi bien avec un objet de type `Etudiant` qu'un objet de type `Enseignant`. Il faudra normalement adapter le code dans le `Main`.
 
 2. Testez de créer un compte universitaire pour l'enseignante "_Bricot Judas_".
 
