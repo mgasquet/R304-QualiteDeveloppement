@@ -487,7 +487,7 @@ Maintenant, voyons une nouvelle situation, où les choses risquent d'être plus 
 
 2. On souhaite maintenant ajouter un nouveau type de produit : les produits avec une date de péremption proche. Sur un tel produit, le prix est calculé en faisant une réduction de 50% sur le prix d'origine. De plus, lors de l'affichage de la description du produit (son nom), on affiche en plus le message "Réduction de 50% appliquée". Implémentez donc une classe `ProduitAvecDatePeremptionProche` héritant de `Produit` et réécrivez les méthodes `getPrix` et `afficherDescription`. Testez que votre nouveau type de produit a bien le comportement attendu en testant dans le `Main` (ou encore mieux : avec des tests unitaires pour le prix !) en appelant les méthodes `getPrix` et `afficherDescription`.
 
-3. Maintenant, nous voulons qu'un produit puisse à la fois être un produit qui périme bientôt et un produit avec une réduction. C'est-à-dire que les deux **comportements** (réductions) soient appliqués lors du calcul du prix (lors d'un appel à `getPrix`) et que les messages correspondants aux deux types de produit soient affichés (lors d'un appel à `afficherDescription`). Est-il possible de créer une telle classe ou un tel comportement ?
+3. Maintenant, nous voulons qu'un produit puisse à la fois être un produit qui périme bientôt et un produit avec une réduction. C'est-à-dire que les deux **comportements** (réductions) soient appliqués lors du calcul du prix (lors d'un appel à `getPrix`) et que les messages correspondants aux deux types de produit soient affichés (lors d'un appel à `afficherDescription`). De plus, on ne souhaite pas modifier le code de `Produit` qui est une classe qui existe déjà et qui est utilisée dans l'application. Est-il possible de faire en sorte de pouvoir ajouter un tel comportement à un produit **sans inclure de redondance** dans le code et en continuant de respecter le principe **ouvert/fermé** ?
 </div>
 
 Si vous vous êtes contenté uniquement de faire hériter `ProduitAvecDatePeremptionProche` de `Produit`, vous remarquerez qu'il est compliqué d'avoir un même produit possédant ces deux fonctionnalités à la fois, notamment, car le multihéritage de classes n'est pas possible en Java.
@@ -561,7 +561,7 @@ class SalarieResponsableDeStagiaires extends Salarie {
 }
 ```
 
-Ici, même problème que pour les produits, si je veux un salarié qui a à la fois les responsabilités de chef de projet et de responsable de stagiaire, cela est impossible !
+Ici, même problème que pour les produits, si je veux pouvoir ajouter à un salarié les responsabilités de chef de projet et de responsable de stagiaire cela est impossible !
 
 Comme souvent, l'héritage est le problème ici. Au lieu de faire un simple héritage entre les classes, nous pourrions plutôt utiliser des **compositions** sur les sous-types et créer ainsi des salariés incluant des salariés, incluant des salariés... ce qui permet de combiner la logique de chaque type ! 
 
@@ -625,12 +625,23 @@ class SalarieResponsableDeStagiaires implements SalarieInterface {
 ![Open close 2]({{site.baseurl}}/assets/TP3/OCP2.svg){: width="80%" }
 </div>
 
-Avec cette nouvelle architecture, nous pouvons créer des salariés qui sont chefs de projet et responsables de stagiaires :
+Avec cette nouvelle architecture, nous pouvons ajouter à des instances de salariés des **résponsabilités** de chef de projet et/ou de responsables de stagiaires :
 
 ```java
+//Un salarié (qui existe déjà et qui est utilisé dans l'application...)
+Salarie salarie = new Salarie(2000);
+
+//Salarie qui est chef de projet gérant 3 projets
+SalarieInterface salarieChef = new SalarieChefProjet(salarie, 3);
+salarieChef.getSalaire(); //Renvoie 2300
+
+//Salarie qui est responsable de stagiaires gérant 5 stagiaires
+SalarieInterface salarieResponsableDeStagiaires = new SalarieResponsableStagiaires(salarie, 5);
+salarieResponsableDeStagiaires.getSalaire(); //Renvoie 2250
+
 //Salarié qui est chef de projet gérant 3 projets et aussi responsable de stagiaires gérant 5 stagiaires
-SalarieInterface salarie = new SalarieResponsableStagiaires(new SalarieChefProjet(new Salarie(2000), 3), 5);
-salarie.getSalaire(); //Renvoie 2550
+SalarieInterface salarieAvecMultiResponsabilites = new SalarieResponsableStagiaires(new SalarieChefProjet(salarie, 3), 5);
+salarieAvecMultiResponsabilites.getSalaire(); //Renvoie 2550
 ```
 
 Il est important de noter que la classe composée est `SalarieInterface` et non pas `Salarie`! Sinon, on ne pourrait pas combiner `SalarieChefProjet` avec `SalarieResponsableStagiaires`.
@@ -639,7 +650,7 @@ Aussi, le salarie n'est pas instancié dans la classe, il est **injecté** (autr
 
 <div class="exercise">
 
-1. Si vous n'étiez pas arrivé à une solution satisfaisante (ou cohérente avec la solution présentée dans l'exemple avec les salariés), refactorez votre code afin de pouvoir créer un produit qui possède une réduction et qui a aussi une date de péremption proche.
+1. Si vous n'étiez pas arrivé à une solution satisfaisante (ou cohérente avec la solution présentée dans l'exemple avec les salariés), réfactorez votre code afin de pouvoir créer un produit qui possède une réduction et qui a aussi une date de péremption proche.
 
 2. Créez un **Twix** avec pour prix de base **3€**, qui périme bientôt et qui a une réduction de 50 centimes. Testez que la valeur obtenue pour le prix est bien la bonne et que l'affiche de la description du produit affiche bien toutes les informations.
 
@@ -743,7 +754,13 @@ class Main {
 
 Dans le futur, si nous ajoutons un nouveau type de **produit**, il suffira alors de rajouter une nouvelle classe et lui faire étendre votre classe abstraite. Avec une telle architecture, le principe ouvert/fermé est respecté et nous avons tiré profit de manière avantageuse du mécanisme de composition au lieu de se reposer sur l'héritage qui ne nous permettait pas d'arriver à nos fins.
 
-En fait, ce modèle est réutilisable et adaptable à d'autres situations (nous l'avons vu avec les salariés). C'est en fait un autre **design pattern** nommé **décorateur** d'où le nom de la classe abstraite dans l'exemple. 
+En fait, ce modèle est réutilisable et adaptable à d'autres situations (nous l'avons vu avec les salariés). C'est en fait un autre **design pattern** nommé **décorateur** d'où le nom de la classe abstraite dans l'exemple.
+
+**Attention** : le décorateur est un pattern différent de **builder** que vous avez vu l'an dernier. 
+
+Un **builder** permet de créer un objet complexe (avec beaucoup de paramètres, donc certains optionnels). Le pattern **décorateur** permet de rajouter (ou d'enlever) **dynamiquement** des responsabilités (ou un **comportement**) à des objets **déjà instanciés** qui sont déjà potentiellement déjà utilisés dans l'application. D'ailleurs, on ne connait pas forcément tous les comportements que l'on souhaite ajouter à l'avance, lors du développement de la classe de base (contrairement au builder), cela peut venir après. Pour ajouter un nouveau comportement, on ajoute une nouvelle classe et **on ne touche pas à la classe d'origine** (et on respecte ainsi le principe ouvert/fermé). Avec un **builder** toutes les contraintes sont déjà connues lors de la création de la classe, le pattern facilite seulement l'instanciation.
+
+Bref, le **décorateur** n'est pas un **design pattern créateur**, mais un pattern qui va venir ajouter ou retirer **dynamiquement** des **responsabilités** à une instance.
 
 À partir du diagramme de classes que vous avez généré, vous devriez être capable de produire un modèle général fonctionnant pour tous les cas de figures.
 
@@ -1392,7 +1409,7 @@ Dans cette section, vous allez travailler sur un ensemble d'exercices "bilan" qu
 
   * Des comptes bancaires spécialisés, qui héritent de `CompteBancaire` (pas encore complets).
   * Des classes pour gérer les **exceptions**.
-  * Une classe `Banque` qui permet d'ouvrir et d'enregistrer et d'accéder à des comptes bancaires de tout type.
+  * Une classe `Banque` qui permet d'ouvrir, d'accéder, de mettre à jour et de supprimer à des comptes bancaires de tout type.
   * Une classe `Employe` qui possède les informations d'un salarié et son salaire.
   * Une classe `Entreprise` qui permet d'embaucher des employés et qui utilise un compte bancaire afin de recevoir de l'argent et verser le salaire des employés.
 
@@ -1406,13 +1423,13 @@ Comme les classes `Entreprise` et `Banque` utilisent des objets de type `CompteB
 
 <div class="exercise">
 
-1. Pour valider, exécutez les tests unitaires contenus dans la classe de test `Entreprise` du paquetage `fr.umontpellier.iut.bilan2` dans le dossier `src/test/java`. Pourquoi certains tests ne passent pas ? Analysez ces tests et comprenez pourquoi ils sont nécessaires, au vu du contrat imposé par `CompteBancaire`. À votre avis, quel est les principe **SOLID** violé par votre code ?
+1. Pour valider, exécutez les tests unitaires contenus dans la classe de test `Entreprise` du paquetage `fr.umontpellier.iut.bilan2` dans le dossier `src/test/java`. Pourquoi certains tests ne passent pas ? Analysez ces tests et comprenez pourquoi ils sont nécessaires, au vu du contrat imposé par `CompteBancaire`. À votre avis, quel est le principe **SOLID** violé par votre code ?
 
 2. Réfactorez votre code afin de supprimer l'héritage vers `CompteBancaire` et ainsi ne plus violer un *certain* principe SOLID. Normalement, certains tests unitaires ne devraient plus compiler, c'est normal, ils n'ont plus lieu d'être. Vous pouvez les supprimer.
 
 3. Est-ce que votre `Main` fonctionne ? Si non, il faut corriger la classe `Banque`. A priori, cette classe n'a pas vraiment besoin de dépendre spécifiquement d'un compte bancaire "normal" (elle n'utilise pas ses méthodes) : on doit pouvoir ouvrir n'importe quel type de compte bancaire (normal, avec plafond, avec nombre de retraits maximum...).
 
-4. **Bonus** : comment pourrait-on faire pour avoir des comptes bancaires (ajoutables à la banque, mais pas à l'entreprise) qui combinent les fonctionnalités de plafond et de nombre de retraits maximum, et peut-être d'autres fonctionnalités à l'avenir ? **Si et seulement si le temps le permet**, réfactorez votre code pour rendre cela possible. Pour tester, dans votre `Main`, ajoutez dans la banque un nouveau compte bancaire avec 10 retraits maximum et un plafond de 100000€.
+4. **Bonus** : comment pourrait-on faire pour pouvoir ajouter dynamiquement aux comptes bancaires (ceux généraux manipulés par la banque, mais pas ceux de l'entreprise) les fonctionnalités de plafond et/ou de nombre de retraits maximum, et peut-être d'autres fonctionnalités à l'avenir ? On aimerait aussi pouvoir récupérer un compte depuis la banque et le mettre en jour dans la banque en lui ajoutant un plafond ou un nombre maximum de retraits. **Si et seulement si le temps le permet**, réfactorez votre code pour rendre cela possible. Pour tester, dans votre `Main`, ajoutez dans la banque un nouveau compte bancaire simple (sans stocker son instance dans le `Main`). Ensuite, récupérez-le depuis la banque (via son identifiant) pus faites en sorte qu'on ne puisse faire que 10 retraits maximum sur ce compte, et mettez-le à jour dans la banque. Enfin, répétez l'opération afin de mettre à jour le compte pour faire en sorte qu'il possède en plus un plafond de 100000€.
 
 </div>
 
@@ -1436,7 +1453,7 @@ Comme les classes `Entreprise` et `Banque` utilisent des objets de type `CompteB
 
     * Fermer un ticket (`fermerTicket`).
 
-2. On aimerait pouvoir ajouter divers **services optionnels** à un **serveur**. On vous demande d'implémenter une solution permettant de créer des serveurs disposant de certains de ces services optionnels :
+2. On aimerait pouvoir ajouter dynamiquement divers **services optionnels** à un **serveur**. On connait déjà un certain nombre de ces services, d'autres pourraient être ajoutés dans le futur. On vous demande d'implémenter une solution permettant d'ajouter à des serveurs certains de ces services optionnels :
 
     * Serveur avec plus de mémoire vive : 
       
@@ -1488,7 +1505,7 @@ Comme les classes `Entreprise` et `Banque` utilisent des objets de type `CompteB
 
       Pour les logs, on se contentera de messages simples : Serveur allumé, Serveur éteint, Ticket ouvert, Ticket Fermé.
 
-3. Testez de créer divers serveurs avec des services (et vérifiez leur comportement : prix, allumage, tickets, etc) :
+3. Testez de créer divers serveurs puis de leur ajouter des services (et vérifiez leur comportement : prix, allumage, tickets, etc) :
 
     * Un serveur **basique** avec **4Go** de **mémoire vive supplémentaire** et un **fichier de log**.
 
