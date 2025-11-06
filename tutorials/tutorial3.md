@@ -29,9 +29,9 @@ Bref, dans ce cours, nous allons commencer par nous intéresser aux **principes 
 
 Les **principes SOLID** représentent un acronyme lié aux 5 principes clés pour obtenir un logiciel qualitatif :
 
-* Le principe de **responsabilité unique** (`S`ingle responsability)
+* Le principe de **responsabilité unique** (`S`ingle responsibility)
 
-* Le principe **ouvert/fermé** (`O`pen/Close)
+* Le principe **ouvert/fermé** (`O`pen/Closed)
 
 * Le principe de **substitution de Liskov** (`L`iskov substitution)
 
@@ -54,7 +54,7 @@ Dans ce TP, nous allons étudier chaque principe et nous allons vous fournir du 
 
 Ensuite, nous allons voir comme un des principes **SOLID** permet de régler cela, et vous allez donc devoir **refactorer** les différentes applications. **Refactorer** du code (ou réusiner du code en français) signifie retravailler le code source du programme sans pour autant ajouter de nouvelles fonctionnalités à l'application. Il s'agit d'améliorer la qualité du code.
 
-**Attention** : Dans plusieurs exercices, il vous sera demandé de **générer un diagramme de classes** (avec `IntelliJ` ou autre IDE qui propose cette fonctionnalité). Bien que les diagrammes générés puissent être parfois légèrement erronés, et qu'il vaut généralement mieux faire le dessin soit-même, cela vous fera gagner du temps. Il est fortement conseillé de prendre des **captures d'écran** de chaque diagramme de classes et de les sauvegarder dans un sous-dossier de votre dépôt. Certains diagrammes permettent de comparer l'évolution de l'architecture et des dépendances avant/après **refactoring**.
+**Attention** : Dans plusieurs exercices, il vous sera demandé de **générer un diagramme de classes** (avec `IntelliJ` ou autre IDE qui propose cette fonctionnalité). Bien que les diagrammes générés puissent être parfois légèrement erronés, et qu'il vaut généralement mieux faire le dessin soi-même, cela vous fera gagner du temps. Il est fortement conseillé de prendre des **captures d'écran** de chaque diagramme de classes et de les sauvegarder dans un sous-dossier de votre dépôt. Certains diagrammes permettent de comparer l'évolution de l'architecture et des dépendances avant/après **refactoring**.
 
 <div class="exercise">
 
@@ -68,9 +68,9 @@ Ensuite, nous allons voir comme un des principes **SOLID** permet de régler cel
 
 Ce projet contient divers **paquetages** contenant le code de base pour chaque exercice que nous allons traiter.
 
-### Principe de responsabilité unique (Single Responsability)
+### Principe de responsabilité unique (Single Responsibility)
 
-Pour mener à bien le déroulement d'une fonctionnalité, le programme va faire appel à diverses classes qui vont interagir entre elles (comme nous l'avons vu avec le DSI). Ces classes vont **traiter** la demande. Chaque classe possède la **responsabilité** d'effecteur une partie de ce traitement. 
+Pour mener à bien le déroulement d'une fonctionnalité, le programme va faire appel à diverses classes qui vont interagir entre elles (comme nous l'avons vu avec le DSI). Ces classes vont **traiter** la demande. Chaque classe possède la **responsabilité** d'effectuer une partie de ce traitement. 
 
 Le principe de **responsabilité unique** indique qu'une classe ne doit pas posséder plus d'une responsabilité. Une responsabilité concerne des **opérations** (traitement, méthodes) de **même nature**.
 
@@ -161,7 +161,7 @@ class Main {
 }
 ```
 
-Ici, chaque classe à **une responsabilité unique** : si la logique pour envoyer un mail change, la classe **Email** n'est pas impactée.
+Ici, chaque classe a **une responsabilité unique** : si la logique pour envoyer un mail change, la classe **Email** n'est pas impactée.
 
 Le principe de responsabilité unique s'applique également aux **paquetages** : chaque paquetage est lié à une responsabilité du programme. Dans un logiciel plus complet, on aurait différents paquetages avec différents rôles : IHM, contrôleurs, services, stockage... (et on pourrait (même *devrait*) aller plus en détail).
 
@@ -243,11 +243,11 @@ Voyons maintenant un autre exemple.
 
 </div>
 
-### Principe Ouvert/Fermé (Open/Close)
+### Principe Ouvert/Fermé (Open/Closed)
 
 Après cette mise en bouche, il est temps d'attaquer de sérieux problèmes de conception en développant le **principe ouvert/fermé**. Ce principe est défini comme suit :
 
-"_Les entités d'un logiciel (classes, modules, fonctions) doivent être **ouverts** aux extensions, mais **fermés** aux modifications._" (**Bertand Meyer**).
+"_Les entités d'un logiciel (classes, modules, fonctions) doivent être **ouverts** aux extensions, mais **fermés** aux modifications._" (**Bertrand Meyer**).
 
 En d'autres termes, il doit être possible d'étendre les fonctionnalités/le **comportement** d'une entité comme une classe **sans pour autant avoir besoin de modifier son code source**.
 
@@ -398,7 +398,7 @@ Si vous bloquiez, ceci devrait vous permettre de refactorer le code du paquetage
 
 <div class="exercise">
 
-1. Si vous n'étiez pas arrivé à une solution satisfaisante (ou cohérente pas rapport à la soltuion présentée pour les figures géométriques), refactorez le code du paquetage `fr.umontpellier.iut.ocp1` afin de respecter le principe ouvert/fermé. Adaptez le `Main` en conséquence et vérifiez que tout fonctionne. Il ne doit plus être possible de gérer des animaux inconnus, et c'est bien normal !
+1. Si vous n'étiez pas arrivé à une solution satisfaisante (ou cohérente par rapport à la solution présentée pour les figures géométriques), refactorez le code du paquetage `fr.umontpellier.iut.ocp1` afin de respecter le principe ouvert/fermé. Adaptez le `Main` en conséquence et vérifiez que tout fonctionne. Il ne doit plus être possible de gérer des animaux inconnus, et c'est bien normal !
 
 2. À l'aide d'`IntelliJ`, générez le **diagramme de classes de conception** de l'application du paquetage `fr.umontpellier.iut.ocp2` (avant refactoring). Pour cela, effectuez un **clic droit** sur le paquetage `ocp2` puis sélectionnez `Diagrams` et enfin `Show Diagrams`. Activez bien l'affichage de tous les éléments et notamment les **dépendances non triviales**.
 
