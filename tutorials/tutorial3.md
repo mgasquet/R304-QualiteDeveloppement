@@ -13,7 +13,7 @@ On a la même logique au niveau du développement logiciel. Un logiciel mal con�
 
 De manière générale, les principes liés à la qualité du développement s'assurent que le logiciel que vous allez construire pourra évoluer facilement tout en satisfaisant les besoins actuels.
 
-Tout cela est difficile à mettre en place au premier abord, car il peut parfois être bien plus rapide et facile de développer une solution peu qualitative, mais qui fonctionne. Néanmoins, le code produit ne tiendra pas au fur et à mesure que l'application va grossir ce qui conduira finalement à la réécriture d'une partie voir de la totalité du code ou pire, l'abandon du projet.
+Tout cela est difficile à mettre en place au premier abord, car il peut parfois être bien plus rapide et facile de développer une solution peu qualitative, mais qui fonctionne. Néanmoins, le code produit ne tiendra pas au fur et à mesure que l'application va grossir ce qui conduira finalement à la réécriture d'une partie voire de la totalité du code ou pire, l'abandon du projet.
 
 C'est un phénomène qui touche beaucoup d'entreprises du monde du développement. Face au besoin de délivrer une solution rapidement, l'aspect qualité est parfois négligé. Au bout de plusieurs années, il est très compliqué d'ajouter de nouvelles fonctionnalités et d'éviter les bugs. Une nouvelle personne rentrant dans le projet ne comprend rien au code. Le client n'est plus satisfait, car les nouvelles fonctionnalités sont délivrées moins fréquemment et de plus en plus de bugs apparaissent. C'est une barque qui prend l'eau sur laquelle on place du sparadrap pour boucher les trous. Mais à chaque fois qu'un trou est bouché, deux nouveaux apparaissent. Le client transfère le projet à une autre entreprise, qui ne comprend rien à ce qu'elle récupère... Plus formellement, on dit que la [**dette technique**](https://fr.wikipedia.org/wiki/Dette_technique) s'accumule.
 
@@ -29,7 +29,7 @@ Bref, dans ce cours, nous allons commencer par nous intéresser aux **principes 
 
 Les **principes SOLID** représentent un acronyme lié aux 5 principes clés pour obtenir un logiciel qualitatif :
 
-* Le principe de **responsabiltié unique** (`S`ingle responsability)
+* Le principe de **responsabilité unique** (`S`ingle responsability)
 
 * Le principe **ouvert/fermé** (`O`pen/Close)
 
@@ -410,7 +410,7 @@ Si vous bloquiez, ceci devrait vous permettre de refactorer le code du paquetage
 
 En comparant vos deux diagrammes de classes, on peut facilement voir ce qui différencie la "mauvaise" conception de la "bonne" : dans votre premier diagramme, les classes `SimulateurCombat` et `Pokemon` ont autant de dépendances qu'il y a de sous-classes de type de pokémon. S'il y a 30 types de pokémons, `SimulateurCombat` et `Pokemon` auront chacune 30 dépendances. Après refactoring, ces dépendances disparaissent. `SimulateurCombat` est seulement dépendant de `Pokemon`.
 
-Dans un code de qualité **les abstractions ne dépendent pas des implémentations**. En d'autres termes, une superclasse ne devrait pas dépendre de ses sous-classes. Seules les sous-classes peuvent dépendre de leurs parents (et on verra que parfois, là aussi, il faut faire attention lorsqu'on utilise l'héritage.). Sur votre premier diagramme, il est clair que ce principe n'est pas respecté, car `Pokemon` dépendait de ses différentes sous-classes, ce qui n'est plus les cas sur le deuxième diagramme.
+Dans un code de qualité **les abstractions ne dépendent pas des implémentations**. En d'autres termes, une superclasse ne devrait pas dépendre de ses sous-classes. Seules les sous-classes peuvent dépendre de leurs parents (et on verra que parfois, là aussi, il faut faire attention lorsqu'on utilise l'héritage.). Sur votre premier diagramme, il est clair que ce principe n'est pas respecté, car `Pokemon` dépendait de ses différentes sous-classes, ce qui n'est plus le cas sur le deuxième diagramme.
 
 Nous allons maintenant tester votre compréhension des deux principes (`S` et `O`) avec un nouvel exercice un peu différent de ce que vous avez vu jusqu'ici, dans sa forme.
 
@@ -625,7 +625,7 @@ class SalarieResponsableDeStagiaires implements SalarieInterface {
 ![Open close 2]({{site.baseurl}}/assets/TP3/OCP2.svg){: width="80%" }
 </div>
 
-Avec cette nouvelle architecture, nous pouvons ajouter à des instances de salariés des **résponsabilités** de chef de projet et/ou de responsables de stagiaires :
+Avec cette nouvelle architecture, nous pouvons ajouter à des instances de salariés des **responsabilités** de chef de projet et/ou de responsables de stagiaires :
 
 ```java
 //Un salarié (qui existe déjà et qui est utilisé dans l'application...)
@@ -646,7 +646,7 @@ salarieAvecMultiResponsabilites.getSalaire(); //Renvoie 2550
 
 Il est important de noter que la classe composée est `SalarieInterface` et non pas `Salarie`! Sinon, on ne pourrait pas combiner `SalarieChefProjet` avec `SalarieResponsableStagiaires`.
 
-Aussi, le salarie n'est pas instancié dans la classe, il est **injecté** (autrement, cela ne fonctionnerait pas), comme ce que vous avez fait, par exemple, avec l'exercice sur le paquet de carte et les différentes méthodes de tri. Sur un diagramme de classes de conception, cela pourrait être représenté par une **agrégation blanche**.
+Aussi, le salarié n'est pas instancié dans la classe, il est **injecté** (autrement, cela ne fonctionnerait pas), comme ce que vous avez fait, par exemple, avec l'exercice sur le paquet de carte et les différentes méthodes de tri. Sur un diagramme de classes de conception, cela pourrait être représenté par une **agrégation blanche**.
 
 <div class="exercise">
 
@@ -660,7 +660,7 @@ Aussi, le salarie n'est pas instancié dans la classe, il est **injecté** (autr
 
 Attention, **dans cet exemple précis**, même si nous pouvons maintenant rajouter un nouveau type de produit et le combiner aux autres pour calculer le prix adéquat, quand on instancie l'objet, il faut faire attention à l'ordre de combinaison des objets, à cause de la méthode de calcul du prix du produit avec une réduction. Si la méthode de calcul avait été un pourcentage pour ce type de produit (-X% du prix) comme pour le produit avec une date de péremption proche, l'ordre n'aurait pas eu d'importance. Bref, cela est à prendre en compte quand vous concevez et que vous utilisez des décorateurs. 
 
-Bon, tout fonctionne bien, mais le code est encore un peu redondant : A priori, tous nos produits "dérivés" vont posséder un objet `I_Produit`...
+Bon, tout fonctionne bien, mais le code est encore un peu redondant : À priori, tous nos produits "dérivés" vont posséder un objet `I_Produit`...
 
 <div class="exercise">
 
@@ -774,7 +774,7 @@ Quand on parle de **programmation par contrat** cela signifie que chaque classe 
 
 Le principe de **substitution de Liskov** a été introduit par **Barbara Liskov** et énonce qu'un **objet** d'une superclasse donnée doit pouvoir être remplacée (dans les appels de méthodes, de fonction, etc) par une de ses **sous-classes** sans "casser" le fonctionnement du programme. Une méthode provenant à l'origine d'une superclasse et appelée sur la sous-classe devrait **respecter le contrat** défini dans la superclasse.
 
-Par exemple, si on étend `ArrayList` pour faire un sous-type de collection spécialisé `MonArrayList` : si on redéfinit la méthode `add` dans `MonArrayList`, à la fin d'un appel à cette méthode, l'élément ajouté doit se trouver à la fin de la collection, comme spécifié dans le **contrat** de `ArrayList`. Peut-être que le chemin et la manière de faire aura été différente de la classe mère, mais le résultat est le même : le code d'une fonction/méthode attendant une instance de `ArrayList` en paramètre doit pouvoir fonctionner si on lui donne une instance de `MonArrayList` sans perturbation du contrat : des tests unitaires (portant sur la fonction en question) écrits par rapport au **contrat** spécifié par la classe mère, passeraient toujours. En résumé, dans cete exemple `ArrayList` doit pouvoir être  sans problèmes par `MonArrayList`.
+Par exemple, si on étend `ArrayList` pour faire un sous-type de collection spécialisé `MonArrayList` : si on redéfinit la méthode `add` dans `MonArrayList`, à la fin d'un appel à cette méthode, l'élément ajouté doit se trouver à la fin de la collection, comme spécifié dans le **contrat** de `ArrayList`. Peut-être que le chemin et la manière de faire aura été différente de la classe mère, mais le résultat est le même : le code d'une fonction/méthode attendant une instance de `ArrayList` en paramètre doit pouvoir fonctionner si on lui donne une instance de `MonArrayList` sans perturbation du contrat : des tests unitaires (portant sur la fonction en question) écrits par rapport au **contrat** spécifié par la classe mère, passeraient toujours. En résumé, dans cet exemple `ArrayList` doit pouvoir être  sans problèmes par `MonArrayList`.
 
 L'utilisation inappropriée de l'héritage peut amener au non-respect de ce principe.
 
