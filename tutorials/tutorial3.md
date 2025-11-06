@@ -165,7 +165,7 @@ Ici, chaque classe a **une responsabilité unique** : si la logique pour envoyer
 
 Le principe de responsabilité unique s'applique également aux **paquetages** : chaque paquetage est lié à une responsabilité du programme. Dans un logiciel plus complet, on aurait différents paquetages avec différents rôles : IHM, contrôleurs, services, stockage... (et on pourrait (même *devrait*) aller plus en détail).
 
-Ce principe semble assez facile à mettre en place, mais dans la réalité, on retrouve malheureusement des classes (et des paquetages) "fourre-tout" qui deviennent illisibles au fur et à mesure de l'évolution du programme. Si votre classe a trop de méthode, c'est peut-être qu'elle possède plus d'une responsabilité et que celles-ci pourraient être mieux réparties.
+Ce principe semble assez facile à mettre en place, mais dans la réalité, on retrouve malheureusement des classes (et des paquetages) "fourre-tout" qui deviennent illisibles au fur et à mesure de l'évolution du programme. Si votre classe a trop de méthodes, c'est peut-être qu'elle possède plus d'une responsabilité et que celles-ci pourraient être mieux réparties.
 
 <div class="exercise">
 
@@ -963,7 +963,7 @@ Eh oui, même les concepteurs de `Java` ont fait quelques bêtises lors du déve
 
 Le quatrième principe **SOLID** est le **principe de ségrégation des interfaces**.
 
-Un objet ne doit pas être forcé de dépendre de méthodes qu'il n'utilise pas. Globalement, il ne faut pas qu'une **interface** définisse dans son contrat des méthodes qui ne seront voir ne pourront pas être implémentées par la classe implémentant l'interface.
+Un objet ne doit pas être forcé de dépendre de méthodes qu'il n'utilise pas. Globalement, il ne faut pas qu'une **interface** définisse dans son contrat des méthodes qui ne seront (voire ne pourront) pas être implémentées par la classe implémentant l'interface.
 
 Nous en avons déjà parlé, mais une interface est un **contrat**. Une classe qui implémente une interface est forcé d'implémenter toutes les méthodes de l'interface. Mais une classe ne devrait pas être forcée à implémenter un bout de contrat qu'elle ne peut pas remplir.
 
@@ -1558,7 +1558,7 @@ Plus tard, dans l'année, vous découvrirez les **mocks** qui permettent de cré
 
 Ici, la classe `StockageUtilisateurMemoire` agit comme un **stub** qu'on peut utiliser pour les tests sans risque. Dans un environnement réel, on utiliserait un stockage avec une base de données dédiée aux tests, comme `SQLite`, qu'on viderait ensuite.
 
-Cependant, comment faire pour garder le stockage avec fichier pur l'exécution "normale" du programme, et le stockage en mémoire pour les tests ? Devons-nous éditer le code source de la classe `ServiceUtilisateur` avant les tests, puis la remettre en ordre ensuite ? Bien sûr que non ! Il suffit de mettre en pratique le **principe d'inversion de dépendance** que vous connaissez.
+Cependant, comment faire pour garder le stockage avec fichier pour l'exécution "normale" du programme, et le stockage en mémoire pour les tests ? Devons-nous éditer le code source de la classe `ServiceUtilisateur` avant les tests, puis la remettre en ordre ensuite ? Bien sûr que non ! Il suffit de mettre en pratique le **principe d'inversion de dépendance** que vous connaissez.
 
 <div class="exercise">
 
