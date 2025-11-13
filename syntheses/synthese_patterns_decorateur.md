@@ -124,7 +124,7 @@ class Main {
         ComposantAbstrait obj1 = new DecorateurConcretB(new DecorateurConcretA(new ComposantConcret()));
         ComposantAbstrait obj2 = new DecorateurConcretB(new ComposantConcret());
         ComposantAbstrait obj3 = new ComposantConcret();
-        ComposantAbstrait obj4 = new DecorateurConcretB(new DecorateurConcretC(new DecorateurConcretA(new ComposantConcret())));
+        ComposantAbstrait obj4 = new DecorateurConcretB(new DecorateurConcretC(new DecorateurConcretA(obj3)));
 
         /**
          * Affiche :
