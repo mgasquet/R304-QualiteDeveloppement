@@ -658,7 +658,7 @@ Aussi, le salarié n'est pas instancié dans la classe, il est **injecté** (aut
 
 </div>
 
-Attention, **dans cet exemple précis**, même si nous pouvons maintenant rajouter un nouveau type de produit et le combiner aux autres pour calculer le prix adéquat, quand on instancie l'objet, il faut faire attention à l'ordre de combinaison des objets, à cause de la méthode de calcul du prix du produit avec une réduction. Si la méthode de calcul avait été un pourcentage pour ce type de produit (-X% du prix) comme pour le produit avec une date de péremption proche, l'ordre n'aurait pas eu d'importance. Bref, cela est à prendre en compte quand vous concevez et que vous utilisez des décorateurs. 
+Attention, **dans cet exemple précis**, même si nous pouvons maintenant rajouter un nouveau type de produit et le combiner aux autres pour calculer le prix adéquat, quand on instancie l'objet, il faut faire attention à l'ordre de combinaison des objets, à cause de la méthode de calcul du prix du produit avec une réduction. Si la méthode de calcul avait été un pourcentage pour ce type de produit (-X% du prix) comme pour le produit avec une date de péremption proche, l'ordre n'aurait pas eu d'importance. Bref, cela est à prendre en compte quand vous concevez et que vous utilisez ce type de solution. 
 
 Bon, tout fonctionne bien, mais le code est encore un peu redondant : À priori, tous nos produits "dérivés" vont posséder un objet `I_Produit`...
 
@@ -758,7 +758,7 @@ En fait, ce modèle est réutilisable et adaptable à d'autres situations (nous 
 
 **Attention** : le décorateur est un pattern différent de **builder** que vous avez vu l'an dernier. 
 
-Un **builder** permet de créer un objet complexe (avec beaucoup de paramètres, donc certains optionnels). Le pattern **décorateur** permet de rajouter (ou d'enlever) **dynamiquement** des responsabilités (ou un **comportement**) à des objets **déjà instanciés** qui sont déjà potentiellement déjà utilisés dans l'application. D'ailleurs, on ne connait pas forcément tous les comportements que l'on souhaite ajouter à l'avance, lors du développement de la classe de base (contrairement au builder), cela peut venir après. Pour ajouter un nouveau comportement, on ajoute une nouvelle classe et **on ne touche pas à la classe d'origine** (et on respecte ainsi le principe ouvert/fermé). Avec un **builder** toutes les contraintes sont déjà connues lors de la création de la classe, le pattern facilite seulement l'instanciation.
+Un **builder** permet de créer un objet complexe (avec beaucoup de paramètres, donc certains optionnels). Le pattern **décorateur** permet de rajouter (ou d'enlever) **dynamiquement** des responsabilités (ou un **comportement**) à des objets **déjà instanciés** qui sont déjà potentiellement déjà utilisés dans l'application. D'ailleurs, on ne connaît pas forcément tous les comportements que l'on souhaite ajouter à l'avance, lors du développement de la classe de base (contrairement au builder), cela peut venir après. Pour ajouter un nouveau comportement, on ajoute une nouvelle classe et **on ne touche pas à la classe d'origine** (et on respecte ainsi le principe ouvert/fermé). Avec un **builder** toutes les contraintes sont déjà connues lors de la création de la classe, le pattern facilite seulement l'instanciation.
 
 Bref, le **décorateur** n'est pas un **design pattern créateur**, mais un pattern qui va venir ajouter ou retirer **dynamiquement** des **responsabilités** à une instance.
 

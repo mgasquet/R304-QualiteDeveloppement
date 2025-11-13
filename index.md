@@ -23,6 +23,7 @@ Cours de Qualité de développement (R3.04) en 2ème année d'IUT.
 
 {% comment %}
 2. [TP4](tutorials/tutorial4) -- Les design patterns créateurs
+{% endcomment %}
 
 ## Synthèses de cours
 
@@ -31,7 +32,6 @@ L'objectif des **synthèses de cours** est de reprendre les différentes notions
 1. [Les principes SOLID](syntheses/synthese_solid)
 2. [Le pattern Stratégie](syntheses/synthese_patterns_strategie) 
 3. [Le pattern décorateur](syntheses/synthese_patterns_decorateur)
-{% endcomment %}
 
 ## Cours et travaux dirigés
 

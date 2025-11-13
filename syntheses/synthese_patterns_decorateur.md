@@ -11,7 +11,7 @@ Le design pattern **décorateur** est un pattern **structural** qui va permettre
 
 Grâce à ce pattern, on va pouvoir ajouter de **nouvelles fonctionnalités** à une classe existante sans avoir besoin d'avoir recours à l'**héritage** ou au **multihéritage** (au niveau du composant visé).
 
-Les **responsabilités** de l'objet décoré peuvent être ajoutées ou retirées dynamiquement lors de l’exécution du programme.
+Les **responsabilités** de l'objet décoré peuvent être ajoutées ou retirées dynamiquement à une **instance** lors de l’exécution du programme.
 
 Ce pattern exploite différentes notions que nous avons déjà abordées avec les principes **SOLID** : principe ouvert/fermé, faible couplage, inversion et injection des dépendances, abstraction, composition...
 
@@ -144,6 +144,12 @@ class Main {
     }
 }
 ```
+
+**Attention** : le décorateur est un pattern différent de **builder** que vous avez vu l'an dernier. 
+
+Un **builder** permet de créer un objet complexe (avec beaucoup de paramètres, donc certains optionnels). Le pattern **décorateur** permet de rajouter (ou d'enlever) **dynamiquement** des responsabilités (ou un **comportement**) à des objets **déjà instanciés** qui sont déjà potentiellement déjà utilisés dans l'application. D'ailleurs, on ne connaît pas forcément tous les comportements que l'on souhaite ajouter à l'avance, lors du développement de la classe de base (contrairement au builder), cela peut venir après. Pour ajouter un nouveau comportement, on ajoute une nouvelle classe et **on ne touche pas à la classe d'origine** (et on respecte ainsi le principe ouvert/fermé). Avec un **builder** toutes les contraintes sont déjà connues lors de la création de la classe, le pattern facilite seulement l'instanciation.
+
+Bref, le **décorateur** n'est pas un **design pattern créateur**, mais un pattern qui va venir ajouter ou retirer **dynamiquement** des **responsabilités** à une instance.
 
 ## Exemples
 
