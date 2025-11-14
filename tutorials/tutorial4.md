@@ -2079,9 +2079,71 @@ On peut généraliser ce **pattern** ainsi :
 
 </div>
 
-### Différence entre les patterns méthode fabrique et fabrique abstraite
+### Différences entre les patterns méthode fabrique et fabrique abstraite
 
+Les patterns méthode fabrique et fabrique abstraite sont effectivement proches, dans le sens où ils visent tous les deux à abstraire et organiser la création d’objets. Mais même s’ils peuvent parfois résoudre des problèmes similaires, leurs intentions, leurs formes et surtout leurs contextes d’utilisation sont nettement différents.
 
+Concernant la **méthode fabrique** :
+* C'est un pattern dont l’objectif principal est de donner un point d’extension permettant aux sous-classes de décider quel objet doit être instancié.
+* On remplace donc un appel direct à new dans une classe de base par une méthode destinée à être redéfinie par les sous-classes.
+* L'**intention** est la suivante :
+  * Permettre aux sous-classes de contrôler la création de certains objets utilisés par la classe de base.
+  * Faciliter l’extension (principe Ouvert/Fermé) sans modifier le code existant.
+  *Encapsuler la création d’un objet lorsque celle-ci dépend de la logique propre à la sous-classe.
+* Au niveau de sa **forme** :
+  * La classe "cliente" définit une ou plusieurs méthodes de création, abstraites ou virtuelles, qu’elle utilise dans sa logique métier.
+  * Les sous-classes fournissent les implémentations concrètes qui créent les objets nécessaires.
+  * La logique de création est liée à la hiérarchie : pour changer quoi créer, on crée une nouvelle sous-classe.
+  * Le pattern est très adapté si le type d’objet à créer dépend de l’état interne ou du comportement de la sous-classe.
+  * Une même classe peut contenir plusieurs méthodes fabrique si elle doit créer plusieurs types d’objets liés à son rôle.
+* **Avantages** :
+  * Fait respecter le principe ouvert/fermé : on peut changer le comportement de création sans modifier la classe mère.
+  * Idéal quand la création dépend de l’état interne de la sous-classe.
+  * La classe cliente appelle des méthodes à surcharger pour permettre à l’application de personnaliser les objets créés.
+* **Limites** :
+  * Le pattern oblige à passer par l’héritage pour modifier la création (on ne peut pas changer la fabrique dynamiquement).
+  * Si une classe possède trop de méthodes fabrique, on mélange logique métier et logique de création, ce qui viole le principe de responsabilité unique.
+  * Pas réutilisable ailleurs sans héritage : la logique de création reste enfermée dans des sous-classes.
+  * Pas adapté si on veut changer les types d’objets à l’exécution sans changer de sous-classe.
+  * Pas idéal pour la création de familles d’objets cohérents (pas prévu pour ça).
+
+Concernant la **fabrique abstraite** :
+* C'est un pattern qui encapsule un ensemble de méthodes de création dans une seule classe dédiée, et non dans le client.
+* Elle définit une interface de création d’une famille d’objets cohérents.
+* Le client reçoit une fabrique abstraite (via composition), et ne dépend donc plus d’aucune classe concrète.
+* L'**intention** est la suivante :
+  * Fournir un moyen de créer une famille d’objets liés ou cohérents entre eux.
+  * Permettre de changer dynamiquement toute la famille d’objets créée en changeant simplement la fabrique injectée.
+  * Séparer complètement logique métier et logique de création (SRP).
+* Le client reçoit une fabrique abstraite (composition + polymorphisme).
+* Les méthodes de création sont regroupées dans une classe dédiée, sans logique métier.
+* Chaque fabrique concrète représente une configuration cohérente (une famille).
+* Permet le changement de famille d’objets à l’exécution, sans modification du client.
+* **Avantages** :
+  * Respect du principe de responsabilité unique : la création est isolée dans une classe spécialisée.
+  * Très adapté à la création de familles d’objets relatifs (unités, armes, sorts...).
+  * Le client est complètement décorrélé des classes concrètes.
+  * Très flexible : il suffit de changer la fabrique injectée pour changer le comportement.
+  * Favorise la testabilité (on peut injecter des fabriques factices ou de test).
+* **Limites** :
+  * Plus complexe à mettre en place qu’une simple méthode fabrique.
+  * Peut devenir lourde si le client n’a besoin que d’un seul type d’objet.
+  * Inadaptée si la création dépend fortement de l’état interne du client (ce que la méthode fabrique gère bien).
+  * Introduit une couche d’abstraction supplémentaire : inapproprié si la hiérarchie d’objets est simple.
+
+En résumé :
+
+On va utiliser la **méthode fabrique** si :
+* La création dépend des données ou de l’état interne de la sous-classe.
+* On veut ajouter un point d’extension à une hiérarchie existante.
+* On a peu de types d'objets différents à instancier.
+* On n’a pas besoin de changer dynamiquement les types instanciés.
+
+On va utiliser une **fabrique abstraite** si :
+* On doit créer une famille d’objets liés/relatifs.
+* On doit pouvoir changer toute la famille d’objets à l’exécution en remplaçant la fabrique.
+* On veut séparer proprement logique métier et création d’objets.
+* La même logique de création doit être utilisée dans plusieurs parties du système.
 
 ### Construction de donjons
 
