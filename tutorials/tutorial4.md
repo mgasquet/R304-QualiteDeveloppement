@@ -284,7 +284,9 @@ class Main {
 }
 ```
 
-Si cette méthode pourrait paraître plus "facile" à mettre en place et à utiliser (pas de `getInstance`, etc.) c'est généralement une **mauvaise idée**. Nous allons voir pourquoi avec le prochain exercice. 
+Si cette méthode pourrait paraître plus "facile" à mettre en place et à utiliser (pas de `getInstance`, etc.) c'est généralement une **mauvaise idée**. Nous allons voir pourquoi avec le prochain exercice.
+
+**Attention**, dans l'exercice suivant, nous allons donc **volontairement programmer une mauvaise solution, très bancale** afin de démontrer les problèmes liés à l'utilisation d'une classe statique plutôt qu'un singleton, dans certains contextes.
 
 <div class="exercise">
 
@@ -1283,12 +1285,6 @@ Pour l'instant, testons votre compréhension de la **fabrique simple** :
 
 ## Le pattern Méthode Fabrique
 
-Le pattern **Méthode Fabrique** (Factory Method) définit une **classe mère** pour la **création d'objets**, mais **délègue** l'instanciation (et donc le choix du type concret d'objet) à ses **classes filles**. Ce pattern utilise le concept de **fabrique** au travers d'une **méthode abstraite** définie dans la classe mère et implémentée par les classes filles.
-
-L'idée de ce pattern est de proposer un framework de création d'objets, où des hiérarchies de classes de fabriques simples sont créées, afin de donner plus de flexibilité pour la création d'objets.
-
-[//]: # (Pour que l'utilisation de ce pattern soit justifié, il faut que la **classe mère** &#40;abstraite&#41; effectue **d'autres traitements que simplement créer l'objet** &#40;sinon c'est juste une fabrique&#41;. Dans une &#40;ou plusieurs&#41; méthode&#40;s&#41; de la classe mère où un traitement est effectué, la méthode abstraite est appelée ce qui permet de récupérer un objet dont le type concret sera décidé par les sous-classes. Ainsi, le traitement peut être effectué dans la classe mère sans avoir besoin d'être dépendant d'une classe concrète.)
-
 Reprenons notre exemple de l'application de jeu gérant des **monstres** de type **slime** ou **fantômes**.
 
 ```java
@@ -1353,9 +1349,55 @@ public class Zone {
 }
 ```
 
-Nous avions utilisé une **fabrique simple** pour éviter d'avoir à instancier le type de **Monstre** dans la `Zone`. Cependant, avec cette configuration, il n'est pas possible d'avoir à la fois des instances de `Zone` qui utilisent des **slimes** et d'autres des **fantômes**.
+Nous avions utilisé une **fabrique simple** pour éviter d'avoir à instancier le type de **Monstre** dans la `Zone`. Cependant, avec cette configuration, il n'est pas possible d'avoir à la fois des instances de `Zone` qui utilisent des **slimes** et d'autres des **fantômes**. Par exemple, nous pourrions vouloir une zone "plaine" qui fait combattre des slimes au joueur, et une autre "château hanté" qui lui fait combattre des fantômes.
 
-Le pattern **méthode fabrique** permet de régler ce problème. L'idée est de rendre la création du monstre **abstrait** dans `Zone` (et donc rendre `Zone` abstrait) et de déléguer la création du type de monstre dans des classes dérivées.
+Pour régler ce problème, nous pourrions bricoler la solution suivante (**assez bancale**), en refactorant le code existant :
+
+```java
+public class MonstreFactory {
+
+  private String type;
+
+  public MonstreFactory(String type) {
+    this.type = type
+  }
+
+  public Monstre creerMonstre() {
+    return switch (type) {
+        case "slime" -> new Slime();
+        case "fantome" -> new Fantome();
+        default -> throw new InvalidParameterException("Monstre inconnu");
+    };
+  }
+
+}
+
+public class Main {
+
+  public static void main(String[]args) {
+    Zone zonePlaine = new Zone(new MonstreFactory("slime"));
+    Zone zoneChateauHante = new Zone(new MonstreFactory("fantome"));
+    Joueur j1 = new Joueur("Bob");
+    zonePlaine.traverserZoneNormale(j1);
+    zoneChateauHante.traverserZoneNormale(j1);
+  }
+
+}
+```
+
+Bien que fonctionnelle, cette solution présente divers problèmes :
+
+* Si un monstre visé n'existe pas, le problème apparaîtra seulement lors de l'exécution.
+* Nous mettons les **arènes** de l'exemple précédent de côté (pour le moment). Dans ce contexte, le fait qu'il soit possible d'instancier et d'utiliser la fabrique ailleurs que dans `Zone` ne fait pas vraiment de sens, car cette fabrique ne sert que pour une seule classe et ne devrait pas être accessible et manipulable ailleurs...
+* Même si cela est complètement optionnel (et un peu "gadget") il n'est plus possible d'utiliser un singleton pour cette fabrique.
+
+Le pattern **Méthode Fabrique** (Factory Method) définit une **classe mère** pour la **création d'objets**, mais **délègue** l'instanciation (et donc le choix du type concret d'objet) à ses **classes filles**. Ce pattern utilise le concept de **fabrique** au travers d'une **méthode abstraite** définie dans la classe mère et implémentée par les classes filles.
+
+L'idée de ce pattern est de proposer un framework de création d'objets, où des hiérarchies de classes de fabriques simples sont créées, afin de donner plus de flexibilité pour la création d'objets.
+
+Pour que l'utilisation de ce pattern soit justifié, il faut que la **classe mère** abstraite&#41; effectue **d'autres traitements que simplement créer l'objet** &#40;sinon c'est juste une fabrique&#41;. Dans une &#40;ou plusieurs&#41; méthode&#40;s&#41; de la classe mère où un traitement est effectué, la méthode abstraite est appelée ce qui permet de récupérer un objet dont le type concret sera décidé par les sous-classes. Ainsi, le traitement peut être effectué dans la classe mère sans avoir besoin d'être dépendant d'une classe concrète.
+
+Le pattern **méthode fabrique** permet donc de proposer une bien meilleure solution. L'idée est de rendre la création du monstre **abstraite** dans `Zone` (et donc rendre `Zone` abstrait) et de déléguer la création du type de monstre dans des classes dérivées.
 
 ```java
 public abstract class Zone {
@@ -1408,6 +1450,10 @@ public class Main {
 ![Fabrique 5]({{site.baseurl}}/assets/TP4/Fabrique5.svg){: width="40%" }
 </div>
 
+Nous avons réglé les différents problèmes évoqués précédemment :
+* Plus d'erreur à l'exécution possible si un monstre n'existe pas (on passe d'une vérification à l'exécution à une vérification à la compilation, car la classe du Monstre doit exister).
+* Il n'est pas possible d'utiliser la fabrique ailleurs : la logique de fabrication est encapsulée dans la classe concrète de la zone.
+
 Le pattern s'appelle **méthode fabrique**, car la méthode abstraite implémentée par les classes filles sont elles-mêmes des fabriques ! D'ailleurs, dans l'exemple, nous avons supprimé `MonstreFactory` qui ne nous est plus utile.
 
 On peut généraliser ce **pattern** ainsi :
@@ -1416,7 +1462,7 @@ On peut généraliser ce **pattern** ainsi :
 ![Méthode Fabrique 1]({{site.baseurl}}/assets/TP4/MethodeFabrique1.svg){: width="65%" }
 </div>
 
-Cependant, que se passe-t-il si plusieurs services différents doivent créer des **slimes** ou des **fantômes** (par exemple, la classe `Arene` que nous avions au début) ? Il faut vraiment créer une sous-classe par type de service et de monstre ? Non, rassurez-vous ! C'est justement un point que permettra de régler la **fabrique abstraite**.
+Cependant, que se passe-t-il si plusieurs services différents doivent créer des **slimes** ou des **fantômes** (par exemple, si nous faisons revenir la classe `Arene` que nous avions au début) ? Il faut vraiment créer une sous-classe par type de service et de monstre ? Non, rassurez-vous ! C'est justement un point que permettra de régler la **fabrique abstraite** que nous verrons prochainement.
 
 ### Age of Fantasy - Partie 1
 
@@ -1589,6 +1635,7 @@ Ce pattern va notamment permettre de créer et de sélectionner différents type
 
    * Diverses **armes de siège** : chaque armée peut construire des armes de siège spécifiques avec lesquelles elle peut attaquer.
    * Divers **sorts** : chaque armée possède un **sort** de prédilection qu'elle peut déclencher.
+   * Une nouvelle classe `Debugueur` (incomplète) qui permet au développeur (ou à un tricheur) de tester l'invocation sur le terrain de jeu (à certaines coordonnées) les différentes unités, armes et sorts d'une armée. 
 
 2. En plus du recrutement, chaque **armée** peut construire un type d'arme de siège spécifique et utiliser un type de sort spécifique.
 
@@ -1599,11 +1646,19 @@ Ce pattern va notamment permettre de créer et de sélectionner différents type
 
 4. Maintenant, faites en sorte que chaque armée (humaine et orc) puisse créer ses armes de siège spécifiques et créer et utiliser leurs sorts spécifiques. Chaque arme de siège créée est ajoutée dans la liste correspondante. Un sort, quand il est créé est seulement déclenché (il n'est pas stocké). Normalement, vous devriez pouvoir trouver une solution avec vos connaissances actuelles et les patterns que nous avons vu jusqu'ici. Si vous n'y arrivez pas, passez à la suite des explications.
 
+5. De même, complétez la classe `Debugueur` qui permet de débuguer une armée : il doit être possible de débuguer les ressources de l'armée humaine, et les ressources de l'armée orc (il faudra probablement ajouter des nouvelles classes). Les ressources créées (unité, arme, sort) ont exactement les mêmes caractéristiques que celles crées au travers de chaque type d'armee (humain, orc). Le code de `Debugueur` (et des nouvelles classes que vous allez certainement ajouter) vont donc être assez similaire à `Armee`, etc.
+
+6. Complétez le `Main` afin de le faire fonctionner.
+
 </div>
 
-Vous avez probablement trouvé une solution exploitant plusieurs **méthodes fabriques** (une pour les unités, comme initialement, une pour les armes de siège et une pour les sorts...).
+Vous avez donc sûrement trouvé une solution exploitant plusieurs **méthodes fabriques** (une pour les unités, comme initialement, une pour les armes de siège et une pour les sorts...) dans la classe `Armee` et la classe `Debugueur` avec des sous-classes du genre `DebugueurHumain` et `DebugueurOrc`.
 
-Cependant, cette solution, même si globalement acceptable, n'est pas forcément la plus qualitative. En effet, quand on utilise la **méthode fabrique**, on s'attend plutôt à ce que la classe mère ne contienne **qu'une seule méthode fabrique** (responsable de la création des objets du même type). Ici, il y en a 3 : les classes filles commencent à avoir trop de responsabilités. De plus, on utilise fortement **l'héritage**, alors que nous avons vu qu'il est généralement préférable de favoriser **la composition** et **l'injection de dépendances**.
+Cependant, cette solution, même si globalement acceptable, n'est pas forcément la plus qualitative :
+* Il y a une duplication de code entre vos classes de debugage et vos classes d'armée.
+* Les différentes classes `Armee` et `Debugueur` commencent à gérer trop de responsabilité : en plus de leur logique propre, elle gèrent maintenant la création d'une famille d'objets (qui va potentiellement encore s'agrandir à l'avenir). Ce n'est pas trop gros ou gênant pour l'instant, mais on pourrait dire qu'on viole déjà le principe de responsabilité unique.
+* Dans cette solution on utilise fortement **l'héritage**, alors que nous avons vu qu'il est généralement préférable de favoriser **la composition** (faible) et **l'injection de dépendances**.
+* Si on y regarde bien : les classes concrètes (armée et debugage humain et orc) ne font rien de particulier à part créer des instances, ce n'est pas forcément pertinent (elles n'ont pas vraiment de logique métier propre).
 
 Au-delà de l'aspect qualitatif, cette implémentation pourrait aussi poser un problème si on veut pouvoir **changer dynamiquement le comportement de création** souhaité. Par exemple, imaginons que nous souhaitons faire en sorte qu'une armée puisse être **vaincue** par une autre armée. L'armée vaincue n'est pas détruite et continue d'exister (et on conserve les soldats encore vivants et les armes). Cependant, l'armée vainqueuse impose son mode de fonctionnement à l'armée vaincue : elle produira maintenant les mêmes unités, les mêmes armes et les mêmes sorts que l'armée vainqueuse.
 
@@ -1830,7 +1885,7 @@ public class Main {
 
 Cette solution aurait pu être implémentée en utilisant trois méthodes fabriques, mais nous avons préféré séparer la logique de création des objets dans une classe à part et l'injecter dans la classe `Zone` plutôt que de créer plusieurs sous-classes zones spécifiques (comme auparavant). Cette approche permet de renforcer l'application du principe **d'inversion des dépendances**, par ailleurs.
 
-Il est très facile d'adapter cette solution afin de **changer de famille utilisée dans la zone** (si besoin), sans avoir besoin de changer le code de notre fabrique. De plus, on respecte ainsi le principe ouvert/fermé, car si on souhaite créer une nouvelle famille de classes (un nouveau type de zone), on a juste à ajouter une nouvelle fabrique. Cela permet aussi de limiter la duplication de code si un autre type de **service** utilise notre fabrique.
+Il est très facile d'adapter cette solution afin de **changer de famille utilisée dans la zone** (si besoin), sans avoir besoin de changer le code de notre fabrique. De plus, on respecte ainsi le principe ouvert/fermé, car si on souhaite créer une nouvelle famille de classes (un nouveau type de zone), on a juste à ajouter une nouvelle fabrique. Cela permet aussi de **limiter la duplication de code** si un autre type de **service** utilise notre fabrique (par exemple, avec la classe `Arene`).
 
 Adaptons un peu notre solution :
 
@@ -1963,9 +2018,9 @@ On peut généraliser ce **pattern** ainsi :
 
 <div class="exercise">
 
-1. Refactorez le code de la classe `Armee` (toujours dans `fabrique2.v2`) afin d'utiliser une **fabrique abstraite** à la place de votre solution (certaines classes vont probablement disparaître...).
+1. Refactorez le code des classes `Armee` et `Debugueur` (toujours dans `fabrique2.v2`) afin d'utiliser une **fabrique abstraite** à la place de votre solution (certaines classes vont probablement disparaître...). Réparez le `Main` pour qu'il fonctionne de nouveau
 
-2. Insérez et complétez la méthode suivante dans `Armee` :
+2. Insérez et complétez les méthodes suivantes dans `Armee` :
 
   ```java
   /**
@@ -1976,13 +2031,27 @@ On peut généraliser ce **pattern** ainsi :
   public void vaincre(Armee armee) {
   
   }
+
+  /**
+   * Retourne le débuggeur correspondant au type de peuple qui contrôle actuellement l'armée
+   */
+  public Debugueur getDebuggeurCourant() {
+
+  }
   ```
 
-  Vous pouvez éventuellement ajouter une autre méthode, au besoin.
+  Vous pouvez éventuellement ajouter d'autres méthodes, au besoin.
 
 3. Vérifiez que le code suivant fonctionne (à ajouter à la fin du `Main`) :
 
   ```java
+
+  //Affichage avec les ressources des orcs
+  Debugueur debugueur = armeeOrc.getDebuggeurCourant();
+  debugueur.invoquerUnite(5,12,3);
+  debugueur.invoquerArme(7,5,6);
+  debugueur.invoquerSort(20,13,9);
+
   //L'armée humaine bat l'armée orc
   armeeHumaine.vaincre(armeeOrc);
 
@@ -1998,9 +2067,21 @@ On peut généraliser ce **pattern** ainsi :
 
   //C'est un sort de boule de feu
   armeeOrc.utiliserSortSpecial();
+
+  //Affichage avec les ressources des humains (car ils ont vaincu l'armée)
+  debugueur = armeeOrc.getDebuggeurCourant();
+  debugueur.invoquerUnite(5,12,3);
+  debugueur.invoquerArme(7,5,6);
+  debugueur.invoquerSort(20,13,9);
   ```
 
+4. Bonus : est-ce que votre solution permet de faire en sorte que si on récupère le debugger courant d'une armée et que l'armée est vaincue, l'instance du débuggeur est bien actualisée (avec le nouveau peuple qui contrôle l'armée) ? Dans le **main**, on appelle deux fois `getDebuggeurCourant`, mais en pratique, on ne devrait pas à avoir à faire le second appel... Si le temps le permet, essayez de trouver une solution.
+
 </div>
+
+### Différence entre les patterns méthode fabrique et fabrique abstraite
+
+
 
 ### Construction de donjons
 
