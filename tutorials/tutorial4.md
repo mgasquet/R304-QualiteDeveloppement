@@ -1285,6 +1285,281 @@ Pour l'instant, testons votre compréhension de la **fabrique simple** :
 
 ## Le pattern Méthode Fabrique
 
+Prenons un nouvel exemple : un jeu de pêche.
+
+À la base, dans ce jeu, le joueur possède une **canne** qui lui permet de pêcher dans des **spots de pêche**. À chaque tentative, le spot génère une **truite** avec différentes caractéristiques et la canne essaye de l'attraper. Si la pêche est un succès, la canne augmente de niveau (et son score augmente aussi). Si c'est un échec, la canne est dégradée, ce qui impacte ses performances.
+
+Le nombre de points rapportés par la truite correspond à son niveau additionné à sa force. C'est aussi ce qui détermine si elle est difficile ou non à attraper. Le spot de pêche génère des truites qui ont un niveau entre 1 et 15 et une force entre 1 et 10.
+
+Avec ce cahier des charges, il est possible d'implémenter la solution suivante :
+
+```java
+public class Canne {
+
+    private int niveau;
+
+    private int degradation = 0;
+
+    private int score = 0;
+
+    public Canne(int niveau) {
+        this.niveau = niveau;
+    }
+
+    public void augmenterNiveau() {
+        niveau++;
+    }
+
+    public void degrader() {
+        degradation++;
+    }
+
+    public void reparer() {
+        degradation = 0;
+    }
+
+    public int getForce() {
+        return Math.max(0, niveau - degradation);
+    }
+
+    public void augmenterScore(int points) {
+        score += points;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Canne à pêche niveau %s, degradation : %s, score : %s",  niveau, degradation, score);
+    }
+}
+
+public class Truite {
+
+    private int niveau;
+
+    private int force;
+
+    private Random aleatoire = new Random();
+
+    public Truite(int niveau, int force) {
+        this.niveau = niveau;
+        this.force = force;
+    }
+
+    public int getNbPoints() {
+        return niveau + force;
+    }
+
+    public boolean tenterPecherAvec(Canne canne) {
+        int val = aleatoire.nextInt(1, getNbPoints());
+        return canne.getForce() > val;
+    }
+}
+
+public class SpotPeche {
+
+    private Random aleatoire = new Random();
+
+    public void pecher(Canne canne) {
+        Truite truite = new Truite(aleatoire.nextInt(1, 16), aleatoire.nextInt(1, 11));
+        System.out.println("Une truite apparaît!");
+        if(truite.tenterPecherAvec(canne)) {
+            canne.augmenterNiveau();
+            canne.augmenterScore(truite.getNbPoints());
+            System.out.println("Pêche réeussie !");
+        }
+        else {
+            canne.degrader();
+            System.out.println("Pêche ratée !");
+        }
+    }
+
+}
+
+public class Main {
+
+    public static void main(String[] args) {
+        Canne canne = new Canne(8);
+        SpotPeche spot = new SpotPeche();
+        for(int i = 0; i < 10; i++) {
+            spot.pecher(canne);
+        }
+        System.out.println(canne);
+    }
+
+}
+```
+
+Cependant, un nouveau besoin arrive : on aimerait pouvoir gérer différents **spots** de pêche qui génèrent différents types de poisson.
+
+On aurait alors :
+* L'**étang**, qui génère des truites avec un niveau entre 1 et 15 et une force entre 1 et 10 (ce que nous avons déjà).
+* Le **lac**, qui génère des carpes qui ont un niveau entre 20 et 30 et une certaine chance d'êtres dorées, selon le paramétrage du lac.
+
+De plus, dans le futur, de nouveaux spots (qui génère un nouveau ou plusieurs types de poissons) pourraient être ajoutés.
+
+Il est à noter que :
+* Or de la génération des poissons, la logique métier du spot reste exactement la même.
+* Pour chaque poisson, l'algorithme de capture est le même (aléatoire basé sur les points rapportés par le poisson par rapport à la force de la canne).
+* Tous les poissons ont un niveau.
+* Une carpe peut être dorée, ce qui double son nombre de points (et rend donc sa capture plus difficile...).
+
+Il va donc falloir refactorer tout cela pour permettre d'implémenter ce nouveau besoin et les futurs spots/poissons.
+
+Le pattern **Méthode Fabrique** (Factory Method) définit une **classe mère** pour la **création d'objets**, mais **délègue** l'instanciation (et donc le choix du type concret d'objet) à ses **classes filles**. Ce pattern utilise le concept de **fabrique** au travers d'une **méthode abstraite** définie dans la classe mère et implémentée par les classes filles.
+
+L'idée de ce pattern est de proposer un framework de création d'objets, où des hiérarchies de classes de fabriques simples sont créées, afin de donner plus de flexibilité pour la création d'objets.
+
+Pour que l'utilisation de ce pattern soit justifié, il faut que la **classe mère** abstraite&#41; effectue **d'autres traitements que simplement créer l'objet** &#40;sinon c'est juste une fabrique&#41;. Dans une &#40;ou plusieurs&#41; méthode&#40;s&#41; de la classe mère où un traitement est effectué, la méthode abstraite est appelée ce qui permet de récupérer un objet dont le type concret sera décidé par les sous-classes. Ainsi, le traitement peut être effectué dans la classe mère sans avoir besoin d'être dépendant d'une classe concrète.
+
+Le pattern **méthode fabrique** permet donc de proposer une solution au problème posé dans cet exemple. L'idée est de rendre la création du poisson **abstraite** dans `SpotPeche` (et donc rendre `SpotPeche` abstrait) et de déléguer la création du type de monstre dans des classes dérivées (`Etang` et `Lac`).
+
+```java
+public abstract class Poisson {
+
+    protected int niveau;
+
+    private Random aleatoire = new Random();
+
+    public Poisson(int niveau) {
+        this.niveau = niveau;
+    }
+
+    public abstract int getNbPoints();
+
+    public abstract String getNom();
+
+    public boolean tenterPecherAvec(Canne canne) {
+        int val = aleatoire.nextInt(1, getNbPoints());
+        return canne.getForce() > val;
+    }
+}
+
+public class Truite extends Poisson {
+
+    private int force;
+
+    public Truite(int niveau, int force) {
+        super(niveau);
+        this.force = force;
+    }
+
+    @Override
+    public int getNbPoints() {
+        return niveau + force;
+    }
+
+    @Override
+    public String getNom() {
+        return "Truite";
+    }
+}
+
+public class Carpe extends Poisson
+{
+    private boolean doree;
+
+    public Carpe(int niveau, boolean doree) {
+        super(niveau);
+        this.doree = doree;
+    }
+
+    @Override
+    public int getNbPoints() {
+        return niveau * (doree ? 2 : 1);
+    }
+
+    @Override
+    public String getNom() {
+        return "Carpe";
+    }
+}
+
+public abstract class SpotPeche {
+
+    protected Random aleatoire = new Random();
+
+    public void pecher(Canne canne) {
+        //Le poisson instancié dépend du spot de pêche concret
+        Poisson poisson = creerPoisson();
+        System.out.printf("%s apparaît!%n", poisson.getNom());
+        if(poisson.tenterPecherAvec(canne)) {
+            canne.augmenterNiveau();
+            canne.augmenterScore(poisson.getNbPoints());
+            System.out.println("Pêche réeussie !");
+        }
+        else {
+            canne.degrader();
+            System.out.println("Pêche ratée !");
+        }
+    }
+
+    //Méthode fabrique !
+    protected abstract Poisson creerPoisson();
+
+}
+
+public class Etang extends SpotPeche {
+
+    @Override
+    protected Poisson creerPoisson() {
+        return new Truite(aleatoire.nextInt(1, 16), aleatoire.nextInt(1, 11));
+    }
+
+}
+
+public class Lac extends SpotPeche {
+
+    private double probabiliteCarpeDoree;
+
+    public Lac(double probabiliteCarpeDoree) {
+        this.probabiliteCarpeDoree = probabiliteCarpeDoree;
+    }
+
+    @Override
+    protected Poisson creerPoisson() {
+        boolean doree = aleatoire.nextDouble(0.0, 1.0) < probabiliteCarpeDoree;
+        return new Carpe(aleatoire.nextInt(20, 31), doree);
+    }
+}
+
+public class Main {
+
+    public static void main(String[] args) {
+        Canne canne = new Canne(8);
+
+        //Zone de pêche de départ
+        SpotPeche etang = new Etang();
+        for(int i = 0; i < 10; i++) {
+            etang.pecher(canne);
+        }
+        System.out.println(canne);
+
+        //Changement de zone
+        SpotPeche lac = new Lac(0.3);
+        for(int i = 0; i < 10; i++) {
+            lac.pecher(canne);
+        }
+        System.out.println(canne);
+    }
+
+}
+```
+
+<div style="text-align:center">
+![Fabrique 5]({{site.baseurl}}/assets/TP4/Fabrique5.svg){: width="40%" }
+</div>
+
+Le pattern s'appelle **méthode fabrique**, car la méthode abstraite implémentée par les classes filles sont elles-mêmes des fabriques !
+
+Dans notre exemple, chaque spot ne renvoie qu'un type de poisson (truite pour l'étang, carpe pour le lac). Cependant, la méthode fabrique n'a pas obligation de renvoyer un seul type d'instance : elle peut renvoyer l'instance qu'elle souhaite (tant que cela respecte le type de retour demandé). Par exemple, nous aurions pu avoir un spot "océan" qui génère à la fois des carpes, des truites et autre dans sa méthode `creerPoisson` !
+
+On peut généraliser ce **pattern** ainsi :
+
+<div style="text-align:center">
+![Méthode Fabrique 1]({{site.baseurl}}/assets/TP4/MethodeFabrique1.svg){: width="65%" }
+</div>
+
+<!--
 Reprenons notre exemple de l'application de jeu gérant des **monstres** de type **slime** ou **fantômes**.
 
 ```java
@@ -1447,7 +1722,7 @@ public class Main {
 ```
 
 <div style="text-align:center">
-![Fabrique 5]({{site.baseurl}}/assets/TP4/Fabrique5.svg){: width="40%" }
+![Fabrique 5]({{site.baseurl}}/assets/TP4/Fabrique5_Old.svg){: width="40%" }
 </div>
 
 Nous avons réglé les différents problèmes évoqués précédemment :
@@ -1463,6 +1738,7 @@ On peut généraliser ce **pattern** ainsi :
 </div>
 
 Cependant, que se passe-t-il si plusieurs services différents doivent créer des **slimes** ou des **fantômes** (par exemple, si nous faisons revenir la classe `Arene` que nous avions au début) ? Il faut vraiment créer une sous-classe par type de service et de monstre ? Non, rassurez-vous ! C'est justement un point que permettra de régler la **fabrique abstraite** que nous verrons prochainement.
+-->
 
 ### Age of Fantasy - Partie 1
 
@@ -1785,7 +2061,7 @@ public class Parchemin implements Item {
   }    
 }
 
-public interface AbstractZoneFactory {
+public interface AbstractNiveauFactory {
 
   Monstre creerMonstreNormal();
 
@@ -1795,7 +2071,7 @@ public interface AbstractZoneFactory {
 
 }
 
-public class ZonePlaineFactory implements AbstractZoneFactory {
+public class PlaineFactory implements AbstractNiveauFactory {
 
   Random random = new Random();
 
@@ -1816,7 +2092,7 @@ public class ZonePlaineFactory implements AbstractZoneFactory {
 
 }
 
-public class ZoneChateauHanteFactory implements AbstractZoneFactory {
+public class ChateauHanteFactory implements AbstractNiveauFactory {
 
   @Override
   public Monstre creerMonstreNormal() {
@@ -1857,9 +2133,9 @@ class Joueur {
 
 public class Zone {
 
-  private AbstractZoneFactory factory;
+  private AbstractNiveauFactory factory;
 
-  public Zone(AbstractZoneFactory factory) {
+  public Zone(AbstractNiveauFactory factory) {
     this.factory = factory;
   }
 
@@ -1895,13 +2171,13 @@ public class Zone {
 public class Main {
 
   public static void main(String[]args) {
-    Zone plaine = new Zone(new ZonePlaineFactory());
+    Zone plaine = new Zone(new PlaineFactory());
     plaine.traverserZoneNormale();
     plaine.ouvrirCoffre();
     plaine.ouvrirCoffre();
     plaine.traverserZoneBoss();
 
-    Zone chateau = new Zone(new ZoneChateauHanteFactory());
+    Zone chateau = new Zone(new ChateauHanteFactory());
     chateau.traverserZoneNormale();
     chateau.ouvrirCoffre();
     chateau.ouvrirCoffre();
@@ -1915,25 +2191,25 @@ public class Main {
 ![Fabrique 6]({{site.baseurl}}/assets/TP4/Fabrique6.svg){: width="80%" }
 </div>
 
-Cette solution aurait pu être implémentée en utilisant trois méthodes fabriques, mais nous avons préféré séparer la logique de création des objets dans une classe à part et l'injecter dans la classe `Zone` plutôt que de créer plusieurs sous-classes zones spécifiques (comme auparavant). Cette approche permet de renforcer l'application du principe **d'inversion des dépendances**, par ailleurs.
+Cette solution aurait pu être implémentée en utilisant trois méthodes fabriques, mais nous avons préféré séparer la logique de création des objets dans une classe à part et l'injecter dans la classe `Zone` plutôt que de créer plusieurs sous-classes zones spécifiques. Ici, on favorise donc une solution basée sur la composition plutôt que l'héritage.
 
-Il est très facile d'adapter cette solution afin de **changer de famille utilisée dans la zone** (si besoin), sans avoir besoin de changer le code de notre fabrique. De plus, on respecte ainsi le principe ouvert/fermé, car si on souhaite créer une nouvelle famille de classes (un nouveau type de zone), on a juste à ajouter une nouvelle fabrique. Cela permet aussi de **limiter la duplication de code** si un autre type de **service** utilise notre fabrique (par exemple, avec la classe `Arene`).
+Cette approche est d'autant plus pertinente, car nous pouvons maintenant adapter cette solution afin de **changer de famille utilisée dans la zone** (si besoin), sans avoir besoin de changer le code de notre fabrique. De plus, on respecte ainsi le principe ouvert/fermé, car si on souhaite créer une nouvelle famille de classes (un nouveau type de niveau), on a juste à ajouter une nouvelle fabrique. Cela permet aussi de **limiter la duplication de code** si un autre type de **service** utilise notre fabrique (par exemple, avec la classe `Arene`).
 
 Adaptons un peu notre solution :
 
 ```java
 public class Zone {
 
-  private AbstractZoneFactory factory;
+  private AbstractNiveauFactory factory;
 
-  public Zone(AbstractZoneFactory factory) {
+  public Zone(AbstractNiveauFactory factory) {
     this.factory = factory;
   }
 
   ...
 
   //Permet de changer dynamiquement la fabrique utilisée
-  public void setFactory(AbstractZoneFactory factory) {
+  public void setFactory(AbstractNiveauFactory factory) {
     this.factory = factory;
   }
 
@@ -1941,9 +2217,11 @@ public class Zone {
 
 public class Arene {
 
-  private AbstractZoneFactory factory;
+  private Joueur combattant;
 
-  public Arene(Joueur combattant, AbstractZoneFactory factory) {
+  private AbstractNiveauFactory factory;
+
+  public Arene(Joueur combattant, AbstractNiveauFactory factory) {
     this.combattant = combattant;
     this.factory = factory;
   }
@@ -1961,18 +2239,18 @@ public class Arene {
 public class Main {
 
   public static void main(String[]args) {
-    Zone zone = new Zone(new ZonePlaineFactory());
+    Zone zone = new Zone(new PlaineFactory());
     zone.traverserZoneNormale();
     zone.ouvrirCoffre();
     zone.ouvrirCoffre();
     zone.traverserZoneBoss();
 
     //Le joueur change de zone...
-    zone.setFactory(new ZoneChateauHanteFactory());
+    zone.setFactory(new ChateauHanteFactory());
     zone.traverserZoneNormale();
 
     //Arene dans une plaine...
-    Arene arenePlaine = new Arene(new ZonePlaineFactory());
+    Arene arenePlaine = new Arene(new PlaineFactory());
     arenePlaine.nouveauCombat();
   }
 
@@ -1982,15 +2260,15 @@ public class Main {
 À noter qu'il est bien sûr possible de coupler cela avec des **singletons** pour les fabriques **concrètes** (même si ce 'nest pas du tout obligatoire et qu'on pourrait s'en passer) :
 
 ```java
-public class ZonePlaineFactory implements AbstractZoneFactory {
+public class PlaineFactory implements AbstractNiveauFactory {
 
-  private static AbstractZoneFactory INSTANCE;
+  private static AbstractNiveauFactory INSTANCE;
 
-  private ZonePlaineFactory() {}
+  private PlaineFactory() {}
 
-  public synchronized static AbstractZoneFactory getInstance() {
+  public synchronized static AbstractNiveauFactory getInstance() {
     if(INSTANCE == null) {
-      INSTANCE = new ZonePlaineFactory();
+      INSTANCE = new PlaineFactory();
     }
     return INSTANCE;
   }
@@ -1999,15 +2277,15 @@ public class ZonePlaineFactory implements AbstractZoneFactory {
 
 }
 
-public class ZoneChateauHanteFactory implements AbstractZoneFactory {
+public class ChateauHanteFactory implements AbstractNiveauFactory {
 
-  private static AbstractZoneFactory INSTANCE;
+  private static AbstractNiveauFactory INSTANCE;
 
-  private ZoneChateauHanteFactory() {}
+  private ChateauHanteFactory() {}
 
-  public synchronized static AbstractZoneFactory getInstance() {
+  public synchronized static AbstractNiveauFactory getInstance() {
     if(INSTANCE == null) {
-      INSTANCE = new ZoneChateauHanteFactory();
+      INSTANCE = new ChateauHanteFactory();
     }
     return INSTANCE;
   }
@@ -2018,13 +2296,13 @@ public class ZoneChateauHanteFactory implements AbstractZoneFactory {
 public class Main {
 
   public static void main(String[]args) {
-    Zone plaine = new Zone(ZonePlaineFactory.getInstance());
+    Zone plaine = new Zone(PlaineFactory.getInstance());
     plaine.traverserZoneNormale();
     plaine.ouvrirCoffre();
     plaine.ouvrirCoffre();
     plaine.traverserZoneBoss();
 
-    Zone chateau = new Zone(ZoneChateauHanteFactory.getInstance());
+    Zone chateau = new Zone(ChateauHanteFactory.getInstance());
     chateau.traverserZoneNormale();
     chateau.ouvrirCoffre();
     chateau.ouvrirCoffre();
@@ -2123,9 +2401,9 @@ Revenons une dernière fois sur l'application de gestion de livraisons afin de l
 
   * L'entreprise japonaise souhaite plutôt que quand une méthode de livraison doit notifier un client, un `SMS` soit envoyé, et que ses rapports soient générés avec le format `JSON`.
 
-  Il doit donc être possible que chaque méthode de livraison puisse soit travailler avec des mails soit avec des SMS et soit avec des rapports HTML soit avec des rapports JSON.
+    Il doit donc être possible que chaque méthode de livraison puisse soit travailler avec des mails soit avec des SMS et soit avec des rapports HTML soit avec des rapports JSON.
 
-  **Attention** : ce n'est pas parce qu'actuellement les robots et les bateaux sont seulement utilisés par le Japon que ces méthodes ne doivent fonctionner qu'avec des SMS et des rapports JSON. Ces méthodes de livraisons pourraient être utilisées sur d'autres territoires qui eux enverraient des mails et générer des rapports au format HTML. De même, les méthodes de livraison par drone et par avion ne sont pas nécessairement exclusifs au territoire américain et pourraient être utilisés sur d'autres territoires et fonctionner avec d'autres types de notifications et de rapports (par exemple, le gestionnaire des livraisons japonaises pourrait évoluer et utiliser des avions dans le futur...).
+    **Attention** : ce n'est pas parce qu'actuellement les robots et les bateaux sont seulement utilisés par le Japon que ces méthodes ne doivent fonctionner qu'avec des SMS et des rapports JSON. Ces méthodes de livraisons pourraient être utilisées sur d'autres territoires qui eux enverraient des mails et générer des rapports au format HTML. De même, les méthodes de livraison par drone et par avion ne sont pas nécessairement exclusifs au territoire américain et pourraient être utilisés sur d'autres territoires et fonctionner avec d'autres types de notifications et de rapports (par exemple, le gestionnaire des livraisons japonaises pourrait évoluer et utiliser des avions dans le futur...).
 
 2. Remaniez le code pour faire en sorte que :
 
@@ -2133,7 +2411,7 @@ Revenons une dernière fois sur l'application de gestion de livraisons afin de l
 
   * Pour les livraisons sur le territoire japonais, les méthodes de livraisons notifient le client par SMS et génèrent des rapports au format JSON.
 
-  Testez le `main` pour voir si cela fonctionne.
+    Testez le `main` pour voir si cela fonctionne.
 
 3. Changer la méthode de livraison longue distance du `Japon` pour utiliser un avion. Quand votre `main` s'exécute : pour le territoire américain, des mails sont envoyés et des rapports au format HTML sont générés, mais pour le Japon, des SMS sont envoyés et des rapports JSON sont générés.
 
@@ -2142,7 +2420,6 @@ Revenons une dernière fois sur l'application de gestion de livraisons afin de l
 5. Complétez votre `main` avec un jeu de données pour débugger le fonctionnement des livraisons sur le territoire français (en vous inspirant de ce qui existe déjà pour les autres territoires).
 
 </div>
-
 
 ### Différences entre les patterns méthode fabrique et fabrique abstraite
 
@@ -2275,14 +2552,14 @@ Par exemple, imaginons que nous souhaitons que notre **Jeu**, à un instant T, n
 ```java
 // On transforme notre interface en classe abstraite, car elle contient du code
 // Elle stocke l'instance concrète de la fabrique utilisée
-public abstract class AbstractZoneFactory {
+public abstract class AbstractNiveauFactory {
 
-private static AbstractZoneFactory INSTANCE;
+private static AbstractNiveauFactory INSTANCE;
 
-  public synchronized static AbstractZoneFactory getInstance() {
+  public synchronized static AbstractNiveauFactory getInstance() {
     if(INSTANCE == null) {
       try {
-            InputStream stream = ClassLoader.getSystemResourceAsStream("config/zone_factory_config.txt");
+            InputStream stream = ClassLoader.getSystemResourceAsStream("config/niveau_factory_config.txt");
             if(stream == null) {
                 throw new RuntimeException("Fichier de configuration manquant.");
             }
@@ -2290,13 +2567,13 @@ private static AbstractZoneFactory INSTANCE;
             String config = reader.readLine();
             switch (config) {
               case "plaine" :
-                INSTANCE = new ZonePlaineFactory();
+                INSTANCE = new PlaineFactory();
                 break;
               case "chateau" : 
-                INSTANCE = new ZoneChateauHanteFactory();
+                INSTANCE = new ChateauHanteFactory();
                 break;
               default: 
-                throw new IllegalArgumentException(String.format("Type de zone inconnue : %s", config));
+                throw new IllegalArgumentException(String.format("Type de biome inconnu : %s", config));
             }
       } catch (IOException e) {
           throw new RuntimeException("Fichier de configuration corrompu.");
@@ -2314,18 +2591,18 @@ private static AbstractZoneFactory INSTANCE;
 }
 
 //Les fabriques concrètes ne sont plus des singletons (si c'était le cas avant)
-public class ZonePlaineFactory extends AbstractZoneFactory {
+public class PlaineFactory extends AbstractNiveauFactory {
   ...
 }
 
-public class ZoneChateauHanteFactory extends AbstractZoneFactory {
+public class ChateauHanteFactory extends AbstractNiveauFactory {
   ...
 }
 
 public class Main {
 
   public static void main(String[]args) {
-    Zone zone = new Zone(AbstractZoneFactory.getInstance());
+    Zone zone = new Zone(AbstractNiveauFactory.getInstance());
     zone.traverserZoneNormale();
     zone.ouvrirCoffre();
     zone.ouvrirCoffre();
@@ -2339,11 +2616,11 @@ public class Main {
 ![Fabrique 8]({{site.baseurl}}/assets/TP4/Fabrique8.svg){: width="70%" }
 </div>
 
-La fabrique abstraite vise un fichier qui se situe dans `src/main/resources/config/zone_factory_config.txt` qui contient simplement une chaîne de caractères. Par exemple : `chateau`.
+La fabrique abstraite vise un fichier qui se situe dans `src/main/resources/config/niveau_factory_config.txt` qui contient simplement une chaîne de caractères. Par exemple : `chateau`.
 
-Avec cette nouvelle implémentation, il n'y a plus qu'à changer le contenu du fichier de configuration pour changer la fabrique concrète manipulée dans tout le programme. On notera qu'il n'y a plus besoin que les sous-classes soient des **singletons** (si c'était le cas avant), car elles sont instanciées par la fabrique abstraite. Cependant, on pourrait empêcher le fait que n'importe qui puisse instancier les fabriques concrètes en passant leurs constructeurs en visibilité `protected` (afin que seule `AbstractZoneFactory` puisse les instancier).
+Avec cette nouvelle implémentation, il n'y a plus qu'à changer le contenu du fichier de configuration pour changer la fabrique concrète manipulée dans tout le programme. On notera qu'il n'y a plus besoin que les sous-classes soient des **singletons** (si c'était le cas avant), car elles sont instanciées par la fabrique abstraite. Cependant, on pourrait empêcher le fait que n'importe qui puisse instancier les fabriques concrètes en passant leurs constructeurs en visibilité `protected` (afin que seule `AbstractNiveauFactory` puisse les instancier).
 
-Bien sûr, cette implémentation n'est pas forcément souhaitable dans tous les contextes ! C'est seulement si, à un instant T, on veut uniquement avoir un seul type de fabrique concrète utilisé et pouvoir en changer facilement (d'ailleurs, l'exemple donné est discutable, parce qu'on voudrait à priori pouvoir créer plusieurs types de zones différentes à la fois).
+Bien sûr, cette implémentation n'est pas forcément souhaitable dans tous les contextes ! C'est seulement si, à un instant T, on veut uniquement avoir un seul type de fabrique concrète utilisé et pouvoir en changer facilement (d'ailleurs, l'exemple donné est discutable, parce qu'on voudrait à priori pouvoir créer plusieurs types de niveaux différents à la fois).
 
 De plus, on peut aussi discuter du fait que le code gérant la sélection de la fabrique concrète soit stocké dans la fabrique abstraite. Pour obtenir une meilleure répartition des **responsabilités**, on pourrait éventuellement déléguer cela à une classe dédiée (et donc laisser la fabrique abstraite comme une interface).
 
