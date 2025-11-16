@@ -189,7 +189,7 @@ Aussi, imaginons une classe d'accès à une base de données : celle-ci initiali
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `singleton1`. Cette application permet de créer des animaux avec un nom et une vitesse, de les stocker dans la mémoire et de les lire.
+1. Ouvrez le paquetage `fr.umontpellier.iut.singleton1`. Cette application permet de créer des animaux avec un nom et une vitesse, de les stocker dans la mémoire et de les lire.
 
 2. Testez l'application. Créez plusieurs animaux puis tentez de les lire. Quels sont les deux problèmes que vous constatez ?
 
@@ -290,7 +290,7 @@ Si cette méthode pourrait paraître plus "facile" à mettre en place et à util
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `singleton2`. Cette application permet de simuler des services de création d'utilisateurs et de gestion de commandes. Dans une application concrète, ces deux services sont susceptibles d'envoyer des mails. Testez un peu l'application. Aussi, deux classes de tests sont disponibles dans le dossier `java/singleton2`.
+1. Ouvrez le paquetage `fr.umontpellier.iut.singleton2`. Cette application permet de simuler des services de création d'utilisateurs et de gestion de commandes. Dans une application concrète, ces deux services sont susceptibles d'envoyer des mails. Testez un peu l'application. Aussi, deux classes de tests sont disponibles dans le dossier `src/test/java/fr/umontpellier/iut/singleton2`.
 
 2. Il semble inutile d'instancier la classe `ServiceMail` à chaque fois. Cette fois-ci, au lieu d'utiliser un `Singleton`, nous allons transformer `ServiceMail` en **classe statique**. Faites ce changement et adaptez le code dans les classes `ServiceUtilisateur` et `ServiceCommande`.
 
@@ -419,7 +419,7 @@ Ce pattern permet de résoudre le problème de création d'un objet qui a beauco
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `builder1`. Dans cette application, nous voulons construire des **burgers**. Dans le restaurant, le client peut composer son burger. Un **Burger** est obligatoirement composé d'un nom (donné par le client) et d'un type de pain (oui, s'il veut, un client peut avoir un burger juste avec du pain). Le client peut ensuite décider d'ajouter une viande, ou des tomates, ou les deux.
+1. Ouvrez le paquetage `fr.umontpellier.iut.builder1`. Dans cette application, nous voulons construire des **burgers**. Dans le restaurant, le client peut composer son burger. Un **Burger** est obligatoirement composé d'un nom (donné par le client) et d'un type de pain (oui, s'il veut, un client peut avoir un burger juste avec du pain). Le client peut ensuite décider d'ajouter une viande, ou des tomates, ou les deux.
 
     À ce stade, il y a donc quatre types de burger possibles (même si les types de pains et de viandes diffèrent) :
 
@@ -674,9 +674,9 @@ Nous allons directement présenter le principe et l'intérêt du pattern **proto
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `protoype1` et consultez les classes mises à disposition. Il s'agit d'une mini-application bancaire permettant de gérer des comptes. Pour le moment, la classe `Banque` permet de gérer des **comptes courants**. C'est elle qui gère intégralement ces comptes bancaires : leur création et le changement de solde (créditer/débiter). Elle est donc **composée des comptes bancaires** (ce qui se traduirait par une **agrégation forte** sur un diagramme de classes de conception).
+1. Ouvrez le paquetage `fr.umontpellier.iut.protoype1` et consultez les classes mises à disposition. Il s'agit d'une mini-application bancaire permettant de gérer des comptes. Pour le moment, la classe `Banque` permet de gérer des **comptes courants**. C'est elle qui gère intégralement ces comptes bancaires : leur création et le changement de solde (créditer/débiter). Elle est donc **composée des comptes bancaires** (ce qui se traduirait par une **agrégation forte** sur un diagramme de classes de conception).
 
-2. Le développeur a pensé qu'il serait utile qu'un objet extérieur puisse récupérer un `CompteCourant` depuis la banque pour consulter le solde (ou autre). Il a donc créé une méthode `getInformationsCompteNumero`. Expérimentez dans le `Main` en créditant le compte d'un objet récupéré par cette méthode puis récupérez de nouveau ce compte depuis la banque et affichez son solde. Le solde du compte t-il était modifié ? Lancez le test unitaire situé dans la classe dans `src/test/java/prototype1`. Il ne passe pas... Comprenez-vous pourquoi ?
+2. Le développeur a pensé qu'il serait utile qu'un objet extérieur puisse récupérer un `CompteCourant` depuis la banque pour consulter le solde (ou autre). Il a donc créé une méthode `getInformationsCompteNumero`. Expérimentez dans le `Main` en créditant le compte d'un objet récupéré par cette méthode puis récupérez de nouveau ce compte depuis la banque et affichez son solde. Le solde du compte t-il était modifié ? Lancez le test unitaire situé dans la classe dans `src/test/java/fr/umontpellier/iut/prototype1`. Il ne passe pas... Comprenez-vous pourquoi ?
 
 </div>
 
@@ -1269,7 +1269,7 @@ Pour l'instant, testons votre compréhension de la **fabrique simple** :
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `fabrique1`. Il s'agit de l'application avec des **animaux** que vous aviez développée lors du dernier TP. La nouveauté est qu'il y a aussi des **animaux normaux** et des **animaux robots** (qui ont seulement en plus une voix robotique quand ils font un cri...).
+1. Ouvrez le paquetage `fr.umontpellier.iut.fabrique1`. Il s'agit de l'application avec des **animaux** que vous aviez développée lors du dernier TP. La nouveauté est qu'il y a aussi des **animaux normaux** et des **animaux robots** (qui ont seulement en plus une voix robotique quand ils font un cri...).
 
 2. Actuellement, si on souhaite changer les animaux pour utiliser des animaux robotiques dans le `Main`, on est obligé de changer tout le code du `Main`. Il faut vous imaginer cela pour plusieurs classes : s'il faut changer les animaux pour des animaux robotiques, alors il faudra changer le code de toutes les classes qui créent des animaux ! Pour permettre plus de flexibilité, vous devez :
 
@@ -1546,7 +1546,7 @@ public class Main {
 ```
 
 <div style="text-align:center">
-![Fabrique 5]({{site.baseurl}}/assets/TP4/Fabrique5.svg){: width="40%" }
+![Fabrique 5]({{site.baseurl}}/assets/TP4/Fabrique5.svg)
 </div>
 
 Le pattern s'appelle **méthode fabrique**, car la méthode abstraite implémentée par les classes filles sont elles-mêmes des fabriques !
@@ -1746,7 +1746,7 @@ Nous allons tester votre compréhension du problème sur un premier exercice sim
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `fabrique2` puis `v1`. Il s'agit d'une application d'un **jeu de stratégie type heroic fantasy** permettant de gérer différentes armées (humaine et orc). L'exercice est divisé en deux parties : `v1` que nous allons traiter maintenant puis `v2` que vous allez traiter plus tard. 
+1. Ouvrez le paquetage `fr.umontpellier.iut.fabrique2` puis `v1`. Il s'agit d'une application d'un **jeu de stratégie type heroic fantasy** permettant de gérer différentes armées (humaine et orc). L'exercice est divisé en deux parties : `v1` que nous allons traiter maintenant puis `v2` que vous allez traiter plus tard. 
 
 2. Une armée peut **recruter** des unités si elle possède assez d'argent. On souhaite pouvoir gérer **deux types d'armées** :
 
@@ -1875,15 +1875,15 @@ Testons maintenant votre maîtrise du pattern **méthode fabrique** avec un nouv
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `fabrique3`. Il s'agit d'une application de gestion des livraisons de divers produits pour des entreprises. Il existe différents types de méthodes de livraison : par drone, par un robot, par avion et par bateau. Le mode de livraison sélectionné pour livrer une commande va dépendre de la distance (proche ou éloigné).
+1. Ouvrez le paquetage `fr.umontpellier.iut.fabrique3`. Il s'agit d'une application de gestion des livraisons de divers produits pour des entreprises. Il existe différents types de méthodes de livraison : par drone, par un robot, par avion et par bateau. Le mode de livraison sélectionné pour livrer une commande va dépendre de la distance (proche ou éloigné).
 
 2. Un **gestionnaire de livraisons** permet de planifier et suivre la livraison d'une commande. Actuellement, tous les gestionnaires fonctionnent ainsi :
 
    * On passe la commande à planifier à la méthode `planifierLivraison` qui instancie un objet de type `Livraison` selon la distance de la commande. Elle planifie également la date prévue pour la livraison (pour simplifier, dans notre exercice, elle sera fixe) :
 
-    * Si la distance est proche, un **drone** de puissance cinq est utilisé pour la livraison qui se déroulera en deux jours.
+      * Si la distance est proche, un **drone** de puissance cinq est utilisé pour la livraison qui se déroulera en deux jours.
 
-    * Si la distance est éloignée, un **avion** (avec un pilote automatique) est utilisé pour la livraison qui se déroulera en cinq jours.
+      * Si la distance est éloignée, un **avion** (avec un pilote automatique) est utilisé pour la livraison qui se déroulera en cinq jours.
 
    * Le gestionnaire de livraison initialise ensuite la livraison (avec un code complexe qui est différent selon le mode de livraison retenu) puis l'enregistre dans la liste de ses livraisons suivies.
 
@@ -1905,26 +1905,26 @@ Testons maintenant votre maîtrise du pattern **méthode fabrique** avec un nouv
 
 5. Vos modifications ont probablement impacté le `main`. Corrigez-le puis faites en sorte de pouvoir tester le gestionnaire de livraison japonais avec le code suivant :
 
-  ```java
-  //A compléter
-  GestionnaireLivraison gestionnaireLivraisonJaponais =  ???;
- 
-  //Planification des livraisons
-  System.out.println();
-  gestionnaireLivraisonJaponais.planifierLivraison(commande3);
-  System.out.println();
-  gestionnaireLivraisonJaponais.planifierLivraison(commande4);
-  System.out.println();
+    ```java
+    //A compléter
+    GestionnaireLivraison gestionnaireLivraisonJaponais =  ???;
+  
+    //Planification des livraisons
+    System.out.println();
+    gestionnaireLivraisonJaponais.planifierLivraison(commande3);
+    System.out.println();
+    gestionnaireLivraisonJaponais.planifierLivraison(commande4);
+    System.out.println();
 
-  //On actualise avec une date future pour déclencher divers événements...
-  gestionnaireLivraisonJaponais.actualiserLivraisons(LocalDate.now().plusDays(2));
-  System.out.println();
-  gestionnaireLivraisonJaponais.actualiserLivraisons(LocalDate.now().plusDays(9));
-  System.out.println();
-  gestionnaireLivraisonJaponais.actualiserLivraisons(LocalDate.now().plusDays(3));
-  System.out.println();
-  gestionnaireLivraisonJaponais.actualiserLivraisons(LocalDate.now().plusDays(10));
-  ```
+    //On actualise avec une date future pour déclencher divers événements...
+    gestionnaireLivraisonJaponais.actualiserLivraisons(LocalDate.now().plusDays(2));
+    System.out.println();
+    gestionnaireLivraisonJaponais.actualiserLivraisons(LocalDate.now().plusDays(9));
+    System.out.println();
+    gestionnaireLivraisonJaponais.actualiserLivraisons(LocalDate.now().plusDays(3));
+    System.out.println();
+    gestionnaireLivraisonJaponais.actualiserLivraisons(LocalDate.now().plusDays(10));
+    ```
 
 </div>
 
@@ -1940,7 +1940,7 @@ Ce pattern va notamment permettre de créer et de sélectionner différents type
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `fabrique2` puis `v2`. Il s'agit de la deuxième partie du **jeu de stratégie type heroic fantasy**. De nouvelles classes sont à votre disposition :
+1. Ouvrez le paquetage `fr.umontpellier.iut.fabrique2` puis `v2`. Il s'agit de la deuxième partie du **jeu de stratégie type heroic fantasy**. De nouvelles classes sont à votre disposition :
 
    * Diverses **armes de siège** : chaque armée peut construire des armes de siège spécifiques avec lesquelles elle peut attaquer.
    * Divers **sorts** : chaque armée possède un **sort** de prédilection qu'elle peut déclencher.
@@ -2332,58 +2332,57 @@ On peut généraliser ce **pattern** ainsi :
 
 2. Insérez et complétez les méthodes suivantes dans `Armee` :
 
-  ```java
-  /**
-   * Action : l'armée "this" bat l'armée "armee" passée en paramètre et lui impose sa stratégie de création de ressources (unites, armes, sort).
-   * L'armée vaincue doit donc changer de comportement : les ressources créées dans le futur correspondront à ceux de l'armée vainqueuse "this".
-   *
-   */
-  public void vaincre(Armee armee) {
-  
-  }
+    ```java
+    /**
+      * Action : l'armée "this" bat l'armée "armee" passée en paramètre et lui impose sa stratégie de création de ressources (unites, armes, sort).
+      * L'armée vaincue doit donc changer de comportement : les ressources créées dans le futur correspondront à ceux de l'armée vainqueuse "this".
+      *
+      */
+    public void vaincre(Armee armee) {
 
-  /**
-   * Retourne le débuggeur correspondant au type de peuple qui contrôle actuellement l'armée
-   */
-  public Debugueur getDebuggeurCourant() {
+    }
 
-  }
-  ```
+    /**
+      * Retourne le débuggeur correspondant au type de peuple qui contrôle actuellement l'armée
+      */
+    public Debugueur getDebuggeurCourant() {
 
-  Vous pouvez éventuellement ajouter d'autres méthodes, au besoin.
+    }
+    ```
+
+    Vous pouvez éventuellement ajouter d'autres méthodes, au besoin.
 
 3. Vérifiez que le code suivant fonctionne (à ajouter à la fin du `Main`) :
 
-  ```java
+    ```java
+    //Affichage avec les ressources des orcs
+    Debugueur debugueur = armeeOrc.getDebuggeurCourant();
+    debugueur.invoquerUnite(5,12,3);
+    debugueur.invoquerArme(7,5,6);
+    debugueur.invoquerSort(20,13,9);
 
-  //Affichage avec les ressources des orcs
-  Debugueur debugueur = armeeOrc.getDebuggeurCourant();
-  debugueur.invoquerUnite(5,12,3);
-  debugueur.invoquerArme(7,5,6);
-  debugueur.invoquerSort(20,13,9);
+    //L'armée humaine bat l'armée orc
+    armeeHumaine.vaincre(armeeOrc);
 
-  //L'armée humaine bat l'armée orc
-  armeeHumaine.vaincre(armeeOrc);
+    armeeOrc.fabriquerUneArmeDeSiege();
+    armeeOrc.recruterUnite();
 
-  armeeOrc.fabriquerUneArmeDeSiege();
-  armeeOrc.recruterUnite();
+    System.out.println("Nouvelle attaque de l'ancienne armée orc battue par les humains");
+    //Il y a les anciennes catapultes et un canon
+    armeeOrc.attaquerAvecArmesDeSiege();
 
-  System.out.println("Nouvelle attaque de l'ancienne armée orc battue par les humains");
-  //Il y a les anciennes catapultes et un canon
-  armeeOrc.attaquerAvecArmesDeSiege();
+    //Il y a les anciens orcs et un humain
+    armeeOrc.attaquerAvecUnites();
 
-  //Il y a les anciens orcs et un humain
-  armeeOrc.attaquerAvecUnites();
+    //C'est un sort de boule de feu
+    armeeOrc.utiliserSortSpecial();
 
-  //C'est un sort de boule de feu
-  armeeOrc.utiliserSortSpecial();
-
-  //Affichage avec les ressources des humains (car ils ont vaincu l'armée)
-  debugueur = armeeOrc.getDebuggeurCourant();
-  debugueur.invoquerUnite(5,12,3);
-  debugueur.invoquerArme(7,5,6);
-  debugueur.invoquerSort(20,13,9);
-  ```
+    //Affichage avec les ressources des humains (car ils ont vaincu l'armée)
+    debugueur = armeeOrc.getDebuggeurCourant();
+    debugueur.invoquerUnite(5,12,3);
+    debugueur.invoquerArme(7,5,6);
+    debugueur.invoquerSort(20,13,9);
+    ```
 
 4. Bonus : est-ce que votre solution permet de faire en sorte que si on récupère le debugger courant d'une armée et que l'armée est vaincue, l'instance du débuggeur est bien actualisée (avec le nouveau peuple qui contrôle l'armée) ? Dans le **main**, on appelle deux fois `getDebuggeurCourant`, mais en pratique, on ne devrait pas à avoir à faire le second appel... Si le temps le permet, essayez de trouver une solution.
 
@@ -2395,11 +2394,11 @@ Revenons une dernière fois sur l'application de gestion de livraisons afin de l
 
 <div class="exercise">
 
-1. Ouvrez de nouveau le paquetage `fabrique3`. Vous aviez efficacement permis de différencier les gestionnaires de livraisons américains et japonais (utilisation des différentes méthodes de livraisons selon le territoire). Cependant, un nouveau besoin émerge :
+1. Ouvrez de nouveau le paquetage `fr.umontpellier.iut.fabrique3`. Vous aviez efficacement permis de différencier les gestionnaires de livraisons américains et japonais (utilisation des différentes méthodes de livraisons selon le territoire). Cependant, un nouveau besoin émerge :
 
-  * Actuellement, quand une méthode de livraison a besoin de notifier un client, cela se fait exclusivement par mail. De même, les rapports générés sont toujours au format HTML. Cela convient tout à fait à l'entreprise américaine, mais pas à l'entreprise japonaise.
+    * Actuellement, quand une méthode de livraison a besoin de notifier un client, cela se fait exclusivement par mail. De même, les rapports générés sont toujours au format HTML. Cela convient tout à fait à l'entreprise américaine, mais pas à l'entreprise japonaise.
 
-  * L'entreprise japonaise souhaite plutôt que quand une méthode de livraison doit notifier un client, un `SMS` soit envoyé, et que ses rapports soient générés avec le format `JSON`.
+    * L'entreprise japonaise souhaite plutôt que quand une méthode de livraison doit notifier un client, un `SMS` soit envoyé, et que ses rapports soient générés avec le format `JSON`.
 
     Il doit donc être possible que chaque méthode de livraison puisse soit travailler avec des mails soit avec des SMS et soit avec des rapports HTML soit avec des rapports JSON.
 
@@ -2407,9 +2406,9 @@ Revenons une dernière fois sur l'application de gestion de livraisons afin de l
 
 2. Remaniez le code pour faire en sorte que :
 
-  * Pour les livraisons sur le territoire américain, les méthodes de livraisons notifient le client par mail et génèrent des rapports au format HTML.
+    * Pour les livraisons sur le territoire américain, les méthodes de livraisons notifient le client par mail et génèrent des rapports au format HTML.
 
-  * Pour les livraisons sur le territoire japonais, les méthodes de livraisons notifient le client par SMS et génèrent des rapports au format JSON.
+    * Pour les livraisons sur le territoire japonais, les méthodes de livraisons notifient le client par SMS et génèrent des rapports au format JSON.
 
     Testez le `main` pour voir si cela fonctionne.
 
@@ -2485,7 +2484,7 @@ On va utiliser une **fabrique abstraite** si :
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `fabrique4`. Cette application permet de construire des **donjons** pour un jeu-vidéo. Un **donjon** est constitué de différentes salles (des pièces avec des coffres, des pièces avec des ennemis, des pièces avec des énigmes, des pièces avec des boss...). Une salle peut être complétée par le joueur ou non. Chaque donjon possède un algorithme de génération qui permet de l'agrandir en créant de nouvelles salles. Quand on étend le donjon, on crée et on ajoute des salles au donjon dans un ordre précis (avec un peu d'aléatoire). Une extension du donjon ajoute des "salles normales", des "salles spéciales" et une "salle finale", dans cet ordre :
+1. Ouvrez le paquetage `fr.umontpellier.iut.fabrique4`. Cette application permet de construire des **donjons** pour un jeu-vidéo. Un **donjon** est constitué de différentes salles (des pièces avec des coffres, des pièces avec des ennemis, des pièces avec des énigmes, des pièces avec des boss...). Une salle peut être complétée par le joueur ou non. Chaque donjon possède un algorithme de génération qui permet de l'agrandir en créant de nouvelles salles. Quand on étend le donjon, on crée et on ajoute des salles au donjon dans un ordre précis (avec un peu d'aléatoire). Une extension du donjon ajoute des "salles normales", des "salles spéciales" et une "salle finale", dans cet ordre :
 
     * Une salle normale
 
@@ -2531,7 +2530,7 @@ Parfois, il n'est pas nécessairement souhaitable d'avoir la possibilité d'util
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `fabrique5`. C'est le retour des **pokémons** ! Mais il y a également une nouvelle famille de monstres : **les digimons** qui ont un fonctionnement similaire aux pokémons mais ont en plus un système d'énergie. En tout cas, ils se créent de la même manière que les pokémons ou plus généralement, qu'un "monstre".
+1. Ouvrez le paquetage `fr.umontpellier.iut.fabrique5`. C'est le retour des **pokémons** ! Mais il y a également une nouvelle famille de monstres : **les digimons** qui ont un fonctionnement similaire aux pokémons mais ont en plus un système d'énergie. En tout cas, ils se créent de la même manière que les pokémons ou plus généralement, qu'un "monstre".
 
 2. Actuellement, dans le `Main`, on crée des pokémons et on utilise le simulateur de combat pour en faire combattre deux. À la place des pokémons, on voudrait parfois utiliser des digimons. Maintenant que vous connaissez le pattern **Fabrique Abstraite** refactorez le code afin de pouvoir facilement switcher entre des combats avec divers pokémons et des combats avec divers digimons. Si vous rencontrez quelques petits problèmes, regardez les méthodes de `Digimon`... ne serait-il pas judicieux de lui faire implémenter une certaine interface ? Et pour les différentes sous-classes de `Digimon` ? (`DigimonEau`, `DigimonFeu`...). Vous devrez aussi adapter le `Main` et `SimulateurCombat`.
 
@@ -2626,7 +2625,7 @@ De plus, on peut aussi discuter du fait que le code gérant la sélection de la 
 
 <div class="exercise">
 
-1. Créez un dossier `config` dans `src/main/resources/` puis, à l'intérieur de ce nouveau répertoire, un fichier `monstres_factory_config.txt`.
+1. Créez un dossier `config` dans `src/main/resources` puis, à l'intérieur de ce nouveau répertoire, un fichier `monstres_factory_config.txt`.
 
 2. Refactorez le code de l'application afin qu'il soit possible d'utiliser soit les pokémons, soit les digimons en changeant simplement le contenu du fichier de configuration.
 
@@ -3015,22 +3014,23 @@ Vérifions cotre compréhension du pattern avec un exercice d'application.
 1. Ouvrez le paquetage `fr.umontpellier.iut.adaptateur`. Il s'agit d'un petit programme qui permet d'inscrire un utilisateur (et de le connecter) avec un **mot de passe chiffré**.
 
 2. Actuellement, l'algorithme utilisé pour chiffrer (et vérifier) le mot de passe est `SHA-256`. On aimerait cependant que le service de gestion des utilisateurs puisse utiliser d'autres algorithmes (et d'autres techniques de chiffrement) si besoin. Pour toutes les méthodes de chiffrement de mot de passe, on a besoin de :
-  * Chiffrer un mot de passe en clair pour obtenir un mot de passe haché (méthode `chiffrerMotDePasse` dans `ServiceUtilisateur`).
-  * Vérifier qu'un mot de passe en clair correspond bien à un mot de passe haché (méthode `verifierMotDePasse` dans `ServiceUtilisateur`).
 
-  En analysant le code actuel de `ServiceUtilisateur` et en sachant que l'on souhaite avoir différentes techniques de chiffrement du mot de passe, quels principes `SOLID` sont violés par l'implémentation actuelle, selon vous ?
+    * Chiffrer un mot de passe en clair pour obtenir un mot de passe haché (méthode `chiffrerMotDePasse` dans `ServiceUtilisateur`).
+    * Vérifier qu'un mot de passe en clair correspond bien à un mot de passe haché (méthode `verifierMotDePasse` dans `ServiceUtilisateur`).
+
+    En analysant le code actuel de `ServiceUtilisateur` et en sachant que l'on souhaite avoir différentes techniques de chiffrement du mot de passe, quels principes `SOLID` sont violés par l'implémentation actuelle, selon vous ?
 
 3. Refactorez le code pour pouvoir le rendre plus modulable au niveau du choix de la méthode de chiffrement du mot de passe (même si on a qu'une seule méthode pour l'instant). Vous devrez probablement corriger le `main`.
 
 4. Une librairie nommée `BcryptPasswordHasher-1.0.0` est importée dans le projet ! Explorez ses classes en allant dans `src/main/resources/libs/BcryptPasswordHasher-1.0.0.jar` (normalement, l'IDE vous permet de voir les classes contenues dans le `.jar`). Cette librairie permet de chiffrer un mot de passe avec l'algorithme `Bcrypt` (qui permet de saler le mot de passe) et de renforcer la sécurité du tout en ajoutant un poivre (pepper), comme nous le faisons en TD de PHP. La classe `BCryptPasswordHasher` fonctionne ainsi :
 
-  * On l'initialise avec le poivre (pepper) souhaité, qui est une chaîne aléatoire.
+    * On l'initialise avec le poivre (pepper) souhaité, qui est une chaîne aléatoire.
 
-  * Cette chaîne aléatoire peut être générée avec la méthode **statique** `generatePepper` de la classe `PepperGenerator`. Il faut lui donner la longueur souhaitée pour la chaîne.
+    * Cette chaîne aléatoire peut être générée avec la méthode **statique** `generatePepper` de la classe `PepperGenerator`. Il faut lui donner la longueur souhaitée pour la chaîne.
 
-  * On utilise la méthode `hashPassword` (de `BCryptPasswordHasher`) pour chiffrer le mot de passe.
+    * On utilise la méthode `hashPassword` (de `BCryptPasswordHasher`) pour chiffrer le mot de passe.
 
-  * On utilise la méthode `verifyPassword` (de `BCryptPasswordHasher`) pour vérifier qu'un mot de passe en clair correspond bien à un mot de passe chiffré.
+    * On utilise la méthode `verifyPassword` (de `BCryptPasswordHasher`) pour vérifier qu'un mot de passe en clair correspond bien à un mot de passe chiffré.
 
 5. On aimerait que notre `ServiceUtilisateur` puisse aussi fonctionner avec l'algorithme `BCrypt` en exploitant la librairie fournie (en plus de la méthode avec `SHA-256` et de futures autres méthodes). Faites les ajouts nécessaires pour rendre cela possible. À l'issue de votre implémentation, si de nouveaux algorithmes sont ajoutés (ou d'anciens supprimés), `ServiceUtilisateur` ne doit pas être impacté.
 
@@ -3042,7 +3042,7 @@ Vous avez compris le concept d'adaptateur ? Parfait ! Maintenant, revenons à no
 
 <div class="exercise">
 
-1. Une librairie nommée `patternmon` est importée dans le projet ! Explorez ses classes en allant dans `src/main/resources/libs/patternmons.jar`.
+1. Une librairie nommée `patternmon` est importée dans le projet ! Explorez ses classes en allant dans `src/main/resources/libs/patternmons-1.0.0.jar`.
 
 2. Comme vous pouvez le constater, cette librairie définit de nouveaux monstres "patternmons" qu'on souhaite maintenant intégrer à notre système de simulation de combat. Comme vous l'avez deviné, nous allons donc devoir mettre en place un `Adaptateur` ! Cependant, comme il y a une hiérarchie de classes ici, la mise en place va être un poil plus complexe que sur notre exemple, donc nous allons le faire pas à pas :
 
@@ -3318,7 +3318,7 @@ class Main {
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `decorateur`. Il s'agit du code complété de l'exercice sur les **produits** du dernier TP où on a mis en place un décorateur pour pouvoir avoir à la fois des produits avec des réductions et des produits qui périment bientôt.
+1. Ouvrez le paquetage `fr.umontpellier.iut.decorateur`. Il s'agit du code complété de l'exercice sur les **produits** du dernier TP où on a mis en place un décorateur pour pouvoir avoir à la fois des produits avec des réductions et des produits qui périment bientôt.
 
 2. Comme dans l'exemple des salariés, refactorez votre code pour mettre en place un **builder** (adapté) qui doit permettre de construire vos produits décorés. Adaptez le code de `Main` en conséquence.
 
@@ -3326,7 +3326,7 @@ class Main {
 
 ### Amélioration du générateur de donjons
 
-Et si nous essayons de combiner plus de patterns ? Nous avons l'application idéale pour ça : le générateur de donjon (paquetage `fabrique4`). Il y a déjà la **Fabrique Abstraite**, peut-être le **Singleton** et **Prototype**.
+Et si nous essayons de combiner plus de patterns ? Nous avons l'application idéale pour ça : le générateur de donjon (paquetage `fr.umontpellier.iut.fabrique4`). Il y a déjà la **Fabrique Abstraite**, peut-être le **Singleton** et **Prototype**.
 
 <div class="exercise">
 
@@ -3359,7 +3359,7 @@ Et si nous essayons de combiner plus de patterns ? Nous avons l'application idé
 
 Vous maîtrisez maintenant l'ensemble des **design patterns créateurs** (du moins ceux du **GoF**) ainsi que le pattern **Adaptateur**. Ce TP vous a aussi logiquement permis de renforcer votre pratique de la conception logicielle et de l'application des principes `SOLID`.
 
-Toutefois, attention à ne pas attraper la **patternité** : c'est une maladie connue qu'attrapent les jeunes ingénieurs logiciels qui découvrent les **design patterns**. Cela se manifeste par une envie de mettre des patterns partout à tort et à travers même quand cela n'est pas nécessaire. Comme pour le **singleton**, il faut se poser la question de savoir si un pattern est nécessaire ou non. Normalement, l'utilisation d'un pattern vient assez naturellement quand on souhaite résoudre le problème qui lui est lié. Si son utilisation semble un peu trop forcée, c'est que cela est probablement injustifié, ou pire : on est en train de construire un [anti-pattern](https://en.wikipedia.org/wiki/Anti-pattern), une solution non-seulement injustifiée, mais aussi qui a plus de conséquences négatives que positives. Bref, comme toujours, il faut avoir une vision générale et sur le long terme !
+Toutefois, attention à ne pas attraper la **patternite** : c'est une maladie connue qu'attrapent les jeunes ingénieurs logiciels qui découvrent les **design patterns**. Cela se manifeste par une envie de mettre des patterns partout à tort et à travers même quand cela n'est pas nécessaire. Comme pour le **singleton**, il faut se poser la question de savoir si un pattern est nécessaire ou non. Normalement, l'utilisation d'un pattern vient assez naturellement quand on souhaite résoudre le problème qui lui est lié. Si son utilisation semble un peu trop forcée, c'est que cela est probablement injustifié, ou pire : on est en train de construire un [anti-pattern](https://en.wikipedia.org/wiki/Anti-pattern), une solution non-seulement injustifiée, mais aussi qui a plus de conséquences négatives que positives. Bref, comme toujours, il faut avoir une vision générale et sur le long terme !
 
 Bref, ce TP conclut le cours de **Qualité de développement** du semestre 3. 
 
