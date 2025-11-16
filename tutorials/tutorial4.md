@@ -23,7 +23,7 @@ Les design patterns **GoF** se divisent en trois catégories :
 
 Dans le TP précédent, vous avez déjà vu un pattern **structurel** (Décorateur) et un pattern **comportemental** (Stratégie). Dans le premier TP **git**, le programme utilisait un pattern **créateur** (fabrique) et un autre pattern **comportemental** (commande). Bref, les design patterns sont partout !
 
-Dans ce TP, nous allons voir **tous les patterns créateurs** et allons les mettre en application : **Singleton**, **Builder**, **Prototype** et enfin **Fabrique Abstraite**.
+Dans ce TP, nous allons voir **tous les patterns créateurs** et allons les mettre en application : **Singleton**, **Builder**, **Prototype**, **Méthode Fabrique** et enfin **Fabrique Abstraite**.
 
 Nous verrons aussi un autre pattern **structurel** appelé **adaptateur**. En fait, nous allons voir que beaucoup de ces patterns peuvent (et doivent) être combinés dans un projet plus large. Nous traitons souvent des problèmes "simple" avec quelques classes pour illustrer le fonctionnement d'un pattern, mais sur un projet plus large, il est tout à fait naturel de faire travailler en concert les différents patterns.
 
@@ -205,7 +205,7 @@ Aussi, imaginons une classe d'accès à une base de données : celle-ci initiali
 
 ### Classe statique VS Singleton
 
-En introduction de cette section, nous avions évoqué le fait d'utiliser une **classe statique** pour obtenir un résultat similaire au singleton. Une classe statique est une classe où il n'y a que des attributs et des méthodes **de classe** qui appartiennent donc à la classe et pas à une instance en particulier. Ainsi, tous les objets qui manipulent cette classe utilisent la même "entité" (en fait, il n'y a juste pas d'instance).
+En introduction de cette section, nous avions évoqué le fait d'utiliser une **classe statique** pour obtenir un résultat similaire au singleton. Une classe statique est une classe dans laquelle il n'y a que des attributs et des méthodes **de classe** qui appartiennent donc à la classe et pas à une instance en particulier. Ainsi, tous les objets qui manipulent cette classe utilisent la même "entité" (en fait, il n'y a juste pas d'instance).
 
 Par exemple, on pourrait remplacer ce **Singleton** :
 
@@ -1256,7 +1256,7 @@ public class CafeFactory {
 
 La première méthode (avec le bloc **switch**) pourrait ressembler à du mauvais code, mais il s'agit bien de l'implémentation **souhaitée**. De plus, la seconde méthode n'aurait pas bien fonctionné avec la classe `Machine` à moins de la coder autrement. On se serait soit retrouvé avec de la duplication de code, soit à gérer un autre `switch` dans la classe `Machine`. Dans cet exemple, il est donc préférable d'utiliser la première méthode.
 
-Avec notre implémentation, il est éventuellement possible d'utiliser une autre marque de café qui possède son propre type d'expresso et de cappuccino (avec des graines de provenances différentes, et une autre marque de sucre). Il suffira de changer la fabrique sans impacter le reste des classes. Mais que se passerait-il si on souhaitait faire cohabiter ces différentes **marques** de café, avec leur propre machine ? Il est possible de régler ce problème avec les patterns **méthode fabrique** et/ou **fabrique abstraite** (nous détaillerons plutôt cela dans la **synthèse de cours** dédiée).
+Avec notre implémentation, il est éventuellement possible d'utiliser une autre marque de café qui possède son propre type d'expresso et de cappuccino (avec des graines de provenances différentes, et une autre marque de sucre). Il suffira de changer la fabrique sans impacter le reste des classes. Mais que se passerait-il si on souhaitait faire cohabiter ces différentes **marques** de café, avec leur propre machine ? Il est possible de régler ce problème avec les patterns **méthode fabrique** et/ou **fabrique abstraite**.
 
 **Remarque :** observez, que vis-à-vis du principe **Ouvert/Fermé** cette solution n'est pas idéale, car :
 * Le client doit correctement passer en paramètre la bonne chaîne de caractère pour désigner le type de café "_expresso_" ou "_cappuccino_". Cela peut se résoudre en utilisant des types énumérés par exemple. Tout de même c'est au client d'aider la fabrique à créer le bon objet...
@@ -1593,33 +1593,66 @@ class Main {
 Il y a quelques aspects du code qui vous paraissent encore superflus ou redondants ? C'est normal ! Nous allons encore améliorer cet exemple plus tard en utilisant une **fabrique abstraite**.
 -->
 
-### Restaurants de burgers - Partie 1
+### Gestionnaire de livraisons - Partie 1
 
 Testons maintenant votre maîtrise du pattern **méthode fabrique** avec un nouvel exercice un peu plus complexe. Cet exercice (et sa suite) sont inspirés d'un exercice issu de l'excellent livre **Head First Design Patterns** qui propose une illustration des patterns **méthode fabrique** puis **fabrique abstraite** avec un exemple se basant sur des restaurants de **pizzas** (les exemples donnés dans ce livre sont d'ailleurs en Java).
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `fabrique3` puis `v1`. Il s'agit d'une application de restauration permettant de commander différents types de **burgers**. L'exercice est divisé en deux parties : `v1` que nous allons traiter maintenant puis `v2` que vous allez traiter plus tard. 
+1. Ouvrez le paquetage `fabrique3`. Il s'agit d'une application de gestion des livraisons de divers produits pour des entreprises. Il existe différents types de méthodes de livraison : par drone, par un robot, par avion et par bateau. Le mode de livraison sélectionné pour livrer une commande va dépendre de la distance (proche ou éloigné).
 
-2. Un **restaurant** peut créer différents types de **Burger** : des **Cheese Burgers** et des **Egg Burgers**. L'application fonctionne actuellement pour un **restaurant Nîmois** qui fabrique les burgers ainsi :
+2. Un **gestionnaire de livraisons** permet de planifier et suivre la livraison d'une commande. Actuellement, tous les gestionnaires fonctionnent ainsi :
 
-   * **Cheese Burger** : Boeuf Charolais, Sauce à burger de Nîmes et Cheddar.
-   * **Egg Burger** : Poulet Gardois, Sauce à burger de Nîmes et Œuf de poule.
+   * On passe la commande à planifier à la méthode `planifierLivraison` qui instancie un objet de type `Livraison` selon la distance de la commande. Elle planifie également la date prévue pour la livraison (pour simplifier, dans notre exercice, elle sera fixe) :
 
-    Le restaurant cherche à se diversifier en ouvrant différents restaurants dans d'autres villes. Tous les restaurants devront proposer les **mêmes burgers**, mais les recettes pourront changer localement, dans une ville. Un nouveau restaurant a ouvert à **Montpellier** et propose les recettes suivantes :
+    * Si la distance est proche, un **drone** de puissance cinq est utilisé pour la livraison qui se déroulera en deux jours.
 
-   * **Cheese Burger** : Boeuf Limousin, Sauce à burger de Montpellier et Maroilles.
-   * **Egg Burger** : Poulet de Bresse, Sauce à burger de Montpellier et Œuf d'autruche.
+    * Si la distance est éloignée, un **avion** (avec un pilote automatique) est utilisé pour la livraison qui se déroulera en cinq jours.
 
-    On est dans une conception où un burger contient tous les éléments dont il peut être composé. S'il n'est pas composé d'un élément (par exemple, pas de fromage), cet élément vaudra simplement `null`. Ce n'est pas nécessairement une très bonne conception, mais elle est acceptable dans le cadre de l'exercice (et vous ne devrez pas modifier cette logique).
+   * Le gestionnaire de livraison initialise ensuite la livraison (avec un code complexe qui est différent selon le mode de livraison retenu) puis l'enregistre dans la liste de ses livraisons suivies.
 
-    Actuellement, l'application fonctionne avec un seul type de classe `CheeseBurger` et `EggBurger` (qui sont les burgers du restaurant **Nîmois**). Une **fabrique simple** a été mise en place (mais vous allez peut-être devoir changer cela... ?)
+   * Chaque jour, la méthode `actualiser` est appelée pour mettre à jour l'avancement de chaque livraison en cours. Pour faciliter le tout, dans le cadre de l'exercice, on passera la date voulue à la méthode (ce qui nous permettra de simuler le passage du temps). La classe `Livraison` gère la logique de la livraison. Un jour avant la livraison, le client est notifié (avec un mail). À la fin de la livraison, un rapport (au format HTML) est généré et affiché.
 
-    **On souhaite garder les différentes méthodes des burgers**, notamment la méthode `preparerIngredients`. Les ingrédients **ne doivent pas être initialisés via le constructeur**, mais lors de l'appel à la méthode `preparerIngredients` par le restaurant (c'est ce qu'on pourrait qualifier de **lazy loading**).
+   * Il est à noter que chaque méthode de livraison peut ajouter sa propre logique dans les différentes étapes de la livraison (par exemple, un jour avant une livraison par drone, le client est averti que la livraison sera effectuée par drone).
 
-3. Faites en sorte qu'il soit possible de gérer les deux types de restaurants : les **restaurants Nîmois** et les **restaurants Montpelliérains**. Vous ajouterez, adapterez et supprimerez les classes et le code nécessaire et vous compléterez la méthode `commanderBurger` de la classe `Restaurant` ainsi que le `main` de la classe `Main`.
+   * Lorsque la livraison est effectuée, elle est supprimée par le gestionnaire.
+
+3. Explorez les classes et exécutez le `main` pour comprendre la logique (il y a des classes et du code inutilisés pour le moment, c'est normal).
+
+4. Un nouveau besoin apparaît : l'application est à la base prévue pour gérer des livraisons sur le territoire américain. Cependant, on souhaite l'étendre pour **gérer les livraisons sur le territoire japonais**. Or, même si la logique de la classe `GestionnaireLivraison` reste globalement la même, on ne souhaite pas utiliser les mêmes méthodes de livraisons que pour le territoire américain :
+
+    * Si la distance est proche, un **robot** de modèle **B** est utilisé pour la livraison qui se déroulera en trois jours.
+
+    * Si la distance est éloignée, un **bateau** (du constructeur **Honda**) est utilisé pour la livraison qui se déroulera en dix jours.
+
+    Faites en sorte qu'il soit possible de gérer les deux types de gestionnaires de livraisons : les **gestionnaires américains** (logique que l'on avait jusqu'à présent) et **gestionnaires japonais**. Vous ajouterez et adapterez les classes et le code nécessaire.
+
+5. Vos modifications ont probablement impacté le `main`. Corrigez-le puis faites en sorte de pouvoir tester le gestionnaire de livraison japonais avec le code suivant :
+
+  ```java
+  //A compléter
+  GestionnaireLivraison gestionnaireLivraisonJaponais =  ???;
+ 
+  //Planification des livraisons
+  System.out.println();
+  gestionnaireLivraisonJaponais.planifierLivraison(commande3);
+  System.out.println();
+  gestionnaireLivraisonJaponais.planifierLivraison(commande4);
+  System.out.println();
+
+  //On actualise avec une date future pour déclencher divers événements...
+  gestionnaireLivraisonJaponais.actualiserLivraisons(LocalDate.now().plusDays(2));
+  System.out.println();
+  gestionnaireLivraisonJaponais.actualiserLivraisons(LocalDate.now().plusDays(9));
+  System.out.println();
+  gestionnaireLivraisonJaponais.actualiserLivraisons(LocalDate.now().plusDays(3));
+  System.out.println();
+  gestionnaireLivraisonJaponais.actualiserLivraisons(LocalDate.now().plusDays(10));
+  ```
 
 </div>
+
+Nous reviendrons très prochainement sur cet exercice.
 
 ## Le pattern Fabrique Abstraite
 
@@ -1656,11 +1689,10 @@ Vous avez donc sûrement trouvé une solution exploitant plusieurs **méthodes f
 
 Cependant, cette solution, même si globalement acceptable, n'est pas forcément la plus qualitative :
 * Il y a une duplication de code entre vos classes de debugage et vos classes d'armée.
-* Les différentes classes `Armee` et `Debugueur` commencent à gérer trop de responsabilité : en plus de leur logique propre, elle gèrent maintenant la création d'une famille d'objets (qui va potentiellement encore s'agrandir à l'avenir). Ce n'est pas trop gros ou gênant pour l'instant, mais on pourrait dire qu'on viole déjà le principe de responsabilité unique.
 * Dans cette solution on utilise fortement **l'héritage**, alors que nous avons vu qu'il est généralement préférable de favoriser **la composition** (faible) et **l'injection de dépendances**.
-* Si on y regarde bien : les classes concrètes (armée et debugage humain et orc) ne font rien de particulier à part créer des instances, ce n'est pas forcément pertinent (elles n'ont pas vraiment de logique métier propre).
+* Cette implémentation pourrait aussi poser un problème si on souhaite pouvoir **changer dynamiquement le comportement de création** souhaité.
 
-Au-delà de l'aspect qualitatif, cette implémentation pourrait aussi poser un problème si on veut pouvoir **changer dynamiquement le comportement de création** souhaité. Par exemple, imaginons que nous souhaitons faire en sorte qu'une armée puisse être **vaincue** par une autre armée. L'armée vaincue n'est pas détruite et continue d'exister (et on conserve les soldats encore vivants et les armes). Cependant, l'armée vainqueuse impose son mode de fonctionnement à l'armée vaincue : elle produira maintenant les mêmes unités, les mêmes armes et les mêmes sorts que l'armée vainqueuse.
+Imaginons que nous souhaitons faire en sorte qu'une armée puisse être **vaincue** par une autre armée. L'armée vaincue n'est pas détruite et continue d'exister (et on conserve les soldats encore vivants et les armes). Cependant, l'armée vainqueuse impose son mode de fonctionnement à l'armée vaincue : elle produira maintenant les mêmes unités, les mêmes armes et les mêmes sorts que l'armée vainqueuse.
 
 Par exemple, si l'armée orc vainc l'armée humaine, les unités humaines et les canons restent (mais ils sont maintenant forcés de travailler pour les orcs) et les prochaines unités créées seront des orcs, les prochaines armes des catapultes et les prochains sorts des sorts d'aveuglement. En fait, l'armée **humaine** et l'armée **orc** ont leur propre **configuration** ! Et on voudrait pouvoir changer la **configuration** d'une armée dynamiquement.
 
@@ -2079,13 +2111,46 @@ On peut généraliser ce **pattern** ainsi :
 
 </div>
 
+### Gestionnaire de livraisons - Partie 2
+
+Revenons une dernière fois sur l'application de gestion de livraisons afin de l'améliorer.
+
+<div class="exercise">
+
+1. Ouvrez de nouveau le paquetage `fabrique3`. Vous aviez efficacement permis de différencier les gestionnaires de livraisons américains et japonais (utilisation des différentes méthodes de livraisons selon le territoire). Cependant, un nouveau besoin émerge :
+
+  * Actuellement, quand une méthode de livraison a besoin de notifier un client, cela se fait exclusivement par mail. De même, les rapports générés sont toujours au format HTML. Cela convient tout à fait à l'entreprise américaine, mais pas à l'entreprise japonaise.
+
+  * L'entreprise japonaise souhaite plutôt que quand une méthode de livraison doit notifier un client, un `SMS` soit envoyé, et que ses rapports soient générés avec le format `JSON`.
+
+  Il doit donc être possible que chaque méthode de livraison puisse soit travailler avec des mails soit avec des SMS et soit avec des rapports HTML soit avec des rapports JSON.
+
+  **Attention** : ce n'est pas parce qu'actuellement les robots et les bateaux sont seulement utilisés par le Japon que ces méthodes ne doivent fonctionner qu'avec des SMS et des rapports JSON. Ces méthodes de livraisons pourraient être utilisées sur d'autres territoires qui eux enverraient des mails et générer des rapports au format HTML. De même, les méthodes de livraison par drone et par avion ne sont pas nécessairement exclusifs au territoire américain et pourraient être utilisés sur d'autres territoires et fonctionner avec d'autres types de notifications et de rapports (par exemple, le gestionnaire des livraisons japonaises pourrait évoluer et utiliser des avions dans le futur...).
+
+2. Remaniez le code pour faire en sorte que :
+
+  * Pour les livraisons sur le territoire américain, les méthodes de livraisons notifient le client par mail et génèrent des rapports au format HTML.
+
+  * Pour les livraisons sur le territoire japonais, les méthodes de livraisons notifient le client par SMS et génèrent des rapports au format JSON.
+
+  Testez le `main` pour voir si cela fonctionne.
+
+3. Changer la méthode de livraison longue distance du `Japon` pour utiliser un avion. Quand votre `main` s'exécute : pour le territoire américain, des mails sont envoyés et des rapports au format HTML sont générés, mais pour le Japon, des SMS sont envoyés et des rapports JSON sont générés.
+
+4. On souhaite pouvoir gérer un nouveau territoire : le territoire français. Sur ce territoire, les robots sont utilisés pour effectuer les livraisons proches (en cinq jours), et des avions sont utilisés pour effectuer les livraisons longue distance (en quinze jours). Pour les livraisons effectuées sur le territoire français, on notifie le client par Mail et on génère des rapports au format JSON.
+
+5. Complétez votre `main` avec un jeu de données pour débugger le fonctionnement des livraisons sur le territoire français (en vous inspirant de ce qui existe déjà pour les autres territoires).
+
+</div>
+
+
 ### Différences entre les patterns méthode fabrique et fabrique abstraite
 
 Les patterns méthode fabrique et fabrique abstraite sont effectivement proches, dans le sens où ils visent tous les deux à abstraire et organiser la création d’objets. Mais même s’ils peuvent parfois résoudre des problèmes similaires, leurs intentions, leurs formes et surtout leurs contextes d’utilisation sont nettement différents.
 
 Concernant la **méthode fabrique** :
 * C'est un pattern dont l’objectif principal est de donner un point d’extension permettant aux sous-classes de décider quel objet doit être instancié.
-* On remplace donc un appel direct à new dans une classe de base par une méthode destinée à être redéfinie par les sous-classes.
+* On remplace donc un appel direct à `new` dans une classe de base par une méthode destinée à être redéfinie par les sous-classes.
 * L'**intention** est la suivante :
   * Permettre aux sous-classes de contrôler la création de certains objets utilisés par la classe de base.
   * Faciliter l’extension (principe Ouvert/Fermé) sans modifier le code existant.
@@ -2101,11 +2166,8 @@ Concernant la **méthode fabrique** :
   * Idéal quand la création dépend de l’état interne de la sous-classe.
   * La classe cliente appelle des méthodes à surcharger pour permettre à l’application de personnaliser les objets créés.
 * **Limites** :
-  * Le pattern oblige à passer par l’héritage pour modifier la création (on ne peut pas changer la fabrique dynamiquement).
-  * Si une classe possède trop de méthodes fabrique, on mélange logique métier et logique de création, ce qui viole le principe de responsabilité unique.
   * Pas réutilisable ailleurs sans héritage : la logique de création reste enfermée dans des sous-classes.
-  * Pas adapté si on veut changer les types d’objets à l’exécution sans changer de sous-classe.
-  * Pas idéal pour la création de familles d’objets cohérents (pas prévu pour ça).
+  * Pas adapté si on veut dynamiquement changer les types d’objets instanciés à l’exécution.
 
 Concernant la **fabrique abstraite** :
 * C'est un pattern qui encapsule un ensemble de méthodes de création dans une seule classe dédiée, et non dans le client.
@@ -2126,23 +2188,20 @@ Concernant la **fabrique abstraite** :
   * Très flexible : il suffit de changer la fabrique injectée pour changer le comportement.
   * Favorise la testabilité (on peut injecter des fabriques factices ou de test).
 * **Limites** :
-  * Plus complexe à mettre en place qu’une simple méthode fabrique.
-  * Peut devenir lourde si le client n’a besoin que d’un seul type d’objet.
   * Inadaptée si la création dépend fortement de l’état interne du client (ce que la méthode fabrique gère bien).
-  * Introduit une couche d’abstraction supplémentaire : inapproprié si la hiérarchie d’objets est simple.
+  * Pas nécessairement adapté si la logique de création des objets n'est pas réutilisée à plusieurs endroits et si le client qui a besoin de créer les objets n'a pas besoin de pouvoir dynamiquement changer de comportement (d'instanciation des objets) à l'exécution.
 
 En résumé :
 
 On va utiliser la **méthode fabrique** si :
 * La création dépend des données ou de l’état interne de la sous-classe.
 * On veut ajouter un point d’extension à une hiérarchie existante.
-* On a peu de types d'objets différents à instancier.
 * On n’a pas besoin de changer dynamiquement les types instanciés.
 
 On va utiliser une **fabrique abstraite** si :
 * On doit créer une famille d’objets liés/relatifs.
 * On doit pouvoir changer toute la famille d’objets à l’exécution en remplaçant la fabrique.
-* On veut séparer proprement logique métier et création d’objets.
+* On veut séparer la logique métier et la logique de création des objets.
 * La même logique de création doit être utilisée dans plusieurs parties du système.
 
 ### Construction de donjons
@@ -2186,48 +2245,6 @@ On va utiliser une **fabrique abstraite** si :
 4. La méthode `getInfosSalle` doit permettre de récupérer les informations d'une salle du donjon "à l'extérieur". Cependant, son implémentation est problématique... Par exemple, que pourriez-vous faire comme action indésirable en récupérant une salle d'un `Donjon` dans le `Main` (indice : seul le donjon devrait avoir le droit de modifier l'état de ses salles) ? Quel pattern que nous avons vu pendant ce TP pourriez-vous appliquer pour régler ce problème ? Refactorez votre code dans ce sens.
 
 5. Générez le **diagramme de classes de conception** de votre application (avec `IntelliJ`).
-
-</div>
-
-### Restaurants de burgers - Partie 2
-
-Revenons une dernière fois sur l'application de gestion de restaurants afin de l'améliorer.
-
-<div class="exercise">
-
-1. Ouvrez le paquetage `fabrique3` puis `v2`. Il s'agit de la deuxième partie de l'exercice. Comme vous pouvez le constater, les différents ingrédients qui étaient jusqu'ici des **chaînes de caractères** sont remplacés par des **objets**.
-
-    On a toujours les mêmes recettes que précédemment dans les restaurants **Nîmois** et les restaurants **Montpelliérains** :
-
-   * Nîmes : 
-     * **Cheese Burger** : Boeuf Charolais, Sauce à burger de Nîmes et Cheddar.
-     * **Egg Burger** : Poulet Gardois, Sauce à burger de Nîmes et Œuf de poule.
-
-   * Montpellier :
-     * **Cheese Burger** : Boeuf Limousin, Sauce à burger de Montpellier et Maroilles.
-     * **Egg Burger** : Poulet de Bresse, Sauce à burger de Montpellier et Oeuf d'autruche.
-
-2. Commencez par importer et adapter votre ancien code afin de faire en sorte qu'il soit toujours possible de gérer les deux types de restaurants : les **restaurants Nîmois** et les **restaurants Montpelliérains** (la seule chose qui change sont les ingrédients qui sont maintenant des objets). Importez et/ou complétez aussi le code du `Main` et assurez-vous que tout fonctionne.
-
-3. On remarque que les restaurants Nîmois et les restaurants Montpelliérains utilisent **un ensemble d'ingrédients spécifique en local** pour la composition de leurs burgers :
-
-   * Nîmes :
-     * Bœuf : Bœuf Charolais
-     * Poulet : Poulet Gardois
-     * Fromage : Cheddar
-     * Sauce : Sauce à burger de Nîmes
-
-   * Montpellier :
-     * Bœuf : Bœuf Limousin
-     * Poulet : Poulet de Bresse
-     * Fromage : Maroilles
-     * Sauce : Sauce à burger de Montpellier
-
-    Globalement, à Nîmes, tous les burgers qui auront besoin de fromage utiliseront du Cheddar et à Montpellier du Maroilles. Pareil pour le bœuf, le poulet et la sauce.
-
-    En sachant cela, il y a donc une duplication de code au niveau de la création des burgers. Par exemple, on sait très bien que chaque fois qu'un burger nîmois aura besoin de bœuf, on utilisera du bœuf Charolais. Pareil pour la sauce, etc. Et on veut pouvoir facilement changer le type de bœuf utilisé (ou autre) sans avoir à changer le code de tous les burgers !
-
-4. Proposez une solution adéquate pour faire en sorte d'utiliser un ensemble d'ingrédient spécifique (qui soit facile de changer) pour la création des burgers selon le type de restaurant (Nîmes / Montpellier). Vous adapterez au besoin le `main` de la classe `Main`.
 
 </div>
 
@@ -2346,7 +2363,7 @@ Ici, cet exemple d'implémentation avec un fichier de configuration n'est bien s
 
 La gestion des instances concrète se fait généralement au travers d'un outil dédié appelé **conteneur de dépendances** (ou **conteneur IoC**) qui est utilisé dans de nombreux **frameworks**. Il permet notamment de limiter la multiplication des singletons inutiles.
 
-### Intégrer une librairie externe
+### Adaptateur
 
 Les pokémons et les digimons sont des classes qui ont été créées par le développeur de ce projet et où il est donc possible de réarranger le code pour que tout fonctionne. Mais que se passerait-il si nous voulions intégrer à notre système du code sur lequel nous n'avons pas la main (dont nous ne pouvons pas éditer le code source) ? Par exemple, des classes compilées qui proviennent d'une librairie.
 
@@ -2714,11 +2731,41 @@ public class Main {
 ![Adaptateur 2]({{site.baseurl}}/assets/TP4/Adaptateur2.svg){: width="90%" }
 </div>
 
-Maintenant, revenons à nos petits monstres...
+Vérifions cotre compréhension du pattern avec un exercice d'application.
 
 <div class="exercise">
 
-1. Une librairie nommée `patternmon` est importée dans le projet ! Explorez ses classes en allant dans `src/main/resources/libs/patternmons.jar` (normalement, l'IDE vous permet de voir les classes contenues dans le `.jar`). **Attention**, si vous travaillez sur une machine de l'IUT, il est probable que vous deviez utiliser le JDK 19 que vous pouvez installer via IntelliJ (dans **File**, **Project Structure**...). Dans ce cas il faudra aussi changer le fichier `pom.xml` du projet en changeant les deux "17" et "19".
+1. Ouvrez le paquetage `fr.umontpellier.iut.adaptateur`. Il s'agit d'un petit programme qui permet d'inscrire un utilisateur (et de le connecter) avec un **mot de passe chiffré**.
+
+2. Actuellement, l'algorithme utilisé pour chiffrer (et vérifier) le mot de passe est `SHA-256`. On aimerait cependant que le service de gestion des utilisateurs puisse utiliser d'autres algorithmes (et d'autres techniques de chiffrement) si besoin. Pour toutes les méthodes de chiffrement de mot de passe, on a besoin de :
+  * Chiffrer un mot de passe en clair pour obtenir un mot de passe haché (méthode `chiffrerMotDePasse` dans `ServiceUtilisateur`).
+  * Vérifier qu'un mot de passe en clair correspond bien à un mot de passe haché (méthode `verifierMotDePasse` dans `ServiceUtilisateur`).
+
+  En analysant le code actuel de `ServiceUtilisateur` et en sachant que l'on souhaite avoir différentes techniques de chiffrement du mot de passe, quels principes `SOLID` sont violés par l'implémentation actuelle, selon vous ?
+
+3. Refactorez le code pour pouvoir le rendre plus modulable au niveau du choix de la méthode de chiffrement du mot de passe (même si on a qu'une seule méthode pour l'instant). Vous devrez probablement corriger le `main`.
+
+4. Une librairie nommée `BcryptPasswordHasher-1.0.0` est importée dans le projet ! Explorez ses classes en allant dans `src/main/resources/libs/BcryptPasswordHasher-1.0.0.jar` (normalement, l'IDE vous permet de voir les classes contenues dans le `.jar`). Cette librairie permet de chiffrer un mot de passe avec l'algorithme `Bcrypt` (qui permet de saler le mot de passe) et de renforcer la sécurité du tout en ajoutant un poivre (pepper), comme nous le faisons en TD de PHP. La classe `BCryptPasswordHasher` fonctionne ainsi :
+
+  * On l'initialise avec le poivre (pepper) souhaité, qui est une chaîne aléatoire.
+
+  * Cette chaîne aléatoire peut être générée avec la méthode **statique** `generatePepper` de la classe `PepperGenerator`. Il faut lui donner la longueur souhaitée pour la chaîne.
+
+  * On utilise la méthode `hashPassword` (de `BCryptPasswordHasher`) pour chiffrer le mot de passe.
+
+  * On utilise la méthode `verifyPassword` (de `BCryptPasswordHasher`) pour vérifier qu'un mot de passe en clair correspond bien à un mot de passe chiffré.
+
+5. On aimerait que notre `ServiceUtilisateur` puisse aussi fonctionner avec l'algorithme `BCrypt` en exploitant la librairie fournie (en plus de la méthode avec `SHA-256` et de futures autres méthodes). Faites les ajouts nécessaires pour rendre cela possible. À l'issue de votre implémentation, si de nouveaux algorithmes sont ajoutés (ou d'anciens supprimés), `ServiceUtilisateur` ne doit pas être impacté.
+
+6. Testez (dans votre `main`) en faisant en sorte que le service de gestion des utilisateurs utilise votre nouvel algorithme de chiffrement plutôt que `SHA-256`. Si vous avez implémenté une solution correcte, les seules modifications à faire sont dans le `main` et pas ailleurs !
+
+</div>
+
+Vous avez compris le concept d'adaptateur ? Parfait ! Maintenant, revenons à nos petits monstres...
+
+<div class="exercise">
+
+1. Une librairie nommée `patternmon` est importée dans le projet ! Explorez ses classes en allant dans `src/main/resources/libs/patternmons.jar`.
 
 2. Comme vous pouvez le constater, cette librairie définit de nouveaux monstres "patternmons" qu'on souhaite maintenant intégrer à notre système de simulation de combat. Comme vous l'avez deviné, nous allons donc devoir mettre en place un `Adaptateur` ! Cependant, comme il y a une hiérarchie de classes ici, la mise en place va être un poil plus complexe que sur notre exemple, donc nous allons le faire pas à pas :
 
