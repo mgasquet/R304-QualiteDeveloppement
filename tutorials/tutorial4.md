@@ -203,7 +203,7 @@ Aussi, imaginons une classe d'accès à une base de données : celle-ci initiali
 
 </div>
 
-### Classe statique VS Singleton
+### Classe statique vs Singleton
 
 En introduction de cette section, nous avions évoqué le fait d'utiliser une **classe statique** pour obtenir un résultat similaire au singleton. Une classe statique est une classe dans laquelle il n'y a que des attributs et des méthodes **de classe** qui appartiennent donc à la classe et pas à une instance en particulier. Ainsi, tous les objets qui manipulent cette classe utilisent la même "entité" (en fait, il n'y a juste pas d'instance).
 
@@ -233,7 +233,7 @@ public class Service {
     return data;
   }
 
-  public String setData(String data) {
+  public void setData(String data) {
     this.data = data;
   }
 
@@ -244,7 +244,7 @@ class Main {
   public static void main(String[]args) {
     Service service = Service.getInstance();
     service.setData("test");
-    System.out.println(service.getData())
+    System.out.println(service.getData());
   }
 
 }
@@ -269,7 +269,7 @@ public class Service {
     return data;
   }
 
-  public static String setData(String data) {
+  public static void setData(String data) {
     Service.data = data;
   }
 }
@@ -375,7 +375,7 @@ class Main {
 
 <div class="exercise">
 
-1. À la place d'une classe statique, utilisez le pattern `Singleton` pour refactorer la classe `ServiceMailer`.
+1. À la place d'une classe statique, utilisez le pattern *Singleton* pour refactorer la classe `ServiceMailer`.
 
 2. Comme expliqué dans l'exercice précédent, introduisez une interface `ServiceMailerInterface` pour abstraire ce service.
 
@@ -395,7 +395,7 @@ class Main {
 
 Vous maîtrisez maintenant le pattern **Singleton**, mais vous devez être très précautionneux quant à son utilisation. En conclusion du dernier TP vous étiez invité à aller jeter un coup d'œil aux [principes STUPID](https://openclassrooms.com/en/courses/5684096-use-mvc-solid-principles-and-design-patterns-in-java/6417836-avoid-stupid-practices-in-programming) qui sont un ensemble de mauvaises pratiques en conception logicielle. Regardez à quoi correspond le `S`.
 
-En effet, l'abus de **singletons** est dangereux pour la santé (du logiciel...) ! Il présente une solution qui semble plutôt efficace à un problème assez récurent : la gestion des dépendances vers les services de l'application. À tel point qu'on retrouve parfois dans certains projets beaucoup trop de singletons. 
+En effet, l'abus de **Singleton** est dangereux pour la santé (du logiciel...) ! Il présente une solution qui semble plutôt efficace à un problème assez récurent : la gestion des dépendances vers les services de l'application. À tel point qu'on retrouve parfois dans certains projets beaucoup trop de singletons. 
 
 Mais pourquoi est-il déconseillé d'utiliser "trop" de singletons :
 
@@ -664,7 +664,7 @@ class Exemple {
 
 **NB :** Certains IDE (dont IntelliJ) permettent de générer automatiquement le code d'un Builder à partir d'une classe. Sur IntelliJ, il faut placer le curseur sur le constructeur de la classe pour laquelle vous souhaitez générer le builder, puis taper `ALT+Entree` puis sélectionner _Replace constructor with builder_. Le Builder sera généré comme une classe à part. Pour la rendre interne à la classe cible, il suffira juste de faire un Drag & Drop du Builder dans sa classe cible.
 
-**Remarque :** lorsqu'il s'agit d'une hiérarchie de classes (par héritage) pour laquelle il faut créer des builders, la solution n'est pas forcément évidente. En effet, il faut faire une hiérarchie de builders pour éviter la duplication de code, tout en respectant le principe LSP, à savoir : les méthodes **with...** doivent retourner le bon type de builder. Pour plus de détails voir le [dernier TP](https://gitlabinfo.iutmontp.univ-montp2.fr/dev-objets/tp11) du cours de Développement Orienté Objets de première année (pas fait en 2024).
+**Remarque :** lorsqu'il s'agit d'une hiérarchie de classes (par héritage) pour laquelle il faut créer des builders, la solution n'est pas forcément évidente. En effet, il faut faire une hiérarchie de builders pour éviter la duplication de code, tout en respectant le principe LSP, à savoir : les méthodes **with...** doivent retourner le bon type de builder. Pour plus de détails voir le [dernier TP](https://gitlabinfo.iutmontp.univ-montp2.fr/dev-objets/tp11) du cours de Développement Orienté Objets de première année.
 
 </div>
 
@@ -674,7 +674,7 @@ Nous allons directement présenter le principe et l'intérêt du pattern **proto
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `fr.umontpellier.iut.protoype1` et consultez les classes mises à disposition. Il s'agit d'une mini-application bancaire permettant de gérer des comptes. Pour le moment, la classe `Banque` permet de gérer des **comptes courants**. C'est elle qui gère intégralement ces comptes bancaires : leur création et le changement de solde (créditer/débiter). Elle est donc **composée des comptes bancaires** (ce qui se traduirait par une **agrégation forte** sur un diagramme de classes de conception).
+1. Ouvrez le paquetage `fr.umontpellier.iut.prototype1` et consultez les classes mises à disposition. Il s'agit d'une mini-application bancaire permettant de gérer des comptes. Pour le moment, la classe `Banque` permet de gérer des **comptes courants**. C'est elle qui gère intégralement ces comptes bancaires : leur création et le changement de solde (créditer/débiter). Elle est donc **composée des comptes bancaires** (ce qui se traduirait par une **agrégation forte** sur un diagramme de classes de conception).
 
 2. Le développeur a pensé qu'il serait utile qu'un objet extérieur puisse récupérer un `CompteCourant` depuis la banque pour consulter le solde (ou autre). Il a donc créé une méthode `getInformationsCompteNumero`. Expérimentez dans le `Main` en créditant le compte d'un objet récupéré par cette méthode puis récupérez de nouveau ce compte depuis la banque et affichez son solde. Le solde du compte t-il était modifié ? Lancez le test unitaire situé dans la classe dans `src/test/java/fr/umontpellier/iut/prototype1`. Il ne passe pas... Comprenez-vous pourquoi ?
 
@@ -858,10 +858,10 @@ Solutions :
 // Avec la visibilité protected, seules les classes du même paquetage et les classes qui étendent ClasseMere ont accès à l'attribut/méthode. Il faut donc bien gérer les paquetages pour s'assurer qu'une classe ne puisse pas y accéder alors qu'elle n'est pas censée pouvoir.
 abstract class ClasseMere {
 
-  //Permet à la classe fille de lire (mais d'aussi écrire) l'attribut valeur
+  // Permet à la classe fille de lire (mais d'aussi écrire) l'attribut valeur
   protected int valeur;
 
-  //Ou bien : permet à la classe fille de lire l'attribut valeur
+  // Ou bien : permet à la classe fille de lire l'attribut valeur
   protected int getValeur() {
     return valeur;
   }
@@ -1485,7 +1485,7 @@ public abstract class SpotPeche {
         if(poisson.tenterPecherAvec(canne)) {
             canne.augmenterNiveau();
             canne.augmenterScore(poisson.getNbPoints());
-            System.out.println("Pêche réeussie !");
+            System.out.println("Pêche réussie !");
         }
         else {
             canne.degrader();
@@ -2542,7 +2542,7 @@ Nous sommes dans un cas particulier où tout le programme va utiliser une seule 
 
 Mais comment faire cela sans modifier l'instance concrète utilisée un peu partout ? (car elle est surement injectée à différentes classes). La réponse est simple : il faut regrouper la logique qui instancie la classe concrètement utilisée à un seul endroit. On peut ensuite mettre un système de paramétrage qui permet de changer la fabrique utilisée facilement. Les classes qui ont besoin de cette fabrique iront donc appeler une méthode de cette classe afin de récupérer la fabrique concrète à utiliser.
 
-La question est de savoir : où placer ce bout de code ? Il n'y a pas vraiment de réponse officielle à cette question. Cela pourrait être dans une classe indépendante (qui gère la **configuration** du programme) avec une méthode statique. Parfois, on retrouve aussi ce bout de code directement dans la **Fabrique Abstraite** par exemple en stockant l'instance de la fabrique concrète utilisée, couplé à une méthode statique permettant de renvoyer l'instance. C'est une sorte de dérivé du pattern `Singleton` (sans l'être réellement).
+La question est de savoir : où placer ce bout de code ? Il n'y a pas vraiment de réponse officielle à cette question. Cela pourrait être dans une classe indépendante (qui gère la **configuration** du programme) avec une méthode statique. Parfois, on retrouve aussi ce bout de code directement dans la **Fabrique Abstraite** par exemple en stockant l'instance de la fabrique concrète utilisée, couplé à une méthode statique permettant de renvoyer l'instance. C'est une sorte de dérivé du pattern *Singleton* (sans l'être réellement).
 
 Pour gérer l'instance concrète utilisée, on pourrait par exemple utiliser un **fichier de configuration** : lors de son initialisation, le code chargé de déterminer quelle est la fabrique à utiliser va lire dans ce fichier pour déterminer quelle fabrique instancier et stocker.
 
