@@ -278,7 +278,7 @@ class Main {
 
   public static void main(String[]args) {
     Service.setData("test");
-    System.out.println(Service.getData())
+    System.out.println(Service.getData());
   }
 
 }
@@ -375,15 +375,15 @@ class Main {
 
 <div class="exercise">
 
-1. À la place d'une classe statique, utilisez le pattern *Singleton* pour refactorer la classe `ServiceMailer`.
+1. À la place d'une classe statique, utilisez le pattern *Singleton* pour refactorer la classe `ServiceMail`.
 
-2. Comme expliqué dans l'exercice précédent, introduisez une interface `ServiceMailerInterface` pour abstraire ce service.
+2. Comme expliqué dans l'exercice précédent, introduisez une interface `ServiceMailInterface` pour abstraire ce service.
 
-3. Créez un nouveau service `FakeServiceMail` implémentant aussi `ServiceMailerInterface` mais qui ne fait rien dans sa méthode `envoyerMail`. Ce service sera aussi un singleton.
+3. Créez un nouveau service `FakeServiceMail` implémentant aussi `ServiceMailInterface` mais qui ne fait rien dans sa méthode `envoyerMail`. Ce service sera aussi un singleton.
 
 4. Refactorez `ServiceUtilisateur` et `ServiceCommande` pour injecter la dépendance nécessaire au lieu de directement récupérer l'instance du singleton dans la classe via `getInstance`.
 
-5. Adaptez le `Main` afin que le service concret utilisé soit `ServiceMailer` dans les deux autres services.
+5. Adaptez le `Main` afin que le service concret utilisé soit `ServiceMail` dans les deux autres services.
 
 6. Adaptez aussi les tests pour utiliser `FakeServiceMail`. Vérifiez que l'exécution des tests ne déclenche plus l'envoi (fictif) de mails.
 
@@ -557,6 +557,38 @@ class Exemple {
     private boolean optionD;
 
     public Builder(String data, int compteur) {
+      this.data = data;class Exemple {
+
+  //Obligatoire
+  private String data;
+  private int compteur;
+
+  //Options
+  private String optionA;
+  private boolean optionB;
+  private double optionC;
+  private boolean optionD;
+
+  //On rend le constructeur privé pour obliger à passer par le Builder
+  private Exemple() {}
+
+  public void setData(String data) {
+    this.data = data;
+  }
+
+  public void setOptionB(boolean optionB) {
+    this.optionB = optionB;
+  }
+
+  public static class Builder {
+    private String data;
+    private int compteur;
+    private String optionA;
+    private boolean optionB;
+    private double optionC;
+    private boolean optionD;
+
+    public Builder(String data, int compteur) {
       this.data = data;
       this.compteur = compteur;
     }
@@ -600,10 +632,60 @@ class Exemple {
 public class Main {
 
   public static void main(String[]args) {
-    Builder builderEx1 = new Exemple.Builder("test", 5);
+    Exemple.Builder builderEx1 = new Exemple.Builder("test", 5);
     Exemple ex1 = builderEx1.withOptionA("truc").withOptionD().build();
 
-    Builder builderEx2 = new Exemple.Builder("test2", 50);
+    Exemple.Builder builderEx2 = new Exemple.Builder("test2", 50);
+    Exemple ex2 = builderEx2.withOptionB().withOptionC(10.05).withOptionD().build();
+  }
+
+}
+      this.compteur = compteur;
+    }
+
+    public Builder withOptionA(String optionA) {
+      this.optionA = optionA;
+      return this;
+    }
+
+    //Par défaut, un booléen est à false, donc ajouter cette option signifie passer la valeur à true.
+    // Mais on pourrait éventuellement aussi autoriser un paramètre ici.
+    public Builder withOptionB() {
+      this.optionB = true;
+      return this;
+    }
+
+    public Builder withOptionC(double optionC) {
+      this.optionC = optionC;
+      return this;
+    }
+
+    public Builder withOptionD() {
+      this.optionD = true;
+      return this;
+    }
+
+    public Exemple build() {
+      Exemple exemple = new Exemple();
+      exemple.data = data;
+      exemple.compteur = compteur;
+      exemple.optionA = optionA;
+      exemple.optionB = optionB;
+      exemple.optionC = optionC;
+      exemple.optionD = optionD;
+      return exemple;
+    }
+  }
+
+}
+
+public class Main {
+
+  public static void main(String[]args) {
+    Exemple.Builder builderEx1 = new Exemple.Builder("test", 5);
+    Exemple ex1 = builderEx1.withOptionA("truc").withOptionD().build();
+
+    Exemple.Builder builderEx2 = new Exemple.Builder("test2", 50);
     Exemple ex2 = builderEx2.withOptionB().withOptionC(10.05).withOptionD().build();
   }
 
@@ -626,7 +708,7 @@ class Exemple {
   private Exemple(Builder builder) {
       exemple.data = builder.data;
       exemple.compteur = builder.getCompteur();
-      exemple.optionA = builder.getOptionA();;
+      exemple.optionA = builder.getOptionA();
       exemple.optionB = builder.getOptionB();
       exemple.optionC = builder.getOptionC();
       exemple.optionD = builder.getOptionD();
@@ -688,7 +770,7 @@ L'idée est de renvoyer une **copie** complète de l'objet ! Toutes les valeurs 
 
 Mais alors, qui doit faire cette copie ?
 
-* Est-ce que `Banque` est habilité à faire cela ? Cela ne semble pas trop **Single responsability** friendly ! De plus, est-ce que `Banque` a la capacité de copier `CompteCourant` ? A priori, il n'a pas accès aux attributs privés ou protégés comme `solde`, alors que `CompteCourant`, oui.
+* Est-ce que `Banque` est habilité à faire cela ? Cela ne semble pas trop **Single Responsibility** friendly ! De plus, est-ce que `Banque` a la capacité de copier `CompteCourant` ? A priori, il n'a pas accès aux attributs privés ou protégés comme `solde`, alors que `CompteCourant`, oui.
 
 * À la place, on peut définir un **constructeur par copie** dans `CompteCourant`. L'objectif d'un tel constructeur est de prendre un objet du même type et d'initialiser ses propres attributs avec les valeurs des attributs de l'autre objet. Vous avez sans doute utilisé de tels constructeurs en première année (notamment dans le cours d'initiation au développement) :
 
@@ -880,7 +962,7 @@ abstract class ClasseMere {
 </div>
 
 <!--
-Réalisez le **diagramme de séquence des interactions** permettant de modéliser ce qu'il se passe lors de l'éxécution du code suivant :
+Réalisez le **diagramme de séquence des interactions** permettant de modéliser ce qu'il se passe lors de l'exécution du code suivant :
 
     ```java
     Banque banque = new Banque();
@@ -1393,7 +1475,7 @@ Cependant, un nouveau besoin arrive : on aimerait pouvoir gérer différents **s
 
 On aurait alors :
 * L'**étang**, qui génère des truites avec un niveau entre 1 et 15 et une force entre 1 et 10 (ce que nous avons déjà).
-* Le **lac**, qui génère des carpes qui ont un niveau entre 20 et 30 et une certaine chance d'êtres dorées, selon le paramétrage du lac.
+* Le **lac**, qui génère des carpes qui ont un niveau entre 20 et 30 et une certaine chance d'être dorées, selon le paramétrage du lac.
 
 De plus, dans le futur, de nouveaux spots (qui génère un nouveau ou plusieurs types de poissons) pourraient être ajoutés.
 
@@ -1780,7 +1862,7 @@ public class ExpressoPokafe extends Cafe {
 
 }
 
-class CappuccinoPokafe extends Cafe {
+public class CappuccinoPokafe extends Cafe {
 
   @Override
   public void preparer() {
@@ -1802,7 +1884,7 @@ public class ExpressoDigikafe extends Cafe {
 
 }
 
-class CappuccinoPokafe extends Cafe {
+public class CappuccinoPokafe extends Cafe {
 
   @Override
   public void preparer() {
@@ -1825,7 +1907,7 @@ public abstract class MachineCafe {
 
 }
 
-public class MachinePokafe extends  MachineCafe {
+public class MachinePokafe extends MachineCafe {
 
   @Override
   protected Cafe creerCafe(String type) {
@@ -2881,7 +2963,7 @@ public final class RottenTomatoesDataExtractor {
 
   public static synchronized RottenTomatoesDataExtractor getInstance() {
     if(INSTANCE == null) {
-      INSTANCE = RottenTomatoesDataExtractor();
+      INSTANCE = new RottenTomatoesDataExtractor();
     }
     return INSTANCE;
   }
