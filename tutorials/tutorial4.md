@@ -7,7 +7,7 @@ lang: fr
 
 ## Introduction
 
-Quand on parle de **design patterns** on fait généralement référence aux patterns dits **GoF** (Gang of Four) présentés dans le livre **Design Patterns: Elements of Reusable Object-Oriented Software**, qui est une référence dans le monde de l'ingénierie logicielle. Le **Gang of Four** fait référence au quatre auteurs de ce livre : **Erich Gamma**, **Richard Helm**, **Ralph Johnson** et **John Vlissides**.
+Quand on parle de **design patterns** on fait généralement référence aux patterns dits **GoF** (Gang of Four) présentés dans le livre **Design Patterns: Elements of Reusable Object-Oriented Software**, qui est une référence dans le monde de l'ingénierie logicielle. Le **Gang of Four** fait référence aux quatre auteurs de ce livre : **Erich Gamma**, **Richard Helm**, **Ralph Johnson** et **John Vlissides**.
 
 Pour rappel, un **design pattern** est une solution réutilisable et adaptable vis-à-vis d'un problème de conception logicielle assez récurent. Un pattern est généralement présenté via un diagramme de classes de conception et un exemple d'implémentation. Un pattern a pour but d'être applicable et adaptable à n'importe quel projet ou contexte.
 
@@ -41,7 +41,7 @@ Nous verrons aussi un autre pattern **structurel** appelé **adaptateur**. En fa
 
 ## Le pattern Singleton
 
-L'idée du pattern **Singleton** est très simple : on souhaite garantir **qu'il n'existe qu'une seule instance d'une classe dans le programme et fournir un point d'accès global à cette instance**. Les autres objets/classes de l'application utilisent l'instance "globale" et **ne doivent pas pouvoir l'instancier directement** (l'utilisation de **new** doit être bloqué en dehors de la classe). L'instance globale doit être accessible à travers une méthode qui l'expose et qui a une visibilité appropriée.
+L'idée du pattern **Singleton** est très simple : on souhaite garantir **qu'il n'existe qu'une seule instance d'une classe dans le programme et fournir un point d'accès global à cette instance**. Les autres objets/classes de l'application utilisent l'instance "globale" et **ne doivent pas pouvoir l'instancier directement** (l'utilisation de **new** doit être bloquée en dehors de la classe). L'instance globale doit être accessible à travers une méthode qui l'expose et qui a une visibilité appropriée.
 
 On pourrait penser que l'utilisation d'une **classe statique** (toutes les méthodes et attributs statiques), pourrait aussi faire l'affaire. C'est une solution à éviter, nous verrons pourquoi par la suite.
 
@@ -203,7 +203,7 @@ Aussi, imaginons une classe d'accès à une base de données : celle-ci initiali
 
 </div>
 
-### Classe statique VS Singleton
+### Classe statique vs Singleton
 
 En introduction de cette section, nous avions évoqué le fait d'utiliser une **classe statique** pour obtenir un résultat similaire au singleton. Une classe statique est une classe dans laquelle il n'y a que des attributs et des méthodes **de classe** qui appartiennent donc à la classe et pas à une instance en particulier. Ainsi, tous les objets qui manipulent cette classe utilisent la même "entité" (en fait, il n'y a juste pas d'instance).
 
@@ -233,7 +233,7 @@ public class Service {
     return data;
   }
 
-  public String setData(String data) {
+  public void setData(String data) {
     this.data = data;
   }
 
@@ -244,7 +244,7 @@ class Main {
   public static void main(String[]args) {
     Service service = Service.getInstance();
     service.setData("test");
-    System.out.println(service.getData())
+    System.out.println(service.getData());
   }
 
 }
@@ -269,7 +269,7 @@ public class Service {
     return data;
   }
 
-  public static String setData(String data) {
+  public static void setData(String data) {
     Service.data = data;
   }
 }
@@ -278,7 +278,7 @@ class Main {
 
   public static void main(String[]args) {
     Service.setData("test");
-    System.out.println(Service.getData())
+    System.out.println(Service.getData());
   }
 
 }
@@ -375,15 +375,15 @@ class Main {
 
 <div class="exercise">
 
-1. À la place d'une classe statique, utilisez le pattern `Singleton` pour refactorer la classe `ServiceMailer`.
+1. À la place d'une classe statique, utilisez le pattern *Singleton* pour refactorer la classe `ServiceMail`.
 
-2. Comme expliqué dans l'exercice précédent, introduisez une interface `ServiceMailerInterface` pour abstraire ce service.
+2. Comme expliqué dans l'exercice précédent, introduisez une interface `ServiceMailInterface` pour abstraire ce service.
 
-3. Créez un nouveau service `FakeServiceMail` implémentant aussi `ServiceMailerInterface` mais qui ne fait rien dans sa méthode `envoyerMail`. Ce service sera aussi un singleton.
+3. Créez un nouveau service `FakeServiceMail` implémentant aussi `ServiceMailInterface` mais qui ne fait rien dans sa méthode `envoyerMail`. Ce service sera aussi un singleton.
 
 4. Refactorez `ServiceUtilisateur` et `ServiceCommande` pour injecter la dépendance nécessaire au lieu de directement récupérer l'instance du singleton dans la classe via `getInstance`.
 
-5. Adaptez le `Main` afin que le service concret utilisé soit `ServiceMailer` dans les deux autres services.
+5. Adaptez le `Main` afin que le service concret utilisé soit `ServiceMail` dans les deux autres services.
 
 6. Adaptez aussi les tests pour utiliser `FakeServiceMail`. Vérifiez que l'exécution des tests ne déclenche plus l'envoi (fictif) de mails.
 
@@ -395,7 +395,7 @@ class Main {
 
 Vous maîtrisez maintenant le pattern **Singleton**, mais vous devez être très précautionneux quant à son utilisation. En conclusion du dernier TP vous étiez invité à aller jeter un coup d'œil aux [principes STUPID](https://openclassrooms.com/en/courses/5684096-use-mvc-solid-principles-and-design-patterns-in-java/6417836-avoid-stupid-practices-in-programming) qui sont un ensemble de mauvaises pratiques en conception logicielle. Regardez à quoi correspond le `S`.
 
-En effet, l'abus de **singletons** est dangereux pour la santé (du logiciel...) ! Il présente une solution qui semble plutôt efficace à un problème assez récurent : la gestion des dépendances vers les services de l'application. À tel point qu'on retrouve parfois dans certains projets beaucoup trop de singletons. 
+En effet, l'abus de **Singleton** est dangereux pour la santé (du logiciel...) ! Il présente une solution qui semble plutôt efficace à un problème assez récurent : la gestion des dépendances vers les services de l'application. À tel point qu'on retrouve parfois dans certains projets beaucoup trop de singletons. 
 
 Mais pourquoi est-il déconseillé d'utiliser "trop" de singletons :
 
@@ -557,6 +557,38 @@ class Exemple {
     private boolean optionD;
 
     public Builder(String data, int compteur) {
+      this.data = data;class Exemple {
+
+  //Obligatoire
+  private String data;
+  private int compteur;
+
+  //Options
+  private String optionA;
+  private boolean optionB;
+  private double optionC;
+  private boolean optionD;
+
+  //On rend le constructeur privé pour obliger à passer par le Builder
+  private Exemple() {}
+
+  public void setData(String data) {
+    this.data = data;
+  }
+
+  public void setOptionB(boolean optionB) {
+    this.optionB = optionB;
+  }
+
+  public static class Builder {
+    private String data;
+    private int compteur;
+    private String optionA;
+    private boolean optionB;
+    private double optionC;
+    private boolean optionD;
+
+    public Builder(String data, int compteur) {
       this.data = data;
       this.compteur = compteur;
     }
@@ -600,10 +632,60 @@ class Exemple {
 public class Main {
 
   public static void main(String[]args) {
-    Builder builderEx1 = new Exemple.Builder("test", 5);
+    Exemple.Builder builderEx1 = new Exemple.Builder("test", 5);
     Exemple ex1 = builderEx1.withOptionA("truc").withOptionD().build();
 
-    Builder builderEx2 = new Exemple.Builder("test2", 50);
+    Exemple.Builder builderEx2 = new Exemple.Builder("test2", 50);
+    Exemple ex2 = builderEx2.withOptionB().withOptionC(10.05).withOptionD().build();
+  }
+
+}
+      this.compteur = compteur;
+    }
+
+    public Builder withOptionA(String optionA) {
+      this.optionA = optionA;
+      return this;
+    }
+
+    //Par défaut, un booléen est à false, donc ajouter cette option signifie passer la valeur à true.
+    // Mais on pourrait éventuellement aussi autoriser un paramètre ici.
+    public Builder withOptionB() {
+      this.optionB = true;
+      return this;
+    }
+
+    public Builder withOptionC(double optionC) {
+      this.optionC = optionC;
+      return this;
+    }
+
+    public Builder withOptionD() {
+      this.optionD = true;
+      return this;
+    }
+
+    public Exemple build() {
+      Exemple exemple = new Exemple();
+      exemple.data = data;
+      exemple.compteur = compteur;
+      exemple.optionA = optionA;
+      exemple.optionB = optionB;
+      exemple.optionC = optionC;
+      exemple.optionD = optionD;
+      return exemple;
+    }
+  }
+
+}
+
+public class Main {
+
+  public static void main(String[]args) {
+    Exemple.Builder builderEx1 = new Exemple.Builder("test", 5);
+    Exemple ex1 = builderEx1.withOptionA("truc").withOptionD().build();
+
+    Exemple.Builder builderEx2 = new Exemple.Builder("test2", 50);
     Exemple ex2 = builderEx2.withOptionB().withOptionC(10.05).withOptionD().build();
   }
 
@@ -626,7 +708,7 @@ class Exemple {
   private Exemple(Builder builder) {
       exemple.data = builder.data;
       exemple.compteur = builder.getCompteur();
-      exemple.optionA = builder.getOptionA();;
+      exemple.optionA = builder.getOptionA();
       exemple.optionB = builder.getOptionB();
       exemple.optionC = builder.getOptionC();
       exemple.optionD = builder.getOptionD();
@@ -664,7 +746,7 @@ class Exemple {
 
 **NB :** Certains IDE (dont IntelliJ) permettent de générer automatiquement le code d'un Builder à partir d'une classe. Sur IntelliJ, il faut placer le curseur sur le constructeur de la classe pour laquelle vous souhaitez générer le builder, puis taper `ALT+Entree` puis sélectionner _Replace constructor with builder_. Le Builder sera généré comme une classe à part. Pour la rendre interne à la classe cible, il suffira juste de faire un Drag & Drop du Builder dans sa classe cible.
 
-**Remarque :** lorsqu'il s'agit d'une hiérarchie de classes (par héritage) pour laquelle il faut créer des builders, la solution n'est pas forcément évidente. En effet, il faut faire une hiérarchie de builders pour éviter la duplication de code, tout en respectant le principe LSP, à savoir : les méthodes **with...** doivent retourner le bon type de builder. Pour plus de détails voir le [dernier TP](https://gitlabinfo.iutmontp.univ-montp2.fr/dev-objets/tp11) du cours de Développement Orienté Objets de première année (pas fait en 2024).
+**Remarque :** lorsqu'il s'agit d'une hiérarchie de classes (par héritage) pour laquelle il faut créer des builders, la solution n'est pas forcément évidente. En effet, il faut faire une hiérarchie de builders pour éviter la duplication de code, tout en respectant le principe LSP, à savoir : les méthodes **with...** doivent retourner le bon type de builder. Pour plus de détails voir le [dernier TP](https://gitlabinfo.iutmontp.univ-montp2.fr/dev-objets/tp11) du cours de Développement Orienté Objets de première année.
 
 </div>
 
@@ -674,7 +756,7 @@ Nous allons directement présenter le principe et l'intérêt du pattern **proto
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `fr.umontpellier.iut.protoype1` et consultez les classes mises à disposition. Il s'agit d'une mini-application bancaire permettant de gérer des comptes. Pour le moment, la classe `Banque` permet de gérer des **comptes courants**. C'est elle qui gère intégralement ces comptes bancaires : leur création et le changement de solde (créditer/débiter). Elle est donc **composée des comptes bancaires** (ce qui se traduirait par une **agrégation forte** sur un diagramme de classes de conception).
+1. Ouvrez le paquetage `fr.umontpellier.iut.prototype1` et consultez les classes mises à disposition. Il s'agit d'une mini-application bancaire permettant de gérer des comptes. Pour le moment, la classe `Banque` permet de gérer des **comptes courants**. C'est elle qui gère intégralement ces comptes bancaires : leur création et le changement de solde (créditer/débiter). Elle est donc **composée des comptes bancaires** (ce qui se traduirait par une **agrégation forte** sur un diagramme de classes de conception).
 
 2. Le développeur a pensé qu'il serait utile qu'un objet extérieur puisse récupérer un `CompteCourant` depuis la banque pour consulter le solde (ou autre). Il a donc créé une méthode `getInformationsCompteNumero`. Expérimentez dans le `Main` en créditant le compte d'un objet récupéré par cette méthode puis récupérez de nouveau ce compte depuis la banque et affichez son solde. Le solde du compte t-il était modifié ? Lancez le test unitaire situé dans la classe dans `src/test/java/fr/umontpellier/iut/prototype1`. Il ne passe pas... Comprenez-vous pourquoi ?
 
@@ -688,7 +770,7 @@ L'idée est de renvoyer une **copie** complète de l'objet ! Toutes les valeurs 
 
 Mais alors, qui doit faire cette copie ?
 
-* Est-ce que `Banque` est habilité à faire cela ? Cela ne semble pas trop **Single responsability** friendly ! De plus, est-ce que `Banque` a la capacité de copier `CompteCourant` ? A priori, il n'a pas accès aux attributs privés ou protégés comme `solde`, alors que `CompteCourant`, oui.
+* Est-ce que `Banque` est habilité à faire cela ? Cela ne semble pas trop **Single Responsibility** friendly ! De plus, est-ce que `Banque` a la capacité de copier `CompteCourant` ? A priori, il n'a pas accès aux attributs privés ou protégés comme `solde`, alors que `CompteCourant`, oui.
 
 * À la place, on peut définir un **constructeur par copie** dans `CompteCourant`. L'objectif d'un tel constructeur est de prendre un objet du même type et d'initialiser ses propres attributs avec les valeurs des attributs de l'autre objet. Vous avez sans doute utilisé de tels constructeurs en première année (notamment dans le cours d'initiation au développement) :
 
@@ -858,10 +940,10 @@ Solutions :
 // Avec la visibilité protected, seules les classes du même paquetage et les classes qui étendent ClasseMere ont accès à l'attribut/méthode. Il faut donc bien gérer les paquetages pour s'assurer qu'une classe ne puisse pas y accéder alors qu'elle n'est pas censée pouvoir.
 abstract class ClasseMere {
 
-  //Permet à la classe fille de lire (mais d'aussi écrire) l'attribut valeur
+  // Permet à la classe fille de lire (mais d'aussi écrire) l'attribut valeur
   protected int valeur;
 
-  //Ou bien : permet à la classe fille de lire l'attribut valeur
+  // Ou bien : permet à la classe fille de lire l'attribut valeur
   protected int getValeur() {
     return valeur;
   }
@@ -880,7 +962,7 @@ abstract class ClasseMere {
 </div>
 
 <!--
-Réalisez le **diagramme de séquence des interactions** permettant de modéliser ce qu'il se passe lors de l'éxécution du code suivant :
+Réalisez le **diagramme de séquence des interactions** permettant de modéliser ce qu'il se passe lors de l'exécution du code suivant :
 
     ```java
     Banque banque = new Banque();
@@ -1365,7 +1447,7 @@ public class SpotPeche {
         if(truite.tenterPecherAvec(canne)) {
             canne.augmenterNiveau();
             canne.augmenterScore(truite.getNbPoints());
-            System.out.println("Pêche réeussie !");
+            System.out.println("Pêche réussie !");
         }
         else {
             canne.degrader();
@@ -1393,7 +1475,7 @@ Cependant, un nouveau besoin arrive : on aimerait pouvoir gérer différents **s
 
 On aurait alors :
 * L'**étang**, qui génère des truites avec un niveau entre 1 et 15 et une force entre 1 et 10 (ce que nous avons déjà).
-* Le **lac**, qui génère des carpes qui ont un niveau entre 20 et 30 et une certaine chance d'êtres dorées, selon le paramétrage du lac.
+* Le **lac**, qui génère des carpes qui ont un niveau entre 20 et 30 et une certaine chance d'être dorées, selon le paramétrage du lac.
 
 De plus, dans le futur, de nouveaux spots (qui génère un nouveau ou plusieurs types de poissons) pourraient être ajoutés.
 
@@ -1485,7 +1567,7 @@ public abstract class SpotPeche {
         if(poisson.tenterPecherAvec(canne)) {
             canne.augmenterNiveau();
             canne.augmenterScore(poisson.getNbPoints());
-            System.out.println("Pêche réeussie !");
+            System.out.println("Pêche réussie !");
         }
         else {
             canne.degrader();
@@ -1780,7 +1862,7 @@ public class ExpressoPokafe extends Cafe {
 
 }
 
-class CappuccinoPokafe extends Cafe {
+public class CappuccinoPokafe extends Cafe {
 
   @Override
   public void preparer() {
@@ -1802,7 +1884,7 @@ public class ExpressoDigikafe extends Cafe {
 
 }
 
-class CappuccinoPokafe extends Cafe {
+public class CappuccinoPokafe extends Cafe {
 
   @Override
   public void preparer() {
@@ -1825,7 +1907,7 @@ public abstract class MachineCafe {
 
 }
 
-public class MachinePokafe extends  MachineCafe {
+public class MachinePokafe extends MachineCafe {
 
   @Override
   protected Cafe creerCafe(String type) {
@@ -1980,9 +2062,9 @@ Dans une zone, un type de monstre "normal" est créé (comme avant). On peut aus
 
 Nous allons définir deux configurations ("biomes") de zones :
 
-* La zone **Plaine** créée des monstres normaux de type `Slime`, des boss de type `Troll` (qui possèdent une puissance de massue aléatoire entre 5 et 10) et les coffres ouverts donnent des items type `Potion` qui peuvent être revendus pour 15 pièces d'or.
+* La zone **Plaine** crée des monstres normaux de type `Slime`, des boss de type `Troll` (qui possèdent une puissance de massue aléatoire entre 5 et 10) et les coffres ouverts donnent des items type `Potion` qui peuvent être revendus pour 15 pièces d'or.
 
-* La zone **Château Hanté** créée des monstres normaux de type `Fantome`, des boss de type `Dracula` et les coffres ouverts donnent des items type `Parchemin` qui peuvent être revendus pour 30 pièces d'or.
+* La zone **Château Hanté** crée des monstres normaux de type `Fantome`, des boss de type `Dracula` et les coffres ouverts donnent des items type `Parchemin` qui peuvent être revendus pour 30 pièces d'or.
 
 On souhaite pouvoir créer des zones avec ces configurations.
 
@@ -2542,7 +2624,7 @@ Nous sommes dans un cas particulier où tout le programme va utiliser une seule 
 
 Mais comment faire cela sans modifier l'instance concrète utilisée un peu partout ? (car elle est surement injectée à différentes classes). La réponse est simple : il faut regrouper la logique qui instancie la classe concrètement utilisée à un seul endroit. On peut ensuite mettre un système de paramétrage qui permet de changer la fabrique utilisée facilement. Les classes qui ont besoin de cette fabrique iront donc appeler une méthode de cette classe afin de récupérer la fabrique concrète à utiliser.
 
-La question est de savoir : où placer ce bout de code ? Il n'y a pas vraiment de réponse officielle à cette question. Cela pourrait être dans une classe indépendante (qui gère la **configuration** du programme) avec une méthode statique. Parfois, on retrouve aussi ce bout de code directement dans la **Fabrique Abstraite** par exemple en stockant l'instance de la fabrique concrète utilisée, couplé à une méthode statique permettant de renvoyer l'instance. C'est une sorte de dérivé du pattern `Singleton` (sans l'être réellement).
+La question est de savoir : où placer ce bout de code ? Il n'y a pas vraiment de réponse officielle à cette question. Cela pourrait être dans une classe indépendante (qui gère la **configuration** du programme) avec une méthode statique. Parfois, on retrouve aussi ce bout de code directement dans la **Fabrique Abstraite** par exemple en stockant l'instance de la fabrique concrète utilisée, couplé à une méthode statique permettant de renvoyer l'instance. C'est une sorte de dérivé du pattern *Singleton* (sans l'être réellement).
 
 Pour gérer l'instance concrète utilisée, on pourrait par exemple utiliser un **fichier de configuration** : lors de son initialisation, le code chargé de déterminer quelle est la fabrique à utiliser va lire dans ce fichier pour déterminer quelle fabrique instancier et stocker.
 
@@ -2881,7 +2963,7 @@ public final class RottenTomatoesDataExtractor {
 
   public static synchronized RottenTomatoesDataExtractor getInstance() {
     if(INSTANCE == null) {
-      INSTANCE = RottenTomatoesDataExtractor();
+      INSTANCE = new RottenTomatoesDataExtractor();
     }
     return INSTANCE;
   }
@@ -3381,6 +3463,6 @@ Concernant les **design patterns GoF**, n'hésitez pas à aller consulter (et ex
 
 Il peut aussi être intéressant que vous vous renseignez sur le concept de **conteneur de dépendances** (ou bien **conteneur IoC**) qui est au cœur de nombreux frameworks et permet de gérer facilement toutes les dépendances d'un programme sans avoir besoin de gérer pleins de singletons (et donc, être moins [STUPID](https://openclassrooms.com/en/courses/5684096-use-mvc-solid-principles-and-design-patterns-in-java/6417836-avoid-stupid-practices-in-programming)!).
 
-Vous devez maîtriser toutes ces notions abordées dans ce cours pour la suite de votre cursus (et de votre carrière) et ainsi développer dès le début d'un projet un code d'une certaine qualité qui prévoit l'évolutivité et la modularité du projet sur le long terme. Si vous réussissez à appliquer cela, vous n'êtes alors plus un "simple" codeur, mais véritablement un "développeur", voir un **ingénieur logiciel**. 
+Vous devez maîtriser toutes ces notions abordées dans ce cours pour la suite de votre cursus (et de votre carrière) et ainsi développer dès le début d'un projet un code d'une certaine qualité qui prévoit l'évolutivité et la modularité du projet sur le long terme. Si vous réussissez à appliquer cela, vous n'êtes alors plus un "simple" codeur, mais véritablement un "développeur", voire un **ingénieur logiciel**. 
 
 À vous de jouer !
