@@ -557,38 +557,6 @@ class Exemple {
     private boolean optionD;
 
     public Builder(String data, int compteur) {
-      this.data = data;class Exemple {
-
-  //Obligatoire
-  private String data;
-  private int compteur;
-
-  //Options
-  private String optionA;
-  private boolean optionB;
-  private double optionC;
-  private boolean optionD;
-
-  //On rend le constructeur privé pour obliger à passer par le Builder
-  private Exemple() {}
-
-  public void setData(String data) {
-    this.data = data;
-  }
-
-  public void setOptionB(boolean optionB) {
-    this.optionB = optionB;
-  }
-
-  public static class Builder {
-    private String data;
-    private int compteur;
-    private String optionA;
-    private boolean optionB;
-    private double optionC;
-    private boolean optionD;
-
-    public Builder(String data, int compteur) {
       this.data = data;
       this.compteur = compteur;
     }
