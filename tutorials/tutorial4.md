@@ -1305,14 +1305,17 @@ public class CafeFactory {
 
 La première méthode (avec le bloc **switch**) pourrait ressembler à du mauvais code, mais il s'agit bien de l'implémentation **souhaitée**. De plus, la seconde méthode n'aurait pas bien fonctionné avec la classe `Machine` à moins de la coder autrement. On se serait soit retrouvé avec de la duplication de code, soit à gérer un autre `switch` dans la classe `Machine`. Dans cet exemple, il est donc préférable d'utiliser la première méthode.
 
-Avec notre implémentation, il est éventuellement possible d'utiliser une autre marque de café qui possède son propre type d'expresso et de cappuccino (avec des graines de provenances différentes, et une autre marque de sucre). Il suffira de changer la fabrique sans impacter le reste des classes. Mais que se passerait-il si on souhaitait faire cohabiter ces différentes **marques** de café, avec leur propre machine ?
+
 <!-- Il est possible de régler ce problème avec les patterns **méthode fabrique** et/ou **fabrique abstraite**. -->
 
-**Remarque :** observez, que vis-à-vis du principe **Ouvert/Fermé** cette solution n'est pas idéale, car :
-* Le client doit correctement passer en paramètre la bonne chaîne de caractère pour désigner le type de café "_expresso_" ou "_cappuccino_". Cela peut se résoudre en utilisant des types énumérés par exemple. Tout de même c'est au client d'aider la fabrique à créer le bon objet...
-* Pire, si on souhaite ajouter un nouveau type de café, il faudra modifier la fabrique, donc elle n'est pas fermée aux modifications.
+**Remarques :**
+* Avec notre implémentation, il est éventuellement possible d'utiliser une autre marque de café qui possède son propre type d'expresso et de cappuccino (avec des graines de provenances différentes, et une autre marque de sucre). Il suffira de changer la fabrique sans impacter le reste des classes. Mais que se passerait-il si on souhaitait faire cohabiter ces différentes **marques** de café, avec leur propre machine ?
+* Aussi, vis-à-vis du principe **Ouvert/Fermé** cette solution n'est pas idéale, car :
+  * Le client doit correctement passer en paramètre la bonne chaîne de caractère pour désigner le type de café "_expresso_" ou "_cappuccino_". Cela peut se résoudre en utilisant des types énumérés par exemple. Tout de même c'est au client d'aider la fabrique à créer le bon objet...
+  * Pire, si on souhaite ajouter un nouveau type de café, il faudra modifier la fabrique, donc elle n'est pas fermée aux modifications.
 
-Nous allons régler ces problèmes lorsqu'on abordera le pattern **Méthode Fabrique**.
+Nous allons régler ces problèmes lorsqu'on abordera les pattern **Méthode Fabrique** et **Fabrique Abstraite**.
+
 ### Animaux
 
 Pour l'instant, testons votre compréhension de la **fabrique simple** :
