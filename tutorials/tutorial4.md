@@ -9,7 +9,7 @@ lang: fr
 
 Quand on parle de **design patterns** on fait généralement référence aux patterns dits **GoF** (Gang of Four) présentés dans le livre **Design Patterns: Elements of Reusable Object-Oriented Software**, qui est une référence dans le monde de l'ingénierie logicielle. Le **Gang of Four** fait référence aux quatre auteurs de ce livre : **Erich Gamma**, **Richard Helm**, **Ralph Johnson** et **John Vlissides**.
 
-Pour rappel, un **design pattern** est une solution réutilisable et adaptable vis-à-vis d'un problème de conception logicielle assez récurent. Un pattern est généralement présenté via un diagramme de classes de conception et un exemple d'implémentation. Un pattern a pour but d'être applicable et adaptable à n'importe quel projet ou contexte.
+Pour rappel, un **design pattern** est une solution réutilisable et adaptable vis-à-vis d'un problème de conception logicielle assez récurrent. Un pattern est généralement présenté via un diagramme de classes de conception et un exemple d'implémentation. Un pattern a pour but d'être applicable et adaptable à n'importe quel projet ou contexte.
 
 Il existe d'autres types de design patterns (par exemple, les patterns GRASP) mais les plus connus et les plus utilisés sont ceux du **GoF** que nous allons explorer dans ce cours. Tous ces **patterns** permettent de renforcer l'application des principes **SOLID**. Par ailleurs, certains langages comme `Java` proposent (dans leur librairie standard) des **classes** et **interfaces** permettant d'implémenter certains patterns **GoF** comme **observateur**, **itérateur**, **prototype**...
 
@@ -770,7 +770,7 @@ Mais alors, qui doit faire cette copie ?
 
 2. On aimerait maintenant que la `Banque` gère aussi des **comptes épargne**. En fait, il faut qu'elle puisse gérer des **CompteBancaire** et pas seulement des **comptes courants**. refactorez le code de la classe `Banque` pour rendre cela possible (en utilisant plutôt la classe abstraite `CompteBancaire` plutôt que `CompteCourant`). 
 
-    Vous devrez néanmoins conserver la méthode `ouvrirCompteCourant` telle quelle, car elle ouvre spécifiquement un compte courant. Vous devrez aussi ajouter une méthode `ouvrirCompteEpargne` (tout cela ne respecte pas vraiment le principe ouvert/fermé, mais nous allons nous en contenter pour cet exercice). 
+    Vous devrez néanmoins conserver la méthode `ouvrirCompteCourant` telle qu'elle, car elle ouvre spécifiquement un compte courant. Vous devrez aussi ajouter une méthode `ouvrirCompteEpargne` (tout cela ne respecte pas vraiment le principe ouvert/fermé, mais nous allons nous en contenter pour cet exercice). 
     
     Vous n'avez pas à ajouter de nouveaux attributs ou d'autres méthodes en dehors de `ouvrirCompteEpargne`. (Notamment, interdiction de faire une deuxième liste séparée gérant les comptes épargnes).
 
@@ -2002,9 +2002,9 @@ Ce pattern va notamment permettre de créer et de sélectionner différents type
 
 3. Commencez par importer le code que vous aviez déjà réalisé afin de mettre en place le **recrutement** des unités (depuis le package `v1`).
 
-4. Maintenant, faites en sorte que chaque armée (humaine et orc) puisse créer ses armes de siège spécifiques et créer et utiliser leurs sorts spécifiques. Chaque arme de siège créée est ajoutée dans la liste correspondante. Un sort, quand il est créé est seulement déclenché (il n'est pas stocké). Normalement, vous devriez pouvoir trouver une solution avec vos connaissances actuelles et les patterns que nous avons vu jusqu'ici. Si vous n'y arrivez pas, passez à la suite des explications.
+4. Maintenant, faites en sorte que chaque armée (humaine et orc) puisse créer ses armes de siège spécifiques et créer et utiliser leurs sorts spécifiques. Chaque arme de siège créée est ajoutée dans la liste correspondante. Un sort, quand il est créé, est seulement déclenché (il n'est pas stocké). Normalement, vous devriez pouvoir trouver une solution avec vos connaissances actuelles et les patterns que nous avons vu jusqu'ici. Si vous n'y arrivez pas, passez à la suite des explications.
 
-5. De même, complétez la classe `Debugueur` qui permet de débuguer une armée : il doit être possible de débuguer les ressources de l'armée humaine, et les ressources de l'armée orc (il faudra probablement ajouter des nouvelles classes). Les ressources créées (unité, arme, sort) ont exactement les mêmes caractéristiques que celles crées au travers de chaque type d'armee (humain, orc). Le code de `Debugueur` (et des nouvelles classes que vous allez certainement ajouter) vont donc être assez similaire à `Armee`, etc.
+5. De même, complétez la classe `Debugueur` qui permet de débuguer une armée : il doit être possible de débuguer les ressources de l'armée humaine, et les ressources de l'armée orc (il faudra probablement ajouter des nouvelles classes). Les ressources créées (unité, arme, sort) ont exactement les mêmes caractéristiques que celles créés au travers de chaque type d'armee (humain, orc). Le code de `Debugueur` (et des nouvelles classes que vous allez certainement ajouter) vont donc être assez similaire à `Armee`, etc.
 
 6. Complétez le `Main` afin de le faire fonctionner.
 
@@ -2021,11 +2021,11 @@ Imaginons que nous souhaitons faire en sorte qu'une armée puisse être **vaincu
 
 Par exemple, si l'armée orc vainc l'armée humaine, les unités humaines et les canons restent (mais ils sont maintenant forcés de travailler pour les orcs) et les prochaines unités créées seront des orcs, les prochaines armes des catapultes et les prochains sorts des sorts d'aveuglement. En fait, l'armée **humaine** et l'armée **orc** ont leur propre **configuration** ! Et on voudrait pouvoir changer la **configuration** d'une armée dynamiquement.
 
-Il semble compliqué d'obtenir un tel fonctionnement facilement avec une **méthode fabrique**. La solution est alors de plutôt d'utiliser une **fabrique abstraite** !
+Il semble compliqué d'obtenir un tel fonctionnement facilement avec une **méthode fabrique**. La solution est alors plutôt d'utiliser une **fabrique abstraite** !
 
 Reprenons l'exemple des **zones** qui créent et font combattre des **monstres** avec un joueur. Dans le jeu, il y a maintenant des **Boss** qui sont des monstres spéciaux pouvant charger une attaque spéciale et des **Items** qui ont des caractéristiques et un prix de revente.
 
-Dans une zone, un type de monstre "normal" est créé (comme avant). On peut aussi traverser la zone du boss qui fait apparaitre deux monstres normaux et un boss et les font combattre. Quand le joueur ouvre un coffre dans cette zone, il obtient tout le temps un type d'item spécifique (pour simplifier).
+Dans une zone, un type de monstre "normal" est créé (comme avant). On peut aussi traverser la zone du boss qui fait apparaître deux monstres normaux et un boss et les font combattre. Quand le joueur ouvre un coffre dans cette zone, il obtient tout le temps un type d'item spécifique (pour simplifier).
 
 Nous allons définir deux configurations ("biomes") de zones :
 
@@ -2279,8 +2279,8 @@ public class Arene {
     Monstre monstre = factory.creerMonstreNormal();
     monstre.combattre(combattant);
     Item recompense = factory.creerRecompense();
-    item.afficherCaracteristiques();
-    joueur.ajouterItem(item);
+    recompense.afficherCaracteristiques();
+    joueur.ajouterItem(recompense);
   }
 
 }
@@ -2306,7 +2306,7 @@ public class Main {
 }
 ```
 
-À noter qu'il est bien sûr possible de coupler cela avec des **singletons** pour les fabriques **concrètes** (même si ce 'nest pas du tout obligatoire et qu'on pourrait s'en passer) :
+À noter qu'il est bien sûr possible de coupler cela avec des **singletons** pour les fabriques **concrètes** (même si ce n'est pas du tout obligatoire et qu'on pourrait s'en passer) :
 
 ```java
 public class PlaineFactory implements AbstractNiveauFactory {
@@ -2365,7 +2365,7 @@ public class Main {
 ![Fabrique 7]({{site.baseurl}}/assets/TP4/Fabrique7.svg){: width="80%" }
 </div>
 
-L'objectif du pattern **Fabrique Abstraite** est donc de disposer d'une abstraction (classe abstraite ou interface) qui définie le contrat que doivent remplir les fabriques concrètes. Pour chaque famille de classes, on crée une fabrique concrète qui implémente cette interface ou étend cette classe abstraite. Ensuite, toutes les classes qui souhaitent utiliser cette fabrique doivent dépendre de la **fabrique abstraite** et non plus d'une fabrique concrète. Couplé à de l'injection de dépendances, il est très facile de complètement changer le comportement d'une classe.
+L'objectif du pattern **Fabrique Abstraite** est donc de disposer d'une abstraction (classe abstraite ou interface) qui définit le contrat que doivent remplir les fabriques concrètes. Pour chaque famille de classes, on crée une fabrique concrète qui implémente cette interface ou étend cette classe abstraite. Ensuite, toutes les classes qui souhaitent utiliser cette fabrique doivent dépendre de la **fabrique abstraite** et non plus d'une fabrique concrète. Couplé à de l'injection de dépendances, il est très facile de complètement changer le comportement d'une classe.
 
 C'est globalement l'idée du pattern **Stratégie** que vous avez déjà vu lors du dernier TP, mais appliqué pour des fabriques ! On pourrait voir la **fabrique abstraite** comme une **stratégie de création**.
 
@@ -2740,7 +2740,7 @@ Vous proposez donc une nouvelle implémentation de meilleure qualité :
 public class ExtracteurAllocine {
 
   public boolean filmExiste(String nomFilm) {
-    //Code complexe permettant de déterminer si un film est bien repertorié sur Allociné
+    //Code complexe permettant de déterminer si un film est bien répertorié sur Allociné
   }
 
   public double recupererNoteMoyenneUtilisateurs(String nomFilm) {
@@ -2791,7 +2791,7 @@ public class ExtracteurAllocine implements Extracteur {
 
   @Override
   public boolean filmExiste(String nomFilm) {
-    //Code complexe permettant de déterminer si un film est bien repertorié sur Allociné
+    //Code complexe permettant de déterminer si un film est bien répertorié sur Allociné
   }
 
   @Override
@@ -2878,7 +2878,7 @@ public final class SensCritiqueAPI {
   }
 
   public Map<String, String> obtenirInformationsTechniquesFilm(String film) {
-    //Code complexe permettant d'obtenir les informations techniques du film (genre, annee, realisateur, etc...)
+    //Code complexe permettant d'obtenir les informations techniques du film (genre, année, réalisateur, etc...)
   }
 
 }
@@ -3056,7 +3056,7 @@ public class Main {
 ![Adaptateur 2]({{site.baseurl}}/assets/TP4/Adaptateur2.svg){: width="90%" }
 </div>
 
-Vérifions cotre compréhension du pattern avec un exercice d'application.
+Vérifions votre compréhension du pattern avec un exercice d'application.
 
 <div class="exercise">
 
