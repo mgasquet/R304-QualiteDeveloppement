@@ -314,13 +314,12 @@ Si cette méthode pourrait paraître plus "facile" à mettre en place et à util
 
 </div>
 
-En essayant de refactorer, vous avez dû rencontrer divers problèmes :
+En essayant de refactorer, vous avez dû rencontrer divers problèmes liés à l'impossibilité d'injecter une **classe statique**  comme paramètre d'un constructeur. Et oui, une classe n'est pas un objet et une instance ! Elle ne peut donc pas être passée en paramètre.
 
-* Une `interface` (dans la plupart des langages) ne peut pas posséder de signature de méthode de classe (`static`).
+<!-- * Une `interface` (dans la plupart des langages) ne peut pas posséder de signature de méthode de classe (`static`). -->
 
-* Il est impossible d'injecter la classe statique comme paramètre d'un constructeur. Et oui, une classe n'est pas un objet et une instance ! Elle ne peut donc pas être passée en paramètre.
 
-Bref, l'utilisation d'une **classe statique** rend les services qui l'utilisent étroitement dépendant de la classe. Ce qui rend l'application intestable car ces services ne peuvent pas être testés indépendamment des services concrets qui sont utilisés dans l'application. On ne peut pas remplacer le service par un "faux" service utilisé pour les tests unitaires (un **stub** ou un **mock**).
+L'utilisation d'une **classe statique** rend les services qui l'utilisent étroitement dépendant de la classe. Ce qui rend l'application intestable car ces services ne peuvent pas être testés indépendamment des services concrets qui sont utilisés dans l'application. On ne peut pas remplacer le service par un "faux" service utilisé pour les tests unitaires (un **stub** ou un **mock**).
 
 L'utilisation d'un **Singleton** résout ces problèmes :
 
