@@ -1451,8 +1451,8 @@ On aurait alors :
 De plus, dans le futur, de nouveaux spots (qui génère un nouveau ou plusieurs types de poissons) pourraient être ajoutés.
 
 Il est à noter que :
-* Or de la génération des poissons, la logique métier du spot reste exactement la même.
-* Pour chaque poisson, l'algorithme de capture est le même (aléatoire basé sur les points rapportés par le poisson par rapport à la force de la canne).
+* En dehors de la génération des poissons, la logique métier du spot reste exactement la même (à savoir l'algorithme de la fonction `pecher(Canne canne)` reste le même).
+* Pour chaque poisson, le code de capture `tenterPecherAvec(Canne canne)` est le même (avec un aléa basé sur les points rapportés par le poisson par rapport à la force de la canne).
 * Tous les poissons ont un niveau.
 * Une carpe peut être dorée, ce qui double son nombre de points (et rend donc sa capture plus difficile...).
 
