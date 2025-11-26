@@ -1462,7 +1462,7 @@ Le pattern **Méthode Fabrique** (Factory Method) définit une **classe mère** 
 
 L'idée de ce pattern est de proposer un framework de création d'objets, où des hiérarchies de classes de fabriques simples sont créées, afin de donner plus de flexibilité pour la création d'objets.
 
-Pour que l'utilisation de ce pattern soit justifié, il faut que la **classe mère** abstraite&#41; effectue **d'autres traitements que simplement créer l'objet** &#40;sinon c'est juste une fabrique&#41;. Dans une &#40;ou plusieurs&#41; méthode&#40;s&#41; de la classe mère où un traitement est effectué, la méthode abstraite est appelée ce qui permet de récupérer un objet dont le type concret sera décidé par les sous-classes. Ainsi, le traitement peut être effectué dans la classe mère sans avoir besoin d'être dépendant d'une classe concrète.
+Pour que l'utilisation de ce pattern soit justifié, il faut que la **classe mère** (abstraite) effectue **d'autres traitements que simplement créer l'objet** &#40;sinon c'est juste une fabrique&#41;. Dans une &#40;ou plusieurs&#41; méthode&#40;s&#41; de la classe mère où un traitement est effectué, la méthode abstraite est appelée ce qui permet de récupérer un objet dont le type concret sera décidé par les sous-classes. Ainsi, le traitement peut être effectué dans la classe mère sans avoir besoin d'être dépendant d'une classe concrète.
 
 Le pattern **méthode fabrique** permet donc de proposer une solution au problème posé dans cet exemple. L'idée est de rendre la création du poisson **abstraite** dans `SpotPeche` (et donc rendre `SpotPeche` abstrait) et de déléguer la création du type de monstre dans des classes dérivées (`Etang` et `Lac`).
 
@@ -2010,7 +2010,7 @@ Ce pattern va notamment permettre de créer et de sélectionner différents type
 
 5. De même, complétez la classe `Debugueur` qui permet de débuguer une armée : il doit être possible de débuguer les ressources de l'armée humaine, et les ressources de l'armée orc (il faudra probablement ajouter des nouvelles classes). Les ressources créées (unité, arme, sort) ont exactement les mêmes caractéristiques que celles créés au travers de chaque type d'armee (humain, orc). Le code de `Debugueur` (et des nouvelles classes que vous allez certainement ajouter) vont donc être assez similaire à `Armee`, etc.
 
-6. Complétez le `Main` afin de le faire fonctionner.
+6. Complétez la fonction `main` de la classe `Jeu` afin de le faire fonctionner.
 
 </div>
 
@@ -2025,7 +2025,8 @@ Imaginons que nous souhaitons faire en sorte qu'une armée puisse être **vaincu
 
 Par exemple, si l'armée orc vainc l'armée humaine, les unités humaines et les canons restent (mais ils sont maintenant forcés de travailler pour les orcs) et les prochaines unités créées seront des orcs, les prochaines armes des catapultes et les prochains sorts des sorts d'aveuglement. En fait, l'armée **humaine** et l'armée **orc** ont leur propre **configuration** ! Et on voudrait pouvoir changer la **configuration** d'une armée dynamiquement.
 
-Il semble compliqué d'obtenir un tel fonctionnement facilement avec une **méthode fabrique**. La solution est alors plutôt d'utiliser une **fabrique abstraite** !
+Il semble compliqué d'obtenir un tel fonctionnement facilement avec une **méthode fabrique**. La solution est alors plutôt d'utiliser une **fabrique abstraite** ! Vous allez le faire dans l'exercice suivant, mais d'abord familiarisons-nous avec ce pattern à travers un exemple complet.
+
 
 Reprenons l'exemple des **zones** qui créent et font combattre des **monstres** avec un joueur. Dans le jeu, il y a maintenant des **Boss** qui sont des monstres spéciaux pouvant charger une attaque spéciale et des **Items** qui ont des caractéristiques et un prix de revente.
 
@@ -2381,7 +2382,7 @@ On peut généraliser ce **pattern** ainsi :
 
 <div class="exercise">
 
-1. Refactorez le code des classes `Armee` et `Debugueur` (toujours dans `fabrique2.v2`) afin d'utiliser une **fabrique abstraite** à la place de votre solution (certaines classes vont probablement disparaître...). Réparez le `Main` pour qu'il fonctionne de nouveau
+1. Refactorez le code des classes `Armee` et `Debugueur` (toujours dans `fabrique2.v2`) afin d'utiliser une **fabrique abstraite** à la place de votre solution (certaines classes vont probablement disparaître...). Réparez la fonction `main` de la classe `Jeu` pour qu'elle fonctionne de nouveau.
 
 2. Insérez et complétez les méthodes suivantes dans `Armee` :
 
