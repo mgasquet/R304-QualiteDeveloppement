@@ -2017,16 +2017,84 @@ Ce pattern va notamment permettre de créer et de sélectionner différents type
 Vous avez donc sûrement trouvé une solution exploitant plusieurs **méthodes fabriques** (une pour les unités, comme initialement, une pour les armes de siège et une pour les sorts...) dans la classe `Armee` et la classe `Debugueur` avec des sous-classes du genre `DebugueurHumain` et `DebugueurOrc`.
 
 Cependant, cette solution, même si globalement acceptable, n'est pas forcément la plus qualitative :
-* Il y a une duplication de code entre vos classes de debugage et vos classes d'armée.
-* Dans cette solution on utilise fortement **l'héritage**, alors que nous avons vu qu'il est généralement préférable de favoriser **la composition** (faible) et **l'injection de dépendances**.
+* Il y a une duplication de code entre vos classes de débugage et vos classes d'armée.
+* Dans cette solution, on utilise fortement **l'héritage**, alors que nous avons vu qu'il est généralement préférable de favoriser **la composition** (faible) et **l'injection de dépendances**.
 * Cette implémentation pourrait aussi poser un problème si on souhaite pouvoir **changer dynamiquement le comportement de création** souhaité.
 
 Imaginons que nous souhaitons faire en sorte qu'une armée puisse être **vaincue** par une autre armée. L'armée vaincue n'est pas détruite et continue d'exister (et on conserve les soldats encore vivants et les armes). Cependant, l'armée vainqueuse impose son mode de fonctionnement à l'armée vaincue : elle produira maintenant les mêmes unités, les mêmes armes et les mêmes sorts que l'armée vainqueuse.
 
 Par exemple, si l'armée orc vainc l'armée humaine, les unités humaines et les canons restent (mais ils sont maintenant forcés de travailler pour les orcs) et les prochaines unités créées seront des orcs, les prochaines armes des catapultes et les prochains sorts des sorts d'aveuglement. En fait, l'armée **humaine** et l'armée **orc** ont leur propre **configuration** ! Et on voudrait pouvoir changer la **configuration** d'une armée dynamiquement.
 
-Il semble compliqué d'obtenir un tel fonctionnement facilement avec une **méthode fabrique**. La solution est alors plutôt d'utiliser une **fabrique abstraite** ! Vous allez le faire dans l'exercice suivant, mais d'abord familiarisons-nous avec ce pattern à travers un exemple complet.
+Il semble compliqué d'obtenir un tel fonctionnement facilement avec une **méthode fabrique**... La bonne solution est d'utiliser un **autre pattern** que vous allez essayer de trouver par expérimentation dans l'exercice suivant.
 
+Pour vous aider, voici quelques indications :
+* L'objectif est toujours le même : on souhaite pouvoir créer différents objets selon le contexte.
+* Mais l'héritage est bloquant : on ne peut pas changer dynamiquement la logique de création des objets d'une instance d'armée. De plus, la logique est "enfermée" dans les classes dérivées et ne peut pas être utilisée ailleurs, dans d'autres classes (comme le débugueur), ce qui créé de la **duplication de code**.
+* À ce stade, vous commencez à bien connaître et maîtriser la logique des **designs patterns** et l'application des **principes SOLID** : quand l'héritage est bloquant/ne suffit plus, il y a une autre solution qui revient régulièrement...
+
+<div class="exercise">
+
+1. Commencez par essayer de trouver une solution pour élminer la **duplication de code** entre les différentes **armées** et le **débugueur** (servez-vous des indications précédentes pour trouver une solution). Certaines classes vont probablement être ajoutées/modifiées/supprimés... Vous corrigerez le `main` en conséquence.
+
+2. Nous voulons maintenant ajouter la fonctionnalité qui consiste à **vaincre une armée**, ce qui a pour effet que l'armée vaincue produira (à l'avenir) des ressources de l'armée victorieuse (qui l'a battue), tout en conservant son état actuel (ressources déjà produit, or, etc). Insérez et complétez les méthodes suivantes dans `Armee` :
+
+    ```java
+    /**
+      * Action : l'armée "this" bat l'armée "armee" passée en paramètre et lui impose sa stratégie de création de ressources (unites, armes, sort).
+      * L'armée vaincue doit donc changer de comportement : les ressources créées dans le futur correspondront à ceux de l'armée vainqueuse "this".
+      *
+      */
+    public void vaincre(Armee armee) {
+
+    }
+
+    /**
+      * Retourne le débuggeur correspondant au type de peuple qui contrôle actuellement l'armée
+      */
+    public Debugueur getDebuggeurCourant() {
+
+    }
+    ```
+
+    Si vous avez bien traité la question précédente, cela ne devrait pas être trop difficile. Vous pouvez éventuellement ajouter d'autres méthodes, au besoin.
+
+3. Vérifiez que le code suivant fonctionne (à ajouter à la fin du `Main`) :
+
+    ```java
+    //Affichage avec les ressources des orcs
+    Debugueur debugueur = armeeOrc.getDebuggeurCourant();
+    debugueur.invoquerUnite(5,12,3);
+    debugueur.invoquerArme(7,5,6);
+    debugueur.invoquerSort(20,13,9);
+
+    //L'armée humaine bat l'armée orc
+    armeeHumaine.vaincre(armeeOrc);
+
+    armeeOrc.fabriquerUneArmeDeSiege();
+    armeeOrc.recruterUnite();
+
+    System.out.println("Nouvelle attaque de l'ancienne armée orc battue par les humains");
+    //Il y a les anciennes catapultes et un canon
+    armeeOrc.attaquerAvecArmesDeSiege();
+
+    //Il y a les anciens orcs et un humain
+    armeeOrc.attaquerAvecUnites();
+
+    //C'est un sort de boule de feu
+    armeeOrc.utiliserSortSpecial();
+
+    //Affichage avec les ressources des humains (car ils ont vaincu l'armée)
+    debugueur = armeeOrc.getDebuggeurCourant();
+    debugueur.invoquerUnite(5,12,3);
+    debugueur.invoquerArme(7,5,6);
+    debugueur.invoquerSort(20,13,9);
+    ```
+
+4. Bonus : est-ce que votre solution permet de faire en sorte que si on récupère le debugueur courant d'une armée et que l'armée est vaincue, l'instance du debugueur est bien actualisée (avec le nouveau peuple qui contrôle l'armée) ? Dans le **main**, on appelle deux fois `getDebuggeurCourant`, mais en pratique, on ne devrait pas à avoir à faire le second appel... Si le temps le permet, essayez de trouver une solution.
+
+</div>
+
+Le design pattern que vous avez utilisé pour résoudre cet exercice est appelé **fabrique abstraite** ! Faisons un point sur ce pattern à travers un exemple complet.
 
 Reprenons l'exemple des **zones** qui créent et font combattre des **monstres** avec un joueur. Dans le jeu, il y a maintenant des **Boss** qui sont des monstres spéciaux pouvant charger une attaque spéciale et des **Items** qui ont des caractéristiques et un prix de revente.
 
@@ -2380,67 +2448,7 @@ On peut généraliser ce **pattern** ainsi :
 ![Fabrique Abstraite 1]({{site.baseurl}}/assets/TP4/FabriqueAbstraite1.svg){: width="60%" }
 </div>
 
-<div class="exercise">
-
-1. Refactorez le code des classes `Armee` et `Debugueur` (toujours dans `fabrique2.v2`) afin d'utiliser une **fabrique abstraite** à la place de votre solution (certaines classes vont probablement disparaître...). Réparez la fonction `main` de la classe `Jeu` pour qu'elle fonctionne de nouveau.
-
-2. Insérez et complétez les méthodes suivantes dans `Armee` :
-
-    ```java
-    /**
-      * Action : l'armée "this" bat l'armée "armee" passée en paramètre et lui impose sa stratégie de création de ressources (unites, armes, sort).
-      * L'armée vaincue doit donc changer de comportement : les ressources créées dans le futur correspondront à ceux de l'armée vainqueuse "this".
-      *
-      */
-    public void vaincre(Armee armee) {
-
-    }
-
-    /**
-      * Retourne le débuggeur correspondant au type de peuple qui contrôle actuellement l'armée
-      */
-    public Debugueur getDebuggeurCourant() {
-
-    }
-    ```
-
-    Vous pouvez éventuellement ajouter d'autres méthodes, au besoin.
-
-3. Vérifiez que le code suivant fonctionne (à ajouter à la fin du `Main`) :
-
-    ```java
-    //Affichage avec les ressources des orcs
-    Debugueur debugueur = armeeOrc.getDebuggeurCourant();
-    debugueur.invoquerUnite(5,12,3);
-    debugueur.invoquerArme(7,5,6);
-    debugueur.invoquerSort(20,13,9);
-
-    //L'armée humaine bat l'armée orc
-    armeeHumaine.vaincre(armeeOrc);
-
-    armeeOrc.fabriquerUneArmeDeSiege();
-    armeeOrc.recruterUnite();
-
-    System.out.println("Nouvelle attaque de l'ancienne armée orc battue par les humains");
-    //Il y a les anciennes catapultes et un canon
-    armeeOrc.attaquerAvecArmesDeSiege();
-
-    //Il y a les anciens orcs et un humain
-    armeeOrc.attaquerAvecUnites();
-
-    //C'est un sort de boule de feu
-    armeeOrc.utiliserSortSpecial();
-
-    //Affichage avec les ressources des humains (car ils ont vaincu l'armée)
-    debugueur = armeeOrc.getDebuggeurCourant();
-    debugueur.invoquerUnite(5,12,3);
-    debugueur.invoquerArme(7,5,6);
-    debugueur.invoquerSort(20,13,9);
-    ```
-
-4. Bonus : est-ce que votre solution permet de faire en sorte que si on récupère le debugger courant d'une armée et que l'armée est vaincue, l'instance du débuggeur est bien actualisée (avec le nouveau peuple qui contrôle l'armée) ? Dans le **main**, on appelle deux fois `getDebuggeurCourant`, mais en pratique, on ne devrait pas à avoir à faire le second appel... Si le temps le permet, essayez de trouver une solution.
-
-</div>
+Nous allons vérifier votre compréhension de ce pattern avec d'autres exercices.
 
 ### Gestionnaire de livraisons - Partie 2
 
