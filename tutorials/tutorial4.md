@@ -607,56 +607,6 @@ public class Main {
   }
 
 }
-      this.compteur = compteur;
-    }
-
-    public Builder withOptionA(String optionA) {
-      this.optionA = optionA;
-      return this;
-    }
-
-    //Par défaut, un booléen est à false, donc ajouter cette option signifie passer la valeur à true.
-    // Mais on pourrait éventuellement aussi autoriser un paramètre ici.
-    public Builder withOptionB() {
-      this.optionB = true;
-      return this;
-    }
-
-    public Builder withOptionC(double optionC) {
-      this.optionC = optionC;
-      return this;
-    }
-
-    public Builder withOptionD() {
-      this.optionD = true;
-      return this;
-    }
-
-    public Exemple build() {
-      Exemple exemple = new Exemple();
-      exemple.data = data;
-      exemple.compteur = compteur;
-      exemple.optionA = optionA;
-      exemple.optionB = optionB;
-      exemple.optionC = optionC;
-      exemple.optionD = optionD;
-      return exemple;
-    }
-  }
-
-}
-
-public class Main {
-
-  public static void main(String[]args) {
-    Exemple.Builder builderEx1 = new Exemple.Builder("test", 5);
-    Exemple ex1 = builderEx1.withOptionA("truc").withOptionD().build();
-
-    Exemple.Builder builderEx2 = new Exemple.Builder("test2", 50);
-    Exemple ex2 = builderEx2.withOptionB().withOptionC(10.05).withOptionD().build();
-  }
-
-}
 ```
 
 <div style="text-align:center">
@@ -707,7 +657,7 @@ class Exemple {
 
     * Burger avec du pain au sésame, avec des tomates, de la salade.
 
-    * Burger avec du pain classique, avec de la salade, des tomates, de la viande de bœuf et du cheddar.
+    * Burger avec du pain brioche, avec de la salade, des tomates, de la viande de bœuf et du cheddar.
 
 3. Générez le **diagramme de classes de conception** de votre application (avec `IntelliJ`).
 
