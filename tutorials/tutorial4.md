@@ -1301,12 +1301,12 @@ public class CafeFactory {
 }
 ```
 
-**Cependant**, si les objets sont **de même nature** (ici, tous des **cafés**) et ont globalement besoin des mêmes entrées pour être instanciés, on préférera la première méthode et on préférera éviter celle-ci. On réservera le fait d'avoir plusieurs méthodes pour créer des objets de nature différentes (comme nous le ferons avec **la fabrique abstraite**).
+**Cependant**, si les objets sont **de même nature** (ici, tous des **cafés**) et ont globalement besoin des mêmes entrées pour être instanciés, on préférera la première méthode et on préférera éviter celle-ci. On réservera le fait d'avoir plusieurs méthodes pour créer des objets de nature différentes (comme nous le ferons avec **la Fabrique Abstraite**).
 
 La première méthode (avec le bloc **switch**) pourrait ressembler à du mauvais code, mais il s'agit bien de l'implémentation **souhaitée**. De plus, la seconde méthode n'aurait pas bien fonctionné avec la classe `Machine` à moins de la coder autrement. On se serait soit retrouvé avec de la duplication de code, soit à gérer un autre `switch` dans la classe `Machine`. Dans cet exemple, il est donc préférable d'utiliser la première méthode.
 
 
-<!-- Il est possible de régler ce problème avec les patterns **méthode fabrique** et/ou **fabrique abstraite**. -->
+<!-- Il est possible de régler ce problème avec les patterns **Méthode Fabrique** et/ou **Fabrique Abstraite**. -->
 
 **Remarques :**
 * Avec notre implémentation, il est éventuellement possible d'utiliser une autre marque de café qui possède son propre type d'expresso et de cappuccino (avec des graines de provenances différentes, et une autre marque de sucre). Il suffira de changer la fabrique sans impacter le reste des classes. Mais que se passerait-il si on souhaitait faire cohabiter ces différentes **marques** de café, avec leur propre machine ?
@@ -1464,7 +1464,7 @@ L'idée de ce pattern est de proposer un framework de création d'objets, où de
 
 Pour que l'utilisation de ce pattern soit justifié, il faut que la **classe mère** (abstraite) effectue **d'autres traitements que simplement créer l'objet** &#40;sinon c'est juste une fabrique&#41;. Dans une &#40;ou plusieurs&#41; méthode&#40;s&#41; de la classe mère où un traitement est effectué, la méthode abstraite est appelée ce qui permet de récupérer un objet dont le type concret sera décidé par les sous-classes. Ainsi, le traitement peut être effectué dans la classe mère sans avoir besoin d'être dépendant d'une classe concrète.
 
-Le pattern **méthode fabrique** permet donc de proposer une solution au problème posé dans cet exemple. L'idée est de rendre la création du poisson **abstraite** dans `SpotPeche` (et donc rendre `SpotPeche` abstrait) et de déléguer la création du type de monstre dans des classes dérivées (`Etang` et `Lac`).
+Le pattern **Méthode Fabrique** permet donc de proposer une solution au problème posé dans cet exemple. L'idée est de rendre la création du poisson **abstraite** dans `SpotPeche` (et donc rendre `SpotPeche` abstrait) et de déléguer la création du type de monstre dans des classes dérivées (`Etang` et `Lac`).
 
 ```java
 public abstract class Poisson {
@@ -1602,7 +1602,7 @@ public class Main {
 ![Fabrique 5]({{site.baseurl}}/assets/TP4/Fabrique5.svg)
 </div>
 
-Le pattern s'appelle **méthode fabrique**, car la méthode abstraite implémentée par les classes filles sont elles-mêmes des fabriques !
+Le pattern s'appelle **Méthode Fabrique**, car la méthode abstraite implémentée par les classes filles sont elles-mêmes des fabriques !
 
 Dans notre exemple, chaque spot ne renvoie qu'un type de poisson (truite pour l'étang, carpe pour le lac). Cependant, la méthode fabrique n'a pas obligation de renvoyer un seul type d'instance : elle peut renvoyer l'instance qu'elle souhaite (tant que cela respecte le type de retour demandé). Par exemple, nous aurions pu avoir un spot "océan" qui génère à la fois des carpes, des truites et autre dans sa méthode `creerPoisson` !
 
@@ -1725,7 +1725,7 @@ L'idée de ce pattern est de proposer un framework de création d'objets, où de
 
 Pour que l'utilisation de ce pattern soit justifié, il faut que la **classe mère** abstraite&#41; effectue **d'autres traitements que simplement créer l'objet** &#40;sinon c'est juste une fabrique&#41;. Dans une &#40;ou plusieurs&#41; méthode&#40;s&#41; de la classe mère où un traitement est effectué, la méthode abstraite est appelée ce qui permet de récupérer un objet dont le type concret sera décidé par les sous-classes. Ainsi, le traitement peut être effectué dans la classe mère sans avoir besoin d'être dépendant d'une classe concrète.
 
-Le pattern **méthode fabrique** permet donc de proposer une bien meilleure solution. L'idée est de rendre la création du monstre **abstraite** dans `Zone` (et donc rendre `Zone` abstrait) et de déléguer la création du type de monstre dans des classes dérivées.
+Le pattern **Méthode Fabrique** permet donc de proposer une bien meilleure solution. L'idée est de rendre la création du monstre **abstraite** dans `Zone` (et donc rendre `Zone` abstrait) et de déléguer la création du type de monstre dans des classes dérivées.
 
 ```java
 public abstract class Zone {
@@ -1782,7 +1782,7 @@ Nous avons réglé les différents problèmes évoqués précédemment :
 * Plus d'erreur à l'exécution possible si un monstre n'existe pas (on passe d'une vérification à l'exécution à une vérification à la compilation, car la classe du Monstre doit exister).
 * Il n'est pas possible d'utiliser la fabrique ailleurs : la logique de fabrication est encapsulée dans la classe concrète de la zone.
 
-Le pattern s'appelle **méthode fabrique**, car la méthode abstraite implémentée par les classes filles sont elles-mêmes des fabriques ! D'ailleurs, dans l'exemple, nous avons supprimé `MonstreFactory` qui ne nous est plus utile.
+Le pattern s'appelle **Méthode Fabrique**, car la méthode abstraite implémentée par les classes filles sont elles-mêmes des fabriques ! D'ailleurs, dans l'exemple, nous avons supprimé `MonstreFactory` qui ne nous est plus utile.
 
 On peut généraliser ce **pattern** ainsi :
 
@@ -1790,7 +1790,7 @@ On peut généraliser ce **pattern** ainsi :
 ![Méthode Fabrique 1]({{site.baseurl}}/assets/TP4/MethodeFabrique1.svg){: width="65%" }
 </div>
 
-Cependant, que se passe-t-il si plusieurs services différents doivent créer des **slimes** ou des **fantômes** (par exemple, si nous faisons revenir la classe `Arene` que nous avions au début) ? Il faut vraiment créer une sous-classe par type de service et de monstre ? Non, rassurez-vous ! C'est justement un point que permettra de régler la **fabrique abstraite** que nous verrons prochainement.
+Cependant, que se passe-t-il si plusieurs services différents doivent créer des **slimes** ou des **fantômes** (par exemple, si nous faisons revenir la classe `Arene` que nous avions au début) ? Il faut vraiment créer une sous-classe par type de service et de monstre ? Non, rassurez-vous ! C'est justement un point que permettra de régler la **Fabrique Abstraite** que nous verrons prochainement.
 -->
 
 ### Age of Fantasy - Partie 1
@@ -1819,7 +1819,7 @@ Maintenant, voyons un exemple un peu plus complexe en reprenant le cas de la mac
 
 * On veut pouvoir créer des machines `Pokafe` et des machines `Difikafe`.
 
-En refactorant le code initial et en appliquant le pattern **méthode fabrique** une telle implémentation est possible :
+En refactorant le code initial et en appliquant le pattern **Méthode Fabrique** une telle implémentation est possible :
 
 ```java
 public class ExpressoPokafe extends Cafe {
@@ -1919,12 +1919,12 @@ class Main {
 }
 ```
 
-Il y a quelques aspects du code qui vous paraissent encore superflus ou redondants ? C'est normal ! Nous allons encore améliorer cet exemple plus tard en utilisant une **fabrique abstraite**.
+Il y a quelques aspects du code qui vous paraissent encore superflus ou redondants ? C'est normal ! Nous allons encore améliorer cet exemple plus tard en utilisant une **Fabrique Abstraite**.
 -->
 
 ### Gestionnaire de livraisons - Partie 1
 
-Testons maintenant votre maîtrise du pattern **méthode fabrique** avec un nouvel exercice un peu plus complexe. Cet exercice (et sa suite) sont inspirés d'un exercice issu de l'excellent livre **Head First Design Patterns** qui propose une illustration des patterns **méthode fabrique** puis **fabrique abstraite** avec un exemple se basant sur des restaurants de **pizzas** (les exemples donnés dans ce livre sont d'ailleurs en Java).
+Testons maintenant votre maîtrise du pattern **Méthode Fabrique** avec un nouvel exercice un peu plus complexe. Cet exercice (et sa suite) sont inspirés d'un exercice issu de l'excellent livre **Head First Design Patterns** qui propose une illustration des patterns **Méthode Fabrique** puis **Fabrique Abstraite** avec un exemple se basant sur des restaurants de **pizzas** (les exemples donnés dans ce livre sont d'ailleurs en Java).
 
 <div class="exercise">
 
@@ -2025,7 +2025,7 @@ Imaginons que nous souhaitons faire en sorte qu'une armée puisse être **vaincu
 
 Par exemple, si l'armée orc vainc l'armée humaine, les unités humaines et les canons restent (mais ils sont maintenant forcés de travailler pour les orcs) et les prochaines unités créées seront des orcs, les prochaines armes des catapultes et les prochains sorts des sorts d'aveuglement. En fait, l'armée **humaine** et l'armée **orc** ont leur propre **configuration** ! Et on voudrait pouvoir changer la **configuration** d'une armée dynamiquement.
 
-Il semble compliqué d'obtenir un tel fonctionnement facilement avec une **méthode fabrique**... La bonne solution est d'utiliser un **autre pattern** que vous allez essayer de trouver par expérimentation dans l'exercice suivant.
+Il semble compliqué d'obtenir un tel fonctionnement facilement avec une **Méthode Fabrique**... La bonne solution est d'utiliser un **autre pattern** que vous allez essayer de trouver par expérimentation dans l'exercice suivant.
 
 Pour vous aider, voici quelques indications :
 * L'objectif est toujours le même : on souhaite pouvoir créer différents objets selon le contexte.
@@ -2094,7 +2094,7 @@ Pour vous aider, voici quelques indications :
 
 </div>
 
-Le design pattern que vous avez utilisé pour résoudre cet exercice est appelé **fabrique abstraite** ! Faisons un point sur ce pattern à travers un exemple complet.
+Le design pattern que vous avez utilisé pour résoudre cet exercice est appelé **Fabrique Abstraite** ! Faisons un point sur ce pattern à travers un exemple complet.
 
 Reprenons l'exemple des **zones** qui créent et font combattre des **monstres** avec un joueur. Dans le jeu, il y a maintenant des **Boss** qui sont des monstres spéciaux pouvant charger une attaque spéciale et des **Items** qui ont des caractéristiques et un prix de revente.
 
@@ -2440,7 +2440,7 @@ public class Main {
 
 L'objectif du pattern **Fabrique Abstraite** est donc de disposer d'une abstraction (classe abstraite ou interface) qui définit le contrat que doivent remplir les fabriques concrètes. Pour chaque famille de classes, on crée une fabrique concrète qui implémente cette interface ou étend cette classe abstraite. Ensuite, toutes les classes qui souhaitent utiliser cette fabrique doivent dépendre de la **fabrique abstraite** et non plus d'une fabrique concrète. Couplé à de l'injection de dépendances, il est très facile de complètement changer le comportement d'une classe.
 
-C'est globalement l'idée du pattern **Stratégie** que vous avez déjà vu lors du dernier TP, mais appliqué pour des fabriques ! On pourrait voir la **fabrique abstraite** comme une **stratégie de création**.
+C'est globalement l'idée du pattern **Stratégie** que vous avez déjà vu lors du dernier TP, mais appliqué pour des fabriques ! On pourrait voir la **Fabrique Abstraite** comme une **stratégie de création**.
 
 On peut généraliser ce **pattern** ainsi :
 
@@ -2482,11 +2482,11 @@ Revenons une dernière fois sur l'application de gestion de livraisons afin de l
 
 </div>
 
-### Différences entre les patterns méthode fabrique et fabrique abstraite
+### Différences entre les patterns _Méthode Fabrique_ et _Fabrique Abstraite_
 
-Les patterns méthode fabrique et fabrique abstraite sont effectivement proches, dans le sens où ils visent tous les deux à abstraire et organiser la création d’objets. Mais même s’ils peuvent parfois résoudre des problèmes similaires, leurs intentions, leurs formes et surtout leurs contextes d’utilisation sont nettement différents.
+Les patterns **Méthode Fabrique** et **Fabrique Abstraite** sont effectivement proches, dans le sens où ils visent tous les deux à abstraire et organiser la création d’objets. Mais même s’ils peuvent parfois résoudre des problèmes similaires, leurs intentions, leurs formes et surtout leurs contextes d’utilisation sont nettement différents.
 
-Concernant la **méthode fabrique** :
+Concernant la **Méthode Fabrique** :
 * C'est un pattern dont l’objectif principal est de donner un point d’extension permettant aux sous-classes de décider quel objet doit être instancié.
 * On remplace donc un appel direct à `new` dans une classe de base par une méthode destinée à être redéfinie par les sous-classes.
 * L'**intention** est la suivante :
@@ -2507,15 +2507,14 @@ Concernant la **méthode fabrique** :
   * Pas réutilisable ailleurs sans héritage : la logique de création reste enfermée dans des sous-classes.
   * Pas adapté si on veut dynamiquement changer les types d’objets instanciés à l’exécution.
 
-Concernant la **fabrique abstraite** :
-* C'est un pattern qui encapsule un ensemble de méthodes de création dans une seule classe dédiée, et non dans le client.
-* Elle définit une interface de création d’une famille d’objets cohérents.
-* Le client reçoit une fabrique abstraite (via composition), et ne dépend donc plus d’aucune classe concrète.
+Concernant la **Fabrique Abstraite** :
+* C'est un pattern qui regroupe un ensemble de méthodes de création dans une classe/interface dédiée (la fabrique), et non dispersées dans le code client.
+* Elle définit une interface de création d’une famille d’objets cohérents entre eux (e.g., unités, armes, sorts d'une même armée).
+* Le client reçoit une fabrique abstraite (via composition/injection), et ne dépend donc que de l'interface abstraite.
 * L'**intention** est la suivante :
   * Fournir un moyen de créer une famille d’objets liés ou cohérents entre eux.
   * Permettre de changer dynamiquement toute la famille d’objets créée en changeant simplement la fabrique injectée.
   * Séparer complètement logique métier et logique de création (SRP).
-* Le client reçoit une fabrique abstraite (composition + polymorphisme).
 * Les méthodes de création sont regroupées dans une classe dédiée, sans logique métier.
 * Chaque fabrique concrète représente une configuration cohérente (une famille).
 * Permet le changement de famille d’objets à l’exécution, sans modification du client.
@@ -2526,17 +2525,17 @@ Concernant la **fabrique abstraite** :
   * Très flexible : il suffit de changer la fabrique injectée pour changer le comportement.
   * Favorise la testabilité (on peut injecter des fabriques factices ou de test).
 * **Limites** :
-  * Inadaptée si la création dépend fortement de l’état interne du client (ce que la méthode fabrique gère bien).
+  * Inadaptée si la création dépend fortement de l’état interne du client (ce que la Méthode Fabrique gère bien).
   * Pas nécessairement adapté si la logique de création des objets n'est pas réutilisée à plusieurs endroits et si le client qui a besoin de créer les objets n'a pas besoin de pouvoir dynamiquement changer de comportement (d'instanciation des objets) à l'exécution.
 
 En résumé :
 
-On va utiliser la **méthode fabrique** si :
+On va utiliser la **Méthode Fabrique** si :
 * La création dépend des données ou de l’état interne de la sous-classe.
 * On veut ajouter un point d’extension à une hiérarchie existante.
 * On n’a pas besoin de changer dynamiquement les types instanciés.
 
-On va utiliser une **fabrique abstraite** si :
+On va utiliser une **Fabrique Abstraite** si :
 * On doit créer une famille d’objets liés/relatifs.
 * On doit pouvoir changer toute la famille d’objets à l’exécution en remplaçant la fabrique.
 * On veut séparer la logique métier et la logique de création des objets.
@@ -2697,7 +2696,7 @@ De plus, on peut aussi discuter du fait que le code gérant la sélection de la 
 
 </div>
 
-Ici, cet exemple d'implémentation avec un fichier de configuration n'est bien sûr pas spécifique au pattern fabrique abstraite. On pourrait l'appliquer sur tout ce qui est abstrait et qui n'a besoin que d'une instance lors de l'exécution du programme. On pourra faire la même chose couplée au pattern **Stratégie** par exemple.
+Ici, cet exemple d'implémentation avec un fichier de configuration n'est bien sûr pas spécifique au pattern **Fabrique Abstraite**. On pourrait l'appliquer sur tout ce qui est abstrait et qui n'a besoin que d'une instance lors de l'exécution du programme. On pourra faire la même chose couplée au pattern **Stratégie** par exemple.
 
 La gestion des instances concrète se fait généralement au travers d'un outil dédié appelé **conteneur de dépendances** (ou **conteneur IoC**) qui est utilisé dans de nombreux **frameworks**. Il permet notamment de limiter la multiplication des singletons inutiles.
 
@@ -3206,7 +3205,7 @@ Si vous n'avez pas tout compris, n'hésitez pas à en parler avec votre enseigna
 
 2. Créez une nouvelle fabrique permettant de créer des `patternmons`.
 
-3. Adaptez le code de votre **fabrique abstraite** afin de pouvoir gérer votre nouvelle fabrique.
+3. Adaptez le code de votre **Fabrique Abstraite** afin de pouvoir gérer votre nouvelle fabrique.
 
 4. Un simple changement dans le fichier de configuration doit suffire pour utiliser les patternmons. Testez et vérifiez que tout marche bien (les attaques des monstres devraient avoir des noms anglais).
 
