@@ -2018,7 +2018,7 @@ Vous avez donc sûrement trouvé une solution exploitant plusieurs **méthodes f
 
 Cependant, cette solution, même si globalement acceptable, n'est pas forcément la plus qualitative :
 * Il y a une duplication de code entre vos classes de débugage et vos classes d'armée.
-* Dans cette solution, on utilise fortement **l'héritage**, alors que nous avons vu qu'il est généralement préférable de favoriser **la composition** (faible) et **l'injection de dépendances**.
+* La solution actuelle fonctionne mais se repose excessivement sur l'héritage pour choisir les produits : les sous‑classes (`ArmeeHumaine`/`ArmeeOrc`, `DebugueurHumain`/`DebugeurOrc`) se contentent d'instancier directement des classes concrètes via `new`. Quand seule la production d'objets varie, il est préférable de déléguer cette responsabilité à une fabrique injectée (**la composition** faible + **injection de dépendances**) plutôt que de multiplier des sous‑classes.
 * Cette implémentation pourrait aussi poser un problème si on souhaite pouvoir **changer dynamiquement le comportement de création** souhaité.
 
 Imaginons que nous souhaitons faire en sorte qu'une armée puisse être **vaincue** par une autre armée. L'armée vaincue n'est pas détruite et continue d'exister (et on conserve les soldats encore vivants et les armes). Cependant, l'armée vainqueuse impose son mode de fonctionnement à l'armée vaincue : elle produira maintenant les mêmes unités, les mêmes armes et les mêmes sorts que l'armée vainqueuse.
