@@ -279,7 +279,7 @@ Vous l'aurez compris, votre objectif sera de doter notre éditeur de document de
 
 5. Exécutez la commande **git log** pour observer l'historique des commits, vous devriez en voir deux (celui du dépôt original et le nouveau).
 
-6. Effectuez un petit changement, par exemple, l'ajout d'un fichier **README.md**. Faites en sorte de faire un nouveau commit et observez de nouveau l'historique avec **git log**.
+6. Effectuez un petit changement, par exemple, l'ajout d'un fichier **README.md**. Ajoutez ce nouveau fichier dans votre dépôt git puis effectuez un nouveau commit et observez de nouveau l'historique avec **git log**.
 
 7. Synchronisez vos changements avec le dépôt distant en utilisant **git push**. Au niveau de la page du projet sur **GitLab** vérifiez que les dossiers/fichiers que vous avez spécifiés dans le fichier **.gitignore** ne sont pas versionnés.
 
@@ -399,7 +399,7 @@ Le **rebasing** s'effectue alors. On peut consulter l'historique pour constater 
 
 Depuis cet état, votre dépôt distant va refuser d'intégrer vos changements, car des commits ont disparu... Il ne sait plus où vous en êtes. Vous pouvez alors forcer le changement en utilisant l'option `--force` lors du push. Attention à ne pas abuser de cette option, car il force le dépôt distant à se synchroniser sur votre version et donc, effacer les différences entre son contenu et votre dépôt. Il est donc conseillé d'utiliser cette option seulement dans le cas du rebase, comme nous venons de le voir. De plus, on va plutôt utiliser le **rebase** quasi-exclusivement sous les sous-branches (et jamais le `main`/ `master`) comme nous allons le voir bientôt.
 
-Attention, sur **GitLab**, la branche **master** est protégée contre le `--force`, par défaut. Pour désactiver cette sécurité : sur la page du dépôt, dans le menu à gauche → **Settings** → **Repository** → **Protected Branches** → **Expand**. Un peu plus bas sont listées toutes les branches protégées. Si on veut annuler cette protection, il suffit d'activer l'option **Allowed to force push**. 
+Attention, sur **GitLab**, la branche **master** est protégée contre le `--force`, par défaut. Pour désactiver cette sécurité : sur la page du dépôt, dans le menu à gauche → **Settings** → **Repository** → **Protected Branches**. Un peu plus bas sont listées toutes les branches protégées. Si on veut annuler cette protection, il suffit d'activer l'option **Allowed to force push**. 
 
 La protection contre le `--force` a du sens dans un projet concret où on ne travaille jamais directement sur **master**, mais sur les sous-branches. 
 
@@ -485,6 +485,8 @@ Par exemple, imaginons le scénario suivant :
 5. Eurêka ! Avec la technique de rebasing, on peut :
     * soit regrouper mon dernier commit "sain" (qui ne contient plus le fichier avec les identifiants) avec le commit précédent. Ainsi, il en résultera un seul commit où ce fichier de configuration n'a jamais été versionné ! On force le `push`, l'incident est réparé !
     * soit supprimer le commit contenant le fichier de configuration (avec l'option `drop`) **seulement si le commit n'ajoute que ce fichier** et pas d'autres fichiers/données importants.
+
+Attention toutefois, certaines plateformes (comme GitHub) conservent tous les commits effectués, même s'ils ne sont plus référencés (dans l'historique ou ailleurs). Il est ainsi possible, dans certains cas, de tenter un "brut force" sur les identifiants de commits pour retrouver des commits qui sont normalement effacés. Donc, **si vous faites fuiter des identifiants ou des informations sensibles sur un dépôt, considérez de toute façon qu'ils sont compromis, et qu'il faut immédiatement les changer**, même si vous réparez votre erreur.
 
 ### Conventions pour les commits
 
@@ -702,7 +704,9 @@ Jusqu'ici, vous avez travaillé seul, mais le but de **git** est aussi de pouvoi
 
 Vous et les autres étudiants de votre groupe ont inséré un mini bug lors de l'exercice précédent. Nous nous plaçons alors dans le contexte où vous découvrez cette application et rencontrez ce bug ! (évidemment, le projet n'a pas de tests unitaires, sinon il aurait été détecté plus tôt !).  
 
-Comment faire pour reporter ce bug au développeur ? GitLab propose simplement une rubrique `Issues` (dans le menu de gauche du dépôt) qui va servir à l'ouverture et la fermeture de **tickets**. Ces **tickets** sont souvent des signalements de bug, mais on peut aussi avoir des suggestions de fonctionnalités, etc. Un autre utilisateur peut même réaliser du code solution et le proposer en résolution du ticket, si le propriétaire du dépôt l'accepte !
+Comment faire pour reporter ce bug au développeur ? GitLab propose simplement une rubrique qui va servir à l'ouverture et la fermeture de **tickets**. Ces **tickets** sont souvent des signalements de bug, mais on peut aussi avoir des suggestions de fonctionnalités, etc. Un autre utilisateur peut même réaliser du code solution et le proposer en résolution du ticket, si le propriétaire du dépôt l'accepte !
+
+Pour ouvrir un **ticket**, il faut se rendre dans **Plan** -> **Work Items** et cliquer sur le bouton **New Item** dans la page. Cela ouvre un menu **New Issue** qu'il est alors possible de compléter.
 
 Pour la suite des exercices, trouvez-vous un binôme qui est au même point que vous. C'est très important, **vous ne pouvez pas faire le reste du TP seul**. Si l'attente est trop longue, vous pouvez directement passer à la section 5 [Bonus (pour les plus rapides)](#bonus-pour-les-plus-rapides), en attendant. Éventuellement, vous pouvez essayer de vous débrouiller à 3 si vous mettre en binôme n'est pas possible avec la configuration du groupe.
 
@@ -712,11 +716,11 @@ Pour la suite des exercices, trouvez-vous un binôme qui est au même point que 
 
 2. **Clonez** le dépôt d'un collègue qui en est au même point que vous et exécutez son programme pour trouver le bug qu'il a inséré au niveau de la commande `clear`.
 
-3. Sur le dépôt **GitLab** de votre collègue, créez une `issue` et expliquez le bug que vous rencontrez. Une **issue** est en fait un fil de discussion où différentes personnes peuvent intervenir.
+3. Sur le dépôt **GitLab** de votre collègue, créez un nouveau **ticket** (de type **Issue**)` et expliquez le bug que vous rencontrez. Le ticket créé (issue) est en fait un fil de discussion où différentes personnes peuvent intervenir.
 
-4. Lorsque votre collègue a fait de même avec **votre dépôt**, **relevez l'identifiant** (numéro) de l'issue (normalement : `#1`) puis retournez dans votre projet et développez un **bugfix** à partir d'une branche dérivée de `development`. Il faudra respecter les conventions citées plus tôt pour les branches. Pour le message final du commit (qui doit aussi respecter les conventions !), veillez à bien indiquer dans la description le texte suivant : `Closes #numeroIssue` (en remplaçant `numeroIssue`, bien sûr).
+4. Lorsque votre collègue a fait de même avec **votre dépôt**, **relevez l'identifiant** (numéro) de l'issue, tout en haut de la fenêtre détaillant l'issue (à côté du nom : `editeur-de-texte#numeroIssue`, normalement : `#1`) puis retournez dans votre projet et développez un **bugfix** à partir d'une branche dérivée de `development`. Il faudra respecter les conventions citées plus tôt pour les branches. Pour le message final du commit (qui doit aussi respecter les conventions !), veillez à bien indiquer dans la description le texte suivant : `Closes #numeroIssue` (en remplaçant `numeroIssue`, bien sûr).
 
-5. Une fois que le **bugfix** est commit et intégré à `development` puis à `master` (via la fusion des branches), effectuez le push des branches `development` et `master` puis retournez voir l'issue sur **GitLab**. Vous constaterez que votre commit a automatiquement été attaché à cette **issue** et qu'elle a même été fermée ! (onglet **Closed** dans le menue **Issues**)
+5. Une fois que le **bugfix** est commit et intégré à `development` puis à `master` (via la fusion des branches), effectuez le push des branches `development` et `master` puis retournez voir l'issue sur **GitLab**. Vous constaterez que votre commit a automatiquement été attaché à cette **issue** et qu'elle a même été fermée ! (en recherchant les issues avec le **State** "Closed" dans le menu Work Items).
 
 </div>
 
@@ -734,7 +738,7 @@ Le fait de faire une demande d'intégration de son code dans le projet d'origine
 
 1. Encore une fois, rendez-vous dans le dépôt de votre collègue (attendez bien qu'il ait terminé l'exercice précédent et que son bugfix soit donc publié). En haut à droite, appuyez sur le bouton **fork**. Configurez le **namespace** (au niveau de **Project URL**) pour le placer dans votre groupe `qualite-de-developpement-semestre-3/etu/votrelogin` puis validez. Un nouveau dépôt "forké" à partir de celui de votre collègue est alors disponible.
 
-2. Clonez ce "nouveau" dépôt sur votre machine : comme ce dépôt forké vous appartient, vous aurez droit de faire des push dessus !
+2. Clonez ce "nouveau" dépôt sur votre machine : comme ce dépôt forké vous appartient, vous aurez droit de faire des push dessus ! N'oubliez pas de configurer votre nom/adresse email sur ce dépôt (si nécessaire).
 
 3. Dans l'application récupérée, ajoutez une commande `inserer` qui permet d'insérer une chaîne de caractères après une position donnée. Par exemple :
 
@@ -779,7 +783,7 @@ Dans l'exercice précédent, vous avez collaboré avec un collègue, mais celui-
     
     * Dans votre dépôt GitLab (pas celui **forké**, celui original), donnez le rôle **Owner** à votre collègue.
 
-    * Ajouter une méthode `decrireCommande` (type de retour `void`) dans l'interface `Commande`. Cette fonction a pour but de décrire simplement (en console, avec un print) ce que fait la `Commande`, puis ses paramètres (par exemple, pour une instance de `CommandeRemplacer` : "Remplacement de texte dans le document, paramètres : ['remplacer', '1', '5', 'hello']"). Implémentez cette fonction dans toutes les commandes de manière adéquate Respectez bien le processus que vous avez jusqu'ici : création d'une sous-branche, commits conventionnels, rebasing, etc. Poussez la branche de votre fonctionnalité sur GitLab. *Astuce* : la fonction `Arrays.toString(...)` peut vous être utile...
+    * Ajouter une méthode `decrireCommande` (type de retour `void`) dans l'interface `Commande`. Cette fonction a pour but de décrire simplement (en console, avec un println) ce que fait la `Commande`, puis ses paramètres (par exemple, pour une instance de `CommandeRemplacer` : "Remplacement de texte dans le document, paramètres : ['remplacer', '1', '5', 'hello']"). Implémentez cette fonction dans toutes les commandes de manière adéquate Respectez bien le processus que vous avez jusqu'ici : création d'une sous-branche, commits conventionnels, rebasing, etc. Poussez la branche de votre fonctionnalité sur GitLab. *Astuce* : la fonction `Arrays.toString(...)` peut vous être utile...
 
     * Le but de cette fonction est de développer un système d'historique (dans le futur) afin de consulter tout ce qui a été fait sur le document jusqu'à présent. Nous ne le ferons pas pour le moment, mais il vous sera proposé de le faire à la fin du TP dans la section 5 [Bonus (pour les plus rapides)](#bonus-pour-les-plus-rapides).
     
@@ -857,7 +861,7 @@ Pour l'exercice suivant, le membre ayant le rôle de **collaborateur** va princi
 
 4. Une fois que les modifications de la branche sont poussées, le **propriétaire** peut finalement valider la `merge request` de son côté ! Faites-le.
 
-5. Pour finir, vous pouvez fusionner la branche `development` dans `master` (en local après avoir récupéré les modifications de la branche `development`, ou bien en ligne avec une merge request).
+5. Pour finir, vous pouvez fusionner la branche `development` dans `master` (en local après avoir récupéré les modifications de la branche `development`, ou bien en ligne avec une merge request). Si vous choisissez de tout faire en ligne, n'oubliez pas de synchroniser vos branches local avec le contenu du dépôt distant (avec un `pull` sur `development` et `master`).
 
 </div>
 

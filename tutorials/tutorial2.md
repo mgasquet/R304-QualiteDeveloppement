@@ -65,7 +65,7 @@ Revenons maintenant sur la configuration d'un `job` et intéressons-nous à ses 
 
 * `stage` (optionnel, mais très fortement recommandé) : définit dans quel stage s'exécute le job. Si on ne met rien, il est placé dans un stage par défaut.
 
-* `image` (quasiment obligatoire tout le temps) : spécifie quelle est l'image docker utilisée par ce job. Il existe énormément d'images, on doit cibler en fonction des besoins du job. Par exemple, si on doit tester un programme `java` (qui tourne sur la version 21), on peut utiliser l'image `maven:3.9.5-eclipse-temurin-21` qui contient java 21 et Maven. On peut éventuellement spécifier une image par défaut qui sera utilisée par chaque job (dans des conteneurs différents), mais de manière générale, on spécifie par job. Si on ne précise rien, une image par défaut sera utilisée.
+* `image` (quasiment obligatoire tout le temps) : spécifie quelle est l'image docker utilisée par ce job. Il existe énormément d'images, on doit cibler en fonction des besoins du job. Par exemple, si on doit tester un programme `java` (qui tourne sur la version 21), on peut utiliser l'image `maven:3.9-eclipse-temurin-25` qui contient java 25 et Maven. On peut éventuellement spécifier une image par défaut qui sera utilisée par chaque job (dans des conteneurs différents), mais de manière générale, on spécifie par job. Si on ne précise rien, une image par défaut sera utilisée.
 
 * `script` (obligatoire) : c'est la partie la plus importante. Il s'agit d'une liste de commandes (comme si vous étiez dans un terminal) qui vont s'exécuter dans la machine virtuelle. Lorsque le job démarre et que le conteneur est initialisé, les sources du projet sont chargées et vous vous trouvez directement à sa racine. Vous pouvez donc directement interagir avec le projet. Si toutes les commandes s'exécutent sans problème, le job réussit, sinon il échoue.
 
@@ -73,7 +73,7 @@ Revenons maintenant sur la configuration d'un `job` et intéressons-nous à ses 
 
 * `dependencies` (optionnel) : permet d'indiquer que ce job a besoin des artifacts (fichiers exportés) d'un certain `job` (d'un stage précédent). Cela n'est pas obligatoire de la préciser si le job correspondant intervient dans le stage qui suit celui qui a créé les `artifacts` (les artifacts seront transmis automatiquement).
 
-* `rules` (optionnel) : permet de spécifier des conditions pour que le job se déclenche. Par exemple, `job3` ne se déclenche qu'en cas de `push` sur la branche par défaut du dépôt (`main` ou `master` par exemple). Si rien n'est spécifié (comme pour `job1` et `job2`) le job s'exécute lors de chaque événement (par exemple, en cas de push sur n'importe quelle branche, la création d'un tag, etc). On peut aller dans le détail et écrire des conditions complexes, et même des conditions pour spécifier quand le job ne s'exécute pas, etc. Dans l'exemple de `job3` on aurait aussi pu spécifier une branche spécifique (par exemple `'$CI_COMMIT_BRANCH == "development"'`) ou bien `$CI_COMMIT_BRANCH` pour n'autoriser le job à s'exécuter seulement si on a un push de commits (pas de création de tags ou autre). On notera qu'un `merge` d'une branche résultera en un `push` à un moment donné, dans la branche qui intègre les changements de la branche fusionnée.
+* `rules` (optionnel) : permet de spécifier des conditions pour que le job se déclenche. Par exemple, `job3` ne se déclenche qu'en cas de `push` sur la branche par défaut du dépôt (`main` ou `master` par exemple). Si rien n'est spécifié (comme pour `job1` et `job2`) le job s'exécute lors de chaque événement (par exemple, en cas de push sur n'importe quelle branche, la création d'un tag, etc). On peut aller dans le détail et écrire des conditions complexes, et même des conditions pour spécifier quand le job ne s'exécute pas, etc. Dans l'exemple de `job3` on aurait aussi pu spécifier une branche spécifique (par exemple `'$CI_COMMIT_BRANCH == "development"'`) ou bien `$CI_COMMIT_BRANCH` pour n'autoriser le job à s'exécuter seulement si on a un push de commits (pas de création de tags ou autre). Attention, quand on souhaite préciser un nom de branche en particulier, il faut la mettre entre double quotes (Par exemple, "development", comme dans l'exemple donné juste avant). On notera qu'un `merge` d'une branche résultera en un `push` à un moment donné, dans la branche qui intègre les changements de la branche fusionnée.
 
 Il existe beaucoup d'autres options que nous n'aborderons pas dans ce TP, mais que vous pouvez retrouver [ici](https://docs.gitlab.com/ci/yaml/#keywords).
 
@@ -140,7 +140,7 @@ Vous allez maintenant créer votre premier pipeline (très simple) sur le projet
 
 2. À la racine du dépôt, créez un fichier `.gitlab-ci.yml`.
 
-3. À l'aide de ce fichier, créez le pipeline qui exécute un stage nommé `hello` qui contient un seul job (du nom que vous voulez) qui s'exécute sur l'image `alpine:latest` et affiche un message (de votre choix) en console. Ce job doit seulement s'exécuter sur la branche `development`.
+3. À l'aide de ce fichier, créez le pipeline qui exécute un stage nommé `hello` qui contient un seul job (du nom que vous voulez) qui s'exécute sur l'image `alpine:latest` et affiche un message (de votre choix) en console. Ce job doit seulement s'exécuter sur la branche `development` (on rappelle que dans la condition, il faut mettre le nom de la branche visée entre double quotes).
 
 4. Créez un commit pour ajouter ce fichier puis poussez-le sur le dépôt distant.
 
@@ -164,12 +164,12 @@ Vous allez maintenant améliorer votre pipeline afin de lui permettre de vérifi
 
 1. Si ce n'est pas déjà fait, placez-vous dans votre branche `development`.
 
-2. Si le dossier de tests `src/test/java` n'existe pas encore (car vous n'avez écrit aucun test), alors il faudra le créer. Depuis IntelliJ le plus simple est de générer une classe de test, ce qui va provoquer la création du répértoire de tests : ouvrir la classe `Document` → clic droit sur la déclaration de la classe `public class Document`  → **Generate**   → **Test...** . Après avoir donné le nom à votre classe de test, disons `DocumentTest`, le dossier `src/test/java` la contenant va être généré. De plus, `DocumentTest` va être placée dans le même paquetage que la classe testée `Document` (d'après la convention standard). Si vous voulez créer le répertoire de tests avant d'y ajouter les classes de tests, alors c'est un peu plus lent : cliquer droit sur le répertoire `src` → **New** → **Directory** → Choisissez `test/java` → Créez un paquetage `fr.iut.editeur.document` dans `src/test/` → à l'intérieur, créez la classe `DocumentTest`.
+2. Si le dossier de tests `src/test/java` n'existe pas encore (car vous n'avez écrit aucun test), alors il faudra le créer. Depuis IntelliJ le plus simple est de générer une classe de test, ce qui va provoquer la création du répertoire de tests : ouvrir la classe `Document` → clic droit sur la déclaration de la classe `public class Document` → **Generate** → **Test...**. Après avoir donné le nom à votre classe de test, disons `DocumentTest`, le dossier `src/test/java` la contenant va être généré. De plus, `DocumentTest` va être placée dans le même paquetage que la classe testée `Document` (d'après la convention standard). Si vous voulez créer le répertoire de tests avant d'y ajouter les classes de tests, alors c'est un peu plus lent : cliquer droit sur le répertoire `src` → **New** → **Directory** → Choisissez `test/java` → Créez un paquetage `fr.umontpellier.iut.document` dans `src/test/` → à l'intérieur, créez la classe `DocumentTest`.
 
    Par convention, la couleur verte indique qu'il s'agit du répertoire contenant le code source des tests.
 
  
-3. Écrire quelques méthodes pour tester les méthodes de la classe `Document`. Si vous ne vous rappelez plus comment faire, jetez un œil à vos cours de *Dev-Objets* de l'an dernier ! Voici un squelette de cette classe :
+3. Écrire quelques méthodes pour tester les méthodes de la classe `Document` (pas besoin d'être exhaustif, pour ce TP). Si vous ne vous rappelez plus comment faire, jetez un œil à vos cours de *Dev-Objets* de l'an dernier ! Voici un squelette de cette classe :
 
   ```java
   package fr.iut.editeur.document;
@@ -202,7 +202,7 @@ Dans votre **pipeline**, vous allez diviser le travail en deux **stages** et deu
 
 Pour cela, vous aurez besoin des ressources suivantes :
 
-* L'image `maven:3.9.5-eclipse-temurin-21` qui permet d'avoir un environnement avec java (21) et Maven (pour avoir la commande `mvn`).
+* L'image `maven:3.9-eclipse-temurin-25` qui permet d'avoir un environnement avec java (25) et Maven (pour avoir la commande `mvn`).
 
 * La commande `mvn compile` (qui permet de compiler un projet) et la commande `mvn test` (exécution de tests unitaires).
 
@@ -218,9 +218,21 @@ Cela peut sembler lourd de séparer cela en deux stages/jobs, mais cela nous per
 
 4. Pour finir, modifiez légèrement la classe `Document` pour qu'un ou plusieurs tests ne passent plus. Attention, le programme doit compiler ! Faites un commit et un push puis vérifiez que le premier job de votre pipeline passe, mais pas le second. Enfin, remettez tout en ordre.
 
-**Remarque :** Dans cet exemple, l'image utilisée pour les deux stages est la même. Ainsi, pour éviter la duplication dans le fichier `.gitlab-ci.yml`, on aurait pu indiquer `image: maven:3.9.5-eclipse-temurin-21` sur la première ligne de ce fichier, avant le mot-clé `stages`. Cela signifie que c'est l'image par défaut pour tous les stages et donc on peut omettre la déclaration de l'image dans chacun des jobs.
-
 </div>
+
+**Remarque :** Dans cet exemple, l'image utilisée pour les deux stages est la même. Ainsi, pour éviter la duplication dans le fichier `.gitlab-ci.yml`, on aurait pu indiquer `image: maven:3.9-eclipse-temurin-25` sur la première ligne de ce fichier, avant le mot-clé `stages`. Cela signifie que c'est l'image par défaut pour tous les stages et donc on peut omettre la déclaration de l'image dans chacun des jobs.
+
+Aussi, comme nous utilisons deux fois un conteneur avec la même image maven, il est possible d'optimiser les performances en mettant en cache les dépendances téléchargées afin que les jobs n'aient pas à les re-télécharger :
+
+```yaml
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+
+cache:
+  key: maven
+  paths:
+    - .m2/repository/
+```
 
 ## Automatisation des releases
 
@@ -230,7 +242,7 @@ Cela peut sembler lourd de séparer cela en deux stages/jobs, mais cela nous per
 
 Sur **Git** il est possible d'associer un **commit** à un **tag**. Un **tag** est une étiquette nommée. Généralement, on associe une `release` à un **tag**. Il est aussi possible de faire un `checkout` directement sur un tag !
 
-Par convention, les tags s'utilisent donc pour indiquer la version d'un programme sous la forme `vX.Y.Z`. Ainsi, par exemple `v0.0.1`, `v1.0.0`, etc. `X` désigne les mises à jour majeures (le logiciel change quasi-complétement), `Y` les mises à jour intermédiaires (ajout de nouvelles fonctionnalités, par exemple après un sprint) et `Z` les mises à jour mineures (fixes de bugs par exemple).
+Par convention, les tags s'utilisent donc pour indiquer la version d'un programme sous la forme `vX.Y.Z`. Ainsi, par exemple `v0.0.1`, `v1.0.0`, etc. `X` désigne les mises à jour majeures (le logiciel change quasi-complètement), `Y` les mises à jour intermédiaires (ajout de nouvelles fonctionnalités, par exemple après un sprint) et `Z` les mises à jour mineures (fixes de bugs par exemple).
 
 Pour créer un **tag**, on utilise simplement la commande :
 
@@ -265,7 +277,7 @@ Dans une **release**, il est possible d'inclure des liens vers des fichiers. Par
 Nous allons répartir le travail en deux stages/jobs :
 
 1. Premier **job** : construire l'exécutable de l'application et l'exporter pour le prochain stage :
-  * Le script lance la construction de l'exécutable grâce à une commande `maven`, tout en précisant la version de l'application (qu'on obtient grâce au nom du **tag**).
+  * Le script lance la construction de l'exécutable grâce à une commande `mvn`, tout en précisant la version de l'application (qu'on obtient grâce au nom du **tag**).
   * Il déplace ensuite l'exécutable produit dans le dossier courant.
   * Enfin, on utilise le système d'**artifacts** pour exporter le fichier `jar` vers le prochain stage.
 
@@ -309,24 +321,21 @@ Expliquons tout cela :
 
 Nous allons procéder par étape et vous allez d'abord commencer par implémenter le job de `build` sans la release. Nous pourrons ainsi voir si l'exécutable est bien produit et exporté. Voici ce dont vous aurez besoin :
 
-* Pour ce job (et ce stage) nous allons utiliser encore une fois l'image `maven:3.9.5-eclipse-temurin-21`.
+* Pour ce job (et ce stage) nous allons utiliser encore une fois l'image `maven:3.9-eclipse-temurin-25`.
 
 * La variable prédéfinie `$CI_COMMIT_TAG` permet d'obtenir le nom du tag poussé sur le dépôt.
 
-* Il est judicieux de définir deux variables pour ce job :
-  * Une variable contenant la **version** correspondant au tag sans le `v`. Pour cela, on peut utiliser la syntaxe `${CI_COMMIT_TAG#v}` pour enlever le `v`.
-  * Une variable contenant le **nom de l'exécutable** : `EditeurDeTexte-$VERSION.jar` (où `$VERSION` correspondant au nom de la variable contenant la version...).
-  * Donc, par exemple, si le tag poussé est `v1.0.2`, on obtient les variables `1.0.2` et `EditeurDeTexte-1.0.2.jar`.
+* Il est judicieux de définir une variable supplémentaire pour ce job : le **nom de l'exécutable** : `EditeurDeTexte-$CI_COMMIT_TAG.jar` Ainsi, si par exemple, si le tag poussé est `v1.0.2`, on obtient la variable `EditeurDeTexte-v1.0.2.jar`.
 
 * On peut utiliser les variables partout dans le job (commande du `script`, dans le `path` des `artifacts`, etc).
 
 * Pour le **script**, on peut utiliser trois commandes :
 
-  * `mvn versions:set -DnewVersion=X.Y.Z -DgenerateBackupPoms=false` qui permet de définir la version de l'exécutable `jar` produit (en remplaçant `X.Y.Z` par cette version, bien entendu).
+  * `mvn versions:set -DnewVersion=vX.Y.Z -DgenerateBackupPoms=false` qui permet de définir la version de l'exécutable `jar` produit (en remplaçant `vX.Y.Z` par cette le tag, bien entendu).
 
-  * `mvn package` pour produire l'exécutable dans le dossier `target/NomExecutable-X.Y.Z.jar`.
+  * `mvn package` pour produire l'exécutable dans le dossier `target/NomExecutable-vX.Y.Z.jar`.
 
-  * `mv target/NomExecutable-X.Y.Z.jar ./` pour déplacer le `.jar` dans le dossier courant (plus facile pour la suite) en remplaçant par le nom adéquat, bien entendu.
+  * `mv target/NomExecutable-vX.Y.Z.jar ./` pour déplacer le `.jar` dans le dossier courant (plus facile pour la suite) en remplaçant par le nom adéquat, bien entendu.
 
 * Concernant les `artifacts`, on exporte seulement le `.jar` qui se trouve dans le dossier courant (donc, dans `paths`, on peut simplement mettre le nom du jar vu qu'il se trouve dans le dossier courant). On peut alors mettre une expiration d'une heure (pour être large). Ce fichier ne sera pas conservé, il a pour but d'être utilisé par le job de **release** que nous développerons par la suite.
 
@@ -343,7 +352,7 @@ Allez, il est temps de mettre en application !
 
 3. Créez un **tag** nommé `v1.0.0` puis, poussez-le sur le dépôt distant.
 
-4. Sur la page de gestion des pipelines, observez le déroulement des jobs, et vérifiez que le job `build` s'exécute bien à la fin. À l'issue de l'exécution, rendez-vous dans le menu accessible via le panneau latéral gauche `Build`→ `Artifacts` et vérifiez que votre fichier `.jar` est bien accessible en déroulant les fichiers associés au job `build`. Vérifiez également que son nom est correct (`EditeurDeTexte-1.0.0.jar`).
+4. Sur la page de gestion des pipelines, observez le déroulement des jobs, et vérifiez que le job `build` s'exécute bien à la fin. À l'issue de l'exécution, rendez-vous dans le menu accessible via le panneau latéral gauche `Build`→ `Artifacts` et vérifiez que votre fichier `.jar` est bien accessible en déroulant les fichiers associés au job `build`. Vérifiez également que son nom est correct (`EditeurDeTexte-v1.0.0.jar`).
 
 5. S'il y a une erreur quelque part, vous devrez bien penser à pousser vos modifications sur le dépôt distant puis à créer et pousser un nouveau tag pour re-tester (ou supprimer celui-ci en local et à distance puis le pousser de nouveau). La version en suffixe de l'exécutable `jar` doit correspondre au tag.
 
@@ -373,10 +382,10 @@ release:
       - "chemin/fichier2.xxx"
     expire_in: never
   script:
-    - echo "Publication de la release X.Y.Z..."
+    - echo "Publication de la release vX.Y.Z..."
   release:
     name: 'Release X.Y.Z'
-    description: "Version X.Y.Z de l'application"
+    description: "Version vX.Y.Z de l'application"
     tag_name: '$CI_COMMIT_TAG$'
     ref: '$CI_COMMIT_TAG'
     assets:
@@ -405,11 +414,11 @@ Attardons-nous sur tout cela :
 
 * Encore une fois, on exécute le job que si un tag est poussé (grâce à la section `rules`).
 
-Votre but est donc de créer un **stage** et un **job** associé qui fait suite au job de `build`, récupère ses artifacts (ici, on aura seulement le fichier `EditeurDeTexte-X.Y.Z.jar`), l'exporte via les artifacts et publie la release. Voici quelques conseils pour votre prochaine mission :
+Votre but est donc de créer un **stage** et un **job** associé qui fait suite au job de `build`, récupère ses artifacts (ici, on aura seulement le fichier `EditeurDeTexte-vX.Y.Z.jar`), l'exporte via les artifacts et publie la release. Voici quelques conseils pour votre prochaine mission :
 
 * Comme indiqué plus haut, vous devez utiliser l'image `registry.gitlab.com/gitlab-org/release-cli:latest`.
 
-* Redéfinissez les mêmes variables que dans le job `build` (numéro de version sans `v` et du nom de l'exécutable) dans ce nouveau job : vous en aurez besoin un peu partout (pour `paths` dans `artifacts`, dans les différentes sous-sections de `release`, pour le nom du fichier et le lien de téléchargement, etc).
+* Redéfinissez la même variable que dans le job `build` (nom de l'exécutable) dans ce nouveau job (qui servira à plusieurs endroits où on a besoin du nom du fichier). N'oubliez pas que vous avez aussi accès à la variable `$CI_COMMIT_TAG` pour obtenir la version de la release, vous en aurez besoin un peu partout.
 
 * N'oubliez pas d'inclure une section `script` avec une commande simple (qui fait un écho ou autre).
 
@@ -428,13 +437,13 @@ Votre but est donc de créer un **stage** et un **job** associé qui fait suite 
 
 4. Sur la page de gestion des pipelines, observez le déroulement des jobs, et vérifiez que le job `release` s'exécute bien à la fin. 
 
-5. Enfin, si tout s'est bien passé, rendez-vous dans le menu `Deploy` → `Releases` au niveau du panneau latéral gauche. Vous devriez alors voir votre release! Vérifiez que l'exécutable `.jar` peut bien être téléchargé.
+5. Enfin, si tout s'est bien passé, rendez-vous dans le menu `Deploy` → `Releases` au niveau du panneau latéral gauche. Vous devriez alors voir votre release ! Vérifiez que l'exécutable `.jar` peut bien être téléchargé.
 
 6. En local, rendez-vous sur `master` et fusionnez la branche `development`. Poussez les changements sur le dépôt distant (sur la branche `master` donc).
 
 </div>
 
-Félicitations, vous avez automatisé le processus de release de votre application ! Dorénavant, dès qu'un tag est créé et poussé, une release sera créée et publié. On peut souligner le fait qu'il n'est pas nécessairement obligatoire de passer par le système d'artifact pour publier un fichier dans une release. On peut spécifier n'importe quel lien. On pourrait donc imaginer un job qui upload les fichiers désirés sur un serveur externe et on utiliserait alors ces liens dans la release.
+Félicitations, vous avez automatisé le processus de release de votre application ! Dorénavant, dès qu'un tag est créé et poussé, une release sera créée et publiée. On peut souligner le fait qu'il n'est pas nécessairement obligatoire de passer par le système d'artifact pour publier un fichier dans une release. On peut spécifier n'importe quel lien. On pourrait donc imaginer un job qui upload les fichiers désirés sur un serveur externe et on utiliserait alors ces liens dans la release.
 
 ## Déploiement d'un site web PHP
 
@@ -455,7 +464,7 @@ deploy:
     - rm .gitlab-ci.yml
     - mkdir ~/.ssh
     - ssh-keyscan -p numero_port_serveur adresse_serveur >> ~/.ssh/known_hosts
-    - lftp sftp://nom_utilisateur:$mot_de_passe@$adresse_serveur:numero_port_serveur -e "mirror -R -e ./ /chemin/destination ; quit"
+    - lftp sftp://nom_utilisateur:mot_de_passe@$adresse_serveur:numero_port_serveur -e "mirror -R -e ./ /chemin/destination ; quit"
 ```
 
 Ce job va :
@@ -479,7 +488,7 @@ Pour créer une **variable CI/CD** à partir de la page du dépôt, on se rend d
 
 Lorsqu'on crée une variable, on doit préciser :
 
-* Sa visibilité : on choisit **Masked and hidden** pour un niveau de sécurité maximal.
+* Sa visibilité : on choisit **Masked and hidden** pour un niveau de sécurité maximal : il faut que la valeur ait au moins huit caractères.
 * Sa clé (`key`) : le nom de la variable
 * Sa valeur (`value`).
 * On peut aussi cocher la case *Protect variable* si on souhaite que la variable ne soit utilisée que dans les jobs qui se déclenchent sur des branches protégées ou lorsqu'on pousse un tag (nous n'utiliserons pas cette option).
@@ -515,10 +524,10 @@ Concernant les informations pour se connecter au serveur FTP de l'IUT :
 
 2. Initialisez le dépôt Git ce projet en local, puis sur GitLab, créez un nouveau dépôt vierge (privé) dans votre namespace `qualite-de-developpement-semestre-3/etu/votrelogin` et associez-le à votre dépôt local.
 
-3. Sur votre dépôt GitLab (de ce nouveau projet), créez quatre nouvelles variables CI/CD **secrètes** :
-  * **FTP_HOST** : `ftpinfo.iutmontp.univ-montp2.fr` (adresse du serveur ftp du département informatique de l'IUT)
-  * **FTP_PORT** : 22 (on pourrait éventuellement ne pas mettre le port dans une variable...mais cela renforce la sécurité)
-  * **FTP_USERNAME** et **FTP_PASSWORD** : votre login et votre mot de passe du département informatique (les mêmes que vous utilisez pour vous connecter à GitLab normalement).
+3. Sur votre dépôt GitLab (de ce nouveau projet), créez quatre nouvelles variables CI/CD :
+  * **FTP_HOST** (visibilité **masked and hidden**) : `ftpinfo.iutmontp.univ-montp2.fr` (adresse du serveur ftp du département informatique de l'IUT)
+  * **FTP_PORT** (visibilité **visible**) : 22 (on pourrait éventuellement ne pas mettre le port dans une variable...mais cela renforce la sécurité)
+  * **FTP_USERNAME** (visibilité **visible**) et **FTP_PASSWORD** (visibilité **masked and hidden**) : votre login et votre mot de passe du département informatique (les mêmes que vous utilisez pour vous connecter à GitLab normalement).
 
 4. Créez un fichier `.gitlab-ci.yml` à la racine de votre projet.
 
@@ -544,4 +553,4 @@ Vous pouvez maintenant déployer vos projets web sur leur serveur de destination
 
 À travers ce dernier TP, vous avez donc appris à vous servir de certaines fonctionnalités plus poussées de la plateforme **GitLab**.
 
-Comme vous l'avez constaté, les techniques de `CI/CD` présentent beaucoup d'avantages dans le cadre du développement d'un projet. Dans ce TP, nous avons étudié seulement quelques exemples, mais il est possible de faire bien plus ! Vous êtes donc fortement invité à plus amplement explorer et utiliser ces outils afin d'automatiser certaines tâches de vos futurs projets, notamment dans le cadre de vos **SAEs** qui seront (pour la plupart) hébergées sur le serveur GitLab du département.
+Comme vous l'avez constaté, les techniques de `CI/CD` présentent beaucoup d'avantages dans le cadre du développement d'un projet. Dans ce TP, nous avons étudié seulement quelques exemples, mais il est possible de faire bien plus ! Vous êtes donc fortement invité à plus amplement explorer et utiliser ces outils afin d'automatiser certaines tâches de vos futurs projets, notamment dans le cadre de vos **SAE** qui seront (pour la plupart) hébergées sur le serveur GitLab du département.
