@@ -49,7 +49,7 @@ clip < ~/.ssh/id_rsa.pub
 
 Connectez-vous ensuite au [GitLab de l'IUT](https://gitlabinfo.iutmontp.univ-montp2.fr/users/sign_in) en utilisant vos identifiants du département (même chose que pour accéder aux machines).
 
-En haut à gauche, cliquez sur votre image de profil puis `Preférences`. Sur la nouvelle page, cliquez sur `SSH Keys`. Dans la zone `SSH Fingerprints` collez votre clé publique. Donnez-lui un titre et sauvegardez-la. Vous êtes prêt à travailler !
+Rendez-vous ensuite sur [cette page](https://gitlabinfo.iutmontp.univ-montp2.fr/-/user_settings/ssh_keys). Sur la nouvelle page, cliquez sur `Add new key`. Dans le formulaire, collez votre clé publique dans la zone `Key`. Donnez-lui un titre et sauvegardez-la (bouton **Add key**). Vous êtes prêt à travailler !
 
 ### Créer et cloner un dépôt distant
 
@@ -61,7 +61,7 @@ Il y a deux moyens de réaliser le versioning d'un projet :
 
 Rappelons-nous d'abord comment faire dans la première situation. Nous allons travailler sur **GitLab**, mais cela fonctionne de la même manière sur toutes les plateformes.
 
-Rendez-vous sur [le GitLab de l'IUT](https://gitlabinfo.iutmontp.univ-montp2.fr). Cliquez sur le bouton `New project` puis `Create blank project`. Pensez à décocher la case proposant d'initialiser le projet avec un fichier **README**, puis créez le projet.
+Rendez-vous sur [le GitLab de l'IUT](https://gitlabinfo.iutmontp.univ-montp2.fr). Cliquez sur le bouton "+" en haut à droite de la page puis `New project/repository`. Sur la nouvelle page, cliquez sur `Create blank project`. Pensez à décocher la case proposant d'initialiser le projet avec un fichier **README**, puis créez le projet.
 
 Afin de **cloner** ce projet, récupérez son adresse en cliquant sur le bouton `Clone`. Prenez la première adresse dans le champ `Clone with SSH`.
 
