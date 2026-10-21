@@ -1555,8 +1555,6 @@ Vous allez voir qu'isoler les règles métier des détails techniques et injecte
 
     * Hacher le mot de passe avec `SHA256` au lieu de `MD5`.
 
-      **Simplification pédagogique :** les classes utilisant MD5 et SHA-256 servent ici à illustrer le remplacement d'une implémentation par une autre. Ces algorithmes utilisés seuls ne conviennent pas au stockage de mots de passe dans une application réelle. On utiliserait une fonction dédiée, comme **Argon2id**, avec un sel propre à chaque mot de passe. L'architecture proposée doit permettre d'intégrer une telle implémentation sans modifier `ServiceUtilisateur`.
-
     * Utiliser la classe `StockageUtilisateurFichier` pour gérer le stockage des utilisateurs. Contrairement à `StockageUtilisateurMemoire` qui stocke les données de manière volatile, ici, les utilisateurs seront stockés dans un fichier de manière persistante (qui sera généré à la racine du projet).
 
     Effectuez ces changements, relancez le programme (`Main`) pour vérifier que tout fonctionne.
