@@ -5,7 +5,7 @@ layout: tutorial
 lang: fr
 ---
 
-Dans la première partie de cette ressource, nous avons parlé de **conception logicielle** et notamment comment modéliser cela à l'aide de **diagrammes de classes de conception**.
+Dans la première partie de cette ressource, nous avons parlé de **conception logicielle** et notamment de la manière de la représenter à l'aide de **diagrammes de classes de conception**.
 
 Cependant, savoir modéliser la conception ne garantit en rien la qualité de celle-ci. Un plan de construction d'un bâtiment peut être tout à fait valide d'un point de vue technique, mais donnera potentiellement une bâtisse qui s'écroulera dans quelques années si elle a été mal pensée.
 
@@ -27,7 +27,7 @@ Bref, dans ce cours, nous allons commencer par nous intéresser aux **principes 
 
 ## Les principes SOLID
 
-Les **principes SOLID** représentent un acronyme lié aux 5 principes clés pour obtenir un logiciel qualitatif :
+L'acronyme **SOLID** désigne cinq principes de conception logicielle :
 
 * Le principe de **responsabilité unique** (`S`ingle responsibility)
 
@@ -39,11 +39,11 @@ Les **principes SOLID** représentent un acronyme lié aux 5 principes clés pou
 
 * Le principe **d'inversion des dépendances** (`D`ependency inversion)
 
-Le respect de ces principes permet d'améliorer le principe de **faible couplage** et de **forte cohésion** des classes (que nous avons abordé précédemment), l'évolutivité du logiciel, la réduction du risque de bugs liés à l'architecture...
+Le respect de ces principes favorise le **faible couplage** et la **forte cohésion** des classes, facilite l'évolution du logiciel et réduit les risques de bugs liés à son architecture.
 
-Les **design patterns** sont des solutions à des problèmes bien définis qui fournissent des modèles réutilisables et adaptables à de nombreux projets. Ces patterns contribuent notamment à mieux respecter les principes **SOLID**. En revanche, utiliser **design patterns** ne garantit pas toujours une qualité de code respectant **SOLID** et peut même être contre-productif — il faut donc savoir les utiliser au bon endroit et au bon moment.
+Les **design patterns** sont des solutions à des problèmes bien définis qui fournissent des modèles réutilisables et adaptables à de nombreux projets. Ces patterns contribuent notamment à mieux respecter les principes **SOLID**. En revanche, utiliser des **design patterns** ne garantit pas toujours une qualité de code respectant **SOLID** et peut même être contre-productif — il faut donc savoir les utiliser au bon endroit et au bon moment.
 
-Une conception adaptée permet de prendre en charge certaines évolutions en ajoutant de nouvelles implémentations, **sans modifier les classes qui utilisent les abstractions existantes**. C’est par exemple, l’objectif du principe ouvert/fermé : prévoir des possibilités d’extension tout en limitant les modifications du code déjà en place. Cela ne signifie pas que les classes existantes ne devront plus jamais être modifiées.
+Une conception adaptée permet de prendre en charge certaines évolutions en ajoutant de nouvelles implémentations, **sans modifier les classes qui utilisent les abstractions existantes**. C’est, par exemple, l’objectif du principe ouvert/fermé : prévoir des possibilités d’extension tout en limitant les modifications du code déjà en place. Cela ne signifie pas que les classes existantes ne devront plus jamais être modifiées.
 
 Dans ce TP, nous allons étudier chaque principe et nous allons vous fournir du code qui est (la plupart du temps) fonctionnel, mais développé sans respecter **SOLID**. Vous allez alors constater que :
 
@@ -173,7 +173,7 @@ Ce principe semble assez facile à mettre en place, mais dans la réalité, on r
 
 1. Ouvrez le paquetage `fr.umontpellier.iut.srp1`. Examinez le code. Il s'agit d'un programme qui permet de faire un simple calcul (pour le moment, une addition). Actuellement, la classe `Client` possède trois responsabilités (certaines sont très simples et tiennent sur une ligne). Identifiez-les.
 
-2. Refactorez le code pour répartir les responsabilités de `Client` en trois nouvelles classes distinctes (sans compter `Client`). Pensez notamment qu'après votre refactoring, les diverses demandes de modifications futures soient mieux cloisonnées. La classe `Client` devra dorénavant utiliser ces nouveaux **services**.
+2. Refactorez le code pour répartir les responsabilités de `Client` en trois nouvelles classes distinctes (sans compter `Client`). Veillez à ce qu'après votre refactoring, les futures modifications restent limitées aux classes concernées. La classe `Client` devra dorénavant utiliser ces nouveaux **services**.
 
 3. Effectuez les changements suivants du code qui, **si vous avez bien traité la question précédente**, ne doivent pas toucher le code de votre classe `Client` :
 
@@ -203,7 +203,7 @@ Voyons maintenant un autre exemple.
 
 1. Ouvrez le paquetage `fr.umontpellier.iut.srp2`. Il contient une classe `Rectangle` qui permet de créer des rectangles et de calculer leur aire.
 
-2. Une application graphique souhaite pouvoir afficher les **rectangles**. Une première idée est d'utiliser la classe `JFrame` (de la librairie _Java Swing_), ce qui permettra de l'afficher :
+2. Une application graphique souhaite pouvoir afficher les **rectangles**. Une première idée est d'utiliser la classe `JFrame` (de la librairie _Java Swing_), ce qui permettra de les afficher :
 
     * Faites hériter `Rectangle` de `JFrame`.
 
@@ -238,9 +238,9 @@ Voyons maintenant un autre exemple.
 
 4. L'idée est d'avoir deux classes : une première, gérant la forme rectangle et l'autre permettant de l'afficher. Mais pour autant, il ne faut pas dupliquer de code ! Refactorez votre code en conséquence afin de mettre en place cette nouvelle conception. **Indication** : pour afficher le rectangle, utilisez un `JPanel` placé dans une `JFrame`. Réalisez le dessin dans la méthode `paintComponent(Graphics g)` du panneau, en commençant par appeler `super.paintComponent(g)`.
 
-5. Assurez-vous que tout fonctionne (il faudra sans doute adapter le `main`) et qu'il est bien possible d'avoir de créer des rectangles ne contenant aucune logique d'affichage et des rectangles qu'il est possible d'afficher.
+5. Assurez-vous que tout fonctionne (il faudra sans doute adapter le `main`) et qu'il est possible de créer des rectangles sans logique d'affichage et de les afficher à l'aide de la classe dédiée.
 
-6. Arrivez-vous à identifier quelle est le type de composition (faible ou forte) utilisée dans votre solution ?
+6. Arrivez-vous à identifier le type de relation utilisé entre le rectangle et l'objet chargé de l'afficher : association, agrégation ou composition forte ? Justifiez votre choix.
 
 </div>
 
@@ -248,14 +248,14 @@ Voyons maintenant un autre exemple.
 
 Après cette mise en bouche, il est temps d'attaquer de sérieux problèmes de conception en développant le **principe ouvert/fermé**. Ce principe est défini comme suit :
 
-"_Les entités d'un logiciel (classes, modules, fonctions) doivent être **ouverts** aux extensions, mais **fermés** aux modifications._" (**Bertrand Meyer**).
+"_Les entités d'un logiciel (classes, modules, fonctions) doivent être **ouvertes** aux extensions, mais **fermées** aux modifications._" (**Bertrand Meyer**).
 
 En d'autres termes, il doit être possible d'étendre les fonctionnalités/le **comportement** d'une entité comme une classe **sans pour autant avoir besoin de modifier son code source**.
 
-Ce principe est un pilier fondamental de qualité de code. Avec ce principe, même une classe ou une librairie compilée (non modifiable) autorise le développeur à étendre les fonctionnalités proposées.
+Ce principe est un pilier fondamental de la qualité du code. Avec ce principe, même une classe ou une librairie compilée (non modifiable) autorise le développeur à étendre les fonctionnalités proposées.
 
 Malheureusement, dans de nombreux projets, on rencontre fréquemment des classes violant ce principe, car mal conçues. Les symptômes sont généralement :
-* Utilisation d'énormes blocs `if/else if/else` ou de blocs `switch case` qui grossissent au fur et à mesure qu'on ajoute de nouvelles choses. Avec l'utilisation de `classes` et de l'héritage, on va en plus certainement se retrouver à utiliser des instructions `instanceof` ou `getClass()` (pour vérifier le type de l'objet) et de `cast` pour pouvoir utiliser des méthodes précises.
+* Utilisation d'énormes blocs `if/else if/else` ou de blocs `switch case` qui grossissent au fur et à mesure qu'on ajoute de nouvelles choses. Avec l'utilisation de `classes` et de l'héritage, on va en plus certainement se retrouver à utiliser des instructions `instanceof` ou `getClass()` (pour vérifier le type de l'objet) et des conversions de type (`cast`) pour pouvoir utiliser des méthodes précises.
 * Nécessité de dupliquer du code pour ajouter une nouvelle fonctionnalité (non-respect du principe [_DRY_](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself)).
 * Une classe mère qui dépend de ses classes filles.
 
@@ -291,7 +291,7 @@ De même, dans la classe `Pokemon`, pour que le pokémon puisse se présenter av
 
     * En plus des attributs d'un `Pokemon` classique, un pokémon **électrique** possède un attribut entier `chargeMax` et un attribut booléen `superDecharge`.
 
-    * Son nom d'attaque est **Eclair** et inflige **20 dégâts**, auxques s'ajoute un **bonus de dégâts** entier tiré au hasard entre **0** et `chargeMax` (on suppose que `chargeMax` est positif). Si l'attribut `superDecharge` du pokémon vaut `true`, alors un **bonus supplémentaire de 20 dégâts** est ajouté.
+    * Son attaque s'appelle **Éclair** et inflige **20 dégâts**, auxquels s'ajoute un **bonus de dégâts** entier tiré au hasard entre **0** et `chargeMax`, bornes incluses. On suppose que `chargeMax` est positif. Si l'attribut `superDecharge` du pokémon vaut `true`, un **bonus supplémentaire de 20 dégâts** est ajouté.
   
     * Faites en sorte de prendre en charge ce nouveau type, **sans refactorer le code existant**, en créant une nouvelle classe `PokemonElectrique` et en ajoutant le code nécessaire là où il faut.
 
@@ -299,17 +299,17 @@ De même, dans la classe `Pokemon`, pour que le pokémon puisse se présenter av
 
     * En plus des attributs d'un `Pokemon` classique, un pokémon **psy** possède un attribut entier `bonusPsy`.
 
-    * Son nom d'attaque est **Choc mental** et elle fait précisément 30 * `bonusPsy` dégâts.
+    * Son attaque s'appelle **Choc mental** et inflige précisément `30 * bonusPsy` dégâts.
 
     * Faites en sorte de prendre en charge ce nouveau type, **sans refactorer le code existant**, en créant une nouvelle classe `PokemonPsy` et en ajoutant le code nécessaire là où il faut.
 
-4. Modifiez le `Main` pour faire combattre un pokémon possédant le type **électrique** contre un pokémon possédant le type **psy**. **Attention**, il ne faut pas modifier les autres classes créées auparavant ! Vérifiez que le type des deux pokémons s'affichent bien au début du combat (sinon, c'est que vous avez manqué quelque-chose !). 
+4. Modifiez le `Main` pour faire combattre un pokémon possédant le type **électrique** contre un pokémon possédant le type **psy**. **Attention**, il ne faut pas modifier les autres classes créées auparavant ! Vérifiez que le type de chacun des deux pokémons s'affiche bien au début du combat (sinon, c'est que vous avez manqué quelque chose !).
 
 </div>
 
 Si ce n'était peut-être pas encore assez évident avec les animaux, à ce stade, vous devez vous rendre compte qu'ajouter un nouveau type de pokémon est fastidieux :
 
-* Créez une classe du type correspondant.
+* Créer une classe du type correspondant.
 
 * Implémenter une méthode donnant les dégâts de ce type.
 
@@ -359,11 +359,11 @@ class FigureGeometrique {
 }
 ```
 
-L'ajout d'une nouvelle figure géométrique (par exemple, un carré) nécessite la modification de la classe `FigureGeometrique` et de la méthode `dessiner`. Le principe ouvert/fermé n'est pas respecté. De plus, un bug (à l'exécution) se produira si on essaie de traiter une figure géométrique qui n'existe pas !
+L'ajout d'une nouvelle figure géométrique (par exemple, un carré) nécessite la modification de la classe `FigureGeometrique` et de la méthode `dessiner`. Le principe ouvert/fermé n'est pas respecté. De plus, si `typeFigure` contient une chaîne différente de `"rectangle"` et de `"triangle"`, la méthode ne dessine rien et ne signale pas cette valeur inconnue.
 
 Pour régler ce problème, l'idée est de se reposer sur un système d'héritage et d'abstraction :
 * `FigureGeometrique` est une classe abstraite, qui permet d'imposer un comportement uniforme aux figures (méthode abstraite `dessiner`)
-* Chaque type de figure géométrique donnera donc lieu à une classe spécialisée et l'attribut `type` de `FigureGeometrique` perd son utilité :
+* Chaque type de figure géométrique donnera donc lieu à une classe spécialisée et l'attribut `typeFigure` de `FigureGeometrique` perd son utilité :
 
 ```java
 
@@ -391,15 +391,15 @@ class Triangle extends FigureGeometrique {
 ![Open-close 1]({{site.baseurl}}/assets/TP3/OCP1.svg){: width="25%" }
 </div>
 
-L'ajout d'une nouvelle figure nécessite donc simplement l'ajout d'une nouvelle classe correspondant à la figure et l'implémentation des méthodes requises (ici, dessiner la figure). Aucune autre classe n'est modifiée. L'extension est possible (ajout de nouvelles figures) sans modification du code source déjà présent. Par ailleurs, il est maintenant impossible de créer des figures géométriques qui n'existent pas au préalable dans notre programme (c'est une bonne chose !).
+L'ajout d'une nouvelle figure nécessite une nouvelle classe et l'implémentation de sa méthode `dessiner`. Les classes qui manipulent les figures à travers le type `FigureGeometrique` peuvent utiliser cette nouvelle figure sans être modifiées. Le code qui construit les objets, par exemple le `Main`, peut en revanche devoir être adapté pour instancier cette nouvelle classe. On ne peut plus sélectionner un type de figure inconnu à l'aide d'une simple chaîne de caractères.
 
 Ici, `FigureGeometrique` ne contient aucun état et définit uniquement une méthode abstraite : une `interface` convient donc bien pour représenter ce contrat commun. Une classe abstraite devient notamment utile si l’on souhaite factoriser des attributs ou une implémentation commune à plusieurs sous-classes.
 
-Si vous bloquiez, ceci devrait vous permettre de refactorer le code du paquetage `fr.umontpellier.iut.ocp1` (animaux). Nous allons également réfactorer `ocp2` (pokémons). Cela peut sembler un peu plus compliqué (car il y a déjà un système d'héritage), mais cela ne devrait pas être trop dur à adapter.
+Si vous bloquiez, ceci devrait vous permettre de refactorer le code du paquetage `fr.umontpellier.iut.ocp1` (animaux). Nous allons également refactorer `ocp2` (pokémons). Cela peut sembler un peu plus compliqué (car il y a déjà un système d'héritage), mais cela ne devrait pas être trop dur à adapter.
 
 <div class="exercise">
 
-1. Si vous n'étiez pas arrivé à une solution satisfaisante (ou cohérente par rapport à la solution présentée pour les figures géométriques), refactorez le code du paquetage `fr.umontpellier.iut.ocp1` afin de respecter le principe ouvert/fermé. Adaptez le `Main` en conséquence et vérifiez que tout fonctionne. Il ne doit plus être possible de gérer des animaux inconnus, et c'est bien normal !
+1. Si vous n'étiez pas arrivés à une solution satisfaisante (ou cohérente par rapport à la solution présentée pour les figures géométriques), refactorez le code du paquetage `fr.umontpellier.iut.ocp1` afin de respecter le principe ouvert/fermé. Adaptez le `Main` en conséquence et vérifiez que tout fonctionne. Il ne doit plus être possible de gérer des animaux inconnus, et c'est bien normal !
 
 2. À l'aide d'`IntelliJ`, générez le **diagramme de classes de conception** de l'application du paquetage `fr.umontpellier.iut.ocp2` (avant refactoring). Pour cela, effectuez un **clic droit** sur le paquetage `ocp2` puis sélectionnez `Diagrams` et enfin `Show Diagrams`. Activez bien l'affichage de tous les éléments et notamment les **dépendances non triviales**.
 
@@ -454,7 +454,7 @@ Dans un second temps, on remarque aussi que la classe `Paquet` a trop de respons
 
 * Si le format d'affichage du paquet change, la classe `Paquet` doit être modifiée.
 
-Le principe de responsabilités unique n'est pas respecté. Pour le `toString`, cela peut encore se discuter, mais cela est clair pour le **tri** et le **mélange**.
+Le principe de responsabilité unique n'est pas respecté. Pour le `toString`, cela peut encore se discuter, mais cela est clair pour le **tri** et le **mélange**.
 
 <div class="exercise">
 
@@ -464,7 +464,7 @@ Le principe de responsabilités unique n'est pas respecté. Pour le `toString`, 
 
     * Généralisez le tout avec une interface.
 
-2. Refactorez le code concernant le **mélange** afin de respecter le **principe de responsabilité unique**. Prévoyez aussi le cas où d'autres méthodes de mélanges pourraient être ajoutées. Comme pour le tri, on souhaite pouvoir définir la méthode de mélange dans le constructeur et la modifier via un setter.
+2. Refactorez le code concernant le **mélange** afin de respecter le **principe de responsabilité unique**. Prévoyez aussi le cas où d'autres méthodes de mélange pourraient être ajoutées. Comme pour le tri, on souhaite pouvoir définir la méthode de mélange dans le constructeur et la modifier via un setter.
 
 3. Testez que tout fonctionne, essayez plusieurs méthodes de tri sur le paquet, notamment. Normalement, vous ne devez jamais éditer la classe `Paquet` si vous changez le tri utilisé.
 
@@ -474,9 +474,9 @@ Le principe de responsabilités unique n'est pas respecté. Pour le `toString`, 
 
 Les principes **SOLID** se combinent naturellement entre eux. D'ailleurs, si vous avez refactoré proprement le dernier exercice, vous avez même déjà utilisé le principe **d'inversion des dépendances** dont nous parlerons plus tard ! 
 
-Encore mieux, vous venez d'utiliser un **design pattern** au niveau des tris (et des mélanges) : **Stratégie**. Ce pattern permet d'encapsuler un ensemble de comportements (algorithmes de tris) dans des classes et rendre ces algorithmes interchangeables dans une classe cliente (`Paquet`). Ainsi, le comportement spécifique est **injecté** dans la classe cliente sans modifier le code source de celle-ci. Ce pattern s'appuie sur **ouvert/fermé**, **l'inversion des dépendances** et aide à renforcer **responsabilité unique**. C'est exactement ce que vous venez de faire : la méthode de tri du paquet est modulable et on peut même en ajouter des nouvelles dans le futur ! Et tout cela, sans modifier `Paquet`.
+Encore mieux, vous venez d'utiliser un **design pattern** au niveau des tris (et des mélanges) : **Stratégie**. Ce pattern permet d'encapsuler un ensemble de comportements (algorithmes de tris) dans des classes et de rendre ces algorithmes interchangeables dans une classe cliente (`Paquet`). Ainsi, le comportement spécifique est **injecté** dans la classe cliente sans modifier le code source de celle-ci. Ce pattern s'appuie sur **ouvert/fermé**, **l'inversion des dépendances** et aide à respecter le principe de **responsabilité unique**. C'est exactement ce que vous venez de faire : la méthode de tri du paquet est modulable et on peut même en ajouter des nouvelles dans le futur ! Et tout cela, sans modifier `Paquet`.
 
-À partir du diagramme de classes de conception que vous venez de générer, vous devriez être en mesure de généraliser le pattern **stratégie** à tout type de problème.
+À partir du diagramme de classes de conception que vous venez de générer, vous devriez pouvoir reconnaître les éléments du pattern **stratégie** et le réutiliser lorsqu'un objet doit pouvoir changer d'algorithme.
 
 ### Héritage, composition et principe ouvert-fermé
 
@@ -484,18 +484,18 @@ Maintenant, voyons une nouvelle situation, où les choses risquent d'être plus 
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `fr.umontpellier.iut.ocp4`. Dans ce projet, il y a une classe `Produit` permettant de gérer des produits, leurs prix et afficher leur description (leur nom). Ensuite, on a souhaité définir une classe `ProduitAvecReduction`, car certains produits proposent des réductions. Tout fonctionne pour le moment, comme vous pouvez le constater dans le `Main`.
+1. Ouvrez le paquetage `fr.umontpellier.iut.ocp4`. Dans ce projet, il y a une classe `Produit` permettant de gérer des produits, leurs prix et d'afficher leur description (leur nom). Ensuite, on a souhaité définir une classe `ProduitAvecReduction`, car certains produits proposent des réductions. Tout fonctionne pour le moment, comme vous pouvez le constater dans le `Main`.
 
-2. On souhaite maintenant ajouter un nouveau type de produit : les produits avec une date de péremption proche. Sur un tel produit, le prix est calculé en faisant une réduction de 50% sur le prix d'origine. De plus, lors de l'affichage de la description du produit (son nom), on affiche en plus le message "Réduction de 50% appliquée". Implémentez donc une classe `ProduitAvecDatePeremptionProche` héritant de `Produit` et réécrivez les méthodes `getPrix` et `afficherDescription`. Testez que votre nouveau type de produit a bien le comportement attendu en testant dans le `Main` (ou encore mieux : avec des tests unitaires pour le prix !) en appelant les méthodes `getPrix` et `afficherDescription`.
+2. On souhaite maintenant ajouter un nouveau type de produit : les produits avec une date de péremption proche. Sur un tel produit, le prix est calculé en faisant une réduction de 50 % sur le prix d'origine. De plus, lors de l'affichage de la description du produit (son nom), on affiche en plus le message "Réduction de 50% appliquée". Implémentez donc une classe `ProduitAvecDatePeremptionProche` héritant de `Produit` et réécrivez les méthodes `getPrix` et `afficherDescription`. Testez que votre nouveau type de produit a bien le comportement attendu en testant dans le `Main` (ou encore mieux : avec des tests unitaires pour le prix !) en appelant les méthodes `getPrix` et `afficherDescription`.
 
-3. Maintenant, nous voulons qu'un produit puisse à la fois être un produit qui périme bientôt et un produit avec une réduction. C'est-à-dire que les deux **comportements** (réductions) soient appliqués lors du calcul du prix (lors d'un appel à `getPrix`) et que les messages correspondants aux deux types de produit soient affichés (lors d'un appel à `afficherDescription`). De plus, on ne souhaite pas modifier le code de `Produit` qui est une classe qui existe déjà et qui est utilisée dans l'application. Est-il possible de faire en sorte de pouvoir ajouter un tel comportement à un produit **sans inclure de redondance** dans le code et en continuant de respecter le principe **ouvert/fermé** ?
+3. Maintenant, nous voulons qu'un produit puisse à la fois être un produit qui périme bientôt et un produit avec une réduction. C'est-à-dire que les deux **comportements** (réductions) soient appliqués lors du calcul du prix (lors d'un appel à `getPrix`) et que les messages correspondants aux deux types de produit soient affichés (lors d'un appel à `afficherDescription`). On accepte de modifier `Produit` lors du refactoring initial pour introduire une abstraction commune. Une fois cette architecture en place, l'ajout de nouveaux comportements ne devra plus nécessiter de modifier cette classe. Est-il possible de faire en sorte de pouvoir ajouter un tel comportement à un produit **sans inclure de redondance** dans le code et en continuant de respecter le principe **ouvert/fermé** ?
 </div>
 
 Si vous vous êtes contenté uniquement de faire hériter `ProduitAvecDatePeremptionProche` de `Produit`, vous remarquerez qu'il est compliqué d'avoir un même produit possédant ces deux fonctionnalités à la fois, notamment, car le multihéritage de classes n'est pas possible en Java.
 
 Peut-être que vous avez été plus malin et que vous avez pensé à implémenter une classe héritant de `Produit` et implémentant les deux comportements. Mais dans ce cas, il y a de la **duplication de code**.
 
-Ou alors, peut-être que vous avez été encore plus malin et que vous avez pensé à faire une classe **composée** de deux instances des types de produit concernés. C'est déjà beaucoup mieux ! Mais que se passe-t-il si d'autres types de produit sont ajoutés ? Par exemple, si on a cinq types de produits différents et qu'on veut mixer au choix certaines fonctionnalités de certains types ? La classe composée sera de plus en difficile à gérer et ne sera jamais fermée aux modifications.
+Ou alors, peut-être que vous avez été encore plus malin et que vous avez pensé à faire une classe **composée** de deux instances des types de produit concernés. C'est déjà beaucoup mieux ! Mais que se passe-t-il si d'autres types de produit sont ajoutés ? Par exemple, si on a cinq types de produits différents et qu'on veut mixer au choix certaines fonctionnalités de certains types ? La classe composée sera de plus en plus difficile à gérer et ne sera jamais fermée aux modifications.
 
 Tout en respectant le **principe ouvert/fermé**, il existe une méthode générale pour construire un `Produit` possédant autant de comportements mixtes que nous souhaitons. Si de nouveaux comportements sont ajoutés dans le futur, il n'y aura pas de modification du code existant. On peut implémenter un tel système en [favorisant la **composition** au lieu d'un **héritage**](https://en.wikipedia.org/wiki/Composition_over_inheritance).
 
@@ -562,9 +562,9 @@ class SalarieResponsableDeStagiaires extends Salarie {
 }
 ```
 
-Ici, même problème que pour les produits, si je veux pouvoir ajouter à un salarié les responsabilités de chef de projet et de responsable de stagiaire cela est impossible !
+Ici, nous retrouvons le même problème que pour les produits : cette hiérarchie ne permet pas de combiner simplement les responsabilités de chef de projet et de responsable de stagiaires sans ajouter des sous-classes pour les différentes combinaisons.
 
-Comme souvent, l'héritage est le problème ici. Au lieu de faire un simple héritage entre les classes, nous pourrions plutôt utiliser des **compositions** sur les sous-types et créer ainsi des salariés incluant des salariés, incluant des salariés... ce qui permet de combiner la logique de chaque type ! 
+Cette hiérarchie représente séparément les différents rôles, mais ne permet pas de les combiner facilement. Nous pouvons utiliser la **composition** pour construire des objets qui enveloppent d'autres objets et cumulent ainsi leurs comportements.
 
 ```java
 interface SalarieInterface {
@@ -651,9 +651,9 @@ L’objet enveloppé est fourni au constructeur du décorateur : la dépendance 
 
 <div class="exercise">
 
-1. Si vous n'étiez pas arrivé à une solution satisfaisante (ou cohérente avec la solution présentée dans l'exemple avec les salariés), réfactorez votre code afin de pouvoir créer un produit qui possède une réduction et qui a aussi une date de péremption proche.
+1. Si vous n'étiez pas arrivés à une solution satisfaisante (ou cohérente avec la solution présentée dans l'exemple avec les salariés), refactorez votre code afin de pouvoir créer un produit qui possède une réduction et qui a aussi une date de péremption proche. Chaque décorateur applique sa réduction au prix renvoyé par l'objet qu'il enveloppe.
 
-2. Créez un **Twix** avec pour prix de base **3€**, qui périme bientôt et qui a une réduction de 50 centimes. Testez que la valeur obtenue pour le prix est bien la bonne et que l'affiche de la description du produit affiche bien toutes les informations.
+2. Créez un **Twix** avec pour prix de base **3€**, qui périme bientôt et qui a une réduction de 50 centimes. Testez que la valeur obtenue pour le prix est bien la bonne et que l'affichage de la description présente bien toutes les informations.
 
 3. Inversez l'ordre de création du produit (le produit avec réduction est composé d'un produit avec une date de péremption proche ou l'inverse selon ce que vous avez fait à la question précédente). Est-ce que le prix obtenu est le même qu'à l'étape précédente ?
 
@@ -661,7 +661,7 @@ L’objet enveloppé est fourni au constructeur du décorateur : la dépendance 
 
 Attention, **dans cet exemple précis**, même si nous pouvons maintenant rajouter un nouveau type de produit et le combiner aux autres pour calculer le prix adéquat, quand on instancie l'objet, il faut faire attention à l'ordre de combinaison des objets, à cause de la méthode de calcul du prix du produit avec une réduction. Si la méthode de calcul avait été un pourcentage pour ce type de produit (-X% du prix) comme pour le produit avec une date de péremption proche, l'ordre n'aurait pas eu d'importance. Bref, cela est à prendre en compte quand vous concevez et que vous utilisez ce type de solution. 
 
-Bon, tout fonctionne bien, mais le code est encore un peu redondant : À priori, tous nos produits "dérivés" vont posséder un objet `I_Produit`...
+Tout fonctionne, mais le code est encore un peu redondant : chaque décorateur possède un attribut référençant un objet du type de l'interface commune aux produits et un constructeur pour initialiser cet attribut.
 
 <div class="exercise">
 
@@ -669,7 +669,7 @@ Avant de lire la suite, essayez de proposer une refactorisation pour éliminer l
 
 </div>
 
-Concentrant l'exemple des salariés, nous pourrions factoriser le code ainsi :
+Concernant l'exemple des salariés, nous pourrions factoriser le code ainsi :
 
 ```java
 //Nous reviendrons sur le nom "décorateur" plus tard.
@@ -745,7 +745,7 @@ class Main {
 
 <div class="exercise">
 
-1. Si vous n'étiez pas arrivé à une solution satisfaisante (ou cohérente avec la solution présentée dans l'exemple ci-dessus), réfactorez votre code pour introduire une classe abstraite et réduire la redondance et la répétition de code au niveau des sous-classes (`ProduitAvecReduction` et `ProduitAvecDatePeremptionProche`).
+1. Si vous n'étiez pas arrivés à une solution satisfaisante (ou cohérente avec la solution présentée dans l'exemple ci-dessus), refactorez votre code pour introduire une classe abstraite et réduire la redondance et la répétition de code au niveau des sous-classes (`ProduitAvecReduction` et `ProduitAvecDatePeremptionProche`).
 
 2. Testez que tout fonctionne comme auparavant.
 
@@ -753,7 +753,7 @@ class Main {
 
 </div>
 
-Si nous ajoutons un nouveau comportement à un produit, il suffira de créer une nouvelle classe de décorateur qui étend la classe abstraite. Avec une telle architecture, le principe ouvert/fermé est respecté et nous avons tiré profit de manière avantageuse du mécanisme de composition au lieu de se reposer sur l'héritage qui ne nous permettait pas d'arriver à nos fins.
+Si nous ajoutons un nouveau comportement à un produit, il suffira de créer une nouvelle classe de décorateur qui étend la classe abstraite. Cette architecture utilise la composition pour combiner les comportements et l'héritage pour factoriser le code commun aux décorateurs. L'ajout d'un décorateur ne nécessite pas de modifier les classes existantes.
 
 En fait, ce modèle est réutilisable et adaptable à d'autres situations (nous l'avons vu avec les salariés). C'est en fait un autre **design pattern** nommé **décorateur** d'où le nom de la classe abstraite dans l'exemple.
 
@@ -762,22 +762,24 @@ En fait, ce modèle est réutilisable et adaptable à d'autres situations (nous 
 Un **builder** facilite la construction d’un objet complexe, notamment lorsque celui-ci possède de nombreux paramètres, dont certains sont optionnels.
 
 Le pattern **décorateur** permet d’ajouter des comportements à un objet en l’enveloppant dans un autre objet qui respecte la même abstraction. Plusieurs décorateurs peuvent être imbriqués pour cumuler leurs effets.
-Les nouvelles fonctionnalités sont accessibles **en passant par le décorateur**. Une partie du programme qui conserve une référence vers l’objet d’origine peut continuer à utiliser son comportement initial. Pour bénéficier des nouveaux comportements, elle doit utiliser la référence vers l’objet décoré.
-De nouveaux comportements peuvent ainsi être développés dans de nouvelles classes de décorateurs, sans modifier la classe de l’objet d’origine. Le décorateur est donc un **pattern structurel** qui permet de combiner des comportements autour d’un objet. C'est pour cela qu'on dit qu'il ajoute ou retire **dynamiquement** des **responsabilités** à une instance.
 
-À partir du diagramme de classes que vous avez généré, vous devriez être capable de produire un modèle général fonctionnant pour tous les cas de figures.
+Les nouvelles fonctionnalités sont accessibles **en passant par le décorateur**. Une partie du programme qui conserve une référence vers l’objet d’origine continue à utiliser son comportement initial. Pour bénéficier des nouveaux comportements, elle doit utiliser la référence vers l’objet décoré.
+
+De nouveaux comportements peuvent ainsi être développés dans de nouvelles classes de décorateurs, sans modifier la classe de l’objet d’origine. Le décorateur est donc un **pattern structurel** qui permet de combiner des comportements autour d’un objet.
+
+À partir du diagramme de classes que vous avez généré, vous devriez pouvoir identifier les éléments du pattern **décorateur** et le réutiliser pour combiner des comportements autour d'un objet.
 
 ### Principe de substitution de Liskov (Liskov substitution)
 
 Certains développeurs abusent de l'**héritage** par facilité au lieu d'utiliser d'autres solutions comme la **composition** d'objets. Un "mauvais" héritage est un héritage pour lequel il n'existe pas vraiment de relation de spécialisation entre la superclasse et la sous-classe. La sous-classe ne représente alors pas le même concept que sa classe mère, ce n'est pas réellement une spécialisation.
 
-Tout cela occasionne parfois des problèmes inattendus qui sont mis en lumière par le principe de **substitution de Liskov** qui est fortement liée à la notion de **programmation par contrat**.
+Tout cela occasionne parfois des problèmes inattendus qui sont mis en lumière par le principe de **substitution de Liskov** qui est fortement lié à la notion de **programmation par contrat**.
 
-Quand on parle de **programmation par contrat** cela signifie que chaque classe possède un ensemble de **règles** (implicites ou explicites) autour de ses **méthodes** : **pré-conditions**, **post-conditions**, **effet de bords**, etc. Globalement, quelqu'un qui utilise une instance d'une **classe** donnée sait à quoi s'attendre quand on appelle telle ou telle méthode. Par exemple, le contrat de `ArrayList` précise qu’un appel réussi à `add(element)` ajoute cet élément à la fin de la liste.
+Quand on parle de **programmation par contrat** cela signifie que chaque classe possède un ensemble de **règles** (implicites ou explicites) autour de ses **méthodes** : **pré-conditions**, **post-conditions**, **effets de bord**, etc. Globalement, quelqu'un qui utilise une instance d'une **classe** donnée sait à quoi s'attendre quand on appelle telle ou telle méthode. Par exemple, le contrat de `ArrayList` précise qu’un appel réussi à `add(element)` ajoute cet élément à la fin de la liste.
 
-Le principe de **substitution de Liskov**, introduit par **Barbara Liskov**,  énonce qu'un **objet** d'un sous-type doit pouvoir être utilisé partout où un objet du type de base est attendu, **sans rompre le contrat** de ce type de base. Une méthode redéfinie dans une sous-classe doit donc préserver les garanties promises par la superclasse.
+Le principe de **substitution de Liskov**, introduit par **Barbara Liskov**, énonce qu'un **objet** d'un sous-type doit pouvoir être utilisé partout où un objet du type de base est attendu, **sans rompre le contrat** de ce type de base. Une méthode redéfinie dans une sous-classe doit donc préserver les garanties promises par la superclasse.
 
-Par exemple, si une classe `MonArrayList` étend `ArrayList` et redéfinit add(element), elle doit conserver le contrat de cette opération : après un appel réussi, l’élément ajouté se trouve à la fin de la liste. L’implémentation peut être différente, mais un code qui utilise `ArrayList` doit continuer à fonctionner avec une instance de `MonArrayList`, conformément au contrat de `ArrayList`. Les tests portant sur ce contrat doivent donc continuer à passer lorsque l’on remplace une instance de `ArrayList` par une instance de `MonArrayList`.
+Par exemple, si une classe `MonArrayList` étend `ArrayList` et redéfinit `add(element)`, elle doit conserver le contrat de cette opération : après un appel réussi, l’élément ajouté se trouve à la fin de la liste. L’implémentation peut être différente, mais un code qui utilise `ArrayList` doit continuer à fonctionner avec une instance de `MonArrayList`, conformément au contrat de `ArrayList`. Les tests portant sur ce contrat doivent donc continuer à passer lorsque l’on remplace une instance de `ArrayList` par une instance de `MonArrayList`.
 
 
 L'utilisation inappropriée de l'héritage peut amener au non-respect de ce principe.
@@ -790,7 +792,7 @@ Voici un scénario illustrant plus en détail le problème de non-respect du pri
 
 2. Dans le paquetage `fr.umontpellier.iut.lsp1` dans `src/test/java` vous trouverez deux classes de tests unitaires pour tester le rectangle, le carré et la classe `Utils` qui permet de redimensionner un rectangle. Lancez-les. Essayez de comprendre pourquoi les tests ne passent pas.
 
-3. Les tests écrits sont bien valides. Si on change la hauteur d'un carré, alors sa largeur doit aussi changer. Une première solution peut donc être de récrire les méthodes `setLargeur` et `setHauteur` dans la classe `Carre` afin que quand on modifie la largeur, la hauteur soit mise à la même valeur et inversement. Faites cette modification (les attributs `hauteur` et `largeur` sont accessibles dans `Carre` car en `protected` dans la classe `Rectangle`).
+3. Les tests écrits sont bien valides. Si on change la hauteur d'un carré, alors sa largeur doit aussi changer. Une première solution peut donc être de redéfinir les méthodes `setLargeur` et `setHauteur` dans la classe `Carre` afin que quand on modifie la largeur, la hauteur soit mise à la même valeur et inversement. Faites cette modification (les attributs `hauteur` et `largeur` sont accessibles dans `Carre` car en `protected` dans la classe `Rectangle`).
 
 4. Relancez les tests unitaires. Un autre test (de la classe `Utils`) ne passe plus ! Essayez de comprendre pourquoi.
 
@@ -798,7 +800,7 @@ Voici un scénario illustrant plus en détail le problème de non-respect du pri
 
 Avec cette modification, le principe de substitution de Liskov n'est plus respecté ! On a **cassé** le contrat de `Rectangle` dans `Carre`. `Carre` est un `Rectangle` et on devrait pouvoir modifier sa hauteur et sa largeur librement !
 
-De plus, si on utilise `Carre` comme un `Rectangle`, des bugs étranges surviennent quand on utilise une méthode prévue pour un `Rectangle` (ici, la méthode **agrandirRectangle**). On ne peut pas substituer le rectangle par un carré sans produire de bugs logiques. Ajouter des nouvelles méthodes dans la classe `Rectangle` force à ajouter du code dans `Carre` pour éviter les bugs et essayer de continuer à respecter le contrat de `Rectangle`.
+De plus, si on utilise `Carre` comme un `Rectangle`, des bugs étranges surviennent quand on utilise une méthode prévue pour un `Rectangle` (ici, la méthode **agrandirRectangle**). On ne peut pas substituer le rectangle par un carré sans produire de bugs logiques.
 
 Une autre mauvaise solution possible serait d'ajouter une fonction `setTailleCote` dans `Carre` et de redéfinir les fonctions `setHauteur` et `setLargeur` dans `Carre` de façon à ce qu'elles ne fassent rien :
 
@@ -829,7 +831,7 @@ Mais dans ce cas, on ne peut toujours pas utiliser `Carre` comme un `Rectangle` 
 
 Dans cette modélisation, faire hériter `Carre` de `Rectangle` pose donc problème : le contrat de `Rectangle` permet de modifier ses deux dimensions indépendamment, ce qui est incompatible avec les propriétés d’un carré. Un carré reste bien un rectangle en géométrie, mais cette relation mathématique ne suffit pas à justifier un héritage entre nos classes : il faut aussi que leurs comportements soient compatibles.
 
-Si on souhaite quand même utiliser un rectangle dans un carré (pour ne pas dupliquer le calcul de l'aire ou des autres méthodes, par exemple) on peut éventuellement utiliser une **composition** à la place, ce qui nous éviterait à gérer les méthodes indésirables de changement de hauteur ou largeur imposées par héritage.
+Si on souhaite quand même utiliser un rectangle dans un carré (pour ne pas dupliquer le calcul de l'aire ou des autres méthodes, par exemple) on peut éventuellement utiliser une **composition** à la place, ce qui nous éviterait de gérer les méthodes indésirables de changement de hauteur ou largeur imposées par héritage.
 
 <div class="exercise">
 
@@ -847,29 +849,29 @@ Si on souhaite quand même utiliser un rectangle dans un carré (pour ne pas dup
 
     * On utilise une composition avec un rectangle, donc il n'y a pas besoin d'attribut `tailleCote` dans la classe. Cela est stocké au niveau du rectangle.
 
-    * La signature du **constructeur** ne change pas : il crée un `Rectangle` propre à la classe `Carre`. Cet objet doit rester privé, sans méthode permettant de récupérer sa référence depuis l’extérieur.
+    * La signature du **constructeur** ne change pas. Le constructeur crée un `Rectangle` propre au `Carre`. Cet objet reste privé, sans méthode permettant de récupérer sa référence depuis l'extérieur.
 
     * On n'a plus besoin des méthodes `setHauteur` et `setLargeur` (on ne modifie pas indépendamment la largeur et la hauteur d'un carré).
 
-    * Les méthodes `getLargeur` et `getHauteur` et `aire` sont **déléguées** au `Rectangle`.
+    * Les méthodes `getLargeur`, `getHauteur` et `aire` sont **déléguées** au `Rectangle`.
 
     * Une nouvelle méthode `setTailleCote` permet de changer la taille du côté du carré (en utilisant le rectangle).
 
 3. Faites aussi implémenter l'interface `FigureRectangulaire` à `Rectangle`.
 
-4. Modifiez les **tests unitaires** portants sur `Carre` : les méthodes `setLargeur` et `setHauteur` n'existent plus. On utilise à la place `setTailleCote`.
+4. Adaptez les **tests unitaires** portant sur `Carre` : remplacez les appels à `setLargeur` et `setHauteur` par `setTailleCote`. Si des tests passent encore un `Carre` à `Utils.agrandirRectangle`, adaptez-les à la nouvelle conception : cette méthode attend désormais uniquement des `Rectangle`. Conservez les tests des comportements qui restent valides.
 
 5. Lancez les tests, vérifiez que tout fonctionne.
 
 </div>
 
-Après **refactoring**, le diagramme de classes de votre application devrait donner quelque-chose comme ça :
+Après **refactoring**, le diagramme de classes de votre application devrait donner quelque chose comme ça :
 
 <div style="text-align:center">
 ![Liskov substitution 2]({{site.baseurl}}/assets/TP3/LSP2.svg){: width="50%" }
 </div>
 
-La **composition forte** entre `Carre` et `Rectangle` indique que chaque `Carre` possède son propre `Rectangle`, qui constitue un détail interne de son fonctionnement. Ce rectangle n’est ni partagé avec d’autres objets ni accessible depuis l’extérieur (d'où la **composition forte**). Elle est en opposition avec la **composition faible**, qui indique aussi une composition, mais dans laquelle la dépendance est injectée (comme avec les **décorateurs** dans l'exercice des produits).
+La **composition forte** entre `Carre` et `Rectangle` exprime ici que chaque `Carre` possède son propre `Rectangle`, utilisé comme détail interne de son fonctionnement. Ce rectangle n'est pas partagé et sa référence n'est pas exposée à l'extérieur (d'où la **composition forte**). Elle est en opposition avec la **composition faible**, qui indique aussi une composition, mais dans laquelle la dépendance est injectée (comme avec les **décorateurs** dans l'exercice des produits).
 
 Bien sûr, nous aurions pu quand même conserver la logique d'agrandissement d'une `FigureRectangulaire`. À ce moment-là, il faudrait rajouter une méthode `agrandir(int facteur)` dans l'interface `FigureRectangulaire` et implémenter les méthodes dans `Rectangle` et `Carre`.
 
@@ -877,7 +879,7 @@ Mettons vos nouvelles connaissances en pratique avec un autre exercice.
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `fr.umontpellier.iut.lsp2`. On souhaite implémenter le fonctionnement d'une `Pile`. Une `Pile` est une structure de données `LIFO` (last in, first out) qui fonctionne comme une pile d'assiette. On peut globalement réaliser **quatre opérations** sur une pile :
+1. Ouvrez le paquetage `fr.umontpellier.iut.lsp2`. On souhaite implémenter le fonctionnement d'une `Pile`. Une `Pile` est une structure de données `LIFO` (last in, first out) qui fonctionne comme une pile d'assiettes. On peut globalement réaliser **quatre opérations** sur une pile :
 
     * Vérifier si elle est vide.
 
@@ -889,7 +891,7 @@ Mettons vos nouvelles connaissances en pratique avec un autre exercice.
 
     La classe `Pile` que nous allons implémenter possède un paramètre de type **générique**. Cela permet de créer des piles contenant un type de données paramétré, comme quand vous créez un objet de type `List<Double>` par exemple.
 
-    Afin de ne pas avoir à définir la structure stockant les données nous même, nous allons étendre la classe `Vector` qui permet de gérer une structure de données ordonnée. Diverses méthodes de la super-classe vont vous être utiles :
+    Afin de ne pas avoir à définir la structure stockant les données nous-mêmes, nous allons étendre la classe `Vector` qui permet de gérer une structure de données ordonnée. Diverses méthodes de la super-classe vont vous être utiles :
 
     * `isEmpty` → permet de vérifier si la structure est vide.
 
@@ -903,15 +905,15 @@ Mettons vos nouvelles connaissances en pratique avec un autre exercice.
 
 3. Implémentez les méthodes de la classe `Pile` afin que les tests passent (ne décommentez pas les quatre derniers tests pour le moment).
 
-4. Décommentez et exécutez les quatre tests contenus dans la classe `PileTest`. Ces tests semblent étranges, car ils ne testent pas seulement les méthodes de la pile. Essayez de comprendre pourquoi ils sont nécessaires puis lisez la suite.
+4. Décommentez et exécutez les quatre derniers tests de la classe `PileTest`. Ces tests semblent étranges, car ils ne testent pas seulement les méthodes de la pile. Essayez de comprendre pourquoi ils sont nécessaires puis lisez la suite.
 
 </div>
 
 Les derniers tests ne sont pas mal rédigés, car, comme `Pile` hérite de `Vector`, cette classe doit respecter le contrat imposé par sa classe mère. Ces tests vérifient qu'il est bien possible de substituer un `Vector` par une `Pile` dans des algorithmes qui acceptent un `Vector` en paramètre. De plus, comme `Vector` implémente (par héritage) l'interface `List` qui étend elle-même l'interface `Collection` : on doit pouvoir substituer un objet de type `List` ou `Collection` par un objet de type `Pile` dans les fonctions et méthodes de **Java** qui prennent des collections ou des listes en paramètre, tout en conservant un comportement cohérent (donc, sans casser le contrat de `Vector`, des classes héritées et des interfaces implémentées).
 
-Comme ces tests passent, on peut donc à priori en conclure que `Pile` respecte bien le contrat de `Vector`...C'est assez évident : nous n'avons redéfini aucune méthode de `Vector`, il y a donc peu de chances de casser quoi que ce soit !
+Comme ces tests passent, on peut donc à priori en conclure que `Pile` respecte bien le contrat de `Vector`... Logique : nous n'avons redéfini aucune méthode de `Vector`, il y a donc peu de chances de casser quoi que ce soit !
 
-**Cependant** selon le **contrat** de `Pile`, seules les opérations `estVide`, `empiler`, `depiler` et `sommetPile` doivent produire un effet. Or, comme `Pile` hérite de `Vector`, on a accès à toutes les opérations réalisables sur une liste classique... Bref, ici, c'est **le contrat de la Pile** n'est pas respecté : on peut ajouter et supprimer des éléments autres part qu'au sommet, parcourir la pile, etc...
+Nous souhaitons cependant que l'interface publique de `Pile` se limite aux opérations `estVide`, `empiler`, `depiler` et `sommetPile`. Or, comme `Pile` hérite de `Vector`, toutes les opérations publiques d'une liste restent accessibles : on peut notamment insérer ou supprimer un élément ailleurs qu'au sommet. Cette classe respecte encore le contrat de `Vector`, mais elle n'impose pas l'usage LIFO attendu dans cet exercice.
 
 Pour résoudre ce problème, on pourrait alors redéfinir toutes les méthodes de `Vector` (qui nous gênent) pour qu'elles ne fassent rien, afin de respecter le contrat de `Pile`. Par exemple, celles-ci :
 
@@ -953,7 +955,7 @@ Bref, conceptuellement, une `Pile` n'est pas un `Vector` spécial, mais bien une
 
 1. Refactorez le code de la classe `Pile` en enlevant l'héritage et en utilisant une **composition** avec un `Vector` à la place.
 
-2. Les quatre derniers tests ne compilent plus, c'est normal ! La pile n'est pas un `Vector`, on ne peut pas appeler `add`, `remove`, `clear`, `List.copyOf`, `Collections.replaceAll`, etc dessus (et c'est tant mieux). Supprimez donc les quatre derniers tests qui n'ont plus lieu d'être.
+2. Les quatre derniers tests ne compilent plus : `Pile` n'est plus un sous-type de `Vector`, de `List` ou de `Collection`. Ses instances ne proposent plus les opérations héritées comme `add`, `remove` ou `clear`, et ne peuvent plus être passées aux méthodes `List.copyOf` ou `Collections.replaceAll`. Supprimez les quatre tests qui vérifiaient cette ancienne relation de sous-typage.
 
 3. Relancez les tests et vérifiez que tout passe.
 
@@ -961,21 +963,21 @@ Bref, conceptuellement, une `Pile` n'est pas un `Vector` spécial, mais bien une
 
 </div>
 
-Eh oui, même les concepteurs de `Java` ont fait quelques bêtises lors du développement du langage. Et il n'est plus possible de supprimer cette classe après coup pour ne pas causer de problèmes de compatibilité. La seule chose à faire est de déprécier cette classe et de conseiller une nouvelle solution mieux conçue (la classe `Deque`). D'où l'importance de bien penser sa conception !
+L'héritage de `Stack` vers `Vector` expose des opérations qui permettent de contourner le fonctionnement attendu d'une pile (voir [documentation](https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/Stack.html)). Cette classe est conservée notamment pour assurer la compatibilité avec les programmes existants. D'où l'importance de bien penser sa conception !
 
 ### Principe de ségrégation des interfaces (Interface segregation)
 
 Le quatrième principe **SOLID** est le **principe de ségrégation des interfaces**.
 
-Un objet ne doit pas être forcé de dépendre de méthodes qu'il n'utilise pas. Globalement, il ne faut pas qu'une **interface** définisse dans son contrat des méthodes qui ne seront (voire ne pourront) pas être implémentées par la classe implémentant l'interface.
+Les clients d'une interface ne devraient pas dépendre de méthodes qu'ils n'utilisent pas. On préfère donc plusieurs interfaces ciblées, correspondant à des besoins ou à des capacités précis, à une interface qui regroupe des opérations sans rapport pour ses différents clients.
 
-Nous en avons déjà parlé, mais une interface est un **contrat**. Une classe qui implémente une interface est forcé d'implémenter toutes les méthodes de l'interface. Mais une classe ne devrait pas être forcée à implémenter un bout de contrat qu'elle ne peut pas remplir.
+Une interface définit un **contrat**. Une classe concrète doit fournir ou hériter d'une implémentation de ses méthodes abstraites. Si certaines de ces opérations n'ont aucun sens pour cette classe, cela peut révéler que l'interface regroupe trop de responsabilités.
 
 Voyons comment ne pas respecter ce principe peut devenir très fastidieux au fur et à mesure que le projet grossit.
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `fr.umontpellier.iut.isp`. Ce projet modélise un système de jeu où certaines créatures sont des **montures** toutes les montures du même type ont les mêmes caractéristiques type (vitesse, endurance...). Au début, le développeur a modélisé une créature `Cheval`. Pour cette monture, on veut connaître :
+1. Ouvrez le paquetage `fr.umontpellier.iut.isp`. Ce projet modélise un système de jeu où certaines créatures sont des **montures**. Toutes les montures du même type ont les mêmes caractéristiques type (vitesse, endurance...). Au début, le développeur a modélisé une créature `Cheval`. Pour cette monture, on veut connaître :
 
     * Le nom de la monture.
 
@@ -989,7 +991,7 @@ Voyons comment ne pas respecter ce principe peut devenir très fastidieux au fur
 
 2. Ajoutez une classe `Griffon` étendant `Creature` et implémentant l'interface `Monture`. Cette monture a une vitesse de 300. Cependant, contrairement aux autres montures, cette monture est une **monture volante**. Elle ne possède pas d'endurance. Par contre, on veut connaître son **temps maximum de vol** qui est de 40. Adaptez votre classe en conséquence.
 
-    Concernant l'endurance, que faut-il renvoyer ? On ne peut pas renvoyer **0** ou un nombre négatif, cela n'aurait pas beaucoup de sens. À la place, on peut lever une erreur :
+    Concernant l'endurance, que faut-il renvoyer ? On ne peut pas renvoyer **0** ou un nombre négatif, cela n'aurait pas beaucoup de sens. À la place, on peut lever une exception :
 
     ```java
     public double getEnduranceMonture() {
@@ -999,7 +1001,7 @@ Voyons comment ne pas respecter ce principe peut devenir très fastidieux au fur
 
 3. Dans le cas où il y aurait besoin d'ajouter d'autres montures volantes dans le futur, ajoutez la méthode permettant d'obtenir le temps de vol dans l'interface `Monture`.
 
-4. Les classes `Cheval` et `Tigre` ne compilent plus ! C'est parce qu'il faut implémenter la méthode permettant d'obtenir **le temps maximum de vol**... Or, ces montures n'ont pas de temps maximum de vol ! On va donc procéder comme pour `Griffon` en soulevant une erreur :
+4. Les classes `Cheval` et `Tigre` ne compilent plus ! C'est parce qu'il faut implémenter la méthode permettant d'obtenir **le temps maximum de vol**... Or, ces montures n'ont pas de temps maximum de vol ! On va donc procéder comme pour `Griffon` en levant une exception :
 
     ```java
     public double getTempsMaximumDeVol() {
@@ -1015,13 +1017,13 @@ Voyons comment ne pas respecter ce principe peut devenir très fastidieux au fur
 
 </div>
 
-C'était pénible, n'est-ce pas ? C'est normal, cette solution est très mauvaise et fastidieuse. À chaque nouvel ajout de type de monture avec ses spécificités, on doit modifier tous les autres types et les forcer à implémenter des méthodes qui ne les concernent pas... Le fait de lever tant d'erreurs indique une très mauvaise conception.
+C'était pénible, n'est-ce pas ? C'est normal, cette solution est très mauvaise et fastidieuse. À chaque nouvel ajout de type de monture avec ses spécificités, on doit modifier tous les autres types et les forcer à implémenter des méthodes qui ne les concernent pas... Le fait de lever tant d'exceptions pour des opérations sans signification indique une très mauvaise conception.
 
-Si le développeur avait bien raison de vouloir faire une interface lors de la création de la première monture, il a voulu regrouper trop de chose dans une seule et même interface : les méthodes communes à toutes les montures (nom, vitesse) et la méthode concernant l'endurance, spécifique aux montures terrestres. Par la suite, on a continué dans cette mauvaise logique. Il aurait dû dès le départ diviser cela en **deux interfaces** et on aurait dû créer plus d'interfaces à chaque nouveau type de monture ayant ses spécificités. 
+Le problème vient du regroupement, dans une seule interface, des opérations communes à toutes les montures et de celles qui correspondent à des capacités particulières. `Monture` peut conserver les opérations communes, comme l'accès au nom et à la vitesse. Les capacités supplémentaires, comme l'endurance, le vol ou la puissance de feu, peuvent être décrites dans des interfaces distinctes. Chaque classe implémente alors les interfaces correspondant à ses capacités. Une nouvelle classe peut réutiliser les interfaces existantes.
 
 <div class="exercise">
 
-Avant de lire la suite des explications, tentez de refactorez votre code pour respecter le **principe de ségrégation des interfaces**. On veut garder les spécificités de chaque type de monture, mais éliminer toutes les levées d'erreurs. Soyez vigilant pour le dragon et la licorne ailée. Si vous bloquez et/ou que vous n'arrivez pas à obtenir une solution satisfaisante, passez aussi à la suite des explications.
+Avant de lire la suite des explications, tentez de refactorer votre code pour respecter le **principe de ségrégation des interfaces**. On veut garder les spécificités de chaque type de monture, mais éliminer les exceptions signalant des opérations non prises en charge. Soyez vigilants pour le dragon et la licorne ailée. Si vous bloquez et/ou que vous n'arrivez pas à obtenir une solution satisfaisante, passez aussi à la suite des explications.
 
 </div>
 
@@ -1182,13 +1184,13 @@ class D implements I_B, I_C {
 ![Interface segregation 2]({{site.baseurl}}/assets/TP3/ISP2.svg){: width="50%" }
 </div>
 
-Comme vous le constatez, plus aucune classe n'est forcée à implémenter des méthodes qu'elle ne peut pas définir, tout en conservant ses spécificités. Plus aucune erreur n'a besoin d'être levée.
+Comme vous le constatez, plus aucune classe n'est forcée à implémenter des méthodes qu'elle ne peut pas définir, tout en conservant ses spécificités. Plus aucune exception signalant une opération non prise en charge n'a besoin d'être levée.
 
 Bref, cela est en partie un mix entre le **principe de responsabilité unique** et une visualisation **hiérarchique** du problème. On note quand même le cas intéressant de la classe `D` qui permet à la fois d'avoir le type `I_Exemple`, `I_B` et `I_C` !
 
 <div class="exercise">
 
-Si vous n'étiez pas à arriver à une solution satisfaisante, refactorez votre code de nouveau afin de respecter le **principe de ségrégation des interfaces**.
+Si vous n'étiez pas arrivés à une solution satisfaisante, refactorez votre code de nouveau afin de respecter le **principe de ségrégation des interfaces**.
 
 </div>
 
@@ -1198,13 +1200,15 @@ Enfin, il reste le **principe d'inversion des dépendances**.
 
 Ce principe dit que :
 
-* Les différentes classes ne doivent pas dépendre d'implémentations concrètes, mais d'abstractions (classes abstraites/interfaces).
+* Les modules de **haut niveau**, qui portent les règles métier, ne doivent pas dépendre directement des modules de **bas niveau**, qui réalisent les détails techniques. Les deux doivent dépendre d'**abstractions**.
 
-* Les abstractions ne doivent pas dépendre des détails (les implémentations, les classes filles) mais les détails (les classes concrètes) doivent dépendre des abstractions. Nous l'avons bien vu avec l'exercice sur les **pokémons** lorsque nous étudions le principe **ouvert/fermé**.
+* Les abstractions doivent décrire les opérations attendues sans dépendre des détails de leur réalisation. Les implémentations concrètes doivent se conformer à ces abstractions.
 
-Ce principe permet d'obtenir une très forte **modularité** du programme. Si on couple cela avec la technique **d'injection des dépendances** et des **design patterns créateurs**, tels que des **fabriques abstraites**, ou bien des **conteneurs de dépendances**, on obtient un logiciel dont on peut moduler le fonctionnement sans toucher au code source, simplement en ajoutant de nouvelles classes et/ou en éditant des fichiers de configuration. Les différents **frameworks** mettent en place une architecture favorisant l'inversion des dépendances.
+Cela ne signifie pas qu'il faut créer une interface pour chaque classe utilisée. On cherche surtout à isoler le code métier des détails techniques que l'on souhaite pouvoir remplacer ou faire évoluer indépendamment.
 
-En fait, ce principe découle de la bonne application des autres principes et notamment du principe **ouvert/fermé** et de la **substitution de Liskov**.
+L'**injection de dépendances** permet de fournir aux objets les implémentations qu'ils utilisent. Le choix et l'assemblage de ces implémentations peuvent être regroupés dans un point d'entrée, dans des **fabriques** ou dans un **conteneur de dépendances**s. On peut ainsi remplacer une implémentation sans modifier les modules qui l'utilisent. On obtient ainsi des logiciels dont on peut moduler le fonctionnement sans toucher au code source, simplement en ajoutant de nouvelles classes et/ou en éditant des fichiers de configuration. Les différents **frameworks** mettent en place une architecture favorisant l'inversion des dépendances.
+
+Ce principe complète les autres principes SOLID. Dépendre d'abstractions facilite l'ajout de nouvelles implémentations sans modifier leurs clients, conformément au principe **ouvert/fermé**. Ces implémentations doivent respecter le contrat de l'abstraction, conformément au **principe de substitution de Liskov**.
 
 Nous verrons aussi qu'il est essentiel de bien respecter ce principe quand on réalise des tests unitaires.
 
@@ -1261,7 +1265,7 @@ class Service {
 }
 ```
 
-Ici, nous avons un problème similaire : la classe `Service` dépend directement d'une implémentation concrète `A` ce qui le rend peu modulable. Si je veux utiliser `B` à la place de `A`, je dois récrire le code source de `Service`.
+Ici, nous avons un problème similaire : la classe `Service` dépend directement d'une implémentation concrète `A`, ce qui la rend peu modulable. Si je veux utiliser `B` à la place de `A`, je dois récrire le code source de `Service`.
 
 Pour régler cela, nous allons tout d'abord commencer par définir et utiliser une **interface** :
 
@@ -1313,7 +1317,7 @@ class Service {
 }
 ```
 
-Pour palier à ce problème, on utilise **l'injection de dépendance**. La classe concrète est injectée via le constructeur, au moment de l'instanciation de l'objet, mais la classe ne connaît que le type abstrait. Cela permet une modularité de la classe qui peut alors être utilisée avec n'importe quel service concret dérivé du type abstrait. Et on peut en ajouter dans le futur. C'est exactement ce que nous avions fait avec le paquet de cartes et les tris avec le pattern **stratégie**, mais également avec le **décorateur** dans l'exercice avec les produits. L'injection de dépendance est partout !
+Pour pallier ce problème, on utilise ici **l'injection de dépendances par constructeur**. Une instance concrète de la dépendance est fournie au constructeur de `Service` depuis l'extérieur. La classe `Service` manipule cette instance à travers le type abstrait `I_Exemple` et peut ainsi utiliser différentes implémentations de cette interface. C'est ce que nous avons fait avec le paquet de cartes et les tris, avec le pattern **stratégie**, mais également avec le **décorateur** dans l'exercice des produits.
 
 ```java
 class Service {
@@ -1332,11 +1336,13 @@ class Service {
 class Main {
 
   public static void main(String[] args) {
-    //Utilise "methodeA" dans "action"
+    // L'appel à action() utilise methodeA().
     Service s1 = new Service(new A());
+    s1.action();
 
-    //Utilise "methodeB" dans "action"
+    // L'appel à action() utilise methodeB().
     Service s2 = new Service(new B());
+    s2.action();
   }
 
 }
@@ -1350,7 +1356,7 @@ De cette manière, **l'inversion des dépendances** est respectée. La classe `S
 
 <div class="exercise">
 
-1. Si vous n'aviez pas obtenu une solution totalement satisfaisante (ou cohérente par rapport au principe **d'inversion des dépendances** que nous venons de développer), réfactorez votre code de nouveau pour pouvoir utiliser `CompteUniversitaire` aussi bien avec un objet de type `Etudiant` qu'un objet de type `Enseignant`. Il faudra normalement adapter le code dans le `Main`.
+1. Si vous n'aviez pas obtenu une solution totalement satisfaisante (ou cohérente par rapport au principe **d'inversion des dépendances** que nous venons de développer), refactorez votre code de nouveau pour pouvoir utiliser `CompteUniversitaire` aussi bien avec un objet de type `Etudiant` qu'un objet de type `Enseignant`. Il faudra normalement adapter le code dans le `Main`.
 
 2. Testez de créer un compte universitaire pour l'enseignante "_Bricot Judas_".
 
@@ -1366,7 +1372,7 @@ De cette manière, **l'inversion des dépendances** est respectée. La classe `S
     String login = builder.toString();
     ```
 
-4. En utilisant votre connaissance du pattern **stratégie** et de **l'injection de dépendances** faites en sorte qu'on puisse choisir si `CompteUniversitaire` utilise la génération de login "simple" (nom + première lettre prénom) ou par mélange.
+4. En utilisant votre connaissance du pattern **stratégie** et de **l'injection de dépendances**, faites en sorte qu'on puisse choisir si `CompteUniversitaire` utilise la génération de login "simple" (nom + première lettre du prénom) ou par mélange.
 
 5. Le compte de "_Tarembois Guy_" doit être généré en utilisant le générateur de login simple et celui de "_Bricot Judas_" avec le générateur par mélange. Testez.
 </div>
@@ -1395,7 +1401,7 @@ Dans cette section, vous allez travailler sur un ensemble d'exercices "bilan" qu
 
       * Pour chaque **théâtre** que comporte la ville, on ajoute au score le **nombre d'entrées** du théâtre.
 
-      * Pour chaque **statue**, que comporte la ville, on ajoute le **prix de construction** de la statue ainsi que son **nombre de points de vie** actuel.
+      * Pour chaque **statue** que comporte la ville, on ajoute le **prix de construction** de la statue ainsi que son **nombre de points de vie** actuel.
 
     * On doit pouvoir savoir si une ville est **majeure**. Une ville est **majeure** si elle possède au moins **10 bâtiments majeurs**. Les bâtiments majeurs sont les **palais** et les **banques**.
 
@@ -1409,13 +1415,13 @@ Dans cette section, vous allez travailler sur un ensemble d'exercices "bilan" qu
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `fr.umontpellier.iut.bilan2`. Il s'agit d'une application de gestion de comptes bancaires. Le **contrat** de la classe `CompteBancaire` est qu'on puisse consulter son solde, retirer de l'argent d'un compte (sans passer son solde en négatif) et en déposer autant d'argent qu'on souhaite.
+1. Ouvrez le paquetage `fr.umontpellier.iut.bilan2`. Il s'agit d'une application de gestion de comptes bancaires. Le **contrat** de `CompteBancaire` permet de consulter son solde, d'effectuer des dépôts sans plafond et d'effectuer autant de retraits que souhaité, à condition de disposer d'un solde suffisant.
 
   En plus de ce compte bancaire, nous disposons de diverses classes :
 
   * Des comptes bancaires spécialisés, qui héritent de `CompteBancaire` (pas encore complets).
   * Des classes pour gérer les **exceptions**.
-  * Une classe `Banque` qui permet d'ouvrir, d'accéder, de mettre à jour et de supprimer à des comptes bancaires de tout type.
+  * Une classe `Banque` qui permet d'ouvrir, d'accéder, de mettre à jour et de supprimer des comptes bancaires de tout type.
   * Une classe `Employe` qui possède les informations d'un salarié et son salaire.
   * Une classe `Entreprise` qui permet d'embaucher des employés et qui utilise un compte bancaire afin de recevoir de l'argent et verser le salaire des employés.
 
@@ -1425,17 +1431,25 @@ Dans cette section, vous allez travailler sur un ensemble d'exercices "bilan" qu
 
 </div>
 
-Comme les classes `Entreprise` et `Banque` utilisent des objets de type `CompteBancaire`, ces classes sont garanties du comportement suivant pour les comptes bancaires : dépôt illimité, nombre de retraits illimité (si assez de fond). Notamment, les scénarios d'ajout de bénéfices et de paiement des employés de la classe `Entreprise` doit pouvoir se dérouler de la même manière avec n'importe quel type de compte bancaire qui doivent (normalement) tous garantirent le même contrat. Concernant la `Banque` cette dépendance semble un peu moins forte, car elle n'utilise pas les méthodes de `ComtpeBancaire`.
+Les classes `Entreprise` et `Banque` manipulent des objets de type `CompteBancaire`. Elles doivent donc pouvoir compter sur son contrat : des dépôts sans plafond et un nombre illimité de retraits, sous réserve d'un solde suffisant. Les opérations d'ajout de bénéfices et de paiement des salariés de `Entreprise` doivent fonctionner avec tout objet respectant ce contrat. `Banque`, quant à elle, se contente de gérer les références vers les comptes : elle n'a pas besoin des garanties particulières de `CompteBancaire`.
 
 <div class="exercise">
 
-1. Pour valider, exécutez les tests unitaires contenus dans la classe de test `Entreprise` du paquetage `fr.umontpellier.iut.bilan2` dans le dossier `src/test/java`. Pourquoi certains tests ne passent pas ? Analysez ces tests et comprenez pourquoi ils sont nécessaires, au vu du contrat imposé par `CompteBancaire`. À votre avis, quel est le principe **SOLID** violé par votre code ?
+1. Pour valider, exécutez les tests unitaires consacrés à `Entreprise` du paquetage `fr.umontpellier.iut.bilan2` dans le dossier `src/test/java`. Pourquoi certains tests ne passent pas ? Analysez ces tests et comprenez pourquoi ils sont nécessaires, au vu du contrat imposé par `CompteBancaire`. À votre avis, quel est le principe **SOLID** violé par votre code ?
 
-2. Réfactorez votre code afin de supprimer l'héritage vers `CompteBancaire` et ainsi ne plus violer un *certain* principe SOLID. Normalement, certains tests unitaires ne devraient plus compiler, c'est normal, ils n'ont plus lieu d'être. Vous pouvez les supprimer.
+2. Refactorez les comptes avec restrictions afin qu'ils n'héritent plus de `CompteBancaire`. Les tests qui vérifiaient leur substituabilité avec `CompteBancaire` n'ont plus lieu d'être et peuvent être supprimés. Adaptez les tests des opérations de chaque type de compte à la nouvelle conception et conservez les tests de `Entreprise` avec des comptes respectant le contrat qu'elle attend.
 
-3. Est-ce que votre `Main` fonctionne ? Si non, il faut corriger la classe `Banque`. A priori, cette classe n'a pas vraiment besoin de dépendre spécifiquement d'un compte bancaire "normal" (elle n'utilise pas ses méthodes) : on doit pouvoir ouvrir n'importe quel type de compte bancaire (normal, avec plafond, avec nombre de retraits maximum...).
+3. Est-ce que votre `Main` fonctionne ? Si nécessaire, adaptez `Banque` pour qu'elle puisse gérer tous les types de comptes. Introduisez une interface commune `Compte`, permettant de consulter l'identifiant et le solde d'un compte, de déposer et de retirer de l'argent. Son contrat autorise le refus d'une opération lorsque les règles du compte ne sont pas respectées : solde insuffisant, plafond de dépôt ou limite du nombre de retraits. Un refus laisse le solde inchangé.
 
-4. **Bonus** : comment pourrait-on faire pour pouvoir ajouter dynamiquement aux comptes bancaires (ceux généraux manipulés par la banque, mais pas ceux de l'entreprise) les fonctionnalités de plafond et/ou de nombre de retraits maximum, et peut-être d'autres fonctionnalités à l'avenir ? On aimerait aussi pouvoir récupérer un compte depuis la banque et le mettre en jour dans la banque en lui ajoutant un plafond ou un nombre maximum de retraits. **Si et seulement si le temps le permet**, réfactorez votre code pour rendre cela possible. Pour tester, dans votre `Main`, ajoutez dans la banque un nouveau compte bancaire simple (sans stocker son instance dans le `Main`). Ensuite, récupérez-le depuis la banque (via son identifiant) pus faites en sorte qu'on ne puisse faire que 10 retraits maximum sur ce compte, et mettez-le à jour dans la banque. Enfin, répétez l'opération afin de mettre à jour le compte pour faire en sorte qu'il possède en plus un plafond de 100000€.
+   Les différents types de comptes implémentent cette interface. `CompteBancaire` conserve ses garanties supplémentaires : aucun plafond de dépôt et aucun quota de retraits, sous réserve d'un solde suffisant. `Entreprise` continue à utiliser `CompteBancaire`, tandis que `Banque` utilise désormais `Compte`.
+
+4. **Bonus** : comment pourrait-on ajouter dynamiquement aux comptes manipulés par la banque les fonctionnalités de plafond et/ou de nombre de retraits maximum, ainsi que d'autres fonctionnalités à l'avenir ?
+
+   Les décorateurs doivent implémenter `Compte` et envelopper un autre objet de ce type. Ils conservent l'identifiant du compte enveloppé et lui délèguent la gestion du solde. Ils ne doivent pas hériter de `CompteBancaire`, dont ils ne respecteraient pas les garanties supplémentaires. `Entreprise` continue donc à utiliser des objets de type `CompteBancaire`.
+
+   **Si et seulement si le temps le permet**, refactorez votre code pour rendre cela possible. Pour tester, ajoutez dans la banque un compte bancaire simple, sans stocker son instance dans le `Main`. Récupérez-le ensuite via son identifiant, ajoutez-lui une limite de 10 retraits et mettez à jour sa référence dans la banque. Enfin, répétez l'opération pour lui ajouter un plafond de 100 000 €.
+
+   Pour cet exercice, le compteur de retraits démarre à zéro lors de l'ajout de cette fonctionnalité et ne compte que les retraits réussis. Le plafond ajouté doit être au moins égal au solde actuel du compte.
 
 </div>
 
@@ -1463,7 +1477,7 @@ Comme les classes `Entreprise` et `Banque` utilisent des objets de type `CompteB
 
     * Serveur avec plus de mémoire vive : 
       
-      * Le serveur dispose d'une extension de sa mémoire vive (nombre entier représentant des Go ajoutés).
+      * Le serveur dispose d'une extension de sa mémoire vive, exprimée par un nombre entier de Go ajoutés. La méthode `getMemoireVive()` renvoie la quantité totale de mémoire : celle du serveur enveloppé augmentée de cette extension.
       * Quand le serveur est allumé, en plus des informations habituelles, on affiche la quantité de mémoire vive ajoutée.
       * Le prix mensuel de location du serveur augmente de 5€ par Go de mémoire ajoutée. 
 
@@ -1487,18 +1501,18 @@ Comme les classes `Entreprise` et `Banque` utilisent des objets de type `CompteB
       * Le serveur dispose d'un système d'assurance qui permet au client d'être dédommagé s'il rencontre trop de problèmes.
       * Quand le serveur est allumé, en plus des informations habituelles, on signale que le serveur est couvert par une assurance.
       * Le prix mensuel de location du serveur augmente de 10€.
-      * Lorsqu'un ticket est ouvert, un compteur comptant le nombre de tickets ouverts est incrémenté.
-      * Lorsqu'un ticket est fermé, ce compteur est décrémenté (pour simplifier, on dira qu'on ne ferme jamais un ticket s'il n'y a pas de tickets ouverts).
-      * Lors de l'ouverture d'un nouveau ticket, s'il y a déjà trois tickets d'ouverts, on affiche un message informant l'utilisateur qu'il sera remboursé de 10€ sur sa prochaine facture.
+      * Le compteur représente le nombre de tickets actuellement ouverts. Il est initialisé à zéro, incrémenté à chaque ouverture et décrémenté à chaque fermeture. Pour simplifier, on suppose qu'on ne ferme jamais un ticket lorsqu'aucun n'est ouvert.
+      * À chaque ouverture, **après incrémentation**, si le compteur est strictement supérieur à trois, on affiche un message annonçant un remboursement de 10 € sur la prochaine facture. Le message apparaît donc à l'ouverture du quatrième ticket, puis à chaque ouverture supplémentaire tant que le compteur reste supérieur à trois.
+      * Pour cet exercice, on se limite à afficher ce message : aucun remboursement ni cumul de remboursements n'est effectivement calculé.
 
     * Serveur avec logs :
 
-      * Le serveur dispose d'un système qui permet d'avoir de garder une trace des événements qui se produisent sur le serveur : allumage, arrêt, ouverture et fermeture de tickets. Pour cela, on doit fournir un **nom de fichier** (chaîne de caractères) où les informations seront sauvegardées.
+      * Le serveur dispose d'un système qui permet de garder une trace des événements qui se produisent sur le serveur : allumage, arrêt, ouverture et fermeture de tickets. Pour cela, on doit fournir un **nom de fichier** (chaîne de caractères) où les informations seront sauvegardées.
       * Quand le serveur est allumé, en plus des informations habituelles, on signale que le système de log est activé, en indiquant le nom du fichier où sont sauvegardés les logs.
       * Le prix mensuel de location du serveur n'augmente pas (option gratuite).
       * Dès qu'un événement se produit (allumage, arrêt, ouverture et fermeture de tickets) l'information est reportée dans le fichier en indiquant la date de l'événement. Par exemple `[2024-10-29T17:44:22] : Serveur allumé`, etc.
 
-      Pour réaliser la dernière fonctionnalité, vous pouvez vous servir de la fonction : `Utils.ecrireDansFichier` qui permet d'écrire une ligne dans un fichier, combiné à l'utilisation d'un objet `LocalDateTime` :
+      Pour réaliser la dernière fonctionnalité, vous pouvez vous servir de la méthode `Utils.ecrireDansFichier`, qui permet d'écrire une ligne dans un fichier, en la combinant avec `LocalDateTime.now()` pour obtenir la date et l'heure courantes :
 
       ```java
       LocalDateTime time = LocalDateTime.now();
@@ -1509,7 +1523,7 @@ Comme les classes `Entreprise` et `Banque` utilisent des objets de type `CompteB
 
       Il est conseillé de se créer une méthode (privée) afin de ne pas dupliquer le code.
 
-      Pour les logs, on se contentera de messages simples : Serveur allumé, Serveur éteint, Ticket ouvert, Ticket Fermé.
+      Pour les logs, on se contentera de messages simples : Serveur allumé, Serveur éteint, Ticket ouvert, Ticket fermé.
 
 3. Testez de créer divers serveurs puis de leur ajouter des services (et vérifiez leur comportement : prix, allumage, tickets, etc) :
 
@@ -1519,7 +1533,7 @@ Comme les classes `Entreprise` et `Banque` utilisent des objets de type `CompteB
 
     * Un serveur **pro** avec **8Go** de **mémoire vive supplémentaire**, la **sauvegarde des données**, une **assurance** et un **fichier de log**.
 
-4. **Bonus** : comment pourrait-on faire pour que les services **assurance** et **sauvegarde des données** soient seulement réservés aux configurations intermédiaires et pros ? **Si et seulement si le temps le permet**, réfactorez votre code pour rendre cela possible.
+4. **Bonus** : comment pourrait-on faire pour que les services **assurance** et **sauvegarde des données** soient seulement réservés aux configurations intermédiaires et pros ? **Si et seulement si le temps le permet**, refactorez votre code pour rendre cela possible.
 
 </div>
 
@@ -1527,7 +1541,7 @@ Comme les classes `Entreprise` et `Banque` utilisent des objets de type `CompteB
 
 Pour finir, nous allons travailler sur un exercice un poil plus conséquent divisé en différentes **couches** (cf. partie architecture logicielle du cours sur les DSI).
 
-Vous allez voir qu'en plus de rendre notre projet modulable, utiliser **l'inversion de dépendances** et globalement **ne pas dépendre d'implémentations concrètes** est plus qu'important, car une architecture ne respectant pas ce principe peut occasionner des effets de bords indésirables lors des **tests unitaires**.
+Vous allez voir qu'isoler les règles métier des détails techniques et injecter les dépendances facilite les **tests unitaires**. On peut ainsi contrôler les collaborateurs utilisés par le code testé et éviter de déclencher des écritures persistantes ou des envois de mails pendant ces tests.
 
 <div class="exercise">
 
@@ -1539,30 +1553,30 @@ Vous allez voir qu'en plus de rendre notre projet modulable, utiliser **l'invers
 
 4. On aimerait effectuer quelques changements dans le programme, notamment au niveau de `ServiceUtilisateur` :
 
-    * Hasher le mot de passe avec `SHA256` au lieu de `MD5`.
+    * Hacher le mot de passe avec `SHA256` au lieu de `MD5`.
 
-    * Utiliser la classe `StockageUtilisateurFichier` pour gérer le stockage des utilisateurs. Contrairement à `StockageUtilisateurMemoire` qui stocke les données de manière volatile, ici, les utilisateurs seront stockés dans un fichier de manière persistante (que sera généré à la racine du projet).
+      **Simplification pédagogique :** les classes utilisant MD5 et SHA-256 servent ici à illustrer le remplacement d'une implémentation par une autre. Ces algorithmes utilisés seuls ne conviennent pas au stockage de mots de passe dans une application réelle. On utiliserait une fonction dédiée, comme **Argon2id**, avec un sel propre à chaque mot de passe. L'architecture proposée doit permettre d'intégrer une telle implémentation sans modifier `ServiceUtilisateur`.
+
+    * Utiliser la classe `StockageUtilisateurFichier` pour gérer le stockage des utilisateurs. Contrairement à `StockageUtilisateurMemoire` qui stocke les données de manière volatile, ici, les utilisateurs seront stockés dans un fichier de manière persistante (qui sera généré à la racine du projet).
 
     Effectuez ces changements, relancez le programme (`Main`) pour vérifier que tout fonctionne.
 
 5. Lancez maintenant les tests unitaires **2 fois de suite**. Il y a une erreur ! Trouvez la raison de cette erreur.
 </div>
 
-L'architecture proposée ne respecte pas le principe d'inversion des dépendances, car la classe `ServiceUtilisateur` possède des dépendances vers des classes **concrètes** qui, de plus, ne sont pas injectées.
+La classe `ServiceUtilisateur` dépend directement de détails techniques concrets et choisit elle-même leurs implémentations. Ces dépendances ne sont pas injectées, ce qui empêche de les remplacer facilement pour les tests.
 
-On se rend compte que cela pose un véritable problème au niveau des **tests unitaire**. Un test **unitaire**, comme son nom l'indique, teste le fonctionnement d'**une classe**, une **unité**. Or, quand on exécute les tests sur `ServiceUtilisateur`, les méthodes des dépendances concrètes utilisées sont aussi appelées ! Ce qui déclenche donc réellement l'enregistrement de l'utilisateur créé pour les tests dans la base de donnée, alors qu'on souhaitait simplement vérifier la méthode `creerUtilisateur`. Quand les tests sont exécutés une seconde fois, une erreur est détectée, car l'utilisateur existe déjà.
+Un **test unitaire** vérifie le comportement d'une unité de code, qui peut correspondre à une classe ou à un petit ensemble de classes. Ici, nous souhaitons tester `ServiceUtilisateur` sans dépendre d'un stockage persistant ni envoyer réellement des mails.
 
-Imaginez-vous dans un contexte plus concret, par exemple, dans un projet web : avec une telle conception, vos tests unitaires déclencheraient l'enregistrement d'utilisateurs de test sur votre base de données réelle ! Ce n'est pas envisageable.
+Avec le stockage dans un fichier, l'utilisateur créé lors d'une première exécution reste présent lors de la suivante. Le résultat du test dépend donc des exécutions précédentes. Nous souhaitons au contraire des tests **isolés et reproductibles**, qui retrouvent les mêmes conditions de départ à chaque exécution.
 
-Les tests unitaires **ne doivent pas dépendre de l'environnement de production**. Ils doivent pouvoir être lancé seulement à partir du code de la classe testée, sans dépendre de rien d'autre.
+Pour cela, nous pouvons remplacer certaines dépendances par des **doublures de test**, c'est-à-dire des objets adaptés aux besoins des tests.
 
-Vous avez sans doute constaté des messages **mail envoyé** lors de l'exécution des tests unitaires. Bien sûr, cela n'est pas vraiment le cas, mais de même, dans un cas concret, avec la conception actuelle, des mails seraient véritablement envoyés lors du test du programme (après création d'un utilisateur). C'est problématique.
+`StockageUtilisateurMemoire` constitue ici un **fake** : une implémentation fonctionnelle mais simplifiée du stockage. Elle modifie bien son état en mémoire ; nous utiliserons donc une nouvelle instance, initialement vide, pour chaque test.
 
-Pour palier à cela, les testeurs mettent en place des **stubs**. Il s'agit de classes **bouchons** qui ne réalisent pas réellement l'action demandée, ou alors pas de manière persistante. Aucun effet de bord est produit.
+Un **stub** fournit des réponses prédéfinies pour les besoins d'un scénario. Plus tard dans l'année, vous découvrirez aussi les **mocks**, qui permettent notamment de vérifier les appels effectués sur une dépendance.
 
-Plus tard, dans l'année, vous découvrirez les **mocks** qui permettent de créer de "fausses" classes destinées aux tests dont on peut facilement éditer les méthodes.
-
-Ici, la classe `StockageUtilisateurMemoire` agit comme un **stub** qu'on peut utiliser pour les tests sans risque. Dans un environnement réel, on utiliserait un stockage avec une base de données dédiée aux tests, comme `SQLite`, qu'on viderait ensuite.
+Nous remplacerons ensuite l'envoi de mails par une doublure qui n'envoie aucun message réel.
 
 Cependant, comment faire pour garder le stockage avec fichier pour l'exécution "normale" du programme, et le stockage en mémoire pour les tests ? Devons-nous éditer le code source de la classe `ServiceUtilisateur` avant les tests, puis la remettre en ordre ensuite ? Bien sûr que non ! Il suffit de mettre en pratique le **principe d'inversion de dépendance** que vous connaissez.
 
@@ -1572,7 +1586,7 @@ Cependant, comment faire pour garder le stockage avec fichier pour l'exécution 
 
 2. Mettez à jour le code de `ControllerUtilisateur` afin que celui-ci utilise `ServiceUtilisateur` avec `StockageUtilisateurFichier`.
 
-3. Mettez à jour le code de vos tests unitaires pour utiliser que l'objet de type `ServiceUtilisateur` utilisé dans les tests utilise `StockageUtilisateurMemoire`.
+3. Mettez à jour vos tests unitaires pour injecter dans `ServiceUtilisateur` une nouvelle instance de `StockageUtilisateurMemoire`, initialement vide, pour chaque test.
 
 4. Vérifiez que votre programme fonctionne toujours correctement et vérifiez que vos tests unitaires passent plusieurs fois sans problème.
 
@@ -1582,13 +1596,13 @@ Il reste maintenant le problème des "mails envoyés" quand on exécute les test
 
 * L'envoi des mails. On veut pouvoir utiliser une autre classe et surtout une classe n'envoyant rien (un "Fake mailer") pour les tests.
 
-* Le système de hachage du mot de passe. On veut pouvoir changer entre MD5 et SHA256. Et pour économiser du temps de calcul pour les tests, on voudrait un "Fake Hasher" qui ne hache rien et renvoie le mot de passe en clair.
+* Le système de hachage du mot de passe. On veut pouvoir changer entre MD5 et SHA-256. Pour tester la logique de `ServiceUtilisateur` indépendamment du calcul de hachage, on utilisera un `FakeHasher` qui renvoie simplement la chaîne reçue.
 
 * La classe `ServiceUtilisateur` elle-même, qui doit pouvoir être remplacée par autre chose dans le `ControllerUtilisateur`. Cela pourrait notamment être utile si on veut tester le controller indépendamment du code de `ServiceUtilisateur`.
 
 <div class="exercise">
 
-1. Refactorez votre code pour appliquer **l'inversion de dépendances** par rapport aux modules cités (mails, hasher, service utilisateur...). Il faudra créer de nouvelles interfaces et modifier des classes existantes (les hashers, le mailer...) et aussi créer deux classes de **stub** pour les tests : `FakeMailer` et `FakeHasher`.
+1. Refactorez votre code pour appliquer **l'inversion de dépendances** par rapport aux modules cités (mails, hasher, service utilisateur...). Il faudra créer de nouvelles interfaces et modifier des classes existantes (les hashers, le mailer...) et aussi créer deux **doublures de test** : `FakeMailer` et `FakeHasher`.
 
 2. Adaptez l'instanciation de `ServiceUtilisateur` dans vos tests unitaires et vérifiez qu'ils passent toujours. Vous ne devez plus constater aucun message "mail envoyé".
 
@@ -1602,6 +1616,6 @@ Il reste maintenant le problème des "mails envoyés" quand on exécute les test
 
 Voilà, maintenant, vous savez tout des principes **SOLID** ! Vous êtes donc plus proche d'un ingénieur logiciel qu'un codeur. Il existe un acronyme opposé : les principes **STUPID** qui sont six pratiques qui rendent le code très peu qualitatif, intestable, non évolutif et qu'il faut donc absolument éviter ! Bref, des **mauvaises pratiques** qui sont souvent observées. Vous pouvez consulter de la documentation à ce propos [sur cette page](https://openclassrooms.com/en/courses/5684096-use-mvc-solid-principles-and-design-patterns-in-java/6417836-avoid-stupid-practices-in-programming).
 
-Dorénavant, pour vos futurs projets (ou ceux actuels, comme la SAE) il faut systématiquement vous poser et réfléchir à la conception de votre programme **à long terme**. Il n'est jamais trop tard pour faire du **refactoring**, mais ne pas avoir besoin d'en faire en respectant une certaine qualité logicielle d'entrée de jeu est encore mieux.
+Pour vos futurs projets, ou ceux déjà en cours comme la SAE, prenez le temps de réfléchir à la conception de votre programme et aux évolutions envisageables. Une bonne conception facilite les changements, mais n'élimine pas le besoin de **refactoring** : celui-ci permet de faire évoluer la structure du code à mesure que les besoins et votre compréhension du problème se précisent.
 
-Dans les prochains TPs, nous allons donc nous concentrer sur les **design patterns** (nous en avons déjà vu deux dans ce TP), qui vous fourniront des outils pour résoudre des problèmes de conception connus tout en facilitant l’application des principes **SOLID**.
+Dans les prochains TP, nous allons donc nous concentrer sur les **design patterns** (nous en avons déjà vu deux dans ce TP), qui vous fourniront des outils pour résoudre des problèmes de conception connus tout en facilitant l’application des principes **SOLID**.
