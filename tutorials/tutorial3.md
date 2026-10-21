@@ -784,7 +784,7 @@ Voici un scénario illustrant plus en détail le problème de non-respect du pri
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `fr.umontpellier.iut.lsp1` et observez les classes mises à disposition. Dans cette application, nous avons considéré qu'un `Carre` est une spécialisation d'un `Rectangle`. Cependant, un carré possède une caractéristique particulière : **sa hauteur et sa largeur sont toujours identiques**. Bref, si on change la hauteur d'un carré, sa largeur change aussi. Ou plutôt, on ne devrait pas pouvoir changer la largeur d'un rectangle indépendamment de sa hauteur et vice-versa.
+1. Ouvrez le paquetage `fr.umontpellier.iut.lsp1` et observez les classes mises à disposition. Dans cette application, nous avons considéré qu'un `Carre` est une spécialisation d'un `Rectangle`. Cependant, un carré possède une caractéristique particulière : **sa hauteur et sa largeur sont toujours identiques**. Pour conserver cette propriété, un carré ne doit pas permettre de modifier sa largeur indépendamment de sa hauteur, ni l’inverse.
 
 2. Dans le paquetage `fr.umontpellier.iut.lsp1` dans `src/test/java` vous trouverez deux classes de tests unitaires pour tester le rectangle, le carré et la classe `Utils` qui permet de redimensionner un rectangle. Lancez-les. Essayez de comprendre pourquoi les tests ne passent pas.
 
@@ -825,7 +825,7 @@ Mais dans ce cas, on ne peut toujours pas utiliser `Carre` comme un `Rectangle` 
 * On crée des méthodes qui ne font rien et qui polluent le code.
 * On duplique le code de `setHauteur` et `setLargeur` dans `Carre` dans `setTailleCote` !
 
-Bref, cet héritage est une très mauvaise idée ! En fait, conceptuellement, en programmation, un carré n'est pas un rectangle spécialisé, car les règles pour la hauteur et la largeur sont différentes... Cela peut être un peu dur à accepter.
+Dans cette modélisation, faire hériter `Carre` de `Rectangle` pose donc problème : le contrat de `Rectangle` permet de modifier ses deux dimensions indépendamment, ce qui est incompatible avec les propriétés d’un carré. Un carré reste bien un rectangle en géométrie, mais cette relation mathématique ne suffit pas à justifier un héritage entre nos classes : il faut aussi que leurs comportements soient compatibles.
 
 Si on souhaite quand même utiliser un rectangle dans un carré (pour ne pas dupliquer le calcul de l'aire ou des autres méthodes, par exemple) on peut éventuellement utiliser une **composition** à la place, ce qui nous éviterait à gérer les méthodes indésirables de changement de hauteur ou largeur imposées par héritage.
 
@@ -943,7 +943,7 @@ public class Pile<T> extends Vector<T> {
 }
 ```
 
-Mais le principe de substitution de Liskov ne serait alors plus respecté, car on casserait le **contrat** de `Vector` ! On ne pourrait pas substituer un `Vector` par une `Pile` et les quatre derniers tests (dans la classe `VectorTest` du paquetage `fr.umontpellier.iut.lsp2` dans `src/test/java`) ne fonctionneraient plus...
+Mais le principe de substitution de Liskov ne serait alors plus respecté, car on casserait le **contrat** de `Vector` ! On ne pourrait pas substituer un `Vector` par une `Pile` et les quatre derniers tests (dans la classe `PileTest` du paquetage `fr.umontpellier.iut.lsp2` dans `src/test/java`) ne fonctionneraient plus...
 
 Bref, conceptuellement, une `Pile` n'est pas un `Vector` spécial, mais bien une structure indépendante... Néanmoins, il est possible d'utiliser une **composition** pour utiliser un `Vector` comme attribut, dans notre classe `Pile` et ainsi éviter un certain degré de duplication de code.
 
