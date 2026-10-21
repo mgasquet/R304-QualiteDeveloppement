@@ -140,6 +140,8 @@ class Email {
 
    public String[] getDestinataires() {return destinataires;}
 
+   public String getContenu() {return contenu;}
+
 }
 
 class ServeurMail {
@@ -636,15 +638,15 @@ SalarieInterface salarieChef = new SalarieChefProjet(salarie, 3);
 salarieChef.getSalaire(); //Renvoie 2300
 
 //Salarie qui est responsable de stagiaires gérant 5 stagiaires
-SalarieInterface salarieResponsableDeStagiaires = new SalarieResponsableStagiaires(salarie, 5);
+SalarieInterface salarieResponsableDeStagiaires = new SalarieResponsableDeStagiaires(salarie, 5);
 salarieResponsableDeStagiaires.getSalaire(); //Renvoie 2250
 
 //Salarié qui est chef de projet gérant 3 projets et aussi responsable de stagiaires gérant 5 stagiaires
-SalarieInterface salarieAvecMultiResponsabilites = new SalarieResponsableStagiaires(new SalarieChefProjet(salarie, 3), 5);
+SalarieInterface salarieAvecMultiResponsabilites = new SalarieResponsableDeStagiaires(new SalarieChefProjet(salarie, 3), 5);
 salarieAvecMultiResponsabilites.getSalaire(); //Renvoie 2550
 ```
 
-Il est important de noter que la classe composée est `SalarieInterface` et non pas `Salarie`! Sinon, on ne pourrait pas combiner `SalarieChefProjet` avec `SalarieResponsableStagiaires`.
+Il est important de noter que la classe composée est `SalarieInterface` et non pas `Salarie`! Sinon, on ne pourrait pas combiner `SalarieChefProjet` avec `SalarieResponsableDeStagiaires`.
 
 Aussi, le salarié n'est pas instancié dans la classe, il est **injecté** (autrement, cela ne fonctionnerait pas), comme ce que vous avez fait, par exemple, avec l'exercice sur le paquet de carte et les différentes méthodes de tri. Sur un diagramme de classes de conception, cela pourrait être représenté par une **agrégation blanche**.
 
@@ -700,11 +702,11 @@ class SalarieChefProjet extends SalarieDecorateur {
 
 }
 
-class SalarieResponsableStagiaires extends SalarieDecorateur {
+class SalarieResponsableDeStagiaires extends SalarieDecorateur {
 
   private int nombreStagiairesGeres;
 
-  public ResponsableDeStagiaires(SalarieInterface salarie, int nombreStagiairesGeres) {
+  public SalarieResponsableDeStagiaires(SalarieInterface salarie, int nombreStagiairesGeres) {
     super(salarie);
     this.nombreStagiairesGeres = nombreStagiairesGeres;
   }
@@ -720,8 +722,8 @@ class Main {
     public static void main(String[]args) {
         SalarieInterface s1 = new Salarie(2000);
         SalarieInterface s2 = new SalarieChefProjet(s1, 3);
-        SalarieInterface s3 = new SalarieResponsableStagiaires(s1, 2);
-        SalarieInterface s4 = new SalarieChefProjet(new SalarieResponsableStagiaires(s1, 4), 3);
+        SalarieInterface s3 = new SalarieResponsableDeStagiaires(s1, 2);
+        SalarieInterface s4 = new SalarieChefProjet(new SalarieResponsableDeStagiaires(s1, 4), 3);
 
         //Affiche 2000
         System.out.println(s1.getSalaire());
@@ -953,7 +955,7 @@ Bref, conceptuellement, une `Pile` n'est pas un `Vector` spécial, mais bien une
 
 3. Relancez les tests et vérifiez que tout passe.
 
-4. Quelque part dans votre code, définissez une variable de type `Stack` qui est une classe de `Java` permettant de gérer une pile. Allez observer le code source de cette classe (`CTRL+B` sur **IntelliJ** en cliquant sur le nom de la classe). Que remarquez-vous au niveau de sa déclaration ? Cette classe est aujourd'hui dépréciée. À votre avis, pourquoi ?
+4. Quelque part dans votre code, définissez une variable de type `Stack` qui est une classe de `Java` permettant de gérer une pile. Allez observer le code source de cette classe (`CTRL+B` sur **IntelliJ** en cliquant sur le nom de la classe). Que remarquez-vous au niveau de sa déclaration ? Cette classe est aujourd'hui [déconseillée](https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/Stack.html). À votre avis, pourquoi ?
 
 </div>
 
@@ -1250,7 +1252,7 @@ class Service {
   }
 
   public void action() {
-    a.methodeA();
+    dependance.methodeA();
   }
 }
 ```
