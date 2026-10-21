@@ -11,7 +11,7 @@ Cependant, savoir modéliser la conception ne garantit en rien la qualité de ce
 
 On a la même logique au niveau du développement logiciel. Un logiciel mal conçu peut répondre à un besoin et satisfaire le client et ses utilisateurs dans l'immédiat, mais il sera alors très difficile de le faire évoluer sur la durée.
 
-De manière générale, les principes liés à la qualité du développement s'assurent que le logiciel que vous allez construire pourra évoluer facilement tout en satisfaisant les besoins actuels.
+De manière générale, les principes de qualité du développement visent à faciliter l'évolution du logiciel tout en permettant de satisfaire les besoins actuels.
 
 Tout cela est difficile à mettre en place au premier abord, car il peut parfois être bien plus rapide et facile de développer une solution peu qualitative, mais qui fonctionne. Néanmoins, le code produit ne tiendra pas au fur et à mesure que l'application va grossir ce qui conduira finalement à la réécriture d'une partie voire de la totalité du code ou pire, l'abandon du projet.
 
@@ -21,7 +21,7 @@ Tout cela est aussi dur pour le développeur. Travailler dans un tel environneme
 
 L'ingénieur doit avoir une vision à long terme et prendre en compte les évolutions possibles de son programme. Pour l'aider dans cette tâche, il dispose de différents outils : les principes liés à la qualité du code, comme les principes **SOLID** et aussi les **design patterns**. La maîtrise de ces outils différencie un codeur (une IA ?) d'un ingénieur. Le codeur sait produire du code, l'ingénieur sait produire des logiciels durables.
 
-Les **frameworks** sont des outils qui englobent différents **design patterns** et "forcent" le développeur (de par leur structure) à respecter un certain niveau de qualité dans la conception (parfois, sans qu'il s'en rende compte). Nous allons étudier plusieurs **frameworks** l'année prochaine.
+Les **frameworks** proposent des structures et des mécanismes qui s’appuient souvent sur différents design patterns. Ils peuvent guider les choix de conception et faciliter l’application de bonnes pratiques, sans garantir à eux seuls la qualité du logiciel. Nous étudierons plusieurs **frameworks** l’année prochaine.
 
 Bref, dans ce cours, nous allons commencer par nous intéresser aux **principes SOLID** qui constituent la porte d'entrée vers un programme bien conçu. Nous allons également commencer à parler de **design patterns** (nous allons en introduire 2) mais nous les étudierons plus en détail dans les prochains TP.
 
@@ -43,7 +43,7 @@ Le respect de ces principes permet d'améliorer le principe de **faible couplage
 
 Les **design patterns** sont des solutions à des problèmes bien définis qui fournissent des modèles réutilisables et adaptables à de nombreux projets. Ces patterns contribuent notamment à mieux respecter les principes **SOLID**. En revanche, utiliser **design patterns** ne garantit pas toujours une qualité de code respectant **SOLID** et peut même être contre-productif — il faut donc savoir les utiliser au bon endroit et au bon moment.
 
-Dans un logiciel développé d'une telle manière, généralement, l'ajout d'une nouvelle fonctionnalité se résume à l'ajout de nouvelles classes ou de méthodes **sans avoir besoin de modifier ou de récrire les classes existantes**. Le programme est ouvert à l'extension, mais fermé aux modifications (qui pourraient entraîner elles-mêmes d'autres modifications...).
+Une conception adaptée permet de prendre en charge certaines évolutions en ajoutant de nouvelles implémentations, **sans modifier les classes qui utilisent les abstractions existantes**. C’est par exemple, l’objectif du principe ouvert/fermé : prévoir des possibilités d’extension tout en limitant les modifications du code déjà en place. Cela ne signifie pas que les classes existantes ne devront plus jamais être modifiées.
 
 Dans ce TP, nous allons étudier chaque principe et nous allons vous fournir du code qui est (la plupart du temps) fonctionnel, mais développé sans respecter **SOLID**. Vous allez alors constater que :
 
@@ -52,7 +52,7 @@ Dans ce TP, nous allons étudier chaque principe et nous allons vous fournir du 
 * Des bugs parfois assez inattendus peuvent survenir.
 * Les tests unitaires sont difficiles à gérer.
 
-Ensuite, nous allons voir comme un des principes **SOLID** permet de régler cela, et vous allez donc devoir **refactorer** les différentes applications. **Refactorer** du code (ou réusiner du code en français) signifie retravailler le code source du programme sans pour autant ajouter de nouvelles fonctionnalités à l'application. Il s'agit d'améliorer la qualité du code.
+Ensuite, nous allons voir comment les principes **SOLID** permettent de traiter ces problèmes, et vous allez donc devoir **refactorer** les différentes applications. **Refactorer** du code (ou réusiner du code en français) consiste à améliorer sa structure interne **sans changer son comportement observable**. Il s’agit de rendre le code plus facile à comprendre et à faire évoluer.
 
 **Attention** : Dans plusieurs exercices, il vous sera demandé de **générer un diagramme de classes** (avec `IntelliJ` ou autre IDE qui propose cette fonctionnalité). Bien que les diagrammes générés puissent être parfois légèrement erronés, et qu'il vaut généralement mieux faire le dessin soi-même, cela vous fera gagner du temps. Il est fortement conseillé de prendre des **captures d'écran** de chaque diagramme de classes et de les sauvegarder dans un sous-dossier de votre dépôt. Certains diagrammes permettent de comparer l'évolution de l'architecture et des dépendances avant/après **refactoring**.
 
@@ -72,7 +72,7 @@ Ce projet contient divers **paquetages** contenant le code de base pour chaque e
 
 Pour mener à bien le déroulement d'une fonctionnalité, le programme va faire appel à diverses classes qui vont interagir entre elles (comme nous l'avons vu avec le DSI). Ces classes vont **traiter** la demande. Chaque classe possède la **responsabilité** d'effectuer une partie de ce traitement. 
 
-Le principe de **responsabilité unique** indique qu'une classe ne doit pas posséder plus d'une responsabilité. Une responsabilité concerne des **opérations** (traitement, méthodes) de **même nature**.
+Le principe de **responsabilité unique** indique qu'une classe ne doit pas posséder plus d'une responsabilité. Une responsabilité regroupe des éléments de code qui évoluent pour les mêmes raisons. Deux traitements peuvent utiliser les mêmes données tout en relevant de responsabilités différentes.
 
 **Robert C. Martin** dit : "_Si une classe a plus d’une responsabilité, alors ces responsabilités deviennent couplées. Des modifications apportées à l’une des responsabilités peuvent porter atteinte ou inhiber la capacité de la classe de remplir les autres. Ce genre de couplage amène à des architectures fragiles qui dysfonctionnent de façon inattendue lorsqu’elles sont modifiées._"
 
@@ -180,13 +180,11 @@ Ce principe semble assez facile à mettre en place, mais dans la réalité, on r
      * remplacer l'opération d'addition par une autre opération (par exemple, une soustraction)
      * changer l’affichage final du résultat et l'écrire dans un fichier à la place (plutôt qu'à la console). Vous pouvez utiliser le code suivant :
         ```java
-          try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("resultat.txt"));
+          try (BufferedWriter writer = new BufferedWriter(new FileWriter("resultat.txt"))) {
             writer.write(String.format("Résultat : %s%n", resultat));
-            writer.close();
           }
-          catch(IOException e) {
-            throw new RuntimeException("Erreur lors de l'écriture dans le fichier...");
+          catch (IOException e) {
+            throw new RuntimeException("Erreur lors de l'écriture dans le fichier...", e);
           }
         ```
      * changer la saisie des nombres en utilisant un `Scanner` et la méthode `nextInt` au lieu d'un `BufferedReader`. Il faudra enlever le **catch** de `IOException` et `NumberFormatException` ainsi que les `parseInt`. À la place, on attrapera une exception `InputMismatchException`. Pour rappel, pour définir un `Scanner` :
