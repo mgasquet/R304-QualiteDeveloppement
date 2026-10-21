@@ -775,9 +775,10 @@ Tout cela occasionne parfois des problèmes inattendus qui sont mis en lumière 
 
 Quand on parle de **programmation par contrat** cela signifie que chaque classe possède un ensemble de **règles** (implicites ou explicites) autour de ses **méthodes** : **pré-conditions**, **post-conditions**, **effet de bords**, etc. Globalement, quelqu'un qui utilise une instance d'une **classe** donnée sait à quoi s'attendre quand on appelle telle ou telle méthode. Par exemple, le contrat de `ArrayList` précise qu’un appel réussi à `add(element)` ajoute cet élément à la fin de la liste.
 
-Le principe de **substitution de Liskov** a été introduit par **Barbara Liskov** et énonce qu'un **objet** d'une superclasse donnée doit pouvoir être remplacée (dans les appels de méthodes, de fonction, etc) par une de ses **sous-classes** sans "casser" le fonctionnement du programme. Une méthode provenant à l'origine d'une superclasse et appelée sur la sous-classe devrait **respecter le contrat** défini dans la superclasse.
+Le principe de **substitution de Liskov**, introduit par **Barbara Liskov**,  énonce qu'un **objet** d'un sous-type doit pouvoir être utilisé partout où un objet du type de base est attendu, **sans rompre le contrat** de ce type de base. Une méthode redéfinie dans une sous-classe doit donc préserver les garanties promises par la superclasse.
 
-Par exemple, si on étend `ArrayList` pour faire un sous-type de collection spécialisé `MonArrayList` : si on redéfinit la méthode `add` dans `MonArrayList`, à la fin d'un appel à cette méthode, l'élément ajouté doit se trouver à la fin de la collection, comme spécifié dans le **contrat** de `ArrayList`. Peut-être que le chemin et la manière de faire aura été différente de la classe mère, mais le résultat est le même : le code d'une fonction/méthode attendant une instance de `ArrayList` en paramètre doit pouvoir fonctionner si on lui donne une instance de `MonArrayList` sans perturbation du contrat : des tests unitaires (portant sur la fonction en question) écrits par rapport au **contrat** spécifié par la classe mère, passeraient toujours. En résumé, dans cet exemple `ArrayList` doit pouvoir être  sans problèmes par `MonArrayList`.
+Par exemple, si une classe `MonArrayList` étend `ArrayList` et redéfinit add(element), elle doit conserver le contrat de cette opération : après un appel réussi, l’élément ajouté se trouve à la fin de la liste. L’implémentation peut être différente, mais un code qui utilise `ArrayList` doit continuer à fonctionner avec une instance de `MonArrayList`, conformément au contrat de `ArrayList`. Les tests portant sur ce contrat doivent donc continuer à passer lorsque l’on remplace une instance de `ArrayList` par une instance de `MonArrayList`.
+
 
 L'utilisation inappropriée de l'héritage peut amener au non-respect de ce principe.
 
@@ -992,7 +993,7 @@ Voyons comment ne pas respecter ce principe peut devenir très fastidieux au fur
 
     ```java
     public double getEnduranceMonture() {
-        throw new Error("Une monture volante n'a pas d'endurance!");
+        throw new UnsupportedOperationException("Une monture volante n'a pas d'endurance!");
     }
     ```
 
@@ -1001,7 +1002,9 @@ Voyons comment ne pas respecter ce principe peut devenir très fastidieux au fur
 4. Les classes `Cheval` et `Tigre` ne compilent plus ! C'est parce qu'il faut implémenter la méthode permettant d'obtenir **le temps maximum de vol**... Or, ces montures n'ont pas de temps maximum de vol ! On va donc procéder comme pour `Griffon` en soulevant une erreur :
 
     ```java
-    throw new Error("Cette monture ne peut pas voler!");
+    public double getTempsMaximumDeVol() {
+        throw new UnsupportedOperationException("Cette monture ne peut pas voler!");
+    }
     ```
 
 5. Ajoutez une classe `Dragon` étendant `Creature` et implémentant l'interface `Monture`. Cette monture a une vitesse de 400. Elle possède aussi un temps de vol maximum de 120 (car c'est une monture volante). Elle ne possède pas d'endurance. Par contre, on veut connaître sa **puissance de feu** qui est de 200. Adaptez votre classe en conséquence.
@@ -1044,11 +1047,11 @@ class A implements I_Exemple {
   }
 
   public void operationB() {
-    throw new Error("Impossible d'implémenter cette méthode.");
+    throw new UnsupportedOperationException("Impossible d'implémenter cette méthode.");
   }
 
   public void operationC() {
-    throw new Error("Impossible d'implémenter cette méthode.");
+    throw new UnsupportedOperationException("Impossible d'implémenter cette méthode.");
   }
 }
 
@@ -1058,7 +1061,7 @@ class B implements I_Exemple {
   }
 
   public void operationA() {
-    throw new Error("Impossible d'implémenter cette méthode.");
+    throw new UnsupportedOperationException("Impossible d'implémenter cette méthode.");
   }
 
   public void operationB() {
@@ -1066,7 +1069,7 @@ class B implements I_Exemple {
   }
 
   public void operationC() {
-    throw new Error("Impossible d'implémenter cette méthode.");
+    throw new UnsupportedOperationException("Impossible d'implémenter cette méthode.");
   }
 }
 
@@ -1076,11 +1079,11 @@ class C implements I_Exemple {
   }
 
   public void operationA() {
-    throw new Error("Impossible d'implémenter cette méthode.");
+    throw new UnsupportedOperationException("Impossible d'implémenter cette méthode.");
   }
 
   public void operationB() {
-    throw new Error("Impossible d'implémenter cette méthode.");
+    throw new UnsupportedOperationException("Impossible d'implémenter cette méthode.");
   }
 
   public void operationC() {
@@ -1094,7 +1097,7 @@ class D implements I_Exemple {
   }
 
   public void operationA() {
-    throw new Error("Impossible d'implémenter cette méthode.");
+    throw new UnsupportedOperationException("Impossible d'implémenter cette méthode.");
   }
 
   public void operationB() {
