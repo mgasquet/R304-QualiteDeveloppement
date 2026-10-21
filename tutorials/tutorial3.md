@@ -205,7 +205,7 @@ Voyons maintenant un autre exemple.
 
 2. Une application graphique souhaite pouvoir afficher les **rectangles**. Une première idée est d'utiliser la classe `JFrame` (de la librairie _Java Swing_), ce qui permettra de l'afficher :
 
-    * Faites étendre la classe `JFrame` à `Rectangle`.
+    * Faites hériter `Rectangle` de `JFrame`.
 
     * Dans le constructeur, ajoutez le code suivant qui permettra de configurer la fenêtre affichant le rectangle :
 
@@ -220,6 +220,7 @@ Voyons maintenant un autre exemple.
       ```java
       @Override
       public void paint(Graphics g) {
+          super.paint(g);
           g.drawRect(largeur/2, hauteur/2, largeur, hauteur);
       }
       ```
@@ -235,7 +236,7 @@ Voyons maintenant un autre exemple.
 
 3. Certaines applications aimeraient aussi utiliser simplement la classe `Rectangle` pour faire des calculs géométriques sans pour autant avoir besoin de l'afficher. À ce stade, vous avez sans doute clairement identifié que la classe `Rectangle` possède trop de responsabilités : la gestion de la forme géométrique et de ses propriétés (aire, peut-être plus tard périmètre, etc.) et l'affichage graphique. La classe peut changer si on ajoute de nouvelles opérations ou si l'affichage graphique change. Le principe de responsabilité unique n'est pas respecté.
 
-4. L'idée est d'avoir deux classes : une première, gérant la forme rectangle et l'autre permettant de l'afficher. Mais pour autant, il ne faut pas dupliquer de code ! Refactorez votre code en conséquence afin de mettre en place cette nouvelle conception.
+4. L'idée est d'avoir deux classes : une première, gérant la forme rectangle et l'autre permettant de l'afficher. Mais pour autant, il ne faut pas dupliquer de code ! Refactorez votre code en conséquence afin de mettre en place cette nouvelle conception. **Indication** : pour afficher le rectangle, utilisez un `JPanel` placé dans une `JFrame`. Réalisez le dessin dans la méthode `paintComponent(Graphics g)` du panneau, en commençant par appeler `super.paintComponent(g)`.
 
 5. Assurez-vous que tout fonctionne (il faudra sans doute adapter le `main`) et qu'il est bien possible d'avoir de créer des rectangles ne contenant aucune logique d'affichage et des rectangles qu'il est possible d'afficher.
 
@@ -290,7 +291,7 @@ De même, dans la classe `Pokemon`, pour que le pokémon puisse se présenter av
 
     * En plus des attributs d'un `Pokemon` classique, un pokémon **électrique** possède un attribut entier `chargeMax` et un attribut booléen `superDecharge`.
 
-    * Son nom d'attaque est **Eclair** et il fait **20 dégâts** plus un **bonus de dégâts** entre **0** et la valeur de `chargeMax` (tiré au hasard). Si l'attribut `superDecharge` du pokémon vaut `true`, alors **bonus de dégâts** supplémentaire de 20 est ajouté.
+    * Son nom d'attaque est **Eclair** et inflige **20 dégâts**, auxques s'ajoute un **bonus de dégâts** entier tiré au hasard entre **0** et `chargeMax` (on suppose que `chargeMax` est positif). Si l'attribut `superDecharge` du pokémon vaut `true`, alors un **bonus supplémentaire de 20 dégâts** est ajouté.
   
     * Faites en sorte de prendre en charge ce nouveau type, **sans refactorer le code existant**, en créant une nouvelle classe `PokemonElectrique` et en ajoutant le code nécessaire là où il faut.
 
@@ -392,7 +393,7 @@ class Triangle extends FigureGeometrique {
 
 L'ajout d'une nouvelle figure nécessite donc simplement l'ajout d'une nouvelle classe correspondant à la figure et l'implémentation des méthodes requises (ici, dessiner la figure). Aucune autre classe n'est modifiée. L'extension est possible (ajout de nouvelles figures) sans modification du code source déjà présent. Par ailleurs, il est maintenant impossible de créer des figures géométriques qui n'existent pas au préalable dans notre programme (c'est une bonne chose !).
 
-Comme `FigureGeometrique` ne contient aucun attribut (qui pourraient être communs à toutes les figures) et définit simplement des méthodes `abstraites`, il serait plus judicieux d'utiliser une `interface` ! Par contre, si la classe abstraite possède des attributs et/ou définit un bout de comportement commun à toutes les sous-classes, on utilisera bien une classe abstraite.
+Ici, `FigureGeometrique` ne contient aucun état et définit uniquement une méthode abstraite : une `interface` convient donc bien pour représenter ce contrat commun. Une classe abstraite devient notamment utile si l’on souhaite factoriser des attributs ou une implémentation commune à plusieurs sous-classes.
 
 Si vous bloquiez, ceci devrait vous permettre de refactorer le code du paquetage `fr.umontpellier.iut.ocp1` (animaux). Nous allons également réfactorer `ocp2` (pokémons). Cela peut sembler un peu plus compliqué (car il y a déjà un système d'héritage), mais cela ne devrait pas être trop dur à adapter.
 
@@ -435,7 +436,7 @@ Nous allons maintenant tester votre compréhension des deux principes (`S` et `O
 
     Faites en sorte que la classe `Paquet` puisse effectuer un tri à bulles. 
     
-    Pour vous aider, vous pourrez utiliser la méthode `compareTo` qui permet de comparer deux cartes. Cette méthode renvoie un nombre négatif si la première carte est strictement inférieure à la seconde, **0** si elles sont égales et un nombre positif si la première carte est strictement supérieure à la seconde.
+    Pour vous aider, vous pourrez utiliser `carte1.compareTo(carte2)`. Cette méthode renvoie un nombre négatif si `carte1` doit précéder `carte2` dans l’ordre de tri, **0** si les deux cartes sont équivalentes pour cet ordre et un nombre positif si `carte1` doit suivre `carte2`.
 
 3. Testez que votre algorithme fonctionne bien en changeant la méthode de tri du paquet dans le `Main`.
 
@@ -506,11 +507,11 @@ Dans la suite du TP, nous allons donner un exemple et un contexte similaire à c
 
 Pour résoudre le problème présenté dans cet exercice, l'idée est la suivante :
 
-* La classe "mère", disons `I`, définie une abstraction (typiquement une interface) : elle définit son contrat, à savoir ce que tous les objets du même type qu'elle, doivent pouvoir faire.
+* Une **abstraction commune**, notée `I`, typiquement une interface, définit les opérations que les objets de base et les décorateurs doivent proposer.
 
-* La classe "fille" implémente cette interface et redéfinit les fonctions afin de respecter le contrat. En plus, la classe fille possède **un attribut stockant une réference vers une instance de `I`**. Ainsi, la classe fille **délègue** une partie de l’exécution des **opérations** à l'instance qu'elle agrège et ajoute son propre **comportement**.
+* Une classe de base implémente cette abstraction. Chaque classe de **décorateur** implémente également `I` et possède un attribut référençant un autre objet de type `I`. Le décorateur délègue une partie des opérations à cet objet et y ajoute son propre comportement.
 
-* On peut ainsi développer plusieurs classes "filles" sous le même format et les concaténer lors de la création de l'objet, ajoutant ainsi plusieurs comportements de manière dynamique.
+* Un décorateur peut envelopper un objet de base ou un autre décorateur. On peut donc imbriquer **plusieurs décorateurs** pour combiner leurs comportements.
 
 Illustrons cela à travers un exemple :
 
@@ -644,9 +645,9 @@ SalarieInterface salarieAvecMultiResponsabilites = new SalarieResponsableDeStagi
 salarieAvecMultiResponsabilites.getSalaire(); //Renvoie 2550
 ```
 
-Il est important de noter que la classe composée est `SalarieInterface` et non pas `Salarie`! Sinon, on ne pourrait pas combiner `SalarieChefProjet` avec `SalarieResponsableDeStagiaires`.
+Le type de l’attribut qui référence l’objet enveloppé est `SalarieInterface`, et non `Salarie`. Ainsi, cet attribut peut référencer aussi bien un salarié de base qu’un autre décorateur, ce qui permet de combiner `SalarieChefProjet` et `SalarieResponsableDeStagiaires`.
 
-Aussi, le salarié n'est pas instancié dans la classe, il est **injecté** (autrement, cela ne fonctionnerait pas), comme ce que vous avez fait, par exemple, avec l'exercice sur le paquet de carte et les différentes méthodes de tri. Sur un diagramme de classes de conception, cela pourrait être représenté par une **agrégation blanche**.
+L’objet enveloppé est fourni au constructeur du décorateur : la dépendance est **injectée**, comme dans l’exercice sur le paquet de cartes et les méthodes de tri. Cela permet de décorer un objet existant et de choisir les décorateurs à combiner. Cette injection ne détermine pas, à elle seule, la notation UML de la relation.
 
 <div class="exercise">
 
@@ -752,15 +753,17 @@ class Main {
 
 </div>
 
-Dans le futur, si nous ajoutons un nouveau type de **produit**, il suffira alors de rajouter une nouvelle classe et lui faire étendre votre classe abstraite. Avec une telle architecture, le principe ouvert/fermé est respecté et nous avons tiré profit de manière avantageuse du mécanisme de composition au lieu de se reposer sur l'héritage qui ne nous permettait pas d'arriver à nos fins.
+Si nous ajoutons un nouveau comportement à un produit, il suffira de créer une nouvelle classe de décorateur qui étend la classe abstraite. Avec une telle architecture, le principe ouvert/fermé est respecté et nous avons tiré profit de manière avantageuse du mécanisme de composition au lieu de se reposer sur l'héritage qui ne nous permettait pas d'arriver à nos fins.
 
 En fait, ce modèle est réutilisable et adaptable à d'autres situations (nous l'avons vu avec les salariés). C'est en fait un autre **design pattern** nommé **décorateur** d'où le nom de la classe abstraite dans l'exemple.
 
 **Attention** : le décorateur est un pattern différent de **builder** que vous avez vu l'an dernier. 
 
-Un **builder** permet de créer un objet complexe (avec beaucoup de paramètres, donc certains optionnels). Le pattern **décorateur** permet de rajouter (ou d'enlever) **dynamiquement** des responsabilités (ou un **comportement**) à des objets **déjà instanciés** qui sont déjà potentiellement déjà utilisés dans l'application. D'ailleurs, on ne connaît pas forcément tous les comportements que l'on souhaite ajouter à l'avance, lors du développement de la classe de base (contrairement au builder), cela peut venir après. Pour ajouter un nouveau comportement, on ajoute une nouvelle classe et **on ne touche pas à la classe d'origine** (et on respecte ainsi le principe ouvert/fermé). Avec un **builder** toutes les contraintes sont déjà connues lors de la création de la classe, le pattern facilite seulement l'instanciation.
+Un **builder** facilite la construction d’un objet complexe, notamment lorsque celui-ci possède de nombreux paramètres, dont certains sont optionnels.
 
-Bref, le **décorateur** n'est pas un **design pattern créateur**, mais un pattern qui va venir ajouter ou retirer **dynamiquement** des **responsabilités** à une instance.
+Le pattern **décorateur** permet d’ajouter des comportements à un objet en l’enveloppant dans un autre objet qui respecte la même abstraction. Plusieurs décorateurs peuvent être imbriqués pour cumuler leurs effets.
+Les nouvelles fonctionnalités sont accessibles **en passant par le décorateur**. Une partie du programme qui conserve une référence vers l’objet d’origine peut continuer à utiliser son comportement initial. Pour bénéficier des nouveaux comportements, elle doit utiliser la référence vers l’objet décoré.
+De nouveaux comportements peuvent ainsi être développés dans de nouvelles classes de décorateurs, sans modifier la classe de l’objet d’origine. Le décorateur est donc un **pattern structurel** qui permet de combiner des comportements autour d’un objet. C'est pour cela qu'on dit qu'il ajoute ou retire **dynamiquement** des **responsabilités** à une instance.
 
 À partir du diagramme de classes que vous avez généré, vous devriez être capable de produire un modèle général fonctionnant pour tous les cas de figures.
 
