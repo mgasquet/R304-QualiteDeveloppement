@@ -772,7 +772,7 @@ Certains développeurs abusent de l'**héritage** par facilité au lieu d'utilis
 
 Tout cela occasionne parfois des problèmes inattendus qui sont mis en lumière par le principe de **substitution de Liskov** qui est fortement liée à la notion de **programmation par contrat**.
 
-Quand on parle de **programmation par contrat** cela signifie que chaque classe possède un ensemble de **règles** (implicites ou explicites) autour de ses **méthodes** : **pré-conditions**, **post-conditions**, **effet de bords**, etc. Globalement, quelqu'un qui utilise une instance d'une **classe** donnée sait à quoi s'attendre quand on appelle telle ou telle méthode. Par exemple, on sait qu'un appel à la méthode `add` sur une instance de n'importe quelle classe implémentant l'interface `List` (comme `ArrayList`) va ajouter l'élément à la fin de la collection.
+Quand on parle de **programmation par contrat** cela signifie que chaque classe possède un ensemble de **règles** (implicites ou explicites) autour de ses **méthodes** : **pré-conditions**, **post-conditions**, **effet de bords**, etc. Globalement, quelqu'un qui utilise une instance d'une **classe** donnée sait à quoi s'attendre quand on appelle telle ou telle méthode. Par exemple, le contrat de `ArrayList` précise qu’un appel réussi à `add(element)` ajoute cet élément à la fin de la liste.
 
 Le principe de **substitution de Liskov** a été introduit par **Barbara Liskov** et énonce qu'un **objet** d'une superclasse donnée doit pouvoir être remplacée (dans les appels de méthodes, de fonction, etc) par une de ses **sous-classes** sans "casser" le fonctionnement du programme. Une méthode provenant à l'origine d'une superclasse et appelée sur la sous-classe devrait **respecter le contrat** défini dans la superclasse.
 
@@ -845,7 +845,7 @@ Si on souhaite quand même utiliser un rectangle dans un carré (pour ne pas dup
 
     * On utilise une composition avec un rectangle, donc il n'y a pas besoin d'attribut `tailleCote` dans la classe. Cela est stocké au niveau du rectangle.
 
-    * La signature du **constructeur** ne change pas. L'attribut de type `Rectangle` est directement initialisé dans le constructeur (agrégation noire sur un diagramme de classes).
+    * La signature du **constructeur** ne change pas : il crée un `Rectangle` propre à la classe `Carre`. Cet objet doit rester privé, sans méthode permettant de récupérer sa référence depuis l’extérieur.
 
     * On n'a plus besoin des méthodes `setHauteur` et `setLargeur` (on ne modifie pas indépendamment la largeur et la hauteur d'un carré).
 
@@ -867,7 +867,7 @@ Après **refactoring**, le diagramme de classes de votre application devrait don
 ![Liskov substitution 2]({{site.baseurl}}/assets/TP3/LSP2.svg){: width="50%" }
 </div>
 
-La **composition forte** entre `Carre` et `Rectangle` (initialisé dans `Carre` et n'en sort pas) est en opposition avec la **composition faible**, qui indique aussi une composition, mais dans laquelle la dépendance est injectée (comme avec les **décorateurs** dans l'exercice des produits).
+La **composition forte** entre `Carre` et `Rectangle` indique que chaque `Carre` possède son propre `Rectangle`, qui constitue un détail interne de son fonctionnement. Ce rectangle n’est ni partagé avec d’autres objets ni accessible depuis l’extérieur (d'où la **composition forte**). Elle est en opposition avec la **composition faible**, qui indique aussi une composition, mais dans laquelle la dépendance est injectée (comme avec les **décorateurs** dans l'exercice des produits).
 
 Bien sûr, nous aurions pu quand même conserver la logique d'agrandissement d'une `FigureRectangulaire`. À ce moment-là, il faudrait rajouter une méthode `agrandir(int facteur)` dans l'interface `FigureRectangulaire` et implémenter les méthodes dans `Rectangle` et `Carre`.
 
@@ -1600,4 +1600,4 @@ Voilà, maintenant, vous savez tout des principes **SOLID** ! Vous êtes donc pl
 
 Dorénavant, pour vos futurs projets (ou ceux actuels, comme la SAE) il faut systématiquement vous poser et réfléchir à la conception de votre programme **à long terme**. Il n'est jamais trop tard pour faire du **refactoring**, mais ne pas avoir besoin d'en faire en respectant une certaine qualité logicielle d'entrée de jeu est encore mieux.
 
-Dans les prochains TPs, nous allons donc nous concentrer sur les **design patterns** (nous en avons déjà vu deux dans ce TP) qui permettront de vous donner des outils pour résoudre des problèmes de conception connus tout en mettant en facilitant le respect et la mise en ouvre les principes SOLID.
+Dans les prochains TPs, nous allons donc nous concentrer sur les **design patterns** (nous en avons déjà vu deux dans ce TP), qui vous fourniront des outils pour résoudre des problèmes de conception connus tout en facilitant l’application des principes **SOLID**.
