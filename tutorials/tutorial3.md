@@ -977,49 +977,69 @@ Voyons comment ne pas respecter ce principe peut devenir très fastidieux au fur
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `fr.umontpellier.iut.isp`. Ce projet modélise un système de jeu où certaines créatures sont des **montures**. Toutes les montures du même type ont les mêmes caractéristiques type (vitesse, endurance...). Au début, le développeur a modélisé une créature `Cheval`. Pour cette monture, on veut connaître :
+1. Ouvrez le paquetage `fr.umontpellier.iut.isp`. Ce projet modélise un système de jeu où certaines créatures sont des **montures**. L'interface `Monture` définit trois services :
 
-    * Le nom de la monture.
+    * `int calculerVitesse(int charge)` : calculer la vitesse selon la charge transportée.
 
-    * La vitesse.
+    * `int calculerDureeTrajet(int distance, int charge)` : calculer la durée d'un trajet.
 
-    * L'endurance.
+    * `int calculerEndurance(int charge)` : calculer l'endurance terrestre selon la charge transportée.
 
-    Pour prévoir le futur dans le cas où il y aurait besoin d'ajouter d'autres montures, le développeur a ajouté une interface `Monture`.
+    Les classes `Cheval` et `Tigre` étendent `Creature` et implémentent cette interface avec des calculs différents. Le cheval utilise sa `force`, fournie au constructeur ; le tigre utilise son `niveauFerocite`, également fourni au constructeur. Les valeurs de ces attributs peuvent varier d'une instance à l'autre. Le nom et la rareté sont gérés par `Creature`.
 
-    Il a ensuite ajouté un autre type de monture, le **Tigre**.
+    Ces calculs servent uniquement à illustrer les différences d'implémentation : on utilise des **entiers**, des divisions entières et des unités de jeu abstraites. La distance et la charge sont positives ou nulles. Comparez les trois méthodes dans `Cheval` et `Tigre`.
 
-2. Ajoutez une classe `Griffon` étendant `Creature` et implémentant l'interface `Monture`. Cette monture a une vitesse de 300. Cependant, contrairement aux autres montures, cette monture est une **monture volante**. Elle ne possède pas d'endurance. Par contre, on veut connaître son **temps maximum de vol** qui est de 40. Adaptez votre classe en conséquence.
+2. Ajoutez une classe `Griffon` étendant `Creature` et implémentant l'interface `Monture`. Ajoutez deux attributs entiers, `agilite` et `reserveVol`, fournis au constructeur. Utilisez des calculs simples :
 
-    Concernant l'endurance, que faut-il renvoyer ? On ne peut pas renvoyer **0** ou un nombre négatif, cela n'aurait pas beaucoup de sens. À la place, on peut lever une exception :
+    * Pour la vitesse : `Math.max(1, agilite - charge)`.
+
+    * Pour la durée d'un trajet : `distance / calculerVitesse(charge)`.
+
+    Cependant, contrairement aux montures précédentes, le griffon est une **monture volante**. Dans ce modèle, il n'a pas d'endurance terrestre. On veut plutôt calculer son **temps maximum de vol** selon la charge : ajoutez la méthode `int calculerTempsMaximumDeVol(int charge)`, qui renvoie `Math.max(1, reserveVol / (charge + 1))`.
+
+    Que faire de la méthode de calcul de l'endurance ? Renvoyer une valeur arbitraire ne représenterait pas une capacité du griffon. Pour cette première version, levez une exception :
 
     ```java
-    public double getEnduranceMonture() {
-        throw new UnsupportedOperationException("Une monture volante n'a pas d'endurance!");
+    @Override
+    public int calculerEndurance(int charge) {
+        throw new UnsupportedOperationException("Une monture volante n'a pas d'endurance terrestre !");
     }
     ```
 
-3. Dans le cas où il y aurait besoin d'ajouter d'autres montures volantes dans le futur, ajoutez la méthode permettant d'obtenir le temps de vol dans l'interface `Monture`.
+3. Pour prévoir l'ajout d'autres montures volantes, ajoutez la méthode `int calculerTempsMaximumDeVol(int charge)` dans l'interface `Monture`.
 
-4. Les classes `Cheval` et `Tigre` ne compilent plus ! C'est parce qu'il faut implémenter la méthode permettant d'obtenir **le temps maximum de vol**... Or, ces montures n'ont pas de temps maximum de vol ! On va donc procéder comme pour `Griffon` en levant une exception :
+4. Les classes `Cheval` et `Tigre` ne compilent plus ! Il faut maintenant implémenter le calcul du **temps maximum de vol**, alors que ces montures ne volent pas. Procédez comme pour le griffon en levant une exception :
 
     ```java
-    public double getTempsMaximumDeVol() {
-        throw new UnsupportedOperationException("Cette monture ne peut pas voler!");
+    @Override
+    public int calculerTempsMaximumDeVol(int charge) {
+        throw new UnsupportedOperationException("Cette monture ne peut pas voler !");
     }
     ```
 
-5. Ajoutez une classe `Dragon` étendant `Creature` et implémentant l'interface `Monture`. Cette monture a une vitesse de 400. Elle possède aussi un temps de vol maximum de 120 (car c'est une monture volante). Elle ne possède pas d'endurance. Par contre, on veut connaître sa **puissance de feu** qui est de 200. Adaptez votre classe en conséquence.
+5. Ajoutez une classe `Dragon` étendant `Creature` et implémentant l'interface `Monture`. Ajoutez les attributs entiers `force`, `reserveVol` et `puissance`, fournis au constructeur.
 
-6. Mettez à jour l'interface `Monture` avec la méthode pour la puissance de feu au cas où il y ait d'autres types de dragons ajoutés dans le futur et corrigez les erreurs de compilation.
+    * Pour la vitesse, renvoyez `Math.max(1, force / (charge + 1))`.
 
-7. Enfin, ajoutez une classe `LicorneAilee` étendant `Creature` et implémentant l'interface `Monture`. Cette monture a une vitesse de 75. Elle possède aussi un temps de vol maximum de 20 (car c'est une monture volante) et une endurance de 50 (car c'est aussi une monture terrestre !). Par contre, elle n'a pas de puissance de feu.
+    * Pour la durée d'un trajet, renvoyez `distance / calculerVitesse(charge)`.
+
+    * Pour le temps maximum de vol, utilisez le même calcul que le griffon, à partir de sa propre `reserveVol`.
+
+    Comme le griffon, le dragon vole et n'a pas d'endurance terrestre dans ce modèle : le calcul de l'endurance doit donc lever une exception. Le calcul de la durée du trajet ne doit pas appeler cette méthode.
+
+    Le dragon possède aussi une capacité supplémentaire : il peut cracher du feu. Ajoutez la méthode `int calculerPuissanceFeu(int distance)`, qui renvoie `Math.max(0, puissance - distance)` pour représenter une attaque moins puissante lorsque la cible est éloignée.
+
+6. Ajoutez `int calculerPuissanceFeu(int distance)` à l'interface `Monture`, puis corrigez les erreurs de compilation dans `Cheval`, `Tigre` et `Griffon`. Ces trois montures ne crachent pas de feu : leurs implémentations doivent lever une `UnsupportedOperationException`.
+
+7. Enfin, ajoutez une classe `LicorneAilee` étendant `Creature` et implémentant l'interface `Monture`. Ajoutez les attributs entiers `force` et `reserveVol`, fournis au constructeur.
+
+    Cette monture peut se déplacer **au sol et en vol**. Pour la vitesse, l'endurance et la durée d'un trajet, reprenez les calculs du cheval à partir de sa propre `force`. Par convention, la durée du trajet décrit ici son déplacement au sol. Pour le temps maximum de vol, reprenez le calcul du griffon à partir de sa propre `reserveVol`. En revanche, la licorne ailée ne crache pas de feu : la méthode correspondante doit lever une exception.
 
 </div>
 
 C'était pénible, n'est-ce pas ? C'est normal, cette solution est très mauvaise et fastidieuse. À chaque nouvel ajout de type de monture avec ses spécificités, on doit modifier tous les autres types et les forcer à implémenter des méthodes qui ne les concernent pas... Le fait de lever tant d'exceptions pour des opérations sans signification indique une très mauvaise conception.
 
-Le problème vient du regroupement, dans une seule interface, des opérations communes à toutes les montures et de celles qui correspondent à des capacités particulières. `Monture` peut conserver les opérations communes, comme l'accès au nom et à la vitesse. Les capacités supplémentaires, comme l'endurance, le vol ou la puissance de feu, peuvent être décrites dans des interfaces distinctes. Chaque classe implémente alors les interfaces correspondant à ses capacités. Une nouvelle classe peut réutiliser les interfaces existantes.
+Le problème vient du regroupement, dans une seule interface, des opérations communes à toutes les montures et de celles qui correspondent à des capacités particulières. `Monture` peut conserver les calculs de vitesse et de durée d'un trajet, communs à toutes les montures. Le calcul de l'endurance terrestre, celui du temps maximum de vol et celui de la puissance de feu peuvent être décrits dans des interfaces distinctes. Chaque classe implémente alors les interfaces correspondant à ses capacités. Une nouvelle classe peut réutiliser les interfaces existantes. Le nom reste accessible par la classe `Creature`.
 
 <div class="exercise">
 
