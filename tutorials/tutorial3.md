@@ -297,7 +297,7 @@ De même, dans la classe `Pokemon`, pour que le pokémon puisse se présenter av
 
 3. Ajoutez un nouveau type de pokémon : le pokémon type **psy** qui possède les caractéristiques suivantes :
 
-    * En plus des attributs d'un `Pokemon` classique, un pokémon **psy** possède un attribut entier `bonusPsy`.
+    * En plus des attributs d'un `Pokemon` classique, un pokémon **psy** possède un attribut entier `bonusPsy` (supérieur à 0).
 
     * Son attaque s'appelle **Choc mental** et inflige précisément `30 * bonusPsy` dégâts.
 
