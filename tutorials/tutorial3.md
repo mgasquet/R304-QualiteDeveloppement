@@ -271,7 +271,7 @@ Pour vous mettre dans le bain et vous montrer la problématique derrière tout c
 
 </div>
 
-Votre programme fonctionne ? C'est super ! Mais votre code serait-il encore lisible s'il y avait une centaine d'animaux ? Aussi, la classe `Animal` ne sera jamais finie, car il faudra en permanence modifier la méthode `cri` pour ajouter de nouveaux animaux. Elle n'est donc pas fermée aux modifications lorsqu'on veut étendre l'application à d'autres animaux.
+Votre programme fonctionne ? C'est super ! Mais votre code serait-il encore lisible s'il y avait une centaine d'animaux ? Aussi, la classe `Animal` ne sera jamais finie, car il faudra en permanence modifier la méthode `crier` pour ajouter de nouveaux animaux. Elle n'est donc pas fermée aux modifications lorsqu'on veut étendre l'application à d'autres animaux.
 
 Continuons maintenant avec de petits monstres bien populaires : les **pokémons**.
 
@@ -655,11 +655,11 @@ L’objet enveloppé est fourni au constructeur du décorateur : la dépendance 
 
 2. Créez un **Twix** avec pour prix de base **3€**, qui périme bientôt et qui a une réduction de 50 centimes. Testez que la valeur obtenue pour le prix est bien la bonne et que l'affichage de la description présente bien toutes les informations.
 
-3. Inversez l'ordre de création du produit (le produit avec réduction est composé d'un produit avec une date de péremption proche ou l'inverse selon ce que vous avez fait à la question précédente). Est-ce que le prix obtenu est le même qu'à l'étape précédente ?
+3. Inversez l'ordre d'imbrication du produit (le produit avec réduction est composé d'un produit avec une date de péremption proche ou l'inverse selon ce que vous avez fait à la question précédente). Est-ce que le prix obtenu est le même qu'à l'étape précédente ?
 
 </div>
 
-Attention, **dans cet exemple précis**, même si nous pouvons maintenant rajouter un nouveau type de produit et le combiner aux autres pour calculer le prix adéquat, quand on instancie l'objet, il faut faire attention à l'ordre de combinaison des objets, à cause de la méthode de calcul du prix du produit avec une réduction. Si la méthode de calcul avait été un pourcentage pour ce type de produit (-X% du prix) comme pour le produit avec une date de péremption proche, l'ordre n'aurait pas eu d'importance. Bref, cela est à prendre en compte quand vous concevez et que vous utilisez ce type de solution. 
+Attention, **dans cet exemple précis**, même si nous pouvons maintenant rajouter un nouveau type de produit et le combiner aux autres pour calculer le prix adéquat, quand on instancie l'objet, il faut faire attention à l'ordre d'imbrication des objets, à cause de la méthode de calcul du prix du produit avec une réduction. Si la méthode de calcul avait été un pourcentage pour ce type de produit (-X% du prix) comme pour le produit avec une date de péremption proche, l'ordre n'aurait pas eu d'importance. Bref, cela est à prendre en compte quand vous concevez et que vous utilisez ce type de solution. 
 
 Tout fonctionne, mais le code est encore un peu redondant : chaque décorateur possède un attribut référençant un objet du type de l'interface commune aux produits et un constructeur pour initialiser cet attribut.
 
@@ -790,7 +790,7 @@ Voici un scénario illustrant plus en détail le problème de non-respect du pri
 
 1. Ouvrez le paquetage `fr.umontpellier.iut.lsp1` et observez les classes mises à disposition. Dans cette application, nous avons considéré qu'un `Carre` est une spécialisation d'un `Rectangle`. Cependant, un carré possède une caractéristique particulière : **sa hauteur et sa largeur sont toujours identiques**. Pour conserver cette propriété, un carré ne doit pas permettre de modifier sa largeur indépendamment de sa hauteur, ni l’inverse.
 
-2. Dans le paquetage `fr.umontpellier.iut.lsp1` dans `src/test/java` vous trouverez deux classes de tests unitaires pour tester le rectangle, le carré et la classe `Utils` qui permet de redimensionner un rectangle. Lancez-les. Essayez de comprendre pourquoi les tests ne passent pas.
+2. Dans le paquetage `fr.umontpellier.iut.lsp1` dans `src/test/java` vous trouverez trois classes de tests unitaires pour tester le rectangle, le carré et la classe `Utils` qui permet de redimensionner un rectangle. Lancez-les. Essayez de comprendre pourquoi les tests ne passent pas.
 
 3. Les tests écrits sont bien valides. Si on change la hauteur d'un carré, alors sa largeur doit aussi changer. Une première solution peut donc être de redéfinir les méthodes `setLargeur` et `setHauteur` dans la classe `Carre` afin que quand on modifie la largeur, la hauteur soit mise à la même valeur et inversement. Faites cette modification (les attributs `hauteur` et `largeur` sont accessibles dans `Carre` car en `protected` dans la classe `Rectangle`).
 
@@ -871,7 +871,7 @@ Après **refactoring**, le diagramme de classes de votre application devrait don
 ![Liskov substitution 2]({{site.baseurl}}/assets/TP3/LSP2.svg){: width="50%" }
 </div>
 
-La **composition forte** entre `Carre` et `Rectangle` exprime ici que chaque `Carre` possède son propre `Rectangle`, utilisé comme détail interne de son fonctionnement. Ce rectangle n'est pas partagé et sa référence n'est pas exposée à l'extérieur (d'où la **composition forte**). Elle est en opposition avec la **composition faible**, qui indique aussi une composition, mais dans laquelle la dépendance est injectée (comme avec les **décorateurs** dans l'exercice des produits).
+La **composition forte** entre `Carre` et `Rectangle` exprime ici que chaque `Carre` possède son propre `Rectangle`, utilisé comme détail interne de son fonctionnement. Ce rectangle n'est pas partagé et sa référence n'est pas exposée à l'extérieur (d'où la **composition forte**). Elle est en opposition avec la **composition faible**, qui indique aussi une composition, mais dans laquelle la dépendance peut être partagée avec d'autres objets (elle n'est pas "piégée" dans la classe). Par exemple, un cas où une dépendance est injectée via le constructeur est un cas de composition faible (comme avec les **décorateurs** dans l'exercice des produits).
 
 Bien sûr, nous aurions pu quand même conserver la logique d'agrandissement d'une `FigureRectangulaire`. À ce moment-là, il faudrait rajouter une méthode `agrandir(int facteur)` dans l'interface `FigureRectangulaire` et implémenter les méthodes dans `Rectangle` et `Carre`.
 
@@ -1206,7 +1206,7 @@ Ce principe dit que :
 
 Cela ne signifie pas qu'il faut créer une interface pour chaque classe utilisée. On cherche surtout à isoler le code métier des détails techniques que l'on souhaite pouvoir remplacer ou faire évoluer indépendamment.
 
-L'**injection de dépendances** permet de fournir aux objets les implémentations qu'ils utilisent. Le choix et l'assemblage de ces implémentations peuvent être regroupés dans un point d'entrée, dans des **fabriques** ou dans un **conteneur de dépendances**s. On peut ainsi remplacer une implémentation sans modifier les modules qui l'utilisent. On obtient ainsi des logiciels dont on peut moduler le fonctionnement sans toucher au code source, simplement en ajoutant de nouvelles classes et/ou en éditant des fichiers de configuration. Les différents **frameworks** mettent en place une architecture favorisant l'inversion des dépendances.
+L'**injection de dépendances** permet de fournir aux objets les implémentations qu'ils utilisent. Le choix et l'assemblage de ces implémentations peuvent être regroupés dans un point d'entrée, dans des **fabriques** ou dans un **conteneur de dépendances**. On peut ainsi remplacer une implémentation sans modifier les modules qui l'utilisent. On obtient ainsi des logiciels dont on peut moduler le fonctionnement sans toucher au code source, simplement en ajoutant de nouvelles classes et/ou en éditant des fichiers de configuration. Les différents **frameworks** mettent en place une architecture favorisant l'inversion des dépendances.
 
 Ce principe complète les autres principes SOLID. Dépendre d'abstractions facilite l'ajout de nouvelles implémentations sans modifier leurs clients, conformément au principe **ouvert/fermé**. Ces implémentations doivent respecter le contrat de l'abstraction, conformément au **principe de substitution de Liskov**.
 
