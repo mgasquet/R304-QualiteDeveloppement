@@ -1240,7 +1240,7 @@ Tout d'abord, illustrons ce principe avec un exemple.
 
 2. Ajoutez une classe **Enseignant** qui possède un nom, un prénom et définit des **getters** pour ces deux attributs.
 
-3. La logique pour créer un compte universitaire pour un enseignant est la même que pour un étudiant. On souhaite donc logiquement réutiliser la classe `CompteUniversitaire`. Mais ce n'est pas possible, car un enseignant n'est pas un étudiant !
+3. La logique pour créer un compte universitaire est la même pour un enseignant et un étudiant. On peut transmettre le nom et le prénom d'un enseignant au constructeur, mais celui-ci crée systématiquement un `Etudiant`. Refactorez cette conception pour que le détenteur puisse être réellement un étudiant ou un enseignant.
 
 </div>
 
@@ -1250,7 +1250,7 @@ Dans la suite du TP, nous allons donner un exemple et un contexte similaire à c
 
 </div>
 
-Le problème souligné dans cet exercice est qu'on a utilisé (à la base) une classe concrète (`Etudiant`) dans `CompteUniversitaire` à la place d'une classe abstraite ou d'une interface, ce qui empêche l'utilisation avec d'autres types de classes (ici, `Enseignant`).
+Le problème souligné dans cet exercice est que `CompteUniversitaire` dépend directement de la classe concrète `Etudiant` et l'instancie dans son constructeur. Son détenteur est donc nécessairement représenté par un `Etudiant`, même si les informations fournies sont celles d'un enseignant. Il faudrait pouvoir manipuler le détenteur à travers une abstraction commune aux étudiants et aux enseignants.
 
 Illustrons ce problème avec un exemple :
 
