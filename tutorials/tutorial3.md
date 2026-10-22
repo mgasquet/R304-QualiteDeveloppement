@@ -1459,15 +1459,15 @@ Les classes `Entreprise` et `Banque` manipulent des objets de type `CompteBancai
 
 2. Refactorez les comptes avec restrictions afin qu'ils n'héritent plus de `CompteBancaire`. Les tests qui vérifiaient leur substituabilité avec `CompteBancaire` n'ont plus lieu d'être et peuvent être supprimés. Adaptez les tests des opérations de chaque type de compte à la nouvelle conception et conservez les tests de `Entreprise` avec des comptes respectant le contrat qu'elle attend.
 
-3. Est-ce que votre `Main` fonctionne ? Si nécessaire, adaptez `Banque` pour qu'elle puisse gérer tous les types de comptes. Introduisez une interface commune `Compte`, permettant de consulter l'identifiant et le solde d'un compte, de déposer et de retirer de l'argent. Son contrat autorise le refus d'une opération lorsque les règles du compte ne sont pas respectées : solde insuffisant, plafond de dépôt ou limite du nombre de retraits. Un refus laisse le solde inchangé.
+3. Est-ce que votre `Main` fonctionne ? Si nécessaire, adaptez `Banque` pour qu'elle puisse gérer tous les types de comptes. Introduisez une interface commune `Compte`, permettant de consulter le solde d'un compte, de déposer et de retirer de l'argent. Son contrat autorise le refus d'une opération lorsque les règles du compte ne sont pas respectées : solde insuffisant, plafond de dépôt ou limite du nombre de retraits. Un refus laisse le solde inchangé.
 
    Les différents types de comptes implémentent cette interface. `CompteBancaire` conserve ses garanties supplémentaires : aucun plafond de dépôt et aucun quota de retraits, sous réserve d'un solde suffisant. `Entreprise` continue à utiliser `CompteBancaire`, tandis que `Banque` utilise désormais `Compte`.
 
 4. **Bonus** : comment pourrait-on ajouter dynamiquement aux comptes manipulés par la banque les fonctionnalités de plafond et/ou de nombre de retraits maximum, ainsi que d'autres fonctionnalités à l'avenir ?
 
-   Les décorateurs doivent implémenter `Compte` et envelopper un autre objet de ce type. Ils conservent l'identifiant du compte enveloppé et lui délèguent la gestion du solde. Ils ne doivent pas hériter de `CompteBancaire`, dont ils ne respecteraient pas les garanties supplémentaires. `Entreprise` continue donc à utiliser des objets de type `CompteBancaire`.
+   Les décorateurs doivent implémenter `Compte` et envelopper un autre objet de ce type. Ils lui délèguent la gestion du solde. Ils ne doivent pas hériter de `CompteBancaire`, dont ils ne respecteraient pas les garanties supplémentaires. `Entreprise` continue donc à utiliser des objets de type `CompteBancaire`.
 
-   **Si et seulement si le temps le permet**, refactorez votre code pour rendre cela possible. Pour tester, ajoutez dans la banque un compte bancaire simple, sans stocker son instance dans le `Main`. Récupérez-le ensuite via son identifiant, ajoutez-lui une limite de 10 retraits et mettez à jour sa référence dans la banque. Enfin, répétez l'opération pour lui ajouter un plafond de 100 000 €.
+   **Si et seulement si le temps le permet**, refactorez votre code pour rendre cela possible. Pour tester, ajoutez dans la banque un compte bancaire simple, sans stocker son instance dans le `Main`. Récupérez-le ensuite via son identifiant (dans la banque), ajoutez-lui une limite de 10 retraits et mettez à jour sa référence dans la banque. Enfin, répétez l'opération pour lui ajouter un plafond de 100 000 €.
 
    Pour cet exercice, le compteur de retraits démarre à zéro lors de l'ajout de cette fonctionnalité et ne compte que les retraits réussis. Le plafond ajouté doit être au moins égal au solde actuel du compte.
 
