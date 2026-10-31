@@ -791,18 +791,18 @@ Cette librairie est utilisée dans le cadre d'un mini-jeu vidéo où un joueur p
 
 2. Vous aimeriez pouvoir utiliser les classes de cette librairie, mais en ajoutant un système de bonus et de malus, qui influent sur le calcul de la force d'un monstre. Malheureusement, comme expliqué précédemment, vous ne pouvez pas modifier le code de la librairie ! On souhaite tout de même pouvoir ajouter les fonctionnalités suivantes :
 
-  * Pouvoir appliquer un **bonus** (permanent) à un monstre qui augmente **sa force calculée** d'une **valeur fixe** donnée.
-  * Pouvoir appliquer un **malus** (permanent) à un monstre qui peut être **extrême** ou non (booléen). Si le malus est extrême, la **force calculée** du monstre est divisée par 4, sinon par 2.
+    * Pouvoir appliquer un **bonus** (permanent) à un monstre qui augmente **sa force calculée** d'une **valeur fixe** donnée.
+    * Pouvoir appliquer un **malus** (permanent) à un monstre qui peut être **extrême** ou non (booléen). Si le malus est extrême, la **force calculée** du monstre est divisée par 4, sinon par 2.
 
-  Avec ce que vous avez appris lors du dernier exercice, vous devriez être en mesure de développer un système pour pouvoir ajouter dynamiquement ces fonctionnalités sur **n'importe quel type de monstre** de la librairie. Faites-le.
+    Avec ce que vous avez appris lors du dernier exercice, vous devriez être en mesure de développer un système pour pouvoir ajouter dynamiquement ces fonctionnalités sur **n'importe quel type de monstre** de la librairie. Faites-le.
 
 3. Modifiez le `Main` pour faire en sorte que, lors de l'instanciation des différents monstres :
 
-  * On applique un **bonus** de calcul de force de **10** à `slime1`.
-  * On applique un **malus** de calcul de force (**non extrême**) à `chocobo1`.
-  * On applique un **malus** de calcul force (**extrême**) à `chocobo2` et un **bonus** de calcul force de **20**.
+    * On applique un **bonus** de calcul de force de **10** à `slime1`.
+    * On applique un **malus** de calcul de force (**non extrême**) à `chocobo1`.
+    * On applique un **malus** de calcul force (**extrême**) à `chocobo2` et un **bonus** de calcul force de **20**.
 
-  Exécutez le programme et vérifiez que le résultat est valide (par rapport à l'affichage précédent, sans bonus/malus).
+    Exécutez le programme et vérifiez que le résultat est valide (par rapport à l'affichage précédent, quand il n'y avait pas encore les bonus/malus).
 
 </div>
 
