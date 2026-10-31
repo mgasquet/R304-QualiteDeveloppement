@@ -58,11 +58,15 @@ Ensuite, nous allons voir comment les principes **SOLID** permettent de traiter 
 
 <div class="exercise">
 
-1. Pour commencer, clonez en local le **dépôt gitlab** forké dans votre espace privé dans le cours de qualité de développement : [https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/etu/votre_login/tp3](https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/etu/votre_login/tp3) en remplaçant `votre_login` par le login que vous utilisez pour accéder au serveur gitlab du département.
+1. Pour commencer, rendez-vous sur le **dépôt GitLab** forké dans votre espace privé dans le cours de qualité de développement : [https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/etu/votre_login/tp3](https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/etu/votre_login/tp3) en remplaçant `votre_login` par le login que vous utilisez pour accéder au serveur gitlab du département.
 
-2. Ouvrez le projet avec `IntelliJ` et vérifiez qu'il n'y a pas d'erreur.
+2. Appuyez sur le bouton "**Update Fork**" pour mettre à jour le dépôt.
 
-3. À la fin de chaque séance, n'oubliez pas de faire un **push** vers votre dépôt distant sur **Gitlab**.
+3. Clonez le dépôt sur votre machine.
+
+4. Ouvrez le projet avec `IntelliJ` et vérifiez qu'il n'y a pas d'erreur.
+
+5. À la fin de chaque séance, n'oubliez pas de faire un **push** vers votre dépôt distant sur **Gitlab**.
 
 </div>
 
@@ -769,6 +773,39 @@ De nouveaux comportements peuvent ainsi être développés dans de nouvelles cla
 
 À partir du diagramme de classes que vous avez généré, vous devriez pouvoir identifier les éléments du pattern **décorateur** et le réutiliser pour combiner des comportements autour d'un objet.
 
+Afin de vérifier que vous avez bien compris le principe du pattern **décorateur**, nous allons faire un dernier exercice en relation.
+
+On considère la librairie `jeu-equipe-monstres-1.0.0.jar` importée dans votre projet. C'est une librairie avec du code externe compilé. Vous pouvez utiliser ses classes, **mais vous ne pouvez donc pas modifier le code source de ces dernières** (vu que le code ne vous appartient pas).
+
+Voici le diagramme de classes de la librairie :
+
+<div style="text-align:center">
+![Open close 4]({{site.baseurl}}/assets/TP3/OCP4.svg){: width="80%" }
+</div>
+
+Cette librairie est utilisée dans le cadre d'un mini-jeu vidéo où un joueur peut avoir une équipe (collection) de **monstres**. Pour chaque **monstre**, il est possible de calculer leur **force**. Chaque type de monstre applique un algorithme différent pour calculer sa force, en fonction de ses attributs. Pour l'instant, il y a deux types de monstres dans la librairie : le **slime** et le **chocobo**. Le joueur peut ensuite présenter son équipe de monstre.
+
+<div class="exercise">
+
+1. Ouvrez le paquetage `fr.umontpellier.iut.ocp5`. Il n'y a qu'une seule classe `Main` qui utilise les différentes classes de la librairie pour instancier trois monstres et les ajouter à l'équipe du joueur. Lancez le programme une fois pour observer l'affichage produit.
+
+2. Vous aimeriez pouvoir utiliser les classes de cette librairie, mais en ajoutant un système de bonus et de malus, qui influent sur le calcul de la force d'un monstre. Malheureusement, comme expliqué précédemment, vous ne pouvez pas modifier le code de la librairie ! On souhaite tout de même pouvoir ajouter les fonctionnalités suivantes :
+
+  * Pouvoir appliquer un **bonus** (permanent) à un monstre qui augmente **sa force calculée** d'une **valeur fixe** donnée.
+  * Pouvoir appliquer un **malus** (permanent) à un monstre qui peut être **extrême** ou non (booléen). Si le malus est extrême, la **force calculée** du monstre est divisée par 4, sinon par 2.
+
+  Avec ce que vous avez appris lors du dernier exercice, vous devriez être en mesure de développer un système pour pouvoir ajouter dynamiquement ces fonctionnalités sur **n'importe quel type de monstre** de la librairie. Faites-le.
+
+3. Modifiez le `Main` pour faire en sorte que, lors de l'instanciation des différents monstres :
+
+  * On applique un **bonus** de calcul de force de **10** à `slime1`.
+  * On applique un **malus** de calcul de force (**non extrême**) à `chocobo1`.
+  * On applique un **malus** de calcul force (**extrême**) à `chocobo2` et un **bonus** de calcul force de **20**.
+
+  Exécutez le programme et vérifiez que le résultat est valide (par rapport à l'affichage précédent, sans bonus/malus).
+
+</div>
+
 ### Principe de substitution de Liskov (Liskov substitution)
 
 Certains développeurs abusent de l'**héritage** par facilité au lieu d'utiliser d'autres solutions comme la **composition** d'objets. Un "mauvais" héritage est un héritage pour lequel il n'existe pas vraiment de relation de spécialisation entre la superclasse et la sous-classe. La sous-classe ne représente alors pas le même concept que sa classe mère, ce n'est pas réellement une spécialisation.
@@ -993,7 +1030,7 @@ Voyons comment ne pas respecter ce principe peut devenir très fastidieux au fur
 
     * Pour la vitesse : `Math.max(1, agilite - charge)`.
 
-    * Pour la durée d'un trajet : `distance / calculerVitesse(charge)`.
+    * Pour la durée d'un trajet : `(distance / (calculerVitesse(charge) * agilite))`.
 
     Cependant, contrairement aux montures précédentes, le griffon est une **monture volante**. Dans ce modèle, il n'a pas d'endurance terrestre. On veut plutôt calculer son **temps maximum de vol** selon la charge : ajoutez la méthode `int calculerTempsMaximumDeVol(int charge)`, qui renvoie `Math.max(1, reserveVol / (charge + 1))`.
 
@@ -1017,13 +1054,13 @@ Voyons comment ne pas respecter ce principe peut devenir très fastidieux au fur
     }
     ```
 
-5. Ajoutez une classe `Dragon` étendant `Creature` et implémentant l'interface `Monture`. Ajoutez les attributs entiers `force`, `reserveVol` et `puissance`, fournis au constructeur.
+5. Ajoutez une classe `Dragon` étendant `Creature` et implémentant l'interface `Monture`. Ajoutez les attributs entiers `taille`, `magie` et `puissance`, fournis au constructeur.
 
-    * Pour la vitesse, renvoyez `Math.max(1, force / (charge + 1))`.
+    * Pour la vitesse, renvoyez `Math.max(1, charge - (taille * magie))`.
 
-    * Pour la durée d'un trajet, renvoyez `distance / calculerVitesse(charge)`.
+    * Pour la durée d'un trajet, renvoyez `(distance - magie) / calculerVitesse(charge)`.
 
-    * Pour le temps maximum de vol, utilisez le même calcul que le griffon, à partir de sa propre `reserveVol`.
+    * Pour le temps maximum de vol, renvoyez `Math.max(1, taille * magie * puissance)`.
 
     Comme le griffon, le dragon vole et n'a pas d'endurance terrestre dans ce modèle : le calcul de l'endurance doit donc lever une exception. Le calcul de la durée du trajet ne doit pas appeler cette méthode.
 
@@ -1031,9 +1068,19 @@ Voyons comment ne pas respecter ce principe peut devenir très fastidieux au fur
 
 6. Ajoutez `int calculerPuissanceFeu(int distance)` à l'interface `Monture`, puis corrigez les erreurs de compilation dans `Cheval`, `Tigre` et `Griffon`. Ces trois montures ne crachent pas de feu : leurs implémentations doivent lever une `UnsupportedOperationException`.
 
-7. Enfin, ajoutez une classe `LicorneAilee` étendant `Creature` et implémentant l'interface `Monture`. Ajoutez les attributs entiers `force` et `reserveVol`, fournis au constructeur.
+7. Enfin, ajoutez une classe `LicorneAilee` étendant `Creature` et implémentant l'interface `Monture`. Ajoutez les attributs entiers `age` et `poids`, fournis au constructeur.
 
-    Cette monture peut se déplacer **au sol et en vol**. Pour la vitesse, l'endurance et la durée d'un trajet, reprenez les calculs du cheval à partir de sa propre `force`. Par convention, la durée du trajet décrit ici son déplacement au sol. Pour le temps maximum de vol, reprenez le calcul du griffon à partir de sa propre `reserveVol`. En revanche, la licorne ailée ne crache pas de feu : la méthode correspondante doit lever une exception.
+    Cette monture peut se déplacer **au sol et en vol**.
+
+    * Pour la vitesse, renvoyez `Math.max(1, charge - (age * poids))`.
+
+    * Pour la durée d'un trajet, renvoyez `calculerVitesse(charge) / Math.max(1, poids)`.
+
+    * Pour l'endurance, renvoyez `Math.max(1, 100 - age - poids)`.
+
+    * Pour le temps maximum de vol, renvoyez `Math.max(1, poids / 2)`.
+
+    La licorne ailée ne crache pas de feu : la méthode correspondante doit lever une exception.
 
 </div>
 
