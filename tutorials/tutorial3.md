@@ -60,13 +60,11 @@ Ensuite, nous allons voir comment les principes **SOLID** permettent de traiter 
 
 1. Pour commencer, rendez-vous sur le **dépôt GitLab** forké dans votre espace privé dans le cours de qualité de développement : [https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/etu/votre_login/tp3](https://gitlabinfo.iutmontp.univ-montp2.fr/qualite-de-developpement-semestre-3/etu/votre_login/tp3) en remplaçant `votre_login` par le login que vous utilisez pour accéder au serveur gitlab du département.
 
-2. Appuyez sur le bouton "**Update Fork**" pour mettre à jour le dépôt.
+2. Clonez le dépôt sur votre machine.
 
-3. Clonez le dépôt sur votre machine.
+3. Ouvrez le projet avec `IntelliJ` et vérifiez qu'il n'y a pas d'erreur.
 
-4. Ouvrez le projet avec `IntelliJ` et vérifiez qu'il n'y a pas d'erreur.
-
-5. À la fin de chaque séance, n'oubliez pas de faire un **push** vers votre dépôt distant sur **Gitlab**.
+4. À la fin de chaque séance, n'oubliez pas de faire un **push** vers votre dépôt distant sur **Gitlab**.
 
 </div>
 
