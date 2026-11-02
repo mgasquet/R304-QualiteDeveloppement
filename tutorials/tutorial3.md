@@ -72,7 +72,7 @@ Ce projet contient divers **paquetages** contenant le code de base pour chaque e
 
 ### Principe de responsabilité unique (Single Responsibility)
 
-Pour mener à bien le déroulement d'une fonctionnalité, le programme va faire appel à diverses classes qui vont interagir entre elles (comme nous l'avons vu avec le DSI). Ces classes vont **traiter** la demande. Chaque classe possède la **responsabilité** d'effectuer une partie de ce traitement. 
+Pour mener à bien le déroulement d'une fonctionnalité, le programme va faire appel à diverses classes qui vont interagir entre elles. Ces classes vont **traiter** la demande. Chaque classe possède la **responsabilité** d'effectuer une partie de ce traitement. 
 
 Le principe de **responsabilité unique** indique qu'une classe ne doit pas posséder plus d'une responsabilité. Une responsabilité regroupe des éléments de code qui évoluent pour les mêmes raisons. Deux traitements peuvent utiliser les mêmes données tout en relevant de responsabilités différentes.
 
@@ -1604,7 +1604,7 @@ Les classes `Entreprise` et `Banque` manipulent des objets de type `CompteBancai
 
 ### Une application modulable
 
-Pour finir, nous allons travailler sur un exercice un poil plus conséquent divisé en différentes **couches** (cf. partie architecture logicielle du cours sur les DSI).
+Pour finir, nous allons travailler sur un exercice un poil plus conséquent divisé en différentes **couches**.
 
 Vous allez voir qu'isoler les règles métier des détails techniques et injecter les dépendances facilite les **tests unitaires**. On peut ainsi contrôler les collaborateurs utilisés par le code testé et éviter de déclencher des écritures persistantes ou des envois de mails pendant ces tests.
 
