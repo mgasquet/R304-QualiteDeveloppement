@@ -792,7 +792,9 @@ Cette librairie est utilisée dans le cadre d'un mini-jeu vidéo où un joueur p
     * Pouvoir appliquer un **bonus** (permanent) à un monstre qui augmente **sa force calculée** d'une **valeur fixe** donnée.
     * Pouvoir appliquer un **malus** (permanent) à un monstre qui peut être **extrême** ou non (booléen). Si le malus est extrême, la **force calculée** du monstre est divisée par 4, sinon par 2.
 
-    Avec ce que vous avez appris lors du dernier exercice, vous devriez être en mesure de développer un système pour pouvoir ajouter dynamiquement ces fonctionnalités sur **n'importe quel type de monstre** de la librairie. Faites-le.
+    Bien sûr, **on veut pouvoir ajouter les monstres avec des bonus/malus dans l'équipe du joueur!**. Il faut aussi considérer que dans le futur, de nouveaux types de monstres pourraient être ajoutés dans la librairie.
+
+    Avec ce que vous avez appris lors du dernier exercice, vous devriez être en mesure de développer un système pour pouvoir ajouter dynamiquement ces fonctionnalités sur **n'importe quel type de monstre** de la librairie, et les ajouter dans l'équipe du joueur. Faites-le.
 
 3. Modifiez le `Main` pour faire en sorte que, lors de l'instanciation des différents monstres :
 
@@ -1677,7 +1679,7 @@ Il reste maintenant le problème des "mails envoyés" quand on exécute les test
 
 ## Conclusion
 
-Voilà, maintenant, vous savez tout des principes **SOLID** ! Vous êtes donc plus proche d'un ingénieur logiciel qu'un codeur. Il existe un acronyme opposé : les principes **STUPID** qui sont six pratiques qui rendent le code très peu qualitatif, intestable, non évolutif et qu'il faut donc absolument éviter ! Bref, des **mauvaises pratiques** qui sont souvent observées. Vous pouvez consulter de la documentation à ce propos [sur cette page](https://openclassrooms.com/en/courses/5684096-use-mvc-solid-principles-and-design-patterns-in-java/6417836-avoid-stupid-practices-in-programming).
+Voilà, maintenant, vous savez tout des principes **SOLID** ! Vous êtes donc plus proche d'un ingénieur logiciel qu'un codeur. Il existe un acronyme opposé : les principes **STUPID** qui sont six pratiques qui rendent le code très peu qualitatif, intestable, non évolutif et qu'il faut donc absolument éviter ! Bref, des **mauvaises pratiques** qui sont souvent observées. Vous pouvez consulter de la documentation à ce propos [sur cette page](https://openclassrooms.com/fr/courses/7959326-ecrivez-du-code-c-maintenable-avec-mvc-et-solid/8101608-evitez-les-mauvaises-pratiques-de-programmation-stupid#33591404).
 
 Pour vos futurs projets, ou ceux déjà en cours comme la SAE, prenez le temps de réfléchir à la conception de votre programme et aux évolutions envisageables. Une bonne conception facilite les changements, mais n'élimine pas le besoin de **refactoring** : celui-ci permet de faire évoluer la structure du code à mesure que les besoins et votre compréhension du problème se précisent.
 
