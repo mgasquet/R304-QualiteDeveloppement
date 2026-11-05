@@ -238,7 +238,7 @@ Voyons maintenant un autre exemple.
 
 3. Certaines applications aimeraient aussi utiliser simplement la classe `Rectangle` pour faire des calculs géométriques sans pour autant avoir besoin de l'afficher. À ce stade, vous avez sans doute clairement identifié que la classe `Rectangle` possède trop de responsabilités : la gestion de la forme géométrique et de ses propriétés (aire, peut-être plus tard périmètre, etc.) et l'affichage graphique. La classe peut changer si on ajoute de nouvelles opérations ou si l'affichage graphique change. Le principe de responsabilité unique n'est pas respecté.
 
-4. L'idée est d'avoir deux classes : une première, gérant la forme rectangle et l'autre permettant de l'afficher. Mais pour autant, il ne faut pas dupliquer de code ! Refactorez votre code en conséquence afin de mettre en place cette nouvelle conception. **Indication** : pour afficher le rectangle, utilisez un `JPanel` placé dans une `JFrame`. Réalisez le dessin dans la méthode `paintComponent(Graphics g)` du panneau, en commençant par appeler `super.paintComponent(g)`.
+4. L'idée est d'avoir deux classes : une première, gérant la forme rectangle et l'autre permettant de l'afficher. Mais pour autant, il ne faut pas dupliquer de code ! Refactorez votre code en conséquence afin de mettre en place cette nouvelle conception.
 
 5. Assurez-vous que tout fonctionne (il faudra sans doute adapter le `main`) et qu'il est possible de créer des rectangles sans logique d'affichage et de les afficher à l'aide de la classe dédiée.
 
