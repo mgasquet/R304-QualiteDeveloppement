@@ -11,7 +11,7 @@ Quand on parle de **design patterns** on fait généralement référence aux pat
 
 Pour rappel, un **design pattern** est une solution réutilisable et adaptable vis-à-vis d'un problème de conception logicielle assez récurrent. Un pattern est généralement présenté via un diagramme de classes de conception et un exemple d'implémentation. Un pattern a pour but d'être applicable et adaptable à n'importe quel projet ou contexte.
 
-Il existe d'autres types de design patterns (par exemple, les patterns GRASP) mais les plus connus et les plus utilisés sont ceux du **GoF** que nous allons explorer dans ce cours. Tous ces **patterns** permettent de renforcer l'application des principes **SOLID**. Par ailleurs, certains langages comme `Java` proposent (dans leur librairie standard) des **classes** et **interfaces** permettant d'implémenter certains patterns **GoF** comme **observateur**, **itérateur**, **prototype**...
+Il existe d'autres types de design patterns (par exemple, les patterns GRASP) mais les plus connus et les plus utilisés sont ceux du **GoF** que nous allons explorer dans ce cours. Tous ces **patterns** permettent de renforcer l'application des principes **SOLID**. Par ailleurs, certains langages comme `Java` proposent (dans leur bibliothèque standard) des **classes** et **interfaces** permettant d'implémenter certains patterns **GoF** comme **observateur**, **itérateur**, **prototype**...
 
 Les design patterns **GoF** se divisent en trois catégories :
 
@@ -25,9 +25,9 @@ Dans le TP précédent, vous avez déjà vu un pattern **structurel** (Décorate
 
 Dans ce TP, nous allons voir **tous les patterns créateurs** et allons les mettre en application : **Singleton**, **Builder**, **Prototype**, **Méthode Fabrique** et enfin **Fabrique Abstraite**.
 
-Nous verrons aussi un autre pattern **structurel** appelé **adaptateur**. En fait, nous allons voir que beaucoup de ces patterns peuvent (et doivent) être combinés dans un projet plus large. Nous traitons souvent des problèmes "simple" avec quelques classes pour illustrer le fonctionnement d'un pattern, mais sur un projet plus large, il est tout à fait naturel de faire travailler en concert les différents patterns.
+Nous verrons aussi un autre pattern **structurel** appelé **adaptateur**. En fait, nous allons voir que beaucoup de ces patterns peuvent (et doivent) être combinés dans un projet plus large. Nous traitons souvent des problèmes "simples" avec quelques classes pour illustrer le fonctionnement d'un pattern, mais sur un projet plus large, il est tout à fait naturel de faire travailler en concert les différents patterns.
 
-**Attention** : Dans plusieurs exercices, il vous sera demandé de **générer un diagramme de classes** (avec `IntelliJ` ou autre IDE qui propose cette fonctionnalité). Bien que les diagrammes générés puissent être parfois légèrement erronés, et qu'il vaut généralement mieux faire le dessin soit-même, cela vous fera gagner du temps. Il est fortement conseillé de prendre des **captures d'écran** de chaque diagramme de classes et de les sauvegarder dans un sous-dossier de votre dépôt. Certains diagrammes permettent de comparer l'évolution de l'architecture et des dépendances avant/après **refactoring**.
+**Attention** : Dans plusieurs exercices, il vous sera demandé de **générer un diagramme de classes** (avec `IntelliJ` ou autre IDE qui propose cette fonctionnalité). Bien que les diagrammes générés puissent être parfois légèrement erronés, et qu'il vaut généralement mieux faire le dessin soi-même, cela vous fera gagner du temps. Il est fortement conseillé de prendre des **captures d'écran** de chaque diagramme de classes et de les sauvegarder dans un sous-dossier de votre dépôt. Certains diagrammes permettent de comparer l'évolution de l'architecture et des dépendances avant/après **refactoring**.
 
 <div class="exercise">
 
@@ -43,7 +43,7 @@ Nous verrons aussi un autre pattern **structurel** appelé **adaptateur**. En fa
 
 L'idée du pattern **Singleton** est très simple : on souhaite garantir **qu'il n'existe qu'une seule instance d'une classe dans le programme et fournir un point d'accès global à cette instance**. Les autres objets/classes de l'application utilisent l'instance "globale" et **ne doivent pas pouvoir l'instancier directement** (l'utilisation de **new** doit être bloquée en dehors de la classe). L'instance globale doit être accessible à travers une méthode qui l'expose et qui a une visibilité appropriée.
 
-On pourrait penser que l'utilisation d'une **classe statique** (toutes les méthodes et attributs statiques), pourrait aussi faire l'affaire. C'est une solution à éviter, nous verrons pourquoi par la suite.
+On pourrait penser que l'utilisation d'une **classe statique** (toutes les méthodes et attributs statiques) pourrait aussi faire l'affaire. C'est une solution à éviter, nous verrons pourquoi par la suite.
 
 Commençons avec un exemple :
 
@@ -100,9 +100,9 @@ public class ClasseExemple {
 ![Singleton 1]({{site.baseurl}}/assets/TP4/Singleton1.svg){: width="40%" }
 </div>
 
-Dans cet exemple, il y a au moins deux instances de la classe **Service** qui sont générées. Une dans `Client` et une autre dans `ClasseExemple`. S'il n'y a aucun intérêt à avoir plusieurs instances de la classe `Service`, nous pouvons alors la transformer en **Singleton** afin que toutes les classes qui souhaitent utiliser passent par la même instance. Pour cela, il y a trois changements à réaliser dans la classe qu'on veut transformer en **Singleton** :
+Dans cet exemple, il y a au moins deux instances de la classe **Service** qui sont générées. Une dans `Client` et une autre dans `ClasseExemple`. S'il n'y a aucun intérêt à avoir plusieurs instances de la classe `Service`, nous pouvons alors la transformer en **Singleton** afin que toutes les classes qui souhaitent l'utiliser passent par la même instance. Pour cela, il y a trois changements à réaliser dans la classe qu'on veut transformer en **Singleton** :
 
-* Changer la **visibilité** du ou des **constructeurs** de la classe en **privé**. Ainsi, plus aucune autre entité pourra créer des instances de cette classe (hormis la classe elle-même).
+* Changer la **visibilité** du ou des **constructeurs** de la classe en **privé**. Ainsi, plus aucune autre entité ne pourra créer des instances de cette classe (hormis la classe elle-même).
 
 * Dans la classe, créer un attribut **privé** et **statique** (un attribut de classe : `static` en Java) du même type que la classe. Cet attribut est généralement nommé `INSTANCE` (en majuscules).
 
@@ -110,7 +110,7 @@ Dans cet exemple, il y a au moins deux instances de la classe **Service** qui so
 
 Par la suite, toutes les entités qui souhaitent récupérer une instance de cette classe utilisent la méthode `getInstance` qui peut directement être appelée sur la classe, car **statique**. Lors du premier accès, l'instance "globale" sera alors initialisée.
 
-Dans un environnement **multi-threadé** (exécution de plusieurs processus en parallèle, comme des `Runnable` ou des `Thread` en Java) il faut faire attention à ce que la méthode `getInstance` ne soit pas appelée en même temps par deux **Threads** différents. Pour régler cela en Java, il suffit d'ajouter le mot clé `synchronized` lors de la définition de la méthode.
+Dans un environnement **multi-threadé** (exécution de plusieurs fils d'exécution, ou *threads*, en parallèle, par exemple via des `Thread` ou des `Runnable` en Java), il faut faire attention à ce que la méthode `getInstance` ne soit pas appelée en même temps par deux **Threads** différents. Pour régler cela en Java, il suffit d'ajouter le mot clé `synchronized` lors de la définition de la méthode.
 
 Regardons ce que cela donne :
 
@@ -197,7 +197,7 @@ Aussi, imaginons une classe d'accès à une base de données : celle-ci initiali
 
 4. Vérifiez que tout fonctionne et que les bugs sont bien résolus.
 
-5. Le principe SOLID `D` (dependency inversion) est-il respecté sur les classes `CreationAnimal` et `LectureAnimaux` ? Si ce n'est pas le cas, refactorez votre code.
+5. Les classes `CreationAnimal` et `LectureAnimaux` récupèrent elles-mêmes leur dépendance vers `StockageAnimaux` via `getInstance()`. Refactorez ces deux classes : injectez la dépendance via le constructeur.
 
 6. Pensez-vous qu'il serait possible de se passer intégralement de singletons dans une application bien construite ? Vous pouvez discuter de votre réponse avec votre enseignant.
 
@@ -284,7 +284,7 @@ class Main {
 }
 ```
 
-Si cette méthode pourrait paraître plus "facile" à mettre en place et à utiliser (pas de `getInstance`, etc.) c'est généralement une **mauvaise idée**. Nous allons voir pourquoi avec le prochain exercice.
+Si cette méthode peut paraître plus "facile" à mettre en place et à utiliser (pas de `getInstance`, etc.) c'est généralement une **mauvaise idée**. Nous allons voir pourquoi avec le prochain exercice.
 
 **Attention**, dans l'exercice suivant, nous allons donc **volontairement programmer une mauvaise solution, très bancale** afin de démontrer les problèmes liés à l'utilisation d'une classe statique plutôt qu'un singleton, dans certains contextes.
 
@@ -294,15 +294,15 @@ Si cette méthode pourrait paraître plus "facile" à mettre en place et à util
 
 2. Il semble inutile d'instancier la classe `ServiceMail` à chaque fois. Cette fois-ci, au lieu d'utiliser un `Singleton`, nous allons transformer `ServiceMail` en **classe statique**. Faites ce changement et adaptez le code dans les classes `ServiceUtilisateur` et `ServiceCommande`.
 
-3. Si ce n'est pas déjà fait, lancez les tests unitaires des classes `ServiceUtilisateurTest` et `ServiceCommandeTest`. On voit bien quand dans un contexte réel, les mails seraient vraiment envoyés à chaque test ! C'est un problème.
+3. Si ce n'est pas déjà fait, lancez les tests unitaires des classes `ServiceUtilisateurTest` et `ServiceCommandeTest`. On voit bien que dans un contexte réel, les mails seraient vraiment envoyés à chaque test ! C'est un problème.
 
 4. Nous avions apporté une solution à ce même problème dans le TP précédent en utilisant **l'injection de dépendances**. Au lieu d'instancier directement le service "mail" dans la classe qui en a besoin, nous l'avions **injecté** via le constructeur. L'idée serait alors de :
 
-    * Créer une interface `ServiceMailInterface` avec la signature la méthode `envoyerMail`.
+    * Créer une interface `ServiceMailInterface` avec la signature de la méthode `envoyerMail`.
 
     * Faire implémenter cette interface à `ServiceMail`.
 
-    * Créer une classe `FakeMailer` qui implémente `ServiceMailInterface` et qui ne fait rien (ou quelque chose relatif aux tests) dans `envoyerMail`.
+    * Créer une classe `FakeServiceMail` qui implémente `ServiceMailInterface` et qui ne fait rien (ou quelque chose relatif aux tests) dans `envoyerMail`.
 
     * Faire en sorte que `ServiceUtilisateur` et `ServiceCommande` possèdent un attribut de type `ServiceMailInterface` qui sera injecté via le constructeur et l'utilisent à la place de l'instance concrète `ServiceMail`.
 
@@ -314,18 +314,15 @@ Si cette méthode pourrait paraître plus "facile" à mettre en place et à util
 
 </div>
 
-En essayant de refactorer, vous avez dû rencontrer divers problèmes liés à l'impossibilité d'injecter une **classe statique**  comme paramètre d'un constructeur. Et oui, une classe n'est pas un objet et une instance ! Elle ne peut donc pas être passée en paramètre.
+En essayant de refactorer, vous avez dû rencontrer divers problèmes liés à l'impossibilité d'injecter une **classe statique** comme paramètre d'un constructeur. Eh oui, une classe n'est ni un objet ni une instance ! Elle ne peut donc pas être passée en paramètre.
 
-<!-- * Une `interface` (dans la plupart des langages) ne peut pas posséder de signature de méthode de classe (`static`). -->
-
-
-L'utilisation d'une **classe statique** rend les services qui l'utilisent étroitement dépendant de la classe. Ce qui rend l'application intestable car ces services ne peuvent pas être testés indépendamment des services concrets qui sont utilisés dans l'application. On ne peut pas remplacer le service par un "faux" service utilisé pour les tests unitaires (un **stub** ou un **mock**).
+L'utilisation d'une **classe statique** rend les services qui l'utilisent étroitement dépendants de la classe, ce qui rend ces services difficilement testables : ils ne peuvent pas être testés indépendamment des services concrets qui sont utilisés dans l'application. On ne peut pas remplacer le service par un "faux" service utilisé pour les tests unitaires (un **stub** ou un **mock**).
 
 L'utilisation d'un **Singleton** résout ces problèmes :
 
 * L'instance de la classe est une véritable instance, un objet. Elle peut donc être passée en paramètre dans un constructeur, par exemple.
 
-* La classe peut hériter, implémenter des interfaces...
+* Ses méthodes sont des méthodes d'instance : la classe peut implémenter une interface et être remplacée par une autre implémentation de cette interface (polymorphisme). À l'inverse, les méthodes `static` d'une classe statique ne sont pas polymorphes et ne peuvent pas servir d'implémentation à une interface.
 
 ```java
 public interface Service {
@@ -378,7 +375,7 @@ class Main {
 
 2. Comme expliqué dans l'exercice précédent, introduisez une interface `ServiceMailInterface` pour abstraire ce service.
 
-3. Créez un nouveau service `FakeServiceMail` implémentant aussi `ServiceMailInterface` mais qui ne fait rien dans sa méthode `envoyerMail`. Ce service sera aussi un singleton.
+3. Créez un nouveau service `FakeServiceMail` implémentant aussi `ServiceMailInterface` mais qui ne fait rien dans sa méthode `envoyerMail`. Comme cette classe ne sert qu'aux tests, placez-la dans le dossier de tests (`src/test/java/fr/umontpellier/iut/singleton2`). Ce service sera aussi un singleton.
 
 4. Refactorez `ServiceUtilisateur` et `ServiceCommande` pour injecter la dépendance nécessaire au lieu de directement récupérer l'instance du singleton dans la classe via `getInstance`.
 
@@ -392,21 +389,21 @@ class Main {
 
 ### Avertissement
 
-Vous maîtrisez maintenant le pattern **Singleton**, mais vous devez être très précautionneux quant à son utilisation. En conclusion du dernier TP vous étiez invité à aller jeter un coup d'œil aux [principes STUPID](https://openclassrooms.com/en/courses/5684096-use-mvc-solid-principles-and-design-patterns-in-java/6417836-avoid-stupid-practices-in-programming) qui sont un ensemble de mauvaises pratiques en conception logicielle. Regardez à quoi correspond le `S`.
+Vous maîtrisez maintenant le pattern **Singleton**, mais vous devez être très précautionneux quant à son utilisation. En conclusion du dernier TP vous étiez invités à aller jeter un coup d'œil aux [principes STUPID](https://openclassrooms.com/en/courses/5684096-use-mvc-solid-principles-and-design-patterns-in-java/6417836-avoid-stupid-practices-in-programming) qui sont un ensemble de mauvaises pratiques en conception logicielle. Regardez à quoi correspond le `S`.
 
-En effet, l'abus de **Singleton** est dangereux pour la santé (du logiciel...) ! Il présente une solution qui semble plutôt efficace à un problème assez récurent : la gestion des dépendances vers les services de l'application. À tel point qu'on retrouve parfois dans certains projets beaucoup trop de singletons. 
+En effet, l'abus de **Singleton** est dangereux pour la santé (du logiciel...) ! Ce pattern présente une solution qui semble plutôt efficace à un problème assez récurrent : la gestion des dépendances vers les services de l'application. À tel point qu'on retrouve parfois dans certains projets beaucoup trop de singletons. 
 
 Mais pourquoi est-il déconseillé d'utiliser "trop" de singletons :
 
-* Il n'est pas possible de passer des paramètres à un singleton pour son initialisation (comme un objet classique) car c'est lui-même qui se construit, cependant, on peut éventuellement mettre en place un fichier de configuration que le singleton ira lire lors de son initialisation.
+* Il n'est pas possible de passer des paramètres à un singleton pour son initialisation (comme un objet classique) car c'est lui-même qui se construit ; cependant, on peut éventuellement mettre en place un fichier de configuration que le singleton ira lire lors de son initialisation.
 
-* Il est très difficile de **tester** un singleton ! Comme le constructeur est **privé** et qu'il n'y a qu'une instance de l'objet dans l'application, on ne peut tester que cette instance. On ne peut pas facilement instancier de nouveaux objets de cette classe pendant les tests unitaires.
+* Il est très difficile de **tester** un singleton, et surtout les classes qui l'utilisent via `getInstance` ! Pour ces classes, la dépendance est cachée et ne peut pas être remplacée par un "faux" objet. De plus, l'unique instance conserve son état d'un test à l'autre. Enfin, comme le constructeur est **privé**, on ne peut pas créer une instance "neuve" de la classe pour chaque test.
 
-* Il existe des solutions bien meilleures pour gérer les dépendances de l'application de manière plus flexibles tout en conservant la possibilité de réaliser des tests unitaires : les fabriques abstraites (dont nous allons bientôt parler) et le conteneur d'inversion de contrôle (par exemple, le **conteneur IoC**).
+* Il existe des solutions bien meilleures pour gérer les dépendances de l'application de manière plus flexible tout en conservant la possibilité de réaliser des tests unitaires : les fabriques abstraites (dont nous allons bientôt parler) et les conteneurs d'inversion de contrôle (**conteneurs IoC**, comme celui de Spring).
 
-Attention, tout cela ne veut pas dire que le singleton est inutile ! Seulement qu'il ne doit pas être utilisé pour tout et n'importe quoi. Il faut également se poser la question "_est-ce que cette instance doit pouvoir être accessible par tout le monde_" ?
+Attention, tout cela ne veut pas dire que le singleton est inutile ! Seulement qu'il ne doit pas être utilisé pour tout et n'importe quoi. Il faut également se poser la question "_est-ce que cette instance doit pouvoir être accessible par tout le monde ?_"
 
-On va notamment éviter d'appliquer **singletons** sur des classes qui contiennent du **code métier** relatif à des règles de notre application et que nous allons sûrement vouloir tester. À l'inverse, nous allons bientôt parler des **Fabriques** et du pattern **Fabrique Abstraite**. Les classes produites par ces applications ont pour but de créer et/ou fournir des objets (des dépendances). Ces classes doivent pouvoir être accessibles par toute l'application et on ne va pas spécialement les tester (pas de code métier). Il est alors judicieux d'appliquer **Singleton** sur ces classes.
+On va notamment éviter d'appliquer **Singleton** sur des classes qui contiennent du **code métier** relatif à des règles de notre application et que nous allons sûrement vouloir tester. À l'inverse, nous allons bientôt parler des **Fabriques** et du pattern **Fabrique Abstraite**. Les classes issues de ces patterns ont pour but de créer et/ou fournir des objets (des dépendances). Ces classes doivent pouvoir être accessibles par toute l'application et on ne va pas spécialement les tester (pas de code métier). Il est alors judicieux d'appliquer **Singleton** sur ces classes.
 
 Certains membres du **GoF** regrettent un peu la surutilisation maladroite de **Singleton** par certains développeurs. Ces développeurs ont l'illusion de coder proprement, car ils utilisent un design pattern, mais c'est tout l'inverse. Appliquer les design patterns ne veut pas forcément dire que votre conception est de qualité. Il faut savoir quand et comment les utiliser !
 
@@ -420,7 +417,7 @@ Ce pattern permet de résoudre le problème de création d'un objet qui a beauco
 
 1. Ouvrez le paquetage `fr.umontpellier.iut.builder1`. Dans cette application, nous voulons construire des **burgers**. Dans le restaurant, le client peut composer son burger. Un **Burger** est obligatoirement composé d'un nom (donné par le client) et d'un type de pain (oui, s'il veut, un client peut avoir un burger juste avec du pain). Le client peut ensuite décider d'ajouter une viande, ou des tomates, ou les deux.
 
-    À ce stade, il y a donc quatre types de burger possibles (même si les types de pains et de viandes diffèrent) :
+    À ce stade, il y a donc quatre combinaisons possibles (indépendamment du type de pain ou de viande choisi) :
 
     * Un burger avec du pain.
 
@@ -485,13 +482,13 @@ Cette classe possède :
 
 * Un constructeur qui prend en paramètre tous les attributs qu'on doit obligatoirement initialiser lorsqu'on crée l'objet cible.
 
-* Pour chaque option, une méthode `WithNomOption(valeur)` qui permet d'ajouter une option (initialise l'attribut correspondant dans la classe du Builder). Cette méthode renvoie `this` (donc, l'instance du Builder) afin qu'on puisse enchaîner les appels des méthodes `with` pour ajouter d'autres options.
+* Pour chaque option, une méthode `withNomOption(valeur)` qui permet d'ajouter une option (initialise l'attribut correspondant dans la classe du Builder). Cette méthode renvoie `this` (donc, l'instance du Builder) afin qu'on puisse enchaîner les appels des méthodes `with` pour ajouter d'autres options.
 
 * Une méthode `build` qui permet d'instancier l'objet cible :
 
   * Soit en instanciant l'objet puis en modifiant ses attributs : cela est possible même si les attributs de la classe cible sont privés, car la classe `Builder` est définie à l'intérieur de la classe cible !
 
-  * Soit en définissant un constructeur prenant en paramètre un Builder dans la classe cible. L'instance se construit en allant chercher les données dans l'instance du Builder. On peut notamment ajouter des `getters` au Builder dans ce cas-là. Cette méthode a l'avantage d'aussi être compatible avec une classe Builder définie à l'extérieur de la classe.
+  * Soit en définissant un constructeur prenant en paramètre un Builder dans la classe cible. L'instance se construit en allant chercher les données dans l'instance du Builder. On peut notamment ajouter des `getters` au Builder dans ce cas-là. Cette méthode a l'avantage d'être aussi compatible avec une classe Builder définie à l'extérieur de la classe.
 
 Si le builder est **interne**, il faut aussi éliminer les constructeurs "classiques" et le constructeur "vide" de la classe (par exemple, en les rendant privés).
 
@@ -521,7 +518,7 @@ class Exemple {
 }
 ```
 
-Dans cette classe, il y a deux attributs qu'il est obligatoire d'initialiser : `data` et `compteur`. Ensuite, il y a diverses options. L'attribut `data` et `optionB` peuvent être modifiés, mais pas le reste. Pour contrôler la construction d'instances de cette classe, nous pouvons donc mettre en place un `Builder` :
+Dans cette classe, il y a deux attributs qu'il est obligatoire d'initialiser : `data` et `compteur`. Ensuite, il y a diverses options. Les attributs `data` et `optionB` peuvent être modifiés, mais pas le reste. Pour contrôler la construction d'instances de cette classe, nous pouvons donc mettre en place un `Builder` :
 
 ```java
 class Exemple {
@@ -613,7 +610,7 @@ public class Main {
 ![Builder 1]({{site.baseurl}}/assets/TP4/Builder1.svg){: width="50%" }
 </div>
 
-Sur **StarUML** le fait qu'une classe soit incluse dans une autre classe est représenté par la relation "Containment" qu'on trouve dans la section "Packages" dans la boîte à outil.
+Sur **StarUML** le fait qu'une classe soit incluse dans une autre classe est représenté par la relation "Containment" qu'on trouve dans la section "Packages" dans la boîte à outils.
 
 Comme annoncé précédemment, on pourrait adapter le `Builder` pour le passer en paramètre au constructeur à la place :
 
@@ -623,12 +620,12 @@ class Exemple {
   ...
 
   private Exemple(Builder builder) {
-      exemple.data = builder.data;
-      exemple.compteur = builder.getCompteur();
-      exemple.optionA = builder.getOptionA();
-      exemple.optionB = builder.getOptionB();
-      exemple.optionC = builder.getOptionC();
-      exemple.optionD = builder.getOptionD();
+      this.data = builder.getData();
+      this.compteur = builder.getCompteur();
+      this.optionA = builder.getOptionA();
+      this.optionB = builder.isOptionB();
+      this.optionC = builder.getOptionC();
+      this.optionD = builder.isOptionD();
   }
 
   ...
@@ -655,15 +652,15 @@ class Exemple {
 
     * Burger avec du pain moisi, avec de la salade et du poulet.
 
-    * Burger avec du pain au sésame, avec des tomates, de la salade.
+    * Burger avec du pain au sésame, avec des tomates et de la salade.
 
     * Burger avec du pain brioche, avec de la salade, des tomates, de la viande de bœuf et du cheddar.
 
 3. Générez le **diagramme de classes de conception** de votre application (avec `IntelliJ`).
 
-**NB :** Certains IDE (dont IntelliJ) permettent de générer automatiquement le code d'un Builder à partir d'une classe. Sur IntelliJ, il faut placer le curseur sur le constructeur de la classe pour laquelle vous souhaitez générer le builder, puis taper `ALT+Entree` puis sélectionner _Replace constructor with builder_. Le Builder sera généré comme une classe à part. Pour la rendre interne à la classe cible, il suffira juste de faire un Drag & Drop du Builder dans sa classe cible.
+**NB :** Certains IDE (dont IntelliJ) permettent de générer automatiquement le code d'un Builder à partir d'une classe. Sur IntelliJ, il faut placer le curseur sur le constructeur de la classe pour laquelle vous souhaitez générer le builder, puis taper `Alt+Entrée` puis sélectionner _Replace constructor with builder_. Le Builder sera généré comme une classe à part. Pour la rendre interne à la classe cible, il suffira juste de faire un Drag & Drop du Builder dans sa classe cible.
 
-**Remarque :** lorsqu'il s'agit d'une hiérarchie de classes (par héritage) pour laquelle il faut créer des builders, la solution n'est pas forcément évidente. En effet, il faut faire une hiérarchie de builders pour éviter la duplication de code, tout en respectant le principe LSP, à savoir : les méthodes **with...** doivent retourner le bon type de builder. Pour plus de détails voir le [dernier TP](https://www.lirmm.fr/~pvalicov/Cours/dev-objets/TP11.pdf) du cours de Développement Orienté Objets de première année.
+**Remarque :** lorsqu'il s'agit d'une hiérarchie de classes (par héritage) pour laquelle il faut créer des builders, la solution n'est pas forcément évidente. En effet, il faut faire une hiérarchie de builders pour éviter la duplication de code, tout en respectant le principe LSP, à savoir : les méthodes **with...** doivent retourner le bon type de builder. Pour plus de détails, voir le [dernier TP](https://www.lirmm.fr/~pvalicov/Cours/dev-objets/TP11.pdf) du cours de Développement Orienté Objets de première année.
 
 </div>
 
@@ -675,19 +672,19 @@ Nous allons directement présenter le principe et l'intérêt du pattern **proto
 
 1. Ouvrez le paquetage `fr.umontpellier.iut.prototype1` et consultez les classes mises à disposition. Il s'agit d'une mini-application bancaire permettant de gérer des comptes. Pour le moment, la classe `Banque` permet de gérer des **comptes courants**. C'est elle qui gère intégralement ces comptes bancaires : leur création et le changement de solde (créditer/débiter). Elle est donc **composée des comptes bancaires** (ce qui se traduirait par une **agrégation forte** sur un diagramme de classes de conception).
 
-2. Le développeur a pensé qu'il serait utile qu'un objet extérieur puisse récupérer un `CompteCourant` depuis la banque pour consulter le solde (ou autre). Il a donc créé une méthode de clonage `getInformationsCompteNumero` (qu'on pourrait appeller aussi `getCopieCompteCourant()`). Expérimentez dans le `Main` en créditant le compte d'un objet récupéré par cette méthode puis récupérez de nouveau ce compte depuis la banque et affichez son solde. Est-ce que le solde du compte a été modifié ? Lancez le test unitaire situé dans la classe dans `src/test/java/fr/umontpellier/iut/prototype1`. Il ne passe pas... Comprenez-vous pourquoi ?
+2. Le développeur a pensé qu'il serait utile qu'un objet extérieur puisse récupérer un `CompteCourant` depuis la banque pour consulter le solde (ou autre). Il a donc créé une méthode `getCopieCompteCourant` censée renvoyer une copie du compte. Expérimentez dans le `Main` en créditant le compte d'un objet récupéré par cette méthode puis récupérez de nouveau ce compte depuis la banque et affichez son solde. Est-ce que le solde du compte a été modifié ? Lancez le test unitaire situé dans la classe `BanqueTest` dans `src/test/java/fr/umontpellier/iut/prototype1`. Il ne passe pas... Comprenez-vous pourquoi ?
 
 </div>
 
-Le test unitaire n'est pas mal écrit. En fait, comme la banque gère exclusivement les différents **comptes bancaires**, il ne doit pas être possible qu'une autre classe puisse récupérer et modifier les objets que contient la banque. C'est toute la sémantique derrière la **composition forte** (ou *agrégation forte*) sur un diagramme de classe. Le "composant" est créé dans la classe (c'est le cas) et ne doit pas en sortir (ce n'est pas le cas ici).
+Le test unitaire n'est pas mal écrit. En fait, comme la banque gère exclusivement les différents **comptes bancaires**, il ne doit pas être possible qu'une autre classe puisse récupérer et modifier les objets que contient la banque. C'est toute la sémantique derrière la **composition** (ou *agrégation forte*) sur un diagramme de classes. Le "composant" est créé dans la classe (c'est le cas) et ne doit pas en sortir (ce n'est pas le cas ici).
 
 Une première solution pourrait être d'ajouter une méthode `double recupererSolde(int numeroCompte)` dans la classe `Banque`. Mais dans certains cas, on a vraiment besoin d'obtenir l'objet `CompteCourant` cible, sans pour autant modifier l'original... alors comment faire ?
 
-L'idée est de renvoyer une **copie** complète de l'objet ! Toutes les valeurs des attributs de l'objet copié seront identiques dans le nouvel objet, mais s'il est modifié, l'objet original (stocké dans `Banque`) ne sera pas impacté. L'objet renvoyé par `getInformationsCompteNumero` est alors un nouvel objet identique au compte, mais ce n'est pas l'objet original. Le principe de la composition est alors respecté.
+L'idée est de renvoyer une **copie** complète de l'objet ! Toutes les valeurs des attributs de l'objet copié seront identiques dans le nouvel objet, mais s'il est modifié, l'objet original (stocké dans `Banque`) ne sera pas impacté. L'objet renvoyé par `getCopieCompteCourant` est alors un nouvel objet identique au compte, mais ce n'est pas l'objet original. Le principe de la composition est alors respecté.
 
 Mais alors, qui doit faire cette copie ?
 
-* Est-ce que `Banque` est habilité à faire cela ? Cela ne semble pas trop **Single Responsibility** friendly ! De plus, est-ce que `Banque` a la capacité de copier `CompteCourant` ? A priori, il n'a pas accès aux attributs privés ou protégés comme `solde`, alors que `CompteCourant`, oui.
+* Est-ce que `Banque` est habilitée à faire cela ? Cela ne semble pas trop **Single Responsibility** friendly ! De plus, est-ce que `Banque` a la capacité de copier `CompteCourant` ? A priori, elle n'a pas accès aux attributs privés ou protégés comme `solde`, alors que `CompteCourant`, oui.
 
 * À la place, on peut définir un **constructeur par copie** dans `CompteCourant`. L'objectif d'un tel constructeur est de prendre un objet du même type et d'initialiser ses propres attributs avec les valeurs des attributs de l'autre objet. Vous avez sans doute utilisé de tels constructeurs en première année (notamment dans le cours d'initiation au développement) :
 
@@ -718,19 +715,19 @@ Mais alors, qui doit faire cette copie ?
 
 1. Refactorez votre code afin que `Banque` renvoie une **copie** du compte courant sélectionné. Attention au **solde** ! Il faut qu'il soit identique au compte copié. Vérifiez que cela fonctionne en lançant le test unitaire. Il devrait maintenant passer.
 
-2. On aimerait maintenant que la `Banque` gère aussi des **comptes épargne**. En fait, il faut qu'elle puisse gérer des **CompteBancaire** et pas seulement des **comptes courants**. refactorez le code de la classe `Banque` pour rendre cela possible (en utilisant plutôt la classe abstraite `CompteBancaire` plutôt que `CompteCourant`). 
+2. On aimerait maintenant que la `Banque` gère aussi des **comptes épargne**. En fait, il faut qu'elle puisse gérer des **CompteBancaire** et pas seulement des **comptes courants**. Refactorez le code de la classe `Banque` pour rendre cela possible (en utilisant la classe abstraite `CompteBancaire` plutôt que `CompteCourant`). 
 
-    Vous devrez néanmoins conserver la méthode `ouvrirCompteCourant` telle qu'elle, car elle ouvre spécifiquement un compte courant. Vous devrez aussi ajouter une méthode `ouvrirCompteEpargne` (tout cela ne respecte pas vraiment le principe ouvert/fermé, mais nous allons nous en contenter pour cet exercice). 
+    Vous devrez néanmoins conserver la méthode `ouvrirCompteCourant` telle quelle, car elle ouvre spécifiquement un compte courant. Vous devrez aussi ajouter une méthode `int ouvrirCompteEpargne(String nomProprietaire)` qui, comme `ouvrirCompteCourant`, retourne le numéro du compte créé. Le compte est créé avec le constructeur `CompteEpargne(String proprietaire, double taux)` : le taux est fixé à 5 % (`0.05`) par la banque lors de l'instanciation. Tout cela ne respecte pas vraiment le principe ouvert/fermé, mais nous allons nous en contenter pour cet exercice. 
     
-    Vous n'avez pas à ajouter de nouveaux attributs ou d'autres méthodes en dehors de `ouvrirCompteEpargne`. (Notamment, interdiction de faire une deuxième liste séparée gérant les comptes épargnes).
+    Vous n'avez pas à ajouter de nouveaux attributs ou d'autres méthodes en dehors de `ouvrirCompteEpargne`. (Notamment, interdiction de faire une deuxième liste séparée gérant les comptes épargne).
 
-    Normalement, vous avez une erreur sur la méthode `getInformationsCompteNumero`. C'est normal.
+    Normalement, vous avez des erreurs de compilation dans la méthode `getCopieCompteCourant`. C'est normal.
 
-3. Comprenez-vous pourquoi l'implémentation de `getInformationsCompteNumero` provoque des erreurs ?
+3. Comprenez-vous pourquoi l'implémentation de `getCopieCompteCourant` provoque des erreurs ?
 
 </div>
 
-Notre solution à base de copie semblait bonne, mais elle tombe à l'eau dès lors qu'on manipule des abstractions et plus des classes concrètes ! `Banque` ne peut plus utiliser le constructeur par copie de `CompteCourant`, car elle gère une liste de `CompteBancaire` abstraits (qui peuvent être des comptes courants, des comptes épargnes ou autre...).
+Notre solution à base de copie semblait bonne, mais elle tombe à l'eau dès lors qu'on manipule des abstractions et plus des classes concrètes ! `Banque` ne peut plus utiliser le constructeur par copie de `CompteCourant`, car elle gère une liste de `CompteBancaire` abstraits (qui peuvent être des comptes courants, des comptes épargne ou autre...).
 
 Le pattern **prototype** permet de résoudre ce problème en précisant que :
 
@@ -818,7 +815,7 @@ class Service {
 </div>
 
 
-L'application du prototype peut éventuellement être plus complexe dans des cas d'héritage. Par exemple, si un attribut dont a besoin une classe fille lors de sa construction est déclaré comme privé dans la classe mère, l'enfant n'y aura pas accès et ne pourra donc pas l'utiliser pour le clonage. Il faut donc prévoir cela et proposer des solutions pour que les classes filles puissent effectuer le clonage sans problème. On peut par exemple utiliser la visibilité `protected` sur l'attribut (dans ce cas, il faut bien organiser les **packages**) ou alors des **getters** (public ou `protected`) qui renvoient l'objet inaccessible désiré, ou bien le clonent (si c'est un objet et qu'il peut être cloné).
+L'application du prototype peut éventuellement être plus complexe dans des cas d'héritage. Par exemple, si un attribut dont a besoin une classe fille lors de sa construction est déclaré comme privé dans la classe mère, l'enfant n'y aura pas accès et ne pourra donc pas l'utiliser pour le clonage. Il faut donc prévoir cela et proposer des solutions pour que les classes filles puissent effectuer le clonage sans problème. On peut par exemple utiliser la visibilité `protected` sur l'attribut (dans ce cas, il faut bien organiser les **packages**) ou alors des **getters** (publics ou `protected`) qui renvoient l'objet inaccessible désiré, ou bien le clonent (si c'est un objet et qu'il peut être cloné).
 
 ```java
 abstract class ClasseMere {
@@ -829,7 +826,7 @@ abstract class ClasseMere {
     this.valeur = valeur;
   }
 
-  public abstract ClasseMere clone();
+  public abstract ClasseMere cloner();
 
 }
 
@@ -843,7 +840,7 @@ class ClasseFille extends ClasseMere {
   }
 
   @Override
-  public ClasseFille clone() {
+  public ClasseFille cloner() {
     //Erreur, valeur n'est pas accessible !
     return new ClasseFille(valeur, texte);
   }
@@ -857,7 +854,7 @@ Solutions :
 // Avec la visibilité protected, seules les classes du même paquetage et les classes qui étendent ClasseMere ont accès à l'attribut/méthode. Il faut donc bien gérer les paquetages pour s'assurer qu'une classe ne puisse pas y accéder alors qu'elle n'est pas censée pouvoir.
 abstract class ClasseMere {
 
-  // Permet à la classe fille de lire (mais d'aussi écrire) l'attribut valeur
+  // Permet à la classe fille de lire (mais aussi d'écrire) l'attribut valeur
   protected int valeur;
 
   // Ou bien : permet à la classe fille de lire l'attribut valeur
@@ -872,7 +869,7 @@ abstract class ClasseMere {
 
 <div class="exercise">
 
-1. Refactorez votre code en appliquant le pattern **prototype** sur vos comptes bancaires. Adaptez aussi le code de `getInformationsCompteNumero` en conséquence.
+1. Refactorez votre code en appliquant le pattern **prototype** sur vos comptes bancaires. Adaptez aussi le code de `getCopieCompteCourant` en conséquence.
 
 2. Vérifiez que le test unitaire passe toujours.
 
@@ -885,20 +882,22 @@ Réalisez le **diagramme de séquence des interactions** permettant de modélise
     Banque banque = new Banque();
     int numeroCompte = banque.ouvrirCompteCourant("Test", Formule.ADULTE);
     banque.crediterCompte(numeroCompte, 50);
-    CompteBancaire compte = banque.getInformationsCompteNumero(numeroCompte);
+    CompteBancaire compte = banque.getCopieCompteCourant(numeroCompte);
     compte.crediter(100);
     ```
 -->
 
 L'objectif du pattern **prototype** est donc de définir un moyen d'obtenir des **copies** d'un objet, notamment dans un contexte où vos classes manipulent des abstractions (comme c'est souvent le cas quand on applique les principes **SOLID** et les **design patterns**). Si on souhaite pouvoir copier un objet abstrait manipulé, chaque classe concrète de la hiérarchie doit définir sa propre logique de copie via la méthode `cloner`.
 
-**Remarque technique (pour Java) :** En Java, un mécanisme de clonage est prévu à travers la fonction `clone` de la classe `Object`. Pour l'utiliser sur une classe que vous développez, il faut implémenter l'interface [`Cloneable`](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Cloneable.html). Cette interface ne contient aucune méthode, mais elle permet de signaler que la classe peut être clonée. Le mécanisme interne de cette spécification est assez obscure et a été beaucoup critiqué (voir Item 13 du livre **Effective Java** de Joshua Bloch, ainsi que [les discussions en ligne](https://stackoverflow.com/questions/4081858/how-does-cloneable-work-in-java-and-how-do-i-use-it)). Il est donc préférable de ne pas utiliser cette interface et de définir votre propre méthode `cloner` comme nous l'avons fait dans l'exemple précédent.
+Attention à la nature de la copie : dans nos comptes bancaires, tous les attributs (`String`, `double`, énumération) sont immuables, donc une **copie superficielle** (recopier les valeurs des attributs) suffit. En revanche, si un attribut est un objet mutable (par exemple une `List<Operation>`), il faut aussi le copier (ou le cloner) : on parle alors de **copie profonde**. Sinon, l'original et la copie partageraient le même objet, et modifier l'un modifierait l'autre.
+
+**Remarque technique (pour Java) :** En Java, un mécanisme de clonage est prévu à travers la méthode `clone` de la classe `Object`. Pour l'utiliser sur une classe que vous développez, il faut implémenter l'interface [`Cloneable`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Cloneable.html). Cette interface ne contient aucune méthode, mais elle permet de signaler que la classe peut être clonée. Le mécanisme interne de cette spécification est assez obscur et a été beaucoup critiqué (voir Item 13 du livre **Effective Java** de Joshua Bloch, ainsi que [les discussions en ligne](https://stackoverflow.com/questions/4081858/how-does-cloneable-work-in-java-and-how-do-i-use-it)). Il est donc préférable de ne pas utiliser cette interface et de définir votre propre méthode `cloner` comme nous l'avons fait dans l'exemple précédent.
 
 ## La Fabrique Simple - un concept très utile
 
-Le concept de **Simple Fabrique** permet de centraliser l'instanciation d'une famille de classes dans une classe spécialisée. Les classes ayant besoin d'instancier des objets de cette famille ne vont plus faire elle-même des **new**, mais vont plutôt passer par la fabrique. Ainsi les dépendances vers les types **concrets** sont centralisées dans une seule classe, et les classes ayant besoin d'instancier des objets ne possèdent qu'une dépendance vers la fabrique.
+Le concept de **Fabrique Simple** permet de centraliser l'instanciation d'une famille de classes dans une classe spécialisée. Les classes ayant besoin d'instancier des objets de cette famille ne vont plus faire elles-mêmes des **new**, mais vont plutôt passer par la fabrique. Ainsi les dépendances vers les types **concrets** sont centralisées dans une seule classe, et les classes ayant besoin d'instancier des objets ne possèdent qu'une dépendance vers la fabrique.
 
-**Remarque importante :** Bien que le concept de **Fabrique Simple** est extrêmement pratique (et utilisé dans différents __design patterns__), il ne s'agit pas d'un design pattern à proprement parler. Prenons-le plutôt comme une application de règles de bon sens. En l'occurrence, il ne faut pas confondre la **Fabrique Simple** avec les patterns **Méthode Fabrique** (**Factory Method**) et **Fabrique Abstraite** (**Abstract Factory**) du **GoF**, dont nous allons parler dans ce TP.
+**Remarque importante :** Bien que le concept de **Fabrique Simple** soit extrêmement pratique (et utilisé dans différents __design patterns__), il ne s'agit pas d'un design pattern à proprement parler. Prenons-le plutôt comme une application de règles de bon sens. En l'occurrence, il ne faut pas confondre la **Fabrique Simple** avec les patterns **Méthode Fabrique** (**Factory Method**) et **Fabrique Abstraite** (**Abstract Factory**) du **GoF**, dont nous allons parler dans ce TP.
 
 La fabrique connaît les différents types concrets à instancier, mais elle va généralement renvoyer des abstractions (classes abstraites/interfaces) pour que les classes ayant besoin de créer des objets ne dépendent plus du tout d'un objet concret, mais plutôt de son abstraction. Ainsi, l'impact du changement diminue (si on veut changer la classe concrète utilisée) ce qui renforce notamment le principe ouvert/fermé.
 
@@ -976,7 +975,7 @@ public class Zone {
 ![Fabrique 1]({{site.baseurl}}/assets/TP4/Fabrique1.svg){: width="65%" }
 </div>
 
-Ici l'application est donc configurée pour faire apparaître des monstres **Slimes**. `Arene` et `Zone` sont fortement dépendants de `Slime`, car elles instancient des objets `Slime` dans son code. Et on ne peut pas simplement injecter les dépendances, car ces classes ont besoin de directement instancier ces objets dans leurs méthodes ! Si nous devons changer le code des classes `Zone` ou `Arene`, pour utiliser des objets `Fantome` à la place, il faut modifier ces deux classes !
+Ici l'application est donc configurée pour faire apparaître des monstres **Slimes**. `Arene` et `Zone` sont fortement dépendantes de `Slime`, car elles instancient des objets `Slime` dans leur code. Et on ne peut pas simplement injecter les dépendances, car ces classes ont besoin de directement instancier ces objets dans leurs méthodes ! Si nous voulons utiliser des objets `Fantome` à la place, il faut modifier ces deux classes !
 
 Pour régler ce problème de dépendance, nous pouvons refactorer le code précédent en mettant en place une **Fabrique**, à savoir une classe dont le rôle est de produire des objets `Monstre` :
 
@@ -991,6 +990,8 @@ public class MonstreFactory {
 }
 
 public class Arene {
+
+  private Joueur combattant;
 
   private MonstreFactory factory = new MonstreFactory();
 
@@ -1022,13 +1023,13 @@ public class Zone {
 
 ```
 
-Maintenant, si nous voulons utiliser des monstres type `Fantome` à la place de `Slime`, nous n'avons à faire ce changement que dans **une seule classe** : `MonstreFactory` !
+Maintenant, si nous voulons utiliser des monstres de type `Fantome` à la place de `Slime`, nous n'avons à faire ce changement que dans **une seule classe** : `MonstreFactory` !
 
 <div style="text-align:center">
 ![Fabrique 2]({{site.baseurl}}/assets/TP4/Fabrique2.svg){: width="65%" }
 </div>
 
-Ici, il semble judicieux de transformer `MonstreFactory` en **Singleton** et de l'injecter comme dépendance pour éviter que chaque service instancie une version de la fabrique :
+Ici, il semble judicieux de transformer `MonstreFactory` en **Singleton** pour éviter que chaque service instancie sa propre version de la fabrique. On récupère alors l'instance unique via `getInstance()` et on l'**injecte** comme dépendance (via le constructeur) dans les classes qui en ont besoin : ces classes ne dépendent ainsi pas de la façon dont la fabrique est obtenue :
 
 ```java
 
@@ -1052,6 +1053,8 @@ public class MonstreFactory {
 }
 
 public class Arene {
+
+  private Joueur combattant;
 
   private MonstreFactory factory;
 
@@ -1126,7 +1129,7 @@ Chaque café peut être composé d'un type de graine (arabica ou robusta) et le 
 
 Pour l'instant, nos graines arabica viendront du Brésil, les graines robusta d'Asie et la marque de sucre utilisée est Daddy.
 
-Une fois l'instance d'un Café créé, il doit ensuite être **préparé** (c'est à ce moment qu'on initialisera les ingrédients utilisés).
+Une fois l'instance d'un café créée, il doit ensuite être **préparé** (c'est à ce moment qu'on initialisera les ingrédients utilisés).
 
 ```java
 public abstract class Cafe {
@@ -1251,20 +1254,20 @@ public class CafeFactory {
 }
 ```
 
-**Cependant**, si les objets sont **de même nature** (ici, tous des **cafés**) et ont globalement besoin des mêmes entrées pour être instanciés, on préférera la première méthode et on préférera éviter celle-ci. On réservera le fait d'avoir plusieurs méthodes pour créer des objets de nature différentes (comme nous le ferons avec **la Fabrique Abstraite**).
+**Cependant**, si les objets sont **de même nature** (ici, tous des **cafés**) et ont globalement besoin des mêmes entrées pour être instanciés, on préférera la première méthode à celle-ci. On réservera le fait d'avoir plusieurs méthodes pour créer des objets de natures différentes (comme nous le ferons avec **la Fabrique Abstraite**).
 
-La première méthode (avec le bloc **switch**) pourrait ressembler à du mauvais code, mais il s'agit bien de l'implémentation **souhaitée**. De plus, la seconde méthode n'aurait pas bien fonctionné avec la classe `Machine` à moins de la coder autrement. On se serait soit retrouvé avec de la duplication de code, soit à gérer un autre `switch` dans la classe `Machine`. Dans cet exemple, il est donc préférable d'utiliser la première méthode.
+La première méthode (avec le bloc **switch**) pourrait ressembler à du mauvais code, mais il s'agit bien de l'implémentation **souhaitée**. De plus, la seconde méthode n'aurait pas bien fonctionné avec la classe `MachineCafe` à moins de la coder autrement. On se serait soit retrouvé avec de la duplication de code, soit à gérer un autre `switch` dans la classe `MachineCafe`. Dans cet exemple, il est donc préférable d'utiliser la première méthode.
 
 
 <!-- Il est possible de régler ce problème avec les patterns **Méthode Fabrique** et/ou **Fabrique Abstraite**. -->
 
 **Remarques :**
 * Avec notre implémentation, il est éventuellement possible d'utiliser une autre marque de café qui possède son propre type d'expresso et de cappuccino (avec des graines de provenances différentes, et une autre marque de sucre). Il suffira de changer la fabrique sans impacter le reste des classes. Mais que se passerait-il si on souhaitait faire cohabiter ces différentes **marques** de café, avec leur propre machine ?
-* Aussi, vis-à-vis du principe **Ouvert/Fermé** cette solution n'est pas idéale, car :
-  * Le client doit correctement passer en paramètre la bonne chaîne de caractère pour désigner le type de café "_expresso_" ou "_cappuccino_". Cela peut se résoudre en utilisant des types énumérés par exemple. Tout de même c'est au client d'aider la fabrique à créer le bon objet...
+* Aussi, vis-à-vis du principe **Ouvert/Fermé**, cette solution n'est pas idéale, car :
+  * Le client doit correctement passer en paramètre la bonne chaîne de caractères pour désigner le type de café "_expresso_" ou "_cappuccino_". Cela peut se résoudre en utilisant des types énumérés, par exemple. Tout de même, c'est au client d'aider la fabrique à créer le bon objet...
   * Pire, si on souhaite ajouter un nouveau type de café, il faudra modifier la fabrique, donc elle n'est pas fermée aux modifications.
 
-Nous allons régler ces problèmes lorsqu'on abordera les pattern **Méthode Fabrique** et **Fabrique Abstraite**.
+Nous allons régler ces problèmes lorsqu'on abordera les patterns **Méthode Fabrique** et **Fabrique Abstraite**.
 
 ### Animaux
 
@@ -1276,7 +1279,7 @@ Pour l'instant, testons votre compréhension de la **fabrique simple** :
 
 2. Actuellement, si on souhaite changer les animaux pour utiliser des animaux robotiques dans le `Main`, on est obligé de changer tout le code du `Main`. Il faut vous imaginer cela pour plusieurs classes : s'il faut changer les animaux pour des animaux robotiques, alors il faudra changer le code de toutes les classes qui créent des animaux ! Pour permettre plus de flexibilité, vous devez :
 
-    * Mettre en place une fabrique `AnimalFactory` créant des animaux "normaux" pour le moment.
+    * Mettre en place une fabrique `AnimalFactory` créant des animaux "normaux" pour le moment, avec une méthode `Animal creerAnimal(String type, String nom)` (sur le modèle de `creerCafe` dans `CafeFactory`).
 
     * Faire en sorte que cette fabrique soit un **singleton**.
 
@@ -1331,7 +1334,7 @@ public class Canne {
 
     @Override
     public String toString() {
-        return String.format("Canne à pêche niveau %s, degradation : %s, score : %s",  niveau, degradation, score);
+        return String.format("Canne à pêche niveau %s, dégradation : %s, score : %s",  niveau, degradation, score);
     }
 }
 
@@ -1364,7 +1367,7 @@ public class SpotPeche {
 
     public void pecher(Canne canne) {
         Truite truite = new Truite(aleatoire.nextInt(1, 16), aleatoire.nextInt(1, 11));
-        System.out.println("Une truite apparaît!");
+        System.out.println("Une truite apparaît !");
         if(truite.tenterPecherAvec(canne)) {
             canne.augmenterNiveau();
             canne.augmenterScore(truite.getNbPoints());
@@ -1398,7 +1401,7 @@ On aurait alors :
 * L'**étang**, qui génère des truites avec un niveau entre 1 et 15 et une force entre 1 et 10 (ce que nous avons déjà).
 * Le **lac**, qui génère des carpes qui ont un niveau entre 20 et 30 et une certaine chance d'être dorées, selon le paramétrage du lac.
 
-De plus, dans le futur, de nouveaux spots (qui génère un nouveau ou plusieurs types de poissons) pourraient être ajoutés.
+De plus, dans le futur, de nouveaux spots (qui génèrent un nouveau ou plusieurs types de poissons) pourraient être ajoutés.
 
 Il est à noter que :
 * En dehors de la génération des poissons, la logique métier du spot reste exactement la même (à savoir l'algorithme de la fonction `pecher(Canne canne)` reste le même).
@@ -1412,9 +1415,9 @@ Le pattern **Méthode Fabrique** (Factory Method) définit une **classe mère** 
 
 L'idée de ce pattern est de proposer un framework de création d'objets, où des hiérarchies de classes de fabriques simples sont créées, afin de donner plus de flexibilité pour la création d'objets.
 
-Pour que l'utilisation de ce pattern soit justifié, il faut que la **classe mère** (abstraite) effectue **d'autres traitements que simplement créer l'objet** &#40;sinon c'est juste une fabrique&#41;. Dans une &#40;ou plusieurs&#41; méthode&#40;s&#41; de la classe mère où un traitement est effectué, la méthode abstraite est appelée ce qui permet de récupérer un objet dont le type concret sera décidé par les sous-classes. Ainsi, le traitement peut être effectué dans la classe mère sans avoir besoin d'être dépendant d'une classe concrète.
+Pour que l'utilisation de ce pattern soit justifiée, il faut que la **classe mère** (abstraite) effectue **d'autres traitements que simplement créer l'objet** &#40;sinon c'est juste une fabrique&#41;. Dans une &#40;ou plusieurs&#41; méthode&#40;s&#41; de la classe mère où un traitement est effectué, la méthode abstraite est appelée ce qui permet de récupérer un objet dont le type concret sera décidé par les sous-classes. Ainsi, le traitement peut être effectué dans la classe mère sans avoir besoin d'être dépendant d'une classe concrète.
 
-Le pattern **Méthode Fabrique** permet donc de proposer une solution au problème posé dans cet exemple. L'idée est de rendre la création du poisson **abstraite** dans `SpotPeche` (et donc rendre `SpotPeche` abstrait) et de déléguer la création du type de monstre dans des classes dérivées (`Etang` et `Lac`).
+Le pattern **Méthode Fabrique** permet donc de proposer une solution au problème posé dans cet exemple. L'idée est de rendre la création du poisson **abstraite** dans `SpotPeche` (et donc rendre `SpotPeche` abstrait) et de déléguer la création du type de poisson dans des classes dérivées (`Etang` et `Lac`).
 
 ```java
 public abstract class Poisson {
@@ -1484,7 +1487,7 @@ public abstract class SpotPeche {
     public void pecher(Canne canne) {
         //Le poisson instancié dépend du spot de pêche concret
         Poisson poisson = creerPoisson();
-        System.out.printf("%s apparaît!%n", poisson.getNom());
+        System.out.printf("%s apparaît !%n", poisson.getNom());
         if(poisson.tenterPecherAvec(canne)) {
             canne.augmenterNiveau();
             canne.augmenterScore(poisson.getNbPoints());
@@ -1549,12 +1552,12 @@ public class Main {
 ```
 
 <div style="text-align:center">
-![Fabrique 5]({{site.baseurl}}/assets/TP4/Fabrique5.svg)
+![Méthode Fabrique - spots de pêche]({{site.baseurl}}/assets/TP4/Fabrique5.svg)
 </div>
 
-Le pattern s'appelle **Méthode Fabrique**, car la méthode abstraite implémentée par les classes filles sont elles-mêmes des fabriques !
+Le pattern s'appelle **Méthode Fabrique**, car les implémentations de la méthode abstraite par les classes filles sont elles-mêmes des fabriques !
 
-Dans notre exemple, chaque spot ne renvoie qu'un type de poisson (truite pour l'étang, carpe pour le lac). Cependant, la méthode fabrique n'a pas obligation de renvoyer un seul type d'instance : elle peut renvoyer l'instance qu'elle souhaite (tant que cela respecte le type de retour demandé). Par exemple, nous aurions pu avoir un spot "océan" qui génère à la fois des carpes, des truites et autre dans sa méthode `creerPoisson` !
+Dans notre exemple, chaque spot ne renvoie qu'un type de poisson (truite pour l'étang, carpe pour le lac). Cependant, la méthode fabrique n'a pas obligation de renvoyer un seul type d'instance : elle peut renvoyer l'instance qu'elle souhaite (tant que cela respecte le type de retour demandé). Par exemple, nous aurions pu avoir un spot "océan" qui génère à la fois des carpes, des truites et d'autres poissons dans sa méthode `creerPoisson` !
 
 On peut généraliser ce **pattern** ainsi :
 
@@ -1637,14 +1640,14 @@ public class MonstreFactory {
   private String type;
 
   public MonstreFactory(String type) {
-    this.type = type
+    this.type = type;
   }
 
   public Monstre creerMonstre() {
     return switch (type) {
         case "slime" -> new Slime();
         case "fantome" -> new Fantome();
-        default -> throw new InvalidParameterException("Monstre inconnu");
+        default -> throw new IllegalArgumentException(String.format("Type de monstre inconnu : %s", type));
     };
   }
 
@@ -1666,14 +1669,14 @@ public class Main {
 Bien que fonctionnelle, cette solution présente divers problèmes :
 
 * Si un monstre visé n'existe pas, le problème apparaîtra seulement lors de l'exécution.
-* Nous mettons les **arènes** de l'exemple précédent de côté (pour le moment). Dans ce contexte, le fait qu'il soit possible d'instancier et d'utiliser la fabrique ailleurs que dans `Zone` ne fait pas vraiment de sens, car cette fabrique ne sert que pour une seule classe et ne devrait pas être accessible et manipulable ailleurs...
-* Même si cela est complètement optionnel (et un peu "gadget") il n'est plus possible d'utiliser un singleton pour cette fabrique.
+* Nous mettons les **arènes** de l'exemple précédent de côté (pour le moment). Dans ce contexte, le fait qu'il soit possible d'instancier et d'utiliser la fabrique ailleurs que dans `Zone` n'a pas vraiment de sens, car cette fabrique ne sert que pour une seule classe et ne devrait pas être accessible et manipulable ailleurs...
+* Même si cela est complètement optionnel (et un peu "gadget"), il n'est plus possible d'utiliser un singleton pour cette fabrique.
 
 Le pattern **Méthode Fabrique** (Factory Method) définit une **classe mère** pour la **création d'objets**, mais **délègue** l'instanciation (et donc le choix du type concret d'objet) à ses **classes filles**. Ce pattern utilise le concept de **fabrique** au travers d'une **méthode abstraite** définie dans la classe mère et implémentée par les classes filles.
 
 L'idée de ce pattern est de proposer un framework de création d'objets, où des hiérarchies de classes de fabriques simples sont créées, afin de donner plus de flexibilité pour la création d'objets.
 
-Pour que l'utilisation de ce pattern soit justifié, il faut que la **classe mère** abstraite&#41; effectue **d'autres traitements que simplement créer l'objet** &#40;sinon c'est juste une fabrique&#41;. Dans une &#40;ou plusieurs&#41; méthode&#40;s&#41; de la classe mère où un traitement est effectué, la méthode abstraite est appelée ce qui permet de récupérer un objet dont le type concret sera décidé par les sous-classes. Ainsi, le traitement peut être effectué dans la classe mère sans avoir besoin d'être dépendant d'une classe concrète.
+Pour que l'utilisation de ce pattern soit justifiée, il faut que la **classe mère** &#40;abstraite&#41; effectue **d'autres traitements que simplement créer l'objet** &#40;sinon c'est juste une fabrique&#41;. Dans une &#40;ou plusieurs&#41; méthode&#40;s&#41; de la classe mère où un traitement est effectué, la méthode abstraite est appelée ce qui permet de récupérer un objet dont le type concret sera décidé par les sous-classes. Ainsi, le traitement peut être effectué dans la classe mère sans avoir besoin d'être dépendant d'une classe concrète.
 
 Le pattern **Méthode Fabrique** permet donc de proposer une bien meilleure solution. L'idée est de rendre la création du monstre **abstraite** dans `Zone` (et donc rendre `Zone` abstrait) et de déléguer la création du type de monstre dans des classes dérivées.
 
@@ -1732,7 +1735,7 @@ Nous avons réglé les différents problèmes évoqués précédemment :
 * Plus d'erreur à l'exécution possible si un monstre n'existe pas (on passe d'une vérification à l'exécution à une vérification à la compilation, car la classe du Monstre doit exister).
 * Il n'est pas possible d'utiliser la fabrique ailleurs : la logique de fabrication est encapsulée dans la classe concrète de la zone.
 
-Le pattern s'appelle **Méthode Fabrique**, car la méthode abstraite implémentée par les classes filles sont elles-mêmes des fabriques ! D'ailleurs, dans l'exemple, nous avons supprimé `MonstreFactory` qui ne nous est plus utile.
+Le pattern s'appelle **Méthode Fabrique**, car les implémentations de la méthode abstraite par les classes filles sont elles-mêmes des fabriques ! D'ailleurs, dans l'exemple, nous avons supprimé `MonstreFactory` qui ne nous est plus utile.
 
 On peut généraliser ce **pattern** ainsi :
 
@@ -1756,7 +1759,7 @@ Nous allons tester votre compréhension du problème sur un premier exercice sim
    * L'armée **humaine** qui recrute des `Humain` avec 50 points de vie.
    * L'armée **orc** qui recrute des `Orc` avec 80 points de vie.
 
-3. Faites en sorte qu'il soit possible de gérer les deux types d'armées citées dans le point précédent. Vous ajouterez les classes et le code nécessaire et vous compléterez la méthode `recruterUnite` de la classe `Armee` ainsi que le `main` de la classe `Jeu`. Chaque fois qu'une unité est créée dans une armée, elle est ajoutée à la liste des unités de l'armée.
+3. Faites en sorte qu'il soit possible de gérer les deux types d'armées cités dans le point précédent. Vous ajouterez les classes et le code nécessaires et vous compléterez la méthode `recruterUnite` de la classe `Armee` ainsi que le `main` de la classe `Jeu`. Chaque fois qu'une unité est créée dans une armée, elle est ajoutée à la liste des unités de l'armée.
 
 </div>
 
@@ -1874,11 +1877,11 @@ Il y a quelques aspects du code qui vous paraissent encore superflus ou redondan
 
 ### Gestionnaire de livraisons - Partie 1
 
-Testons maintenant votre maîtrise du pattern **Méthode Fabrique** avec un nouvel exercice un peu plus complexe. Cet exercice (et sa suite) sont inspirés d'un exercice issu de l'excellent livre **Head First Design Patterns** qui propose une illustration des patterns **Méthode Fabrique** puis **Fabrique Abstraite** avec un exemple se basant sur des restaurants de **pizzas** (les exemples donnés dans ce livre sont d'ailleurs en Java).
+Testons maintenant votre maîtrise du pattern **Méthode Fabrique** avec un nouvel exercice un peu plus complexe. Cet exercice et sa suite sont inspirés d'un exercice issu de l'excellent livre **Head First Design Patterns** qui propose une illustration des patterns **Méthode Fabrique** puis **Fabrique Abstraite** avec un exemple se basant sur des restaurants de **pizzas** (les exemples donnés dans ce livre sont d'ailleurs en Java).
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `fr.umontpellier.iut.fabrique3`. Il s'agit d'une application de gestion des livraisons de divers produits pour des entreprises. Il existe différents types de méthodes de livraison : par drone, par un robot, par avion et par bateau. Le mode de livraison sélectionné pour livrer une commande va dépendre de la distance (proche ou éloigné).
+1. Ouvrez le paquetage `fr.umontpellier.iut.fabrique3`. Il s'agit d'une application de gestion des livraisons de divers produits pour des entreprises. Il existe différents types de méthodes de livraison : par drone, par un robot, par avion et par bateau. Le mode de livraison sélectionné pour livrer une commande va dépendre de la distance (proche ou éloignée).
 
 2. Un **gestionnaire de livraisons** permet de planifier et suivre la livraison d'une commande. Actuellement, tous les gestionnaires fonctionnent ainsi :
 
@@ -1886,7 +1889,7 @@ Testons maintenant votre maîtrise du pattern **Méthode Fabrique** avec un nouv
 
       * Si la distance est proche, un **drone** de puissance cinq est utilisé pour la livraison qui se déroulera en deux jours.
 
-      * Si la distance est éloignée, un **avion** (avec un pilote automatique) est utilisé pour la livraison qui se déroulera en cinq jours.
+      * Si la distance est éloignée, un **avion** (avec un pilote automatique) est utilisé pour la livraison qui se déroulera en sept jours.
 
    * Le gestionnaire de livraison initialise ensuite la livraison (avec un code complexe qui est différent selon le mode de livraison retenu) puis l'enregistre dans la liste de ses livraisons suivies.
 
@@ -1898,18 +1901,18 @@ Testons maintenant votre maîtrise du pattern **Méthode Fabrique** avec un nouv
 
 3. Explorez les classes et exécutez le `main` pour comprendre la logique (il y a des classes et du code inutilisés pour le moment, c'est normal).
 
-4. Un nouveau besoin apparaît : l'application est à la base prévue pour gérer des livraisons sur le territoire américain. Cependant, on souhaite l'étendre pour **gérer les livraisons sur le territoire japonais**. Or, même si la logique de la classe `GestionnaireLivraison` reste globalement la même, on ne souhaite pas utiliser les mêmes méthodes de livraisons que pour le territoire américain :
+4. Un nouveau besoin apparaît : l'application est à la base prévue pour gérer des livraisons sur le territoire américain. Cependant, on souhaite l'étendre pour **gérer les livraisons sur le territoire japonais**. Or, même si la logique de la classe `GestionnaireLivraison` reste globalement la même, on ne souhaite pas utiliser les mêmes méthodes de livraison que pour le territoire américain :
 
     * Si la distance est proche, un **robot** de modèle **B** est utilisé pour la livraison qui se déroulera en trois jours.
 
     * Si la distance est éloignée, un **bateau** (du constructeur **Honda**) est utilisé pour la livraison qui se déroulera en dix jours.
 
-    Faites en sorte qu'il soit possible de gérer les deux types de gestionnaires de livraisons : les **gestionnaires américains** (logique que l'on avait jusqu'à présent) et **gestionnaires japonais**. Vous ajouterez et adapterez les classes et le code nécessaire.
+    Faites en sorte qu'il soit possible de gérer les deux types de gestionnaires de livraisons : les **gestionnaires américains** (logique que l'on avait jusqu'à présent) et **gestionnaires japonais**. Vous ajouterez et adapterez les classes et le code nécessaires.
 
 5. Vos modifications ont probablement impacté le `main`. Corrigez-le puis faites en sorte de pouvoir tester le gestionnaire de livraison japonais avec le code suivant :
 
     ```java
-    //A compléter
+    //À compléter
     GestionnaireLivraison gestionnaireLivraisonJaponais =  ???;
   
     //Planification des livraisons
@@ -1947,7 +1950,7 @@ Ce pattern va notamment permettre de créer et de sélectionner différents type
 
    * Diverses **armes de siège** : chaque armée peut construire des armes de siège spécifiques avec lesquelles elle peut attaquer.
    * Divers **sorts** : chaque armée possède un **sort** de prédilection qu'elle peut déclencher.
-   * Une nouvelle classe `Debugueur` (incomplète) qui permet au développeur (ou à un tricheur) de tester l'invocation sur le terrain de jeu (à certaines coordonnées) les différentes unités, armes et sorts d'une armée. 
+   * Une nouvelle classe `Debugueur` (incomplète) qui permet au développeur (ou à un tricheur) de tester l'invocation sur le terrain de jeu (à certaines coordonnées) des différentes unités, armes et sorts d'une armée. 
 
 2. En plus du recrutement, chaque **armée** peut construire un type d'arme de siège spécifique et utiliser un type de sort spécifique.
 
@@ -1956,11 +1959,11 @@ Ce pattern va notamment permettre de créer et de sélectionner différents type
 
 3. Commencez par importer le code que vous aviez déjà réalisé afin de mettre en place le **recrutement** des unités (depuis le package `v1`).
 
-4. Maintenant, faites en sorte que chaque armée (humaine et orc) puisse créer ses armes de siège spécifiques et créer et utiliser leurs sorts spécifiques. Chaque arme de siège créée est ajoutée dans la liste correspondante. Un sort, quand il est créé, est seulement déclenché (il n'est pas stocké). Normalement, vous devriez pouvoir trouver une solution avec vos connaissances actuelles et les patterns que nous avons vu jusqu'ici. Si vous n'y arrivez pas, passez à la suite des explications.
+4. Maintenant, faites en sorte que chaque armée (humaine et orc) puisse créer ses armes de siège spécifiques et créer et utiliser ses sorts spécifiques. Chaque arme de siège créée est ajoutée dans la liste correspondante. Un sort, quand il est créé, est seulement déclenché (il n'est pas stocké). Normalement, vous devriez pouvoir trouver une solution avec vos connaissances actuelles et les patterns que nous avons vus jusqu'ici. Si vous n'y arrivez pas, passez à la suite des explications.
 
-5. De même, complétez la classe `Debugueur` qui permet de débuguer une armée : il doit être possible de débuguer les ressources de l'armée humaine, et les ressources de l'armée orc (il faudra probablement ajouter des nouvelles classes). Les ressources créées (unité, arme, sort) ont exactement les mêmes caractéristiques que celles créés au travers de chaque type d'armee (humain, orc). Le code de `Debugueur` (et des nouvelles classes que vous allez certainement ajouter) vont donc être assez similaire à `Armee`, etc.
+5. De même, complétez la classe `Debugueur` qui permet de débuguer une armée : il doit être possible de débuguer les ressources de l'armée humaine, et les ressources de l'armée orc (il faudra probablement ajouter des nouvelles classes). Les ressources créées (unité, arme, sort) ont exactement les mêmes caractéristiques que celles créées au travers de chaque type d'armée (humain, orc). Le code de `Debugueur` (et des nouvelles classes que vous allez certainement ajouter) va donc être assez similaire à `Armee`, etc.
 
-6. Complétez la fonction `main` de la classe `Jeu` afin de le faire fonctionner.
+6. Complétez la fonction `main` de la classe `Jeu` afin de faire fonctionner le jeu.
 
 </div>
 
@@ -1968,10 +1971,10 @@ Vous avez donc sûrement trouvé une solution exploitant plusieurs **méthodes f
 
 Cependant, cette solution, même si globalement acceptable, n'est pas forcément la plus qualitative :
 * Il y a une duplication de code entre vos classes de débugage et vos classes d'armée.
-* La solution actuelle fonctionne mais se repose excessivement sur l'héritage pour choisir les produits : les sous‑classes (`ArmeeHumaine`/`ArmeeOrc`, `DebugueurHumain`/`DebugeurOrc`) se contentent d'instancier directement des classes concrètes via `new`. Quand seule la production d'objets varie, il est préférable de déléguer cette responsabilité à une fabrique injectée (**la composition** faible + **injection de dépendances**) plutôt que de multiplier des sous‑classes.
+* La solution actuelle fonctionne mais repose excessivement sur l'héritage pour choisir les produits : les sous‑classes (`ArmeeHumaine`/`ArmeeOrc`, `DebugueurHumain`/`DebugueurOrc`) se contentent d'instancier directement des classes concrètes via `new`. Quand seule la production d'objets varie, il est préférable de déléguer cette responsabilité à une fabrique injectée (**la composition** faible + **injection de dépendances**) plutôt que de multiplier des sous‑classes.
 * Cette implémentation pourrait aussi poser un problème si on souhaite pouvoir **changer dynamiquement le comportement de création** souhaité.
 
-Imaginons que nous souhaitons faire en sorte qu'une armée puisse être **vaincue** par une autre armée. L'armée vaincue n'est pas détruite et continue d'exister (et on conserve les soldats encore vivants et les armes). Cependant, l'armée vainqueuse impose son mode de fonctionnement à l'armée vaincue : elle produira maintenant les mêmes unités, les mêmes armes et les mêmes sorts que l'armée vainqueuse.
+Imaginons que nous souhaitons faire en sorte qu'une armée puisse être **vaincue** par une autre armée. L'armée vaincue n'est pas détruite et continue d'exister (et on conserve les soldats encore vivants et les armes). Cependant, l'armée victorieuse impose son mode de fonctionnement à l'armée vaincue : elle produira maintenant les mêmes unités, les mêmes armes et les mêmes sorts que l'armée victorieuse.
 
 Par exemple, si l'armée orc vainc l'armée humaine, les unités humaines et les canons restent (mais ils sont maintenant forcés de travailler pour les orcs) et les prochaines unités créées seront des orcs, les prochaines armes des catapultes et les prochains sorts des sorts d'aveuglement. En fait, l'armée **humaine** et l'armée **orc** ont leur propre **configuration** ! Et on voudrait pouvoir changer la **configuration** d'une armée dynamiquement.
 
@@ -1979,19 +1982,19 @@ Il semble compliqué d'obtenir un tel fonctionnement facilement avec une **Méth
 
 Pour vous aider, voici quelques indications :
 * L'objectif est toujours le même : on souhaite pouvoir créer différents objets selon le contexte.
-* Mais l'héritage est bloquant : on ne peut pas changer dynamiquement la logique de création des objets d'une instance d'armée. De plus, la logique est "enfermée" dans les classes dérivées et ne peut pas être utilisée ailleurs, dans d'autres classes (comme le débugueur), ce qui créé de la **duplication de code**.
-* À ce stade, vous commencez à bien connaître et maîtriser la logique des **designs patterns** et l'application des **principes SOLID** : quand l'héritage est bloquant/ne suffit plus, il y a une autre solution qui revient régulièrement...
+* Mais l'héritage est bloquant : on ne peut pas changer dynamiquement la logique de création des objets d'une instance d'armée. De plus, la logique est "enfermée" dans les classes dérivées et ne peut pas être utilisée ailleurs, dans d'autres classes (comme le débugueur), ce qui crée de la **duplication de code**.
+* À ce stade, vous commencez à bien connaître et maîtriser la logique des **design patterns** et l'application des **principes SOLID** : quand l'héritage est bloquant/ne suffit plus, il y a une autre solution qui revient régulièrement...
 
 <div class="exercise">
 
-1. Commencez par essayer de trouver une solution pour élminer la **duplication de code** entre les différentes **armées** et le **débugueur** (servez-vous des indications précédentes pour trouver une solution). Certaines classes vont probablement être ajoutées/modifiées/supprimés... Vous corrigerez le `main` en conséquence.
+1. Commencez par essayer de trouver une solution pour éliminer la **duplication de code** entre les différentes **armées** et le **débugueur** (servez-vous des indications précédentes pour trouver une solution). Certaines classes vont probablement être ajoutées/modifiées/supprimées... Vous corrigerez le `main` en conséquence.
 
-2. Nous voulons maintenant ajouter la fonctionnalité qui consiste à **vaincre une armée**, ce qui a pour effet que l'armée vaincue produira (à l'avenir) des ressources de l'armée victorieuse (qui l'a battue), tout en conservant son état actuel (ressources déjà produit, or, etc). Insérez et complétez les méthodes suivantes dans `Armee` :
+2. Nous voulons maintenant ajouter la fonctionnalité qui consiste à **vaincre une armée**, ce qui a pour effet que l'armée vaincue produira (à l'avenir) des ressources de l'armée victorieuse (qui l'a battue), tout en conservant son état actuel (ressources déjà produites, or, etc.). Insérez et complétez les méthodes suivantes dans `Armee` :
 
     ```java
     /**
-      * Action : l'armée "this" bat l'armée "armee" passée en paramètre et lui impose sa stratégie de création de ressources (unites, armes, sort).
-      * L'armée vaincue doit donc changer de comportement : les ressources créées dans le futur correspondront à ceux de l'armée vainqueuse "this".
+      * Action : l'armée "this" bat l'armée "armee" passée en paramètre et lui impose sa stratégie de création de ressources (unités, armes, sorts).
+      * L'armée vaincue doit donc changer de comportement : les ressources créées dans le futur correspondront à celles de l'armée victorieuse "this".
       *
       */
     public void vaincre(Armee armee) {
@@ -1999,9 +2002,9 @@ Pour vous aider, voici quelques indications :
     }
 
     /**
-      * Retourne le débuggeur correspondant au type de peuple qui contrôle actuellement l'armée
+      * Retourne le débugueur correspondant au type de peuple qui contrôle actuellement l'armée
       */
-    public Debugueur getDebuggeurCourant() {
+    public Debugueur getDebugueurCourant() {
 
     }
     ```
@@ -2012,7 +2015,7 @@ Pour vous aider, voici quelques indications :
 
     ```java
     //Affichage avec les ressources des orcs
-    Debugueur debugueur = armeeOrc.getDebuggeurCourant();
+    Debugueur debugueur = armeeOrc.getDebugueurCourant();
     debugueur.invoquerUnite(5,12,3);
     debugueur.invoquerArme(7,5,6);
     debugueur.invoquerSort(20,13,9);
@@ -2034,13 +2037,13 @@ Pour vous aider, voici quelques indications :
     armeeOrc.utiliserSortSpecial();
 
     //Affichage avec les ressources des humains (car ils ont vaincu l'armée)
-    debugueur = armeeOrc.getDebuggeurCourant();
+    debugueur = armeeOrc.getDebugueurCourant();
     debugueur.invoquerUnite(5,12,3);
     debugueur.invoquerArme(7,5,6);
     debugueur.invoquerSort(20,13,9);
     ```
 
-4. Bonus : est-ce que votre solution permet de faire en sorte que si on récupère le debugueur courant d'une armée et que l'armée est vaincue, l'instance du debugueur est bien actualisée (avec le nouveau peuple qui contrôle l'armée) ? Dans le **main**, on appelle deux fois `getDebuggeurCourant`, mais en pratique, on ne devrait pas à avoir à faire le second appel... Si le temps le permet, essayez de trouver une solution.
+4. Bonus : est-ce que votre solution permet de faire en sorte que si on récupère le débugueur courant d'une armée et que l'armée est vaincue, l'instance du débugueur est bien actualisée (avec le nouveau peuple qui contrôle l'armée) ? Dans le **main**, on appelle deux fois `getDebugueurCourant`, mais en pratique, on ne devrait pas avoir à faire le second appel... Si le temps le permet, essayez de trouver une solution.
 
 </div>
 
@@ -2048,7 +2051,7 @@ Le design pattern que vous avez utilisé pour résoudre cet exercice est appelé
 
 Reprenons l'exemple des **zones** qui créent et font combattre des **monstres** avec un joueur. Dans le jeu, il y a maintenant des **Boss** qui sont des monstres spéciaux pouvant charger une attaque spéciale et des **Items** qui ont des caractéristiques et un prix de revente.
 
-Dans une zone, un type de monstre "normal" est créé (comme avant). On peut aussi traverser la zone du boss qui fait apparaître deux monstres normaux et un boss et les font combattre. Quand le joueur ouvre un coffre dans cette zone, il obtient tout le temps un type d'item spécifique (pour simplifier).
+Dans une zone, un type de monstre "normal" est créé (comme avant). On peut aussi traverser la zone du boss qui fait apparaître deux monstres normaux et un boss et les fait combattre. Quand le joueur ouvre un coffre dans cette zone, il obtient tout le temps un type d'item spécifique (pour simplifier).
 
 Nous allons définir deux configurations ("biomes") de zones :
 
@@ -2109,7 +2112,7 @@ public abstract class Item {
   }
 }
 
-public class Potion implements Item {
+public class Potion extends Item {
 
   public Potion(int prixRevente) {
     super(prixRevente);
@@ -2121,7 +2124,7 @@ public class Potion implements Item {
   }    
 }
 
-public class Parchemin implements Item {
+public class Parchemin extends Item {
 
   public Parchemin(int prixRevente) {
     super(prixRevente);
@@ -2187,7 +2190,7 @@ class Joueur {
 
   private String nom;
 
-  private List<Item> items;
+  private List<Item> items = new ArrayList<>();
 
   public Joueur(String nom) {
     this.nom = nom;
@@ -2230,8 +2233,8 @@ public class Zone {
     boss.combattre(joueur);
   }
 
-  private void ouvrirCoffre(Joueur joueur) {
-    System.out.println("Le joueur ouvre un coffre!");
+  public void ouvrirCoffre(Joueur joueur) {
+    System.out.println("Le joueur ouvre un coffre !");
     Item recompense = factory.creerRecompense();
     recompense.afficherCaracteristiques();
     System.out.printf("Prix de revente : %s\n", recompense.getPrixRevente());
@@ -2243,17 +2246,19 @@ public class Zone {
 public class Main {
 
   public static void main(String[]args) {
+    Joueur joueur = new Joueur("Bob");
+
     Zone plaine = new Zone(new PlaineFactory());
-    plaine.traverserZoneNormale();
-    plaine.ouvrirCoffre();
-    plaine.ouvrirCoffre();
-    plaine.traverserZoneBoss();
+    plaine.traverserZoneNormale(joueur);
+    plaine.ouvrirCoffre(joueur);
+    plaine.ouvrirCoffre(joueur);
+    plaine.traverserZoneBoss(joueur);
 
     Zone chateau = new Zone(new ChateauHanteFactory());
-    chateau.traverserZoneNormale();
-    chateau.ouvrirCoffre();
-    chateau.ouvrirCoffre();
-    chateau.traverserZoneBoss();
+    chateau.traverserZoneNormale(joueur);
+    chateau.ouvrirCoffre(joueur);
+    chateau.ouvrirCoffre(joueur);
+    chateau.traverserZoneBoss(joueur);
   }
 
 }
@@ -2303,7 +2308,7 @@ public class Arene {
     monstre.combattre(combattant);
     Item recompense = factory.creerRecompense();
     recompense.afficherCaracteristiques();
-    joueur.ajouterItem(recompense);
+    combattant.ajouterItem(recompense);
   }
 
 }
@@ -2311,18 +2316,20 @@ public class Arene {
 public class Main {
 
   public static void main(String[]args) {
+    Joueur joueur = new Joueur("Bob");
+
     Zone zone = new Zone(new PlaineFactory());
-    zone.traverserZoneNormale();
-    zone.ouvrirCoffre();
-    zone.ouvrirCoffre();
-    zone.traverserZoneBoss();
+    zone.traverserZoneNormale(joueur);
+    zone.ouvrirCoffre(joueur);
+    zone.ouvrirCoffre(joueur);
+    zone.traverserZoneBoss(joueur);
 
     //Le joueur change de zone...
     zone.setFactory(new ChateauHanteFactory());
-    zone.traverserZoneNormale();
+    zone.traverserZoneNormale(joueur);
 
     //Arene dans une plaine...
-    Arene arenePlaine = new Arene(new PlaineFactory());
+    Arene arenePlaine = new Arene(joueur, new PlaineFactory());
     arenePlaine.nouveauCombat();
   }
 
@@ -2368,17 +2375,19 @@ public class ChateauHanteFactory implements AbstractNiveauFactory {
 public class Main {
 
   public static void main(String[]args) {
+    Joueur joueur = new Joueur("Bob");
+
     Zone plaine = new Zone(PlaineFactory.getInstance());
-    plaine.traverserZoneNormale();
-    plaine.ouvrirCoffre();
-    plaine.ouvrirCoffre();
-    plaine.traverserZoneBoss();
+    plaine.traverserZoneNormale(joueur);
+    plaine.ouvrirCoffre(joueur);
+    plaine.ouvrirCoffre(joueur);
+    plaine.traverserZoneBoss(joueur);
 
     Zone chateau = new Zone(ChateauHanteFactory.getInstance());
-    chateau.traverserZoneNormale();
-    chateau.ouvrirCoffre();
-    chateau.ouvrirCoffre();
-    chateau.traverserZoneBoss();
+    chateau.traverserZoneNormale(joueur);
+    chateau.ouvrirCoffre(joueur);
+    chateau.ouvrirCoffre(joueur);
+    chateau.traverserZoneBoss(joueur);
   }
 
 }
@@ -2406,27 +2415,27 @@ Revenons une dernière fois sur l'application de gestion de livraisons afin de l
 
 <div class="exercise">
 
-1. Ouvrez de nouveau le paquetage `fr.umontpellier.iut.fabrique3`. Vous aviez efficacement permis de différencier les gestionnaires de livraisons américains et japonais (utilisation des différentes méthodes de livraisons selon le territoire). Cependant, un nouveau besoin émerge :
+1. Ouvrez de nouveau le paquetage `fr.umontpellier.iut.fabrique3`. Vous aviez efficacement permis de différencier les gestionnaires de livraisons américains et japonais (utilisation des différentes méthodes de livraison selon le territoire). Cependant, un nouveau besoin émerge :
 
     * Actuellement, quand une méthode de livraison a besoin de notifier un client, cela se fait exclusivement par mail. De même, les rapports générés sont toujours au format HTML. Cela convient tout à fait à l'entreprise américaine, mais pas à l'entreprise japonaise.
 
     * L'entreprise japonaise souhaite plutôt que quand une méthode de livraison doit notifier un client, un `SMS` soit envoyé, et que ses rapports soient générés avec le format `JSON`.
 
-    Il doit donc être possible que chaque méthode de livraison puisse soit travailler avec des mails soit avec des SMS et soit avec des rapports HTML soit avec des rapports JSON.
+    Chaque méthode de livraison doit donc pouvoir travailler soit avec des mails, soit avec des SMS, et soit avec des rapports HTML, soit avec des rapports JSON.
 
-    **Attention** : ce n'est pas parce qu'actuellement les robots et les bateaux sont seulement utilisés par le Japon que ces méthodes ne doivent fonctionner qu'avec des SMS et des rapports JSON. Ces méthodes de livraisons pourraient être utilisées sur d'autres territoires qui eux enverraient des mails et générer des rapports au format HTML. De même, les méthodes de livraison par drone et par avion ne sont pas nécessairement exclusifs au territoire américain et pourraient être utilisés sur d'autres territoires et fonctionner avec d'autres types de notifications et de rapports (par exemple, le gestionnaire des livraisons japonaises pourrait évoluer et utiliser des avions dans le futur...).
+    **Attention** : ce n'est pas parce qu'actuellement les robots et les bateaux sont seulement utilisés par le Japon que ces méthodes ne doivent fonctionner qu'avec des SMS et des rapports JSON. Ces méthodes de livraison pourraient être utilisées sur d'autres territoires qui, eux, enverraient des mails et généreraient des rapports au format HTML. De même, les méthodes de livraison par drone et par avion ne sont pas nécessairement exclusives au territoire américain et pourraient être utilisées sur d'autres territoires et fonctionner avec d'autres types de notifications et de rapports (par exemple, le gestionnaire des livraisons japonaises pourrait évoluer et utiliser des avions dans le futur...).
 
 2. Remaniez le code pour faire en sorte que :
 
-    * Pour les livraisons sur le territoire américain, les méthodes de livraisons notifient le client par mail et génèrent des rapports au format HTML.
+    * Pour les livraisons sur le territoire américain, les méthodes de livraison notifient le client par mail et génèrent des rapports au format HTML.
 
-    * Pour les livraisons sur le territoire japonais, les méthodes de livraisons notifient le client par SMS et génèrent des rapports au format JSON.
+    * Pour les livraisons sur le territoire japonais, les méthodes de livraison notifient le client par SMS et génèrent des rapports au format JSON.
 
     Testez le `main` pour voir si cela fonctionne.
 
-3. Changer la méthode de livraison longue distance du `Japon` pour utiliser un avion. Quand votre `main` s'exécute : pour le territoire américain, des mails sont envoyés et des rapports au format HTML sont générés, mais pour le Japon, des SMS sont envoyés et des rapports JSON sont générés.
+3. Changez la méthode de livraison longue distance du `Japon` pour utiliser un avion. Quand votre `main` s'exécute : pour le territoire américain, des mails sont envoyés et des rapports au format HTML sont générés, mais pour le Japon, des SMS sont envoyés et des rapports JSON sont générés.
 
-4. On souhaite pouvoir gérer un nouveau territoire : le territoire français. Sur ce territoire, les robots sont utilisés pour effectuer les livraisons proches (en cinq jours), et des avions sont utilisés pour effectuer les livraisons longue distance (en quinze jours). Pour les livraisons effectuées sur le territoire français, on notifie le client par Mail et on génère des rapports au format JSON.
+4. On souhaite pouvoir gérer un nouveau territoire : le territoire français. Sur ce territoire, des robots de modèle **A** sont utilisés pour effectuer les livraisons proches (en cinq jours), et des avions (sans pilote automatique) sont utilisés pour effectuer les livraisons longue distance (en quinze jours). Pour les livraisons effectuées sur le territoire français, on notifie le client par mail et on génère des rapports au format JSON.
 
 5. Complétez votre `main` avec un jeu de données pour débugger le fonctionnement des livraisons sur le territoire français (en vous inspirant de ce qui existe déjà pour les autres territoires).
 
@@ -2442,9 +2451,9 @@ Concernant la **Méthode Fabrique** :
 * L'**intention** est la suivante :
   * Permettre aux sous-classes de contrôler la création de certains objets utilisés par la classe de base.
   * Faciliter l’extension (principe Ouvert/Fermé) sans modifier le code existant.
-  *Encapsuler la création d’un objet lorsque celle-ci dépend de la logique propre à la sous-classe.
+  * Encapsuler la création d’un objet lorsque celle-ci dépend de la logique propre à la sous-classe.
 * Au niveau de sa **forme** :
-  * La classe "cliente" définit une ou plusieurs méthodes de création, abstraites ou virtuelles, qu’elle utilise dans sa logique métier.
+  * La classe "cliente" définit une ou plusieurs méthodes de création, abstraites, ou concrètes avec une implémentation par défaut redéfinissable, qu’elle utilise dans sa logique métier.
   * Les sous-classes fournissent les implémentations concrètes qui créent les objets nécessaires.
   * La logique de création est liée à la hiérarchie : pour changer quoi créer, on crée une nouvelle sous-classe.
   * Le pattern est très adapté si le type d’objet à créer dépend de l’état interne ou du comportement de la sous-classe.
@@ -2452,7 +2461,7 @@ Concernant la **Méthode Fabrique** :
 * **Avantages** :
   * Fait respecter le principe ouvert/fermé : on peut changer le comportement de création sans modifier la classe mère.
   * Idéal quand la création dépend de l’état interne de la sous-classe.
-  * La classe cliente appelle des méthodes à surcharger pour permettre à l’application de personnaliser les objets créés.
+  * La classe cliente appelle des méthodes à redéfinir pour permettre à l’application de personnaliser les objets créés.
 * **Limites** :
   * Pas réutilisable ailleurs sans héritage : la logique de création reste enfermée dans des sous-classes.
   * Pas adapté si on veut dynamiquement changer les types d’objets instanciés à l’exécution.
@@ -2465,18 +2474,19 @@ Concernant la **Fabrique Abstraite** :
   * Fournir un moyen de créer une famille d’objets liés ou cohérents entre eux.
   * Permettre de changer dynamiquement toute la famille d’objets créée en changeant simplement la fabrique injectée.
   * Séparer complètement logique métier et logique de création (SRP).
-* Les méthodes de création sont regroupées dans une classe dédiée, sans logique métier.
-* Chaque fabrique concrète représente une configuration cohérente (une famille).
-* Permet le changement de famille d’objets à l’exécution, sans modification du client.
+* Au niveau de sa **forme** :
+  * Les méthodes de création sont regroupées dans une classe dédiée, sans logique métier.
+  * Chaque fabrique concrète représente une configuration cohérente (une famille).
+  * Permet le changement de famille d’objets à l’exécution, sans modification du client.
 * **Avantages** :
   * Respect du principe de responsabilité unique : la création est isolée dans une classe spécialisée.
-  * Très adapté à la création de familles d’objets relatifs (unités, armes, sorts...).
+  * Très adapté à la création de familles d’objets liés (unités, armes, sorts...).
   * Le client est complètement décorrélé des classes concrètes.
   * Très flexible : il suffit de changer la fabrique injectée pour changer le comportement.
   * Favorise la testabilité (on peut injecter des fabriques factices ou de test).
 * **Limites** :
   * Inadaptée si la création dépend fortement de l’état interne du client (ce que la Méthode Fabrique gère bien).
-  * Pas nécessairement adapté si la logique de création des objets n'est pas réutilisée à plusieurs endroits et si le client qui a besoin de créer les objets n'a pas besoin de pouvoir dynamiquement changer de comportement (d'instanciation des objets) à l'exécution.
+  * Pas nécessairement adaptée si la logique de création des objets n'est pas réutilisée à plusieurs endroits et si le client qui a besoin de créer les objets n'a pas besoin de pouvoir dynamiquement changer de comportement (d'instanciation des objets) à l'exécution.
 
 En résumé :
 
@@ -2486,7 +2496,7 @@ On va utiliser la **Méthode Fabrique** si :
 * On n’a pas besoin de changer dynamiquement les types instanciés.
 
 On va utiliser une **Fabrique Abstraite** si :
-* On doit créer une famille d’objets liés/relatifs.
+* On doit créer une famille d’objets liés.
 * On doit pouvoir changer toute la famille d’objets à l’exécution en remplaçant la fabrique.
 * On veut séparer la logique métier et la logique de création des objets.
 * La même logique de création doit être utilisée dans plusieurs parties du système.
@@ -2495,7 +2505,7 @@ On va utiliser une **Fabrique Abstraite** si :
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `fr.umontpellier.iut.fabrique4`. Cette application permet de construire des **donjons** pour un jeu-vidéo. Un **donjon** est constitué de différentes salles (des pièces avec des coffres, des pièces avec des ennemis, des pièces avec des énigmes, des pièces avec des boss...). Une salle peut être complétée par le joueur ou non. Chaque donjon possède un algorithme de génération qui permet de l'agrandir en créant de nouvelles salles. Quand on étend le donjon, on crée et on ajoute des salles au donjon dans un ordre précis (avec un peu d'aléatoire). Une extension du donjon ajoute des "salles normales", des "salles spéciales" et une "salle finale", dans cet ordre :
+1. Ouvrez le paquetage `fr.umontpellier.iut.fabrique4`. Cette application permet de construire des **donjons** pour un jeu vidéo. Un **donjon** est constitué de différentes salles (des pièces avec des coffres, des pièces avec des ennemis, des pièces avec des énigmes, des pièces avec des boss...). Une salle peut être complétée par le joueur ou non. Chaque donjon possède un algorithme de génération qui permet de l'agrandir en créant de nouvelles salles. Quand on étend le donjon, on crée et on ajoute des salles au donjon dans un ordre précis (avec un peu d'aléatoire). Une extension du donjon ajoute des "salles normales", des "salles spéciales" et une "salle finale", dans cet ordre :
 
     * Une salle normale
 
@@ -2515,21 +2525,21 @@ On va utiliser une **Fabrique Abstraite** si :
 
     * Salle spéciale : Une salle contenant entre 1 et 5 ennemis ou bien une salle avec une énigme (une chance sur deux)
 
-    * Salle finale : Une salle avec un Boss avec un niveau entre 1 à 10.
+    * Salle finale : Une salle avec un Boss avec un niveau entre 1 et 10.
 
-2. Actuellement, le donjon s'étend avec des configurations "faciles" : les salles normales n'ont pas d'ennemis, le boss de la salle finale est assez faible, etc. On aimerait introduire le fait d'étendre le donjon avec des configurations "difficile" (toujours en gardant le même algorithme/ordre de création des salles) où on a les correspondances suivantes :
+2. Actuellement, le donjon s'étend avec des configurations "faciles" : les salles normales n'ont pas d'ennemis, le boss de la salle finale est assez faible, etc. On aimerait introduire le fait d'étendre le donjon avec des configurations "difficiles" (toujours en gardant le même algorithme/ordre de création des salles) où on a les correspondances suivantes :
 
     * Salle normale : Une salle contenant entre 20 et 40 ennemis.
 
-    * Salle spéciale : Une salle avec une énigme (20% de chances) ou bien une salle avec un boss avec un niveau entre 30 à 50 (80% de chances).
+    * Salle spéciale : Une salle avec une énigme (20 % de chances) ou bien une salle avec un boss avec un niveau entre 30 et 50 (80 % de chances).
 
     * Salle finale : Une salle avec un Boss de niveau 80.
 
-    Refactorez votre code afin qu'il soit possible d'étendre le donjon avec une configuration "difficile", tout en laissant la possibilité d'étendre avec une configuration "facile" (comme c'est actuellement le cas dans la méthode `etendreDonjon`).
+    Refactorez votre code afin qu'il soit possible d'étendre le donjon avec une configuration "difficile", tout en laissant la possibilité d'étendre avec une configuration "facile" (comme c'est actuellement le cas dans la méthode `etendre`).
 
-3. Dans le `Main`, adaptez le code pour faire en sorte d'étendre le donjon d'exemple fournit une fois avec des salles **faciles** et deux fois avec des salles **difficiles**. 
+3. Dans le `Main`, adaptez le code pour faire en sorte d'étendre le donjon d'exemple fourni une fois avec des salles **faciles** et deux fois avec des salles **difficiles**. 
 
-4. La méthode `getInfosSalle` doit permettre de récupérer les informations d'une salle du donjon "à l'extérieur". Cependant, son implémentation est problématique... Par exemple, que pourriez-vous faire comme action indésirable en récupérant une salle d'un `Donjon` dans le `Main` (indice : seul le donjon devrait avoir le droit de modifier l'état de ses salles) ? Quel pattern que nous avons vu pendant ce TP pourriez-vous appliquer pour régler ce problème ? Refactorez votre code dans ce sens.
+4. La méthode `getInfosSalles(int)` doit permettre de récupérer les informations d'une salle du donjon "à l'extérieur". Cependant, son implémentation est problématique... Par exemple, que pourriez-vous faire comme action indésirable en récupérant une salle d'un `Donjon` dans le `Main` (indice : seul le donjon devrait avoir le droit de modifier l'état de ses salles) ? Quel pattern que nous avons vu pendant ce TP pourriez-vous appliquer pour régler ce problème ? Refactorez votre code dans ce sens.
 
 5. Générez le **diagramme de classes de conception** de votre application (avec `IntelliJ`).
 
@@ -2543,21 +2553,21 @@ Parfois, il n'est pas nécessairement souhaitable d'avoir la possibilité d'util
 
 1. Ouvrez le paquetage `fr.umontpellier.iut.fabrique5`. C'est le retour des **pokémons** ! Mais il y a également une nouvelle famille de monstres : **les digimons** qui ont un fonctionnement similaire aux pokémons mais ont en plus un système d'énergie. En tout cas, ils se créent de la même manière que les pokémons ou plus généralement, qu'un "monstre".
 
-2. Actuellement, dans le `Main`, on crée des pokémons et on utilise le simulateur de combat pour en faire combattre deux. À la place des pokémons, on voudrait parfois utiliser des digimons. Maintenant que vous connaissez le pattern **Fabrique Abstraite** refactorez le code afin de pouvoir facilement switcher entre des combats avec divers pokémons et des combats avec divers digimons. Si vous rencontrez quelques petits problèmes, regardez les méthodes de `Digimon`... ne serait-il pas judicieux de lui faire implémenter une certaine interface ? Et pour les différentes sous-classes de `Digimon` ? (`DigimonEau`, `DigimonFeu`...). Vous devrez aussi adapter le `Main` et `SimulateurCombat`.
+2. Actuellement, dans le `Main`, on crée des pokémons et on utilise le simulateur de combat pour en faire combattre deux. À la place des pokémons, on voudrait parfois utiliser des digimons. Maintenant que vous connaissez le pattern **Fabrique Abstraite**, refactorez le code afin de pouvoir facilement switcher entre des combats avec divers pokémons et des combats avec divers digimons. Si vous rencontrez quelques petits problèmes, regardez les méthodes de `Digimon`... ne serait-il pas judicieux de lui faire implémenter une certaine interface ? Et pour les différentes sous-classes de `Digimon` ? (`DigimonEau`, `DigimonFeu`...). Vous devrez aussi adapter le `Main` et `SimulateurCombat`.
 
 3. Contrairement à l'exercice précédent sur les **donjons**, on ne veut pas que les deux fabriques cohabitent à un instant t du programme. On veut que l'application fonctionne exclusivement avec des pokémons ou bien fonctionne exclusivement avec des digimons. Mais on ne veut pas changer manuellement l'instance de la fabrique utilisée partout dans le code source. Il faut imaginer que cette fabrique est probablement utilisée à divers endroits et surtout, qu'on ne souhaite pas recompiler le code source à chaque changement. Comment pourrions-nous faire ?
 
 </div>
 
-Nous sommes dans un cas particulier où tout le programme va utiliser une seule et même instance d'une fabrique donnée, même s'il y a en a plusieurs à disposition. Par exemple, imaginons qu'une application utilise des fabriques pour gérer la connexion à une source de données afin de stocker les données du programme. Une première fabrique permet de stocker les informations dans une base de données, une deuxième dans un fichier XML. Pendant que le programme tournera, on utilisera qu'une seule source de données, mais pas les deux à la fois. Néanmoins, on utilise quand même une fabrique abstraite pour pouvoir changer facilement de source de stockage à l'avenir (par exemple, avec une configuration "test" utilisant une base de données en mémoire...)
+Nous sommes dans un cas particulier où tout le programme va utiliser une seule et même instance d'une fabrique donnée, même s'il y en a plusieurs à disposition. Par exemple, imaginons qu'une application utilise des fabriques pour gérer la connexion à une source de données afin de stocker les données du programme. Une première fabrique permet de stocker les informations dans une base de données, une deuxième dans un fichier XML. Pendant que le programme tournera, on n'utilisera qu'une seule source de données, mais pas les deux à la fois. Néanmoins, on utilise quand même une fabrique abstraite pour pouvoir changer facilement de source de stockage à l'avenir (par exemple, avec une configuration "test" utilisant une base de données en mémoire...)
 
-Mais comment faire cela sans modifier l'instance concrète utilisée un peu partout ? (car elle est surement injectée à différentes classes). La réponse est simple : il faut regrouper la logique qui instancie la classe concrètement utilisée à un seul endroit. On peut ensuite mettre un système de paramétrage qui permet de changer la fabrique utilisée facilement. Les classes qui ont besoin de cette fabrique iront donc appeler une méthode de cette classe afin de récupérer la fabrique concrète à utiliser.
+Mais comment faire cela sans modifier l'instance concrète utilisée un peu partout ? (car elle est sûrement injectée à différentes classes). La réponse est simple : il faut regrouper la logique qui instancie la classe concrètement utilisée à un seul endroit. On peut ensuite mettre un système de paramétrage qui permet de changer la fabrique utilisée facilement. Les classes qui ont besoin de cette fabrique iront donc appeler une méthode de cette classe afin de récupérer la fabrique concrète à utiliser.
 
 La question est de savoir : où placer ce bout de code ? Il n'y a pas vraiment de réponse officielle à cette question. Cela pourrait être dans une classe indépendante (qui gère la **configuration** du programme) avec une méthode statique. Parfois, on retrouve aussi ce bout de code directement dans la **Fabrique Abstraite** par exemple en stockant l'instance de la fabrique concrète utilisée, couplé à une méthode statique permettant de renvoyer l'instance. C'est une sorte de dérivé du pattern *Singleton* (sans l'être réellement).
 
 Pour gérer l'instance concrète utilisée, on pourrait par exemple utiliser un **fichier de configuration** : lors de son initialisation, le code chargé de déterminer quelle est la fabrique à utiliser va lire dans ce fichier pour déterminer quelle fabrique instancier et stocker.
 
-Par exemple, imaginons que nous souhaitons que notre **Jeu**, à un instant T, ne fonctionne qu'avec des **Plaines** ou qu'avec des **Châteaux Hantés** :
+Par exemple, imaginons que nous souhaitons que notre **Jeu**, à un instant t, ne fonctionne qu'avec des **Plaines** ou qu'avec des **Châteaux Hantés** :
 
 ```java
 // On transforme notre interface en classe abstraite, car elle contient du code
@@ -2612,11 +2622,13 @@ public class ChateauHanteFactory extends AbstractNiveauFactory {
 public class Main {
 
   public static void main(String[]args) {
+    Joueur joueur = new Joueur("Bob");
+
     Zone zone = new Zone(AbstractNiveauFactory.getInstance());
-    zone.traverserZoneNormale();
-    zone.ouvrirCoffre();
-    zone.ouvrirCoffre();
-    zone.traverserZoneBoss();
+    zone.traverserZoneNormale(joueur);
+    zone.ouvrirCoffre(joueur);
+    zone.ouvrirCoffre(joueur);
+    zone.traverserZoneBoss(joueur);
   }
 
 }
@@ -2630,7 +2642,7 @@ La fabrique abstraite vise un fichier qui se situe dans `src/main/resources/conf
 
 Avec cette nouvelle implémentation, il n'y a plus qu'à changer le contenu du fichier de configuration pour changer la fabrique concrète manipulée dans tout le programme. On notera qu'il n'y a plus besoin que les sous-classes soient des **singletons** (si c'était le cas avant), car elles sont instanciées par la fabrique abstraite. Cependant, on pourrait empêcher le fait que n'importe qui puisse instancier les fabriques concrètes en passant leurs constructeurs en visibilité `protected` (afin que seule `AbstractNiveauFactory` puisse les instancier).
 
-Bien sûr, cette implémentation n'est pas forcément souhaitable dans tous les contextes ! C'est seulement si, à un instant T, on veut uniquement avoir un seul type de fabrique concrète utilisé et pouvoir en changer facilement (d'ailleurs, l'exemple donné est discutable, parce qu'on voudrait à priori pouvoir créer plusieurs types de niveaux différents à la fois).
+Bien sûr, cette implémentation n'est pas forcément souhaitable dans tous les contextes ! C'est seulement si, à un instant t, on veut uniquement avoir un seul type de fabrique concrète utilisé et pouvoir en changer facilement (d'ailleurs, l'exemple donné est discutable, parce qu'on voudrait a priori pouvoir créer plusieurs types de niveaux différents à la fois).
 
 De plus, on peut aussi discuter du fait que le code gérant la sélection de la fabrique concrète soit stocké dans la fabrique abstraite. Pour obtenir une meilleure répartition des **responsabilités**, on pourrait éventuellement déléguer cela à une classe dédiée (et donc laisser la fabrique abstraite comme une interface).
 
@@ -2648,15 +2660,15 @@ De plus, on peut aussi discuter du fait que le code gérant la sélection de la 
 
 Ici, cet exemple d'implémentation avec un fichier de configuration n'est bien sûr pas spécifique au pattern **Fabrique Abstraite**. On pourrait l'appliquer sur tout ce qui est abstrait et qui n'a besoin que d'une instance lors de l'exécution du programme. On pourra faire la même chose couplée au pattern **Stratégie** par exemple.
 
-La gestion des instances concrète se fait généralement au travers d'un outil dédié appelé **conteneur de dépendances** (ou **conteneur IoC**) qui est utilisé dans de nombreux **frameworks**. Il permet notamment de limiter la multiplication des singletons inutiles.
+La gestion des instances concrètes se fait généralement au travers d'un outil dédié appelé **conteneur de dépendances** (ou **conteneur IoC**) qui est utilisé dans de nombreux **frameworks**. Il permet notamment de limiter la multiplication des singletons inutiles.
 
 ### Adaptateur
 
-Les pokémons et les digimons sont des classes qui ont été créées par le développeur de ce projet et où il est donc possible de réarranger le code pour que tout fonctionne. Mais que se passerait-il si nous voulions intégrer à notre système du code sur lequel nous n'avons pas la main (dont nous ne pouvons pas éditer le code source) ? Par exemple, des classes compilées qui proviennent d'une librairie.
+Les pokémons et les digimons sont des classes qui ont été créées par le développeur de ce projet et où il est donc possible de réarranger le code pour que tout fonctionne. Mais que se passerait-il si nous voulions intégrer à notre système du code sur lequel nous n'avons pas la main (dont nous ne pouvons pas éditer le code source) ? Par exemple, des classes compilées qui proviennent d'une bibliothèque.
 
 Pour illustrer ce problème, voyons un nouvel exemple. Vous souhaitez développer une application qui permet à un utilisateur de saisir le titre d'un film afin d'afficher la note moyenne et les critiques (des utilisateurs) de ce dernier. Dans ce scénario, on considérera qu'il n'existe pas deux films avec le même titre.
 
-Pour récupérer les différentes informations (savoir si le film existe, note, critiques...) vous souhaitez vous servir du site **Allociné**. Il n'existe pas de librairie dédiée qui permet d'extraire les informations de ce site, il est donc nécessaire d'implémenter le code correspondant.
+Pour récupérer les différentes informations (savoir si le film existe, note, critiques...) vous souhaitez vous servir du site **Allociné**. Il n'existe pas de bibliothèque dédiée qui permet d'extraire les informations de ce site, il est donc nécessaire d'implémenter le code correspondant.
 
 ```java
 public class ClientFilm {
@@ -2670,8 +2682,8 @@ public class ClientFilm {
       System.err.println("Le film n'existe pas");
       return;
     }
-    double note = recupererNoteMoyenneUtilisateurs(nom);
-    String[] avisUtilisateurs = recupererAvis(nom);
+    double note = recupererNoteMoyenneUtilisateurs(nomFilm);
+    String[] avisUtilisateurs = recupererAvis(nomFilm);
     System.out.printf("Le film a une note de : %s\n", note);
     System.out.println("Avis : ");
     for(String avis : avisUtilisateurs) {
@@ -2694,7 +2706,7 @@ public class ClientFilm {
 }
 ```
 
-Comme vous êtes maintenant un expert des principes `SOLID`, vous vous rendez-compte que cette implémentation ne respecte pas bien le principe de **responsabilité unique**. En effet, si le code relatif à l'extraction des données du film change ou que le code interagissant avec l'utilisateur change, la classe `ClientFilm` doit changer. Elle possède trop de responsabilité.
+Comme vous êtes maintenant un expert des principes `SOLID`, vous vous rendez compte que cette implémentation ne respecte pas bien le principe de **responsabilité unique**. En effet, si le code relatif à l'extraction des données du film change ou que le code interagissant avec l'utilisateur change, la classe `ClientFilm` doit changer. Elle possède trop de responsabilités.
 
 Vous proposez donc une nouvelle implémentation de meilleure qualité :
 
@@ -2728,8 +2740,8 @@ public class ClientFilm {
       System.err.println("Le film n'existe pas");
       return;
     }
-    double note = extracteur.recupererNoteMoyenneUtilisateurs(nom);
-    String[] avisUtilisateurs = extracteur.recupererAvis(nom);
+    double note = extracteur.recupererNoteMoyenneUtilisateurs(nomFilm);
+    String[] avisUtilisateurs = extracteur.recupererAvis(nomFilm);
     System.out.printf("Le film a une note de : %s\n", note);
     System.out.println("Avis : ");
     for(String avis : avisUtilisateurs) {
@@ -2740,7 +2752,7 @@ public class ClientFilm {
 }
 ```
 
-Le code est déjà mieux, mais on pourrait encore améliorer cela en faisant en sorte que `ClientFilm` dépende plutôt d'une **abstraction** afin d'appliquer le principe **d'inversions des dépendances**. On pourrait aussi utiliser **l'injection de dépendances** plutôt que d'initialiser `ExtracteurAllocine` dans `ClientFilm`. Cela permettrait de rendre le code plus flexible (et testable) et prévoir l'ajout d'éventuelles extensions de l'application :
+Le code est déjà mieux, mais on pourrait encore améliorer cela en faisant en sorte que `ClientFilm` dépende plutôt d'une **abstraction** afin d'appliquer le principe **d'inversion des dépendances**. On pourrait aussi utiliser **l'injection de dépendances** plutôt que d'initialiser `ExtracteurAllocine` dans `ClientFilm`. Cela permettrait de rendre le code plus flexible (et testable) et de prévoir l'ajout d'éventuelles extensions de l'application :
 
 ```java
 public interface Extracteur {
@@ -2789,8 +2801,8 @@ public class ClientFilm {
       System.err.println("Le film n'existe pas");
       return;
     }
-    double note = extracteur.recupererNoteMoyenneUtilisateurs(nom);
-    String[] avisUtilisateurs = extracteur.recupererAvis(nom);
+    double note = extracteur.recupererNoteMoyenneUtilisateurs(nomFilm);
+    String[] avisUtilisateurs = extracteur.recupererAvis(nomFilm);
     System.out.printf("Le film a une note de : %s\n", note);
     System.out.println("Avis : ");
     for(String avis : avisUtilisateurs) {
@@ -2801,11 +2813,11 @@ public class ClientFilm {
 }
 ```
 
-Avec cette nouvelle implémentation, il est possible d'ajouter de nouvelles **stratégies** pour récupérer des informations. Par exemple, si on souhaite utiliser d'autres sites (à la place de **Allocine**). D'ailleurs, c'est ce que nous allons faire tout de suite ! 
+Avec cette nouvelle implémentation, il est possible d'ajouter de nouvelles **stratégies** pour récupérer des informations. Par exemple, si on souhaite utiliser d'autres sites (à la place d'**Allociné**). D'ailleurs, c'est ce que nous allons faire tout de suite ! 
 
-Vous souhaitez qu'on puisse aller extraire les informations du film cherché sur les plateformes **Sens Critique** et **Rotten Tomatoes**. Contrairement à **Allocine**, il existe des **librairies** (dans notre exemple) qui permettent de récupérer les informations des films sur ces deux sites ! Vous n'aurez donc pas à implémenter le code correspondant !
+Vous souhaitez qu'on puisse aller extraire les informations du film cherché sur les plateformes **Sens Critique** et **Rotten Tomatoes**. Contrairement à **Allociné**, il existe des **bibliothèques** (dans notre exemple) qui permettent de récupérer les informations des films sur ces deux sites ! Vous n'aurez donc pas à implémenter le code correspondant !
 
-Vous installez donc les deux librairies correspondantes au travers de `Maven`, ce qui installe et configure correctement le fichier `.jar` contenant les classes qui vont vous êtres utiles.
+Vous installez donc les deux bibliothèques correspondantes au travers de `Maven`, ce qui installe et configure correctement le fichier `.jar` contenant les classes qui vont vous être utiles.
 
 Du côté de **Sens Critique**, on a une classe `SensCritiqueAPI` qui permet de réaliser les actions désirées (et d'autres qui sont inutiles). Lors de la création de l'objet, il faut préciser la version de l'API utilisée.
 
@@ -2822,7 +2834,7 @@ public final class SensCritiqueAPI {
   public int verifierFilm(String film) {
     /* 
       Code complexe permettant de savoir si un film existe ou non.
-      Le type de retour est étrange (il aurait été préférable de renvoyer un booléen) mais la librairie ne nous appartient pas, 
+      Le type de retour est étrange (il aurait été préférable de renvoyer un booléen) mais la bibliothèque ne nous appartient pas, 
       on ne peut pas modifier cela.
     */
   }
@@ -2836,7 +2848,7 @@ public final class SensCritiqueAPI {
   }
 
   public List<String> obtenirCritiquesUtilisateurs(String film) {
-    //Code complexe permettant de récupérer les critiques des utilisateurs à propos du Film sur Allociné
+    //Code complexe permettant de récupérer les critiques des utilisateurs à propos du Film sur Sens Critique
   }
 
   public Map<String, String> obtenirInformationsTechniquesFilm(String film) {
@@ -2846,7 +2858,7 @@ public final class SensCritiqueAPI {
 }
 ```
 
-Du côté de **Roten Tomatoes**, on a une classe `Movie` qui contient toutes les informations relatives à un film (dont celles désirées) et une classe `RottenTomatoesDataExtractor` qui permet d'obtenir des objets type `Movie` à partir de leur nom. Cette classe est d'ailleurs un **singleton**.
+Du côté de **Rotten Tomatoes**, on a une classe `Movie` qui contient toutes les informations relatives à un film (dont celles désirées) et une classe `RottenTomatoesDataExtractor` qui permet d'obtenir des objets type `Movie` à partir de leur nom. Cette classe est d'ailleurs un **singleton**.
 
 ```java
 public class Movie {
@@ -2863,7 +2875,7 @@ public class Movie {
     this.name = name;
     this.category = category;
     this.note = note;
-    this.review = reviews;
+    this.reviews = reviews;
   }
 
   public String getName() {
@@ -2913,9 +2925,9 @@ public final class RottenTomatoesDataExtractor {
 
 Tout est donc parfait ! Non...?
 
-Peut-être que vous vous en êtes rendu compte, mais il est impossible de faire fonctionner ce code avec notre classe `ClientFilm`, elle attend des objets de type `Extracteur`. Or, les classes `SensCritiqueAPI` et `RottenTomatoesDataExtractor` n'implémentent pas cette interface (ce qui est normal : elles viennent d'une librairie externe). Et de toute manière les classes en question ont un fonctionnement un peu différent. Les types d'objets retournés et les méthodes utilisées ne sont pas forcément compatibles. Et il est bien sûr **impossible de modifier le code de ces classes** (toujours parce qu'elles viennent d'une librairie que vous ne pouvez pas éditer). Ces classes ne peuvent pas être utilisées en l'état, dans notre système.
+Peut-être que vous vous en êtes rendu compte, mais il est impossible de faire fonctionner ce code avec notre classe `ClientFilm`, elle attend des objets de type `Extracteur`. Or, les classes `SensCritiqueAPI` et `RottenTomatoesDataExtractor` n'implémentent pas cette interface (ce qui est normal : elles viennent d'une bibliothèque externe). Et de toute manière les classes en question ont un fonctionnement un peu différent. Les types d'objets retournés et les méthodes utilisées ne sont pas forcément compatibles. Et il est bien sûr **impossible de modifier le code de ces classes** (toujours parce qu'elles viennent d'une bibliothèque que vous ne pouvez pas éditer). Ces classes ne peuvent pas être utilisées en l'état, dans notre système.
 
-Que faire alors ? Laisser tomber ces librairies et écrire notre propre code (deux nouvelles classes implémentant `Extracteur`) ? Cela serait réinventer la roue. Ou bien copier/coller le code de ces classes ? Cela serait du plagiat (et donc du vol) ! Etendre les classes et faire implémenter l'interface `Extracteur` aux classes filles ? Cela ne sent pas très bon, et c'est de toute façon impossible, car les deux classes sont déclarées comme `final`.
+Que faire alors ? Laisser tomber ces bibliothèques et écrire notre propre code (deux nouvelles classes implémentant `Extracteur`) ? Cela serait réinventer la roue. Ou bien copier/coller le code de ces classes ? Cela serait du plagiat (et donc du vol) ! Étendre les classes et faire implémenter l'interface `Extracteur` aux classes filles ? Cela ne sent pas très bon, et c'est de toute façon impossible, car les deux classes sont déclarées comme `final`.
 
 Cela semble compromis ! Mais pas de panique, un design pattern résout ce problème : `Adaptateur`.
 
@@ -2927,20 +2939,20 @@ Voici comment appliquer ce pattern :
 
 1. Créer une classe dite **Adapter** qui possède un attribut du type de la classe à adapter. Cet attribut peut être injecté via le constructeur ou bien, dans certains cas, directement construit dans la classe **Adapter**.
 
-2. Faire implémenter à notre **Adapter** l'interface souhaitée ou lui faire implémenter l'interface souhaitée ou bien étendre la classe abstraite souhaitée.
+2. Faire implémenter à notre **Adapter** l'interface souhaitée (ou lui faire étendre la classe abstraite souhaitée).
 
-3. L'implémentation de chaque méthode de l'interface (ou méthodes abstraites) se fera par **délégation** en appelant des méthodes sur la classe cible. Le code de l'adaptateur fera donc une **adaptation** du code en réalisant des appels sur le **délégué** afin de réaliser la bonne action et/ou renvoyer la bonne information (bon type, bonne structure, etc).
+3. L'implémentation de chaque méthode de l'interface (ou méthodes abstraites) se fera par **délégation** en appelant des méthodes sur l'objet adapté (le délégué). Le code de l'adaptateur fera donc une **adaptation** du code en réalisant des appels sur le **délégué** afin de réaliser la bonne action et/ou renvoyer la bonne information (bon type, bonne structure, etc.).
 
 Ce pattern s'appelle `Adaptateur`, car il utilise et **adapte** les fonctionnalités (méthodes) fournies par une classe pour les rendre compatibles avec notre besoin. Dans certains cas, un simple appel de méthode au **délégué** ne suffit pas, il faut faire différentes opérations intermédiaires afin de réaliser l'action souhaitée.
 
-Donc notre exemple, nous allons donc créer deux **adaptateurs** : un pour la classe `SensCritiqueAPI` et l'autre pour `RottenTomatoesDataExtractor`. L'objectif est d'utiliser ces classes pour renvoyer les différentes informations souhaitées par l'interface `Extracteur` et ainsi rendre le tout compatible avec `ClientFilm` en profitant du code déjà écrit dans les librairies.
+Dans notre exemple, nous allons donc créer deux **adaptateurs** : un pour la classe `SensCritiqueAPI` et l'autre pour `RottenTomatoesDataExtractor`. L'objectif est d'utiliser ces classes pour renvoyer les différentes informations souhaitées par l'interface `Extracteur` et ainsi rendre le tout compatible avec `ClientFilm` en profitant du code déjà écrit dans les bibliothèques.
 
 ```java
 public class ExtracteurSensCritiqueAdaptateur implements Extracteur {
 
   private SensCritiqueAPI api;
 
-  public SensCritiqueAdaptateur(SensCritiqueAPI api) {
+  public ExtracteurSensCritiqueAdaptateur(SensCritiqueAPI api) {
     this.api = api;
   }
 
@@ -2968,7 +2980,7 @@ public class ExtracteurRottenTomatoesAdaptateur implements Extracteur {
 
   private RottenTomatoesDataExtractor extractor;
 
-  public RottenTomatoesDataExtractor(RottenTomatoesDataExtractor extractor) {
+  public ExtracteurRottenTomatoesAdaptateur(RottenTomatoesDataExtractor extractor) {
     this.extractor = extractor;
   }
 
@@ -3022,30 +3034,32 @@ Vérifions votre compréhension du pattern avec un exercice d'application.
 
 <div class="exercise">
 
-1. Ouvrez le paquetage `fr.umontpellier.iut.adaptateur`. Il s'agit d'un petit programme qui permet d'inscrire un utilisateur (et de le connecter) avec un **mot de passe chiffré**.
+1. Ouvrez le paquetage `fr.umontpellier.iut.adaptateur`. Il s'agit d'un petit programme qui permet d'inscrire un utilisateur (et de le connecter) avec un **mot de passe haché**.
 
-2. Actuellement, l'algorithme utilisé pour chiffrer (et vérifier) le mot de passe est `SHA-256`. On aimerait cependant que le service de gestion des utilisateurs puisse utiliser d'autres algorithmes (et d'autres techniques de chiffrement) si besoin. Pour toutes les méthodes de chiffrement de mot de passe, on a besoin de :
+    **Remarque :** `SHA-256` et `BCrypt` sont des fonctions de **hachage** (à sens unique : on ne peut pas retrouver le mot de passe à partir de son empreinte) et non des algorithmes de **chiffrement** (réversibles avec une clé). Le nom de la méthode `chiffrerMotDePasse` est donc un abus de langage, conservé ici pour ne pas modifier le code fourni.
 
-    * Chiffrer un mot de passe en clair pour obtenir un mot de passe haché (méthode `chiffrerMotDePasse` dans `ServiceUtilisateur`).
+2. Actuellement, l'algorithme utilisé pour hacher (et vérifier) le mot de passe est `SHA-256`. On aimerait cependant que le service de gestion des utilisateurs puisse utiliser d'autres algorithmes (et d'autres techniques de hachage) si besoin. Pour toutes les méthodes de hachage de mot de passe, on a besoin de :
+
+    * Hacher un mot de passe en clair pour obtenir un mot de passe haché (méthode `chiffrerMotDePasse` dans `ServiceUtilisateur`).
     * Vérifier qu'un mot de passe en clair correspond bien à un mot de passe haché (méthode `verifierMotDePasse` dans `ServiceUtilisateur`).
 
-    En analysant le code actuel de `ServiceUtilisateur` et en sachant que l'on souhaite avoir différentes techniques de chiffrement du mot de passe, quels principes `SOLID` sont violés par l'implémentation actuelle, selon vous ?
+    En analysant le code actuel de `ServiceUtilisateur` et en sachant que l'on souhaite avoir différentes techniques de hachage du mot de passe, quels principes `SOLID` sont violés par l'implémentation actuelle, selon vous ?
 
-3. Refactorez le code pour pouvoir le rendre plus modulable au niveau du choix de la méthode de chiffrement du mot de passe (même si on a qu'une seule méthode pour l'instant). Vous devrez probablement corriger le `main`.
+3. Refactorez le code pour pouvoir le rendre plus modulable au niveau du choix de la méthode de hachage du mot de passe (même si on n'a qu'une seule méthode pour l'instant). Vous devrez probablement corriger le `main`.
 
-4. Une librairie nommée `BcryptPasswordHasher-1.0.0` est importée dans le projet ! Explorez ses classes en allant dans `src/main/resources/libs/BcryptPasswordHasher-1.0.0.jar` (normalement, l'IDE vous permet de voir les classes contenues dans le `.jar`). Cette librairie permet de chiffrer un mot de passe avec l'algorithme `Bcrypt` (qui permet de saler le mot de passe) et de renforcer la sécurité du tout en ajoutant un poivre (pepper), comme nous le faisons en TD de PHP. La classe `BCryptPasswordHasher` fonctionne ainsi :
+4. Une bibliothèque nommée `BcryptPasswordHasher-1.0.0` est importée dans le projet ! Explorez ses classes en allant dans `src/main/resources/libs/BcryptPasswordHasher-1.0.0.jar` (normalement, l'IDE vous permet de voir les classes contenues dans le `.jar`). Cette bibliothèque permet de hacher un mot de passe avec l'algorithme `BCrypt` (qui permet de saler le mot de passe) et de renforcer la sécurité du tout en ajoutant un poivre (pepper), comme nous le faisons en TD de PHP. La classe `BCryptPasswordHasher` fonctionne ainsi :
 
     * On l'initialise avec le poivre (pepper) souhaité, qui est une chaîne aléatoire.
 
     * Cette chaîne aléatoire peut être générée avec la méthode **statique** `generatePepper` de la classe `PepperGenerator`. Il faut lui donner la longueur souhaitée pour la chaîne.
 
-    * On utilise la méthode `hashPassword` (de `BCryptPasswordHasher`) pour chiffrer le mot de passe.
+    * On utilise la méthode `hashPassword` (de `BCryptPasswordHasher`) pour hacher le mot de passe.
 
-    * On utilise la méthode `verifyPassword` (de `BCryptPasswordHasher`) pour vérifier qu'un mot de passe en clair correspond bien à un mot de passe chiffré.
+    * On utilise la méthode `verifyPassword` (de `BCryptPasswordHasher`) pour vérifier qu'un mot de passe en clair correspond bien à un mot de passe haché.
 
-5. On aimerait que notre `ServiceUtilisateur` puisse aussi fonctionner avec l'algorithme `BCrypt` en exploitant la librairie fournie (en plus de la méthode avec `SHA-256` et de futures autres méthodes). Faites les ajouts nécessaires pour rendre cela possible. À l'issue de votre implémentation, si de nouveaux algorithmes sont ajoutés (ou d'anciens supprimés), `ServiceUtilisateur` ne doit pas être impacté.
+5. On aimerait que notre `ServiceUtilisateur` puisse aussi fonctionner avec l'algorithme `BCrypt` en exploitant la bibliothèque fournie (en plus de la méthode avec `SHA-256` et de futures autres méthodes). Faites les ajouts nécessaires pour rendre cela possible. À l'issue de votre implémentation, si de nouveaux algorithmes sont ajoutés (ou d'anciens supprimés), `ServiceUtilisateur` ne doit pas être impacté.
 
-6. Testez (dans votre `main`) en faisant en sorte que le service de gestion des utilisateurs utilise votre nouvel algorithme de chiffrement plutôt que `SHA-256`. Si vous avez implémenté une solution correcte, les seules modifications à faire sont dans le `main` et pas ailleurs !
+6. Testez (dans votre `main`) en faisant en sorte que le service de gestion des utilisateurs utilise votre nouvel algorithme de hachage plutôt que `SHA-256`. Si vous avez implémenté une solution correcte, les seules modifications à faire sont dans le `main` et pas ailleurs !
 
 </div>
 
@@ -3053,19 +3067,21 @@ Vous avez compris le concept d'adaptateur ? Parfait ! Maintenant, revenons à no
 
 <div class="exercise">
 
-1. Une librairie nommée `patternmon` est importée dans le projet ! Explorez ses classes en allant dans `src/main/resources/libs/patternmons-1.0.0.jar`.
+1. Une bibliothèque nommée `patternmon` est importée dans le projet ! Explorez ses classes en allant dans `src/main/resources/libs/patternmons-1.0.0.jar`.
 
-2. Comme vous pouvez le constater, cette librairie définit de nouveaux monstres "patternmons" qu'on souhaite maintenant intégrer à notre système de simulation de combat. Comme vous l'avez deviné, nous allons donc devoir mettre en place un `Adaptateur` ! Cependant, comme il y a une hiérarchie de classes ici, la mise en place va être un poil plus complexe que sur notre exemple, donc nous allons le faire pas à pas :
+2. Comme vous pouvez le constater, cette bibliothèque définit de nouveaux monstres "patternmons" qu'on souhaite maintenant intégrer à notre système de simulation de combat. Comme vous l'avez deviné, nous allons donc devoir mettre en place un `Adaptateur` ! Cependant, comme il y a une hiérarchie de classes ici, la mise en place va être un poil plus complexe que sur notre exemple, donc nous allons le faire pas à pas :
 
     * Commencez par implémenter une classe abstraite `PatternmonAdapter` qui permet d'adapter la classe abstraite `Patternmon`. Normalement, vous ne devriez pas trop avoir de difficulté, c'est quasiment comme dans l'exemple.
 
     * `Patternmon` est une classe abstraite et nous avons besoin de pouvoir adapter ses classes filles concrètes (correspondant à `MonstreEau`, `MonstreFeu`, etc.). Il faut créer un adaptateur par classe fille ! Cet adaptateur devra **étendre** votre adaptateur abstrait `PatternmonAdapter` et implémenter l'interface `MonstreX` correspondante (`MonstreEau` pour l'adaptation de `WaterPatternmon` par exemple).
+
+    * **Attention** : contrairement aux classes de l'exemple, les classes de patternmons ne sont pas `final`. N'en héritez pas pour autant : comme dans l'exemple, vos adaptateurs doivent utiliser la **composition** (le patternmon adapté est un attribut de l'adaptateur).
     
     * Commencez par tenter d'adapter `WaterPatternmon`. Vous allez sans doute rencontrer une difficulté lorsque vous allez essayer d'implémenter les méthodes propres à l'interface. Dans un premier temps, essayez de résoudre cela par vous-même, puis, après quelques essais, lisez la prochaine section.
 
 </div>
 
-Le problème que vous avez dû rencontrer est le suivant : dans un de vos adaptateurs concrets, vous n'aviez pas accès au `Patternmon` passé à la classe parente. Une solution que vous avez peut-être mise en place et de changer la visibilité de cet attribut en `protected`, mais même là, vous aviez sans doute des erreurs ! 
+Le problème que vous avez dû rencontrer est le suivant : dans un de vos adaptateurs concrets, vous n'aviez pas accès au `Patternmon` passé à la classe parente. Une solution que vous avez peut-être mise en place est de changer la visibilité de cet attribut en `protected`, mais même là, vous aviez sans doute des erreurs ! 
 
 Voyons un peu tout ça :
 
@@ -3080,7 +3096,7 @@ public abstract class PatternmonAdapter implements Monstre {
 
 public class PatternmonEauAdapter extends PatternmonAdapter implements MonstreEau {
 
-    //Prend un Waterpatternmon en paramètre et pas un Patternmon !
+    //Prend un WaterPatternmon en paramètre et pas un Patternmon !
     public PatternmonEauAdapter(WaterPatternmon patternmon) {
         super(patternmon);
     }
@@ -3094,14 +3110,14 @@ public class PatternmonEauAdapter extends PatternmonAdapter implements MonstreEa
 }
 ```
 
-Si vous avez bien une implémentation similaire (faites les changements nécessaires si ce n'est pas le cas) vous obtenez une erreur au niveau de la méthode `getTemperatureMaxEau`. Cela est dû au fait que dans la classe mère, l'attribut `patternmon` est du type abstrait `Patternmon` et pas un `Waterpatternmon` ! Donc, dans la classe fille, impossible d'utiliser `getWaterTemperature`.
+Si vous avez bien une implémentation similaire (faites les changements nécessaires si ce n'est pas le cas) vous obtenez une erreur au niveau de la méthode `getTemperatureMaxEau`. Cela est dû au fait que dans la classe mère, l'attribut `patternmon` est du type abstrait `Patternmon` et pas un `WaterPatternmon` ! Donc, dans la classe fille, impossible d'utiliser `getWaterTemperature`.
 
-La première solution "simple" serait de **caster** le patternmon. Normalement, comme on est sûr d'avoir passé au constructeur parent un `Waterpatternmon`, c'est un **cast** sans risques :
+La première solution "simple" serait de **caster** le patternmon. Normalement, comme on est sûr d'avoir passé au constructeur parent un `WaterPatternmon`, c'est un **cast** sans risques :
 
 ```java 
 @Override
 public int getTemperatureMaxEau() {
-    return ((Waterpatternmon) this.patternmon).getWaterTemperature();
+    return ((WaterPatternmon) this.patternmon).getWaterTemperature();
 }
 ```
 
@@ -3113,10 +3129,10 @@ Petite démonstration sur `PatternmonAdapter` et `PatternmonEauAdapter` :
 
 ```java 
 // On définit le paramètre générique T lors de la déclaration de la classe
-// et on est assuré que T soit un objet qui étend la classe Patternmon
+// et on est assuré que T est un type qui étend la classe Patternmon
 public abstract class PatternmonAdapter<T extends Patternmon> implements Monstre {
 
-    //Peut-être n'importe quel patternmon.
+    //Peut être n'importe quel patternmon.
     //Je peux appeler les méthodes de "patternmon" sur cet objet
     protected T patternmon;
 
@@ -3128,11 +3144,11 @@ public abstract class PatternmonAdapter<T extends Patternmon> implements Monstre
 
 }
 
-//Quand on étend PatternmonAdapter, on précise la classe concrète utilisée (ici, Watterpatternmon)
-//Il faut imaginer que dans la classe mère, le "T" est remplacé par Watterpatternmon.
-public class PatternmonEauAdapter extends PatternmonAdapter<Waterpatternmon> implements MonstreEau {
+//Quand on étend PatternmonAdapter, on précise la classe concrète utilisée (ici, WaterPatternmon)
+//Il faut imaginer que dans la classe mère, le "T" est remplacé par WaterPatternmon.
+public class PatternmonEauAdapter extends PatternmonAdapter<WaterPatternmon> implements MonstreEau {
 
-    //Prend un Waterpatternmon en paramètre et pas un Patternmon !
+    //Prend un WaterPatternmon en paramètre et pas un Patternmon !
     //Maintenant, on est "forcé" d'utiliser ce constructeur.
     public PatternmonEauAdapter(WaterPatternmon patternmon) {
         super(patternmon);
@@ -3140,7 +3156,7 @@ public class PatternmonEauAdapter extends PatternmonAdapter<Waterpatternmon> imp
 
     @Override
     public int getTemperatureMaxEau() {
-        //Plus d'erreurs, car l'attribut "patternmon" dans la classe mère est un Waterpatternmon !
+        //Plus d'erreurs, car l'attribut "patternmon" dans la classe mère est un WaterPatternmon !
         return this.patternmon.getWaterTemperature();
     }
 
@@ -3165,7 +3181,7 @@ Si vous n'avez pas tout compris, n'hésitez pas à en parler avec votre enseigna
 
 ### Décorateur avec Builder
 
-Dans le dernier TP, vous avez découvert le pattern **Décorateur** permettant d'ajouter des nouvelles fonctionnalités de manière dynamique. Nous avions notamment vu un exemple portant sur des salariés, puis un exercice portant sur différents types de produits.
+Dans le dernier TP, vous avez découvert le pattern **Décorateur** permettant d'ajouter de nouvelles fonctionnalités de manière dynamique. Nous avions notamment vu un exemple portant sur des salariés, puis un exercice portant sur différents types de produits.
 
 Comme l'objet créé avec le pattern **Décorateur** peut être assez complexe, il peut être intéressant de le coupler avec un **Builder**.
 
@@ -3175,7 +3191,7 @@ Reprenons l'exemple des salariés et essayons d'appliquer ces deux patterns :
 interface SalarieInterface {
   double getSalaire();
   //Prototype
-  SalarieInterface clone();
+  SalarieInterface cloner();
 }
 
 
@@ -3195,7 +3211,7 @@ class Salarie implements SalarieInterface {
     return salaire;
   }
 
-  public SalarieInterface clone() {
+  public SalarieInterface cloner() {
     return new Salarie(this);
   }
 
@@ -3203,8 +3219,8 @@ class Salarie implements SalarieInterface {
 
 abstract class SalarieDecorateur implements SalarieInterface {
 
-  //Visibilité "protected" nécessaire afin que les classe filles puissent le cloner
-  //On aurait aussi pu définir une méthode protected qui clone le salarie délégué (pour que les classes filles ne puissent pas le modifier)
+  //Visibilité "protected" nécessaire afin que les classes filles puissent le cloner
+  //On aurait aussi pu définir une méthode protected qui clone le salarié délégué (pour que les classes filles ne puissent pas le modifier)
   protected SalarieInterface salarie;
 
   public SalarieDecorateur(SalarieInterface salarie) {
@@ -3226,7 +3242,7 @@ class SalarieChefProjet extends SalarieDecorateur {
   }
 
   private SalarieChefProjet(SalarieChefProjet chefProjetACopier) {
-    this(chefProjetACopier.salarie.clone(), chefProjetACopier.nombreProjetsGeres);
+    this(chefProjetACopier.salarie.cloner(), chefProjetACopier.nombreProjetsGeres);
   }
 
   @Override
@@ -3235,7 +3251,7 @@ class SalarieChefProjet extends SalarieDecorateur {
   }
 
   @Override
-  public SalarieInterface clone() {
+  public SalarieInterface cloner() {
     return new SalarieChefProjet(this);
   }
 
@@ -3245,13 +3261,13 @@ class SalarieResponsableDeStagiaires extends SalarieDecorateur {
 
   private int nombreStagiairesGeres;
 
-  public SalarieResponsableDeStagiaires(I_Salarie salarie, int nombreStagiairesGeres) {
+  public SalarieResponsableDeStagiaires(SalarieInterface salarie, int nombreStagiairesGeres) {
     super(salarie);
     this.nombreStagiairesGeres = nombreStagiairesGeres;
   }
 
   private SalarieResponsableDeStagiaires(SalarieResponsableDeStagiaires responsableACopier) {
-    this(responsableACopier.salarie.clone(), responsableACopier.nombreStagiairesGeres);
+    this(responsableACopier.salarie.cloner(), responsableACopier.nombreStagiairesGeres);
   }
 
   @Override
@@ -3260,14 +3276,14 @@ class SalarieResponsableDeStagiaires extends SalarieDecorateur {
   }
 
   @Override
-  public I_Salarie clone() {
+  public SalarieInterface cloner() {
     return new SalarieResponsableDeStagiaires(this);
   }
 
 }
 ```
 
-On peut créer : des salariés simples, des salariés chefs de projet, des salariés responsables de stagiaires et des salariés à la fois chefs de projets et responsables de stagiaires. Si on ajoutait un nouveau type de `Salarie`, cela multiplierait les possibilités...
+On peut créer : des salariés simples, des salariés chefs de projet, des salariés responsables de stagiaires et des salariés à la fois chefs de projet et responsables de stagiaires. Si on ajoutait un nouveau type de `Salarie`, cela multiplierait les possibilités...
 
 Sans pattern créateur, il faut donc créer les salariés ainsi :
 
@@ -3282,7 +3298,7 @@ Essayons de mettre en place un `Builder` !
 
 Attention, l'implémentation de `Builder` que nous allons présenter est une **adaptation** du pattern `Builder` tel que nous l'avons présenté dans l'exercice correspondant, afin de rendre le tout compatible avec le décorateur :
 
-  * La classe `Builder` va se trouver à l'extérieur de `Produit`. Autrement, cela voudrait dire que `Produit` dépendrait de toutes ses classes filles, et cela ne semble pas très adéquat.
+  * La classe `SalarieBuilder` va se trouver à l'extérieur de `Salarie`. Autrement, `Salarie` (le composant de base) dépendrait de tous ses décorateurs, ce qui n'est pas souhaitable.
 
   * Le produit va être instancié dès le départ puis augmenté au fur et à mesure alors que normalement, la cible du builder n'est instanciée que quand on appelle la méthode `build`.
 
@@ -3310,7 +3326,7 @@ class SalarieBuilder {
   }
 
   public SalarieInterface build() {
-    return salarie.clone();
+    return salarie.cloner();
   }
 
 }
@@ -3321,7 +3337,7 @@ class Main {
     SalarieInterface salarie1 = new SalarieBuilder(2000).build();
     SalarieInterface salarie2 = new SalarieBuilder(2500).withChefProjet(3).build();
     SalarieInterface salarie3 = new SalarieBuilder(2300).withResponsableStagiaires(5).build();
-    SalarieInterface salarie4 = new SalarieBuilder(1800).withChefProjet(4).withResponsableStagiaires(2).build();
+    SalarieInterface salarie4 = new SalarieBuilder(1800).withResponsableStagiaires(4).withChefProjet(2).build();
   }
 
 }
@@ -3333,15 +3349,17 @@ class Main {
 
 2. Comme dans l'exemple des salariés, refactorez votre code pour mettre en place un **builder** (adapté) qui doit permettre de construire vos produits décorés. Adaptez le code de `Main` en conséquence.
 
+    Comme dans l'exemple, la méthode `build` devra renvoyer une copie du produit : ajoutez une méthode `cloner()` à `I_Produit` et implémentez-la dans toutes les classes concrètes et les décorateurs.
+
 </div>
 
 ### Amélioration du générateur de donjons
 
-Et si nous essayons de combiner plus de patterns ? Nous avons l'application idéale pour ça : le générateur de donjon (paquetage `fr.umontpellier.iut.fabrique4`). Il y a déjà la **Fabrique Abstraite**, peut-être le **Singleton** et **Prototype**.
+Et si nous essayions de combiner plus de patterns ? Nous avons l'application idéale pour ça : le générateur de donjon (paquetage `fr.umontpellier.iut.fabrique4`). Il y a déjà la **Fabrique Abstraite**, peut-être le **Singleton** et **Prototype**.
 
 <div class="exercise">
 
-1. Nous aimerions maintenant que les différentes salles puissent être combinées afin de créer une "super-salle". Par exemple, on aimerait avoir des salles avec des coffres et 20 ennemis, une salle avec une énigme et un boss, une salle avec tout à la fois... ! Quel design pattern pouvez-vous utiliser pour mettre en place une telle fonctionnalité ? La seule méthode qui nous intéresse est `toString`. À l'affichage, on doit avoir les informations de toutes les salles qui composent une salle. Après vos refactoring, vous devrez logiquement adapter le code de vos deux **fabriques**. Pour la configuration des salles **difficile**, on souhaite faire des changements supplémentaires :
+1. Nous aimerions maintenant que les différentes salles puissent être combinées afin de créer une "super-salle". Par exemple, on aimerait avoir des salles avec des coffres et 20 ennemis, une salle avec une énigme et un boss, une salle avec tout à la fois... ! Quel design pattern pouvez-vous utiliser pour mettre en place une telle fonctionnalité ? La seule méthode qui nous intéresse est `toString`. À l'affichage, on doit avoir les informations de toutes les salles qui composent une salle. Après vos refactorings, vous devrez logiquement adapter le code de vos deux **fabriques**. Pour la configuration des salles **difficiles**, on souhaite faire des changements supplémentaires :
 
     * Une salle normale est une salle avec un coffre et entre 20 et 40 ennemis.
 
@@ -3351,11 +3369,11 @@ Et si nous essayons de combiner plus de patterns ? Nous avons l'application idé
 
 2. On aimerait améliorer la création des **salles** composées. Par exemple, avec un **Builder** (adapté)... ?
 
-3. On aimerait pouvoir changer dynamiquement la manière dont est étendu le donjon. C'est-à-dire, la manière et l'ordre dont les salles sont ajoutées. Par exemple, on considérera que l'algorithme actuel de répartition des salles est celui "classique". On a maintenant un algorithme dit "hardcore" qui répartit les nouvelles salles ajoutées ainsi :
+3. On aimerait pouvoir changer dynamiquement la manière dont est étendu le donjon. C'est-à-dire la manière dont les salles sont ajoutées, et dans quel ordre. Par exemple, on considérera que l'algorithme actuel de répartition des salles est celui "classique". On a maintenant un algorithme dit "hardcore" qui répartit les nouvelles salles ajoutées ainsi :
 
     * Quatre salles spéciales
 
-    * Aléatoirement : soit deux salles normales (50%), soit deux salles spéciales (50%).
+    * Aléatoirement : soit deux salles normales (50 %), soit deux salles spéciales (50 %).
 
     * Quatre salles finales
 
@@ -3370,7 +3388,7 @@ Et si nous essayons de combiner plus de patterns ? Nous avons l'application idé
 
 Vous maîtrisez maintenant l'ensemble des **design patterns créateurs** (du moins ceux du **GoF**) ainsi que le pattern **Adaptateur**. Ce TP vous a aussi logiquement permis de renforcer votre pratique de la conception logicielle et de l'application des principes `SOLID`.
 
-Toutefois, attention à ne pas attraper la **patternite** : c'est une maladie connue qu'attrapent les jeunes ingénieurs logiciels qui découvrent les **design patterns**. Cela se manifeste par une envie de mettre des patterns partout à tort et à travers même quand cela n'est pas nécessaire. Comme pour le **singleton**, il faut se poser la question de savoir si un pattern est nécessaire ou non. Normalement, l'utilisation d'un pattern vient assez naturellement quand on souhaite résoudre le problème qui lui est lié. Si son utilisation semble un peu trop forcée, c'est que cela est probablement injustifié, ou pire : on est en train de construire un [anti-pattern](https://en.wikipedia.org/wiki/Anti-pattern), une solution non-seulement injustifiée, mais aussi qui a plus de conséquences négatives que positives. Bref, comme toujours, il faut avoir une vision générale et sur le long terme !
+Toutefois, attention à ne pas attraper la **patternite** : c'est une maladie connue qu'attrapent les jeunes ingénieurs logiciels qui découvrent les **design patterns**. Cela se manifeste par une envie de mettre des patterns partout à tort et à travers même quand cela n'est pas nécessaire. Comme pour le **singleton**, il faut se poser la question de savoir si un pattern est nécessaire ou non. Normalement, l'utilisation d'un pattern vient assez naturellement quand on souhaite résoudre le problème qui lui est lié. Si son utilisation semble un peu trop forcée, c'est que cela est probablement injustifié, ou pire : on est en train de construire un [anti-pattern](https://en.wikipedia.org/wiki/Anti-pattern), une solution non seulement injustifiée, mais aussi qui a plus de conséquences négatives que positives. Bref, comme toujours, il faut avoir une vision générale et sur le long terme !
 
 Bref, ce TP conclut le cours de **Qualité de développement** du semestre 3. 
 
@@ -3388,9 +3406,9 @@ Voici un bilan de ce que vous avez appris :
 
 * D'autres **design patterns** : `stratégie`, `décorateur`, `adaptateur`.
 
-Concernant les **design patterns GoF**, n'hésitez pas à aller consulter (et expérimenter) ceux que nous n'avons pas abordés dans ce cours (ceux comportementaux et architecturaux). Pour rappel, il y en a 23 ! Il peut être particulièrement intéressant d'aller voir **observateur**, **état**, **itérateur**, **visiteur**.
+Concernant les **design patterns GoF**, n'hésitez pas à aller consulter (et expérimenter) ceux que nous n'avons pas abordés dans ce cours (les autres patterns structurels et comportementaux). Pour rappel, il y en a 23 ! Il peut être particulièrement intéressant d'aller voir **observateur**, **état**, **itérateur**, **visiteur**.
 
-Il peut aussi être intéressant que vous vous renseignez sur le concept de **conteneur de dépendances** (ou bien **conteneur IoC**) qui est au cœur de nombreux frameworks et permet de gérer facilement toutes les dépendances d'un programme sans avoir besoin de gérer pleins de singletons (et donc, être moins [STUPID](https://openclassrooms.com/en/courses/5684096-use-mvc-solid-principles-and-design-patterns-in-java/6417836-avoid-stupid-practices-in-programming)!).
+Il peut aussi être intéressant que vous vous renseigniez sur le concept de **conteneur de dépendances** (ou bien **conteneur IoC**) qui est au cœur de nombreux frameworks et permet de gérer facilement toutes les dépendances d'un programme sans avoir besoin de gérer plein de singletons (et donc, être moins [STUPID](https://openclassrooms.com/en/courses/5684096-use-mvc-solid-principles-and-design-patterns-in-java/6417836-avoid-stupid-practices-in-programming) !).
 
 Vous devez maîtriser toutes ces notions abordées dans ce cours pour la suite de votre cursus (et de votre carrière) et ainsi développer dès le début d'un projet un code d'une certaine qualité qui prévoit l'évolutivité et la modularité du projet sur le long terme. Si vous réussissez à appliquer cela, vous n'êtes alors plus un "simple" codeur, mais véritablement un "développeur", voire un **ingénieur logiciel**. 
 
