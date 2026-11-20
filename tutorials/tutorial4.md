@@ -11,7 +11,7 @@ Quand on parle de **design patterns** on fait généralement référence aux pat
 
 Pour rappel, un **design pattern** est une solution réutilisable et adaptable vis-à-vis d'un problème de conception logicielle assez récurrent. Un pattern est généralement présenté via un diagramme de classes de conception et un exemple d'implémentation. Un pattern a pour but d'être applicable et adaptable à n'importe quel projet ou contexte.
 
-Il existe d'autres types de design patterns (par exemple, les patterns GRASP) mais les plus connus et les plus utilisés sont ceux du **GoF** que nous allons explorer dans ce cours. Tous ces **patterns** permettent de renforcer l'application des principes **SOLID**. Par ailleurs, certains langages comme `Java` proposent (dans leur bibliothèque standard) des **classes** et **interfaces** permettant d'implémenter certains patterns **GoF** comme **observateur**, **itérateur**, **prototype**...
+Il existe d'autres types de design patterns (par exemple, les patterns GRASP) mais les plus connus et les plus utilisés sont ceux du **GoF** que nous allons explorer dans ce cours. Tous ces **patterns** permettent de renforcer l'application des principes **SOLID**. Par ailleurs, certains langages comme `Java` proposent (dans leur bibliothèque standard) des **classes** et **interfaces** permettant d'implémenter certains patterns **GoF** comme **itérateur** (`Iterator`), **observateur** (`PropertyChangeListener`, l'ancien `java.util.Observer` étant déprécié), **prototype** (`Cloneable`)....
 
 Les design patterns **GoF** se divisent en trois catégories :
 
@@ -124,7 +124,7 @@ public class Service {
   private Service() {}
 
   // On appelle systématiquement cette méthode pour récupérer l'instance "globale"
-  public synchronized static Service getInstance() {
+  public static synchronized Service getInstance() {
     if(INSTANCE == null) {
       INSTANCE = new Service();
     }
@@ -218,7 +218,7 @@ public class Service {
 
   private Service() {}
 
-  public synchronized static Service getInstance() {
+  public static synchronized Service getInstance() {
     if(INSTANCE == null) {
       INSTANCE = new Service();
     }
@@ -294,7 +294,7 @@ Si cette méthode peut paraître plus "facile" à mettre en place et à utiliser
 
 2. Il semble inutile d'instancier la classe `ServiceMail` à chaque fois. Cette fois-ci, au lieu d'utiliser un `Singleton`, nous allons transformer `ServiceMail` en **classe statique**. Faites ce changement et adaptez le code dans les classes `ServiceUtilisateur` et `ServiceCommande`.
 
-3. Si ce n'est pas déjà fait, lancez les tests unitaires des classes `ServiceUtilisateurTest` et `ServiceCommandeTest`. On voit bien que dans un contexte réel, les mails seraient vraiment envoyés à chaque test ! C'est un problème.
+3. Si ce n'est pas déjà fait, lancez les tests unitaires des classes `ServiceUtilisateurTest` et `ServiceCommandeTest`. On voit bien que dans un contexte réel, des mails seraient vraiment envoyés pendant les tests (ceux où l'opération réussit) ! C'est un problème.
 
 4. Nous avions apporté une solution à ce même problème dans le TP précédent en utilisant **l'injection de dépendances**. Au lieu d'instancier directement le service "mail" dans la classe qui en a besoin, nous l'avions **injecté** via le constructeur. L'idée serait alors de :
 
@@ -337,7 +337,7 @@ public class ServiceConcret implements Service {
 
   private ServiceConcret() {}
 
-  public static ServiceConcret getInstance() {
+  public static synchronized ServiceConcret getInstance() {
     if(INSTANCE == null) {
       INSTANCE = new ServiceConcret();
     }
@@ -889,9 +889,10 @@ Réalisez le **diagramme de séquence des interactions** permettant de modélise
 
 L'objectif du pattern **prototype** est donc de définir un moyen d'obtenir des **copies** d'un objet, notamment dans un contexte où vos classes manipulent des abstractions (comme c'est souvent le cas quand on applique les principes **SOLID** et les **design patterns**). Si on souhaite pouvoir copier un objet abstrait manipulé, chaque classe concrète de la hiérarchie doit définir sa propre logique de copie via la méthode `cloner`.
 
-Attention à la nature de la copie : dans nos comptes bancaires, tous les attributs (`String`, `double`, énumération) sont immuables, donc une **copie superficielle** (recopier les valeurs des attributs) suffit. En revanche, si un attribut est un objet mutable (par exemple une `List<Operation>`), il faut aussi le copier (ou le cloner) : on parle alors de **copie profonde**. Sinon, l'original et la copie partageraient le même objet, et modifier l'un modifierait l'autre.
+Attention à la nature de la copie : dans nos comptes bancaires, 
+tous les attributs sont d'un type primitif (`double`) ou d'un type immuable (`String`, énumération), donc une **copie superficielle** (recopier les valeurs des attributs) suffit. En revanche, si un attribut est un objet mutable (par exemple une `List<Operation>`), il faut aussi le copier (ou le cloner) : on parle alors de **copie profonde**. Sinon, l'original et la copie partageraient le même objet, et modifier l'un modifierait l'autre.
 
-**Remarque technique (pour Java) :** En Java, un mécanisme de clonage est prévu à travers la méthode `clone` de la classe `Object`. Pour l'utiliser sur une classe que vous développez, il faut implémenter l'interface [`Cloneable`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Cloneable.html). Cette interface ne contient aucune méthode, mais elle permet de signaler que la classe peut être clonée. Le mécanisme interne de cette spécification est assez obscur et a été beaucoup critiqué (voir Item 13 du livre **Effective Java** de Joshua Bloch, ainsi que [les discussions en ligne](https://stackoverflow.com/questions/4081858/how-does-cloneable-work-in-java-and-how-do-i-use-it)). Il est donc préférable de ne pas utiliser cette interface et de définir votre propre méthode `cloner` comme nous l'avons fait dans l'exemple précédent.
+**Remarque technique (pour Java) :** En Java, un mécanisme de clonage est prévu à travers la méthode `clone` de la classe `Object`. Pour l'utiliser sur une classe que vous développez, il faut implémenter l'interface [`Cloneable`](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Cloneable.html) (sinon `clone` lève une `CloneNotSupportedException`) et redéfinir `clone` en la rendant publique (elle est `protected` dans `Object`). Cette interface ne contient aucune méthode, mais elle permet de signaler que la classe peut être clonée. Le mécanisme interne de cette spécification est assez obscur et a été beaucoup critiqué (voir Item 13 du livre **Effective Java** de Joshua Bloch, ainsi que [les discussions en ligne](https://stackoverflow.com/questions/4081858/how-does-cloneable-work-in-java-and-how-do-i-use-it)). Il est donc préférable de ne pas utiliser cette interface et de définir votre propre méthode `cloner` comme nous l'avons fait dans l'exemple précédent.
 
 ## La Fabrique Simple - un concept très utile
 
@@ -1039,7 +1040,7 @@ public class MonstreFactory {
 
   private MonstreFactory() {}
 
-  public synchronized static MonstreFactory getInstance() {
+  public static synchronized MonstreFactory getInstance() {
     if(INSTANCE == null) {
       INSTANCE = new MonstreFactory();
     }
@@ -1175,7 +1176,7 @@ public class CafeFactory {
 
   private CafeFactory() {}
 
-  public synchronized static CafeFactory getInstance() {
+  public static synchronized CafeFactory getInstance() {
     if(INSTANCE == null) {
       INSTANCE = new CafeFactory();
     }
@@ -1237,7 +1238,7 @@ public class CafeFactory {
 
   private CafeFactory() {}
 
-  public synchronized static CafeFactory getInstance() {
+  public static synchronized CafeFactory getInstance() {
     if(INSTANCE == null) {
       INSTANCE = new CafeFactory();
     }
@@ -1597,7 +1598,7 @@ public class MonstreFactory {
 
   private MonstreFactory() {}
 
-  public synchronized static MonstreFactory getInstance() {
+  public static synchronized MonstreFactory getInstance() {
     if(INSTANCE == null) {
       INSTANCE = new MonstreFactory();
     }
@@ -1971,7 +1972,7 @@ Vous avez donc sûrement trouvé une solution exploitant plusieurs **méthodes f
 
 Cependant, cette solution, même si globalement acceptable, n'est pas forcément la plus qualitative :
 * Il y a une duplication de code entre vos classes de débogage et vos classes d'armée.
-* La solution actuelle fonctionne mais repose excessivement sur l'héritage pour choisir les produits : les sous‑classes (`ArmeeHumaine`/`ArmeeOrc`, `DebugueurHumain`/`DebugueurOrc`) se contentent d'instancier directement des classes concrètes via `new`. Quand seule la production d'objets varie, il est préférable de déléguer cette responsabilité à une fabrique injectée (**la composition** faible + **injection de dépendances**) plutôt que de multiplier des sous‑classes.
+* La solution actuelle fonctionne mais repose excessivement sur l'héritage pour choisir les produits : les sous-classes (`ArmeeHumaine`/`ArmeeOrc`, `DebugueurHumain`/`DebugueurOrc`) se contentent d'instancier directement des classes concrètes via `new`. Quand seule la production d'objets varie, il est préférable de déléguer cette responsabilité à une fabrique injectée (**la composition** faible + **injection de dépendances**) plutôt que de multiplier des sous-classes.
 * Cette implémentation pourrait aussi poser un problème si on souhaite pouvoir **changer dynamiquement le comportement de création** souhaité.
 
 Imaginons que nous souhaitons faire en sorte qu'une armée puisse être **vaincue** par une autre armée. L'armée vaincue n'est pas détruite et continue d'exister (et on conserve les soldats encore vivants et les armes). Cependant, l'armée victorieuse impose son mode de fonctionnement à l'armée vaincue : elle produira maintenant les mêmes unités, les mêmes armes et les mêmes sorts que l'armée victorieuse.
@@ -2148,7 +2149,7 @@ public interface AbstractNiveauFactory {
 
 public class PlaineFactory implements AbstractNiveauFactory {
 
-  Random random = new Random();
+  private Random random = new Random();
 
   @Override
   public Monstre creerMonstreNormal() {
@@ -2345,7 +2346,7 @@ public class PlaineFactory implements AbstractNiveauFactory {
 
   private PlaineFactory() {}
 
-  public synchronized static AbstractNiveauFactory getInstance() {
+  public static synchronized AbstractNiveauFactory getInstance() {
     if(INSTANCE == null) {
       INSTANCE = new PlaineFactory();
     }
@@ -2362,7 +2363,7 @@ public class ChateauHanteFactory implements AbstractNiveauFactory {
 
   private ChateauHanteFactory() {}
 
-  public synchronized static AbstractNiveauFactory getInstance() {
+  public static synchronized AbstractNiveauFactory getInstance() {
     if(INSTANCE == null) {
       INSTANCE = new ChateauHanteFactory();
     }
@@ -2570,13 +2571,13 @@ Pour gérer l'instance concrète utilisée, on pourrait par exemple utiliser un 
 Par exemple, imaginons que nous souhaitons que notre **Jeu**, à un instant t, ne fonctionne qu'avec des **Plaines** ou qu'avec des **Châteaux Hantés** :
 
 ```java
-// On transforme notre interface en classe abstraite, car elle contient du code
-// Elle stocke l'instance concrète de la fabrique utilisée
+// On transforme notre interface en classe abstraite : elle doit stocker l'instance concrète  de la fabrique utilisée dans un attribut statique modifiable, ce qu'une interface ne permet pas (ses attributs sont implicitement public static final)
+
 public abstract class AbstractNiveauFactory {
 
 private static AbstractNiveauFactory INSTANCE;
 
-  public synchronized static AbstractNiveauFactory getInstance() {
+  public static synchronized AbstractNiveauFactory getInstance() {
     if(INSTANCE == null) {
       try {
             InputStream stream = ClassLoader.getSystemResourceAsStream("config/niveau_factory_config.txt");
