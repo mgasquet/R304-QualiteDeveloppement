@@ -27,7 +27,7 @@ Dans ce TP, nous allons voir **tous les patterns créateurs** et allons les mett
 
 Nous verrons aussi un autre pattern **structurel** appelé **adaptateur**. En fait, nous allons voir que beaucoup de ces patterns peuvent (et doivent) être combinés dans un projet plus large. Nous traitons souvent des problèmes "simples" avec quelques classes pour illustrer le fonctionnement d'un pattern, mais sur un projet plus large, il est tout à fait naturel de faire travailler en concert les différents patterns.
 
-**Attention** : Dans plusieurs exercices, il vous sera demandé de **générer un diagramme de classes** (avec `IntelliJ` ou autre IDE qui propose cette fonctionnalité). Bien que les diagrammes générés puissent être parfois légèrement erronés, et qu'il vaut généralement mieux faire le dessin soi-même, cela vous fera gagner du temps. Il est fortement conseillé de prendre des **captures d'écran** de chaque diagramme de classes et de les sauvegarder dans un sous-dossier de votre dépôt. Certains diagrammes permettent de comparer l'évolution de l'architecture et des dépendances avant/après **refactoring**.
+**Attention** : Dans plusieurs exercices, il vous sera demandé de **générer un diagramme de classes** (avec `IntelliJ` ou autre IDE qui propose cette fonctionnalité). Bien que les diagrammes générés puissent être parfois légèrement erronés, et qu'il vaille généralement mieux faire le dessin soi-même, cela vous fera gagner du temps. Il est fortement conseillé de prendre des **captures d'écran** de chaque diagramme de classes et de les sauvegarder dans un sous-dossier de votre dépôt. Certains diagrammes permettent de comparer l'évolution de l'architecture et des dépendances avant/après **refactoring**.
 
 <div class="exercise">
 
@@ -393,7 +393,7 @@ Vous maîtrisez maintenant le pattern **Singleton**, mais vous devez être très
 
 En effet, l'abus de **Singleton** est dangereux pour la santé (du logiciel...) ! Ce pattern présente une solution qui semble plutôt efficace à un problème assez récurrent : la gestion des dépendances vers les services de l'application. À tel point qu'on retrouve parfois dans certains projets beaucoup trop de singletons. 
 
-Mais pourquoi est-il déconseillé d'utiliser "trop" de singletons :
+Mais pourquoi est-il déconseillé d'utiliser "trop" de singletons ?
 
 * Il n'est pas possible de passer des paramètres à un singleton pour son initialisation (comme un objet classique) car c'est lui-même qui se construit ; cependant, on peut éventuellement mettre en place un fichier de configuration que le singleton ira lire lors de son initialisation.
 
@@ -1125,7 +1125,7 @@ Il existe différents types de cafés :
 * Café Expresso
 * Café Cappuccino
 
-Chaque café peut être composé d'un type de graine (arabica ou robusta) et le sucre versé dans le café appartient à une marque spécifique. Les types de graines peuvent venir de pays différents.
+Chaque café peut être composé d'un type de graine (arabica ou robusta) et le sucre versé dans le café appartient à une marque spécifique. Les types de graines peuvent venir de régions différentes.
 
 Pour l'instant, nos graines arabica viendront du Brésil, les graines robusta d'Asie et la marque de sucre utilisée est Daddy.
 
@@ -1907,7 +1907,7 @@ Testons maintenant votre maîtrise du pattern **Méthode Fabrique** avec un nouv
 
     * Si la distance est éloignée, un **bateau** (du constructeur **Honda**) est utilisé pour la livraison qui se déroulera en dix jours.
 
-    Faites en sorte qu'il soit possible de gérer les deux types de gestionnaires de livraisons : les **gestionnaires américains** (logique que l'on avait jusqu'à présent) et **gestionnaires japonais**. Vous ajouterez et adapterez les classes et le code nécessaires.
+    Faites en sorte qu'il soit possible de gérer les deux types de gestionnaires de livraisons : les **gestionnaires américains** (logique que l'on avait jusqu'à présent) et les **gestionnaires japonais**. Vous ajouterez et adapterez les classes et le code nécessaires.
 
 5. Vos modifications ont probablement impacté le `main`. Corrigez-le puis faites en sorte de pouvoir tester le gestionnaire de livraison japonais avec le code suivant :
 
@@ -1961,7 +1961,7 @@ Ce pattern va notamment permettre de créer et de sélectionner différents type
 
 4. Maintenant, faites en sorte que chaque armée (humaine et orc) puisse créer ses armes de siège spécifiques et créer et utiliser ses sorts spécifiques. Chaque arme de siège créée est ajoutée dans la liste correspondante. Un sort, quand il est créé, est seulement déclenché (il n'est pas stocké). Normalement, vous devriez pouvoir trouver une solution avec vos connaissances actuelles et les patterns que nous avons vus jusqu'ici. Si vous n'y arrivez pas, passez à la suite des explications.
 
-5. De même, complétez la classe `Debugueur` qui permet de débuguer une armée : il doit être possible de débuguer les ressources de l'armée humaine, et les ressources de l'armée orc (il faudra probablement ajouter des nouvelles classes). Les ressources créées (unité, arme, sort) ont exactement les mêmes caractéristiques que celles créées au travers de chaque type d'armée (humain, orc). Le code de `Debugueur` (et des nouvelles classes que vous allez certainement ajouter) va donc être assez similaire à `Armee`, etc.
+5. De même, complétez la classe `Debugueur` qui permet de déboguer une armée : il doit être possible de déboguer les ressources de l'armée humaine, et les ressources de l'armée orc (il faudra probablement ajouter de nouvelles classes). Les ressources créées (unité, arme, sort) ont exactement les mêmes caractéristiques que celles créées au travers de chaque type d'armée (humain, orc). Le code de `Debugueur` (et des nouvelles classes que vous allez certainement ajouter) va donc être assez similaire à `Armee`, etc.
 
 6. Complétez la fonction `main` de la classe `Jeu` afin de faire fonctionner le jeu.
 
@@ -1970,7 +1970,7 @@ Ce pattern va notamment permettre de créer et de sélectionner différents type
 Vous avez donc sûrement trouvé une solution exploitant plusieurs **méthodes fabriques** (une pour les unités, comme initialement, une pour les armes de siège et une pour les sorts...) dans la classe `Armee` et la classe `Debugueur` avec des sous-classes du genre `DebugueurHumain` et `DebugueurOrc`.
 
 Cependant, cette solution, même si globalement acceptable, n'est pas forcément la plus qualitative :
-* Il y a une duplication de code entre vos classes de débugage et vos classes d'armée.
+* Il y a une duplication de code entre vos classes de débogage et vos classes d'armée.
 * La solution actuelle fonctionne mais repose excessivement sur l'héritage pour choisir les produits : les sous‑classes (`ArmeeHumaine`/`ArmeeOrc`, `DebugueurHumain`/`DebugueurOrc`) se contentent d'instancier directement des classes concrètes via `new`. Quand seule la production d'objets varie, il est préférable de déléguer cette responsabilité à une fabrique injectée (**la composition** faible + **injection de dépendances**) plutôt que de multiplier des sous‑classes.
 * Cette implémentation pourrait aussi poser un problème si on souhaite pouvoir **changer dynamiquement le comportement de création** souhaité.
 
@@ -2043,7 +2043,7 @@ Pour vous aider, voici quelques indications :
     debugueur.invoquerSort(20,13,9);
     ```
 
-4. Bonus : est-ce que votre solution permet de faire en sorte que si on récupère le débugueur courant d'une armée et que l'armée est vaincue, l'instance du débugueur est bien actualisée (avec le nouveau peuple qui contrôle l'armée) ? Dans le **main**, on appelle deux fois `getDebugueurCourant`, mais en pratique, on ne devrait pas avoir à faire le second appel... Si le temps le permet, essayez de trouver une solution.
+4. Bonus : est-ce que votre solution permet de faire en sorte que si on récupère le débugueur courant d'une armée et que l'armée est vaincue, l'instance du débugueur soit bien actualisée (avec le nouveau peuple qui contrôle l'armée) ? Dans le **main**, on appelle deux fois `getDebugueurCourant`, mais en pratique, on ne devrait pas avoir à faire le second appel... Si le temps le permet, essayez de trouver une solution.
 
 </div>
 
@@ -2270,7 +2270,7 @@ public class Main {
 
 Cette solution aurait pu être implémentée en utilisant trois méthodes fabriques, mais nous avons préféré séparer la logique de création des objets dans une classe à part et l'injecter dans la classe `Zone` plutôt que de créer plusieurs sous-classes zones spécifiques. Ici, on favorise donc une solution basée sur la composition plutôt que l'héritage.
 
-Cette approche est d'autant plus pertinente, car nous pouvons maintenant adapter cette solution afin de **changer de famille utilisée dans la zone** (si besoin), sans avoir besoin de changer le code de notre fabrique. De plus, on respecte ainsi le principe ouvert/fermé, car si on souhaite créer une nouvelle famille de classes (un nouveau type de niveau), on a juste à ajouter une nouvelle fabrique. Cela permet aussi de **limiter la duplication de code** si un autre type de **service** utilise notre fabrique (par exemple, avec la classe `Arene`).
+Cette approche est d'autant plus pertinente que nous pouvons maintenant adapter cette solution afin de **changer de famille utilisée dans la zone** (si besoin), sans avoir besoin de changer le code de notre fabrique. De plus, on respecte ainsi le principe ouvert/fermé, car si on souhaite créer une nouvelle famille de classes (un nouveau type de niveau), on a juste à ajouter une nouvelle fabrique. Cela permet aussi de **limiter la duplication de code** si un autre type de **service** utilise notre fabrique (par exemple, avec la classe `Arene`).
 
 Adaptons un peu notre solution :
 
@@ -2437,7 +2437,7 @@ Revenons une dernière fois sur l'application de gestion de livraisons afin de l
 
 4. On souhaite pouvoir gérer un nouveau territoire : le territoire français. Sur ce territoire, des robots de modèle **A** sont utilisés pour effectuer les livraisons proches (en cinq jours), et des avions (sans pilote automatique) sont utilisés pour effectuer les livraisons longue distance (en quinze jours). Pour les livraisons effectuées sur le territoire français, on notifie le client par mail et on génère des rapports au format JSON.
 
-5. Complétez votre `main` avec un jeu de données pour débugger le fonctionnement des livraisons sur le territoire français (en vous inspirant de ce qui existe déjà pour les autres territoires).
+5. Complétez votre `main` avec un jeu de données pour déboguer le fonctionnement des livraisons sur le territoire français (en vous inspirant de ce qui existe déjà pour les autres territoires).
 
 </div>
 
@@ -2455,7 +2455,7 @@ Concernant la **Méthode Fabrique** :
 * Au niveau de sa **forme** :
   * La classe "cliente" définit une ou plusieurs méthodes de création, abstraites, ou concrètes avec une implémentation par défaut redéfinissable, qu’elle utilise dans sa logique métier.
   * Les sous-classes fournissent les implémentations concrètes qui créent les objets nécessaires.
-  * La logique de création est liée à la hiérarchie : pour changer quoi créer, on crée une nouvelle sous-classe.
+  * La logique de création est liée à la hiérarchie : pour changer ce qui est créé, on crée une nouvelle sous-classe.
   * Le pattern est très adapté si le type d’objet à créer dépend de l’état interne ou du comportement de la sous-classe.
   * Une même classe peut contenir plusieurs méthodes fabrique si elle doit créer plusieurs types d’objets liés à son rôle.
 * **Avantages** :
@@ -2932,9 +2932,9 @@ Que faire alors ? Laisser tomber ces bibliothèques et écrire notre propre code
 
 Cela semble compromis ! Mais pas de panique, un design pattern résout ce problème : `Adaptateur`.
 
-L'objectif de ce pattern est de faire en sorte qu'une classe "incompatible" avec notre architecture puisse tout de même être utilisée en passant par une classe dite **adaptateur** qui fait le pont entre votre architecture et cette classe grâce à de la **composition** (encore et toujours !). C'est un peu comme quand vous voyagez au Royaume-Uni par exemple. Les prises électriques ne sont pas compatibles avec la prise de votre chargeur de téléphone. Vous devez alors utiliser un adaptateur entre la prise de votre chargeur et celle anglaise.
+L'objectif de ce pattern est de faire en sorte qu'une classe "incompatible" avec notre architecture puisse tout de même être utilisée en passant par une classe dite **adaptateur** qui fait le pont entre votre architecture et cette classe grâce à de la **composition** (encore et toujours !). C'est un peu comme quand vous voyagez au Royaume-Uni par exemple. Les prises électriques ne sont pas compatibles avec la prise de votre chargeur de téléphone. Vous devez alors utiliser un adaptateur entre la prise de votre chargeur et la prise britannique.
 
-Ici, la "prise du chargeur" est votre architecture, les interfaces, les abstractions, l'adaptateur la classe qui va être amenée par le pattern et la prise anglaise la classe "externe" que vous souhaitez utiliser.
+Ici, la "prise du chargeur" est votre architecture, les interfaces, les abstractions, l'adaptateur la classe qui va être amenée par le pattern et la prise britannique la classe "externe" que vous souhaitez utiliser.
 
 Voici comment appliquer ce pattern :
 
@@ -3364,7 +3364,7 @@ Et si nous essayions de combiner plus de patterns ? Nous avons l'application id�
 
     * Une salle normale est une salle avec un coffre et entre 20 et 40 ennemis.
 
-    * Une salle spéciale est soit une salle avec un coffre et 20 ennemis (une chance sur cinq) ou bien une salle avec un boss avec un niveau entre 30 et 50.
+    * Une salle spéciale est soit une salle avec un coffre et 20 ennemis (une chance sur cinq), soit une salle avec un boss avec un niveau entre 30 et 50.
 
     * La salle finale est une salle avec une énigme, un boss de niveau 80 et 30 ennemis.
 
