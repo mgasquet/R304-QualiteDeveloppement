@@ -1936,7 +1936,7 @@ Testons maintenant votre maîtrise du pattern **Méthode Fabrique** avec un nouv
 
    * Le gestionnaire de livraison initialise ensuite la livraison (avec un code complexe qui est différent selon le mode de livraison retenu) puis l'enregistre dans la liste de ses livraisons suivies.
 
-   * Chaque jour, la méthode `actualiser` est appelée pour mettre à jour l'avancement de chaque livraison en cours. Pour faciliter le tout, dans le cadre de l'exercice, on passera la date voulue à la méthode (ce qui nous permettra de simuler le passage du temps). La classe `Livraison` gère la logique de la livraison. Un jour avant la livraison, le client est notifié (avec un mail). À la fin de la livraison, un rapport (au format HTML) est généré et affiché.
+   * Chaque jour, la méthode `actualiserLivraisons` du gestionnaire est appelée pour mettre à jour l'avancement de chaque livraison en cours. Pour faciliter le tout, dans le cadre de l'exercice, on passera la date voulue à la méthode (ce qui nous permettra de simuler le passage du temps). La classe `Livraison` gère la logique de la livraison. Un jour avant la livraison, le client est notifié (avec un mail). À la fin de la livraison, un rapport (au format HTML) est généré et affiché.
 
    * Il est à noter que chaque méthode de livraison peut ajouter sa propre logique dans les différentes étapes de la livraison (par exemple, un jour avant une livraison par drone, le client est averti que la livraison sera effectuée par drone).
 
@@ -2032,7 +2032,7 @@ Pour vous aider, voici quelques indications :
 
 1. Commencez par essayer de trouver une solution pour éliminer la **duplication de code** entre les différentes **armées** et le **débugueur** (servez-vous des indications précédentes pour trouver une solution). Certaines classes vont probablement être ajoutées/modifiées/supprimées... Vous corrigerez le `main` en conséquence.
 
-2. Nous voulons maintenant ajouter la fonctionnalité qui consiste à **vaincre une armée**, ce qui a pour effet que l'armée vaincue produira (à l'avenir) des ressources de l'armée victorieuse (qui l'a battue), tout en conservant son état actuel (ressources déjà produites, or, etc.). Insérez et complétez les méthodes suivantes dans `Armee` :
+2. Nous voulons maintenant ajouter la fonctionnalité qui consiste à **vaincre une armée**, ce qui a pour effet que l'armée vaincue produira (à l'avenir) des ressources de l'armée victorieuse (qui l'a battue), tout en conservant son état actuel (ressources déjà produites, argent, etc.). Insérez et complétez les méthodes suivantes dans `Armee` :
 
     ```java
     /**
@@ -2054,7 +2054,7 @@ Pour vous aider, voici quelques indications :
 
     Si vous avez bien traité la question précédente, cela ne devrait pas être trop difficile. Vous pouvez éventuellement ajouter d'autres méthodes, au besoin.
 
-3. Vérifiez que le code suivant fonctionne (à ajouter à la fin du `Main`) :
+3. Vérifiez que le code suivant fonctionne (à ajouter à la fin du `main` de la classe `Jeu`) :
 
     ```java
     //Affichage avec les ressources des orcs
@@ -2073,7 +2073,7 @@ Pour vous aider, voici quelques indications :
     //Il y a les anciennes catapultes et un canon
     armeeOrc.attaquerAvecArmesDeSiege();
 
-    //Il y a les anciens orcs et un humain
+    //Il y a l'ancien orc et un humain
     armeeOrc.attaquerAvecUnites();
 
     //C'est un sort de boule de feu
@@ -3091,7 +3091,7 @@ Vérifions votre compréhension du pattern avec un exercice d'application.
 
 3. Refactorez le code pour pouvoir le rendre plus modulable au niveau du choix de la méthode de hachage du mot de passe (même si on n'a qu'une seule méthode pour l'instant). Vous devrez probablement corriger le `main`.
 
-4. Une bibliothèque nommée `BcryptPasswordHasher-1.0.0` est importée dans le projet ! Explorez ses classes en allant dans `src/main/resources/libs/BcryptPasswordHasher-1.0.0.jar` (normalement, l'IDE vous permet de voir les classes contenues dans le `.jar`). Cette bibliothèque permet de hacher un mot de passe avec l'algorithme `BCrypt` (qui permet de saler le mot de passe) et de renforcer la sécurité du tout en ajoutant un poivre (pepper), comme nous le faisons en TD de PHP. La classe `BCryptPasswordHasher` fonctionne ainsi :
+4. Une bibliothèque nommée `BcryptPasswordHasher-1.0.0` est importée dans le projet ! Explorez ses classes en allant dans `src/main/resources/libs/BcryptPasswordHasher-1.0.0.jar` (normalement, l'IDE vous permet de voir les classes contenues dans le `.jar`). Les classes utiles sont dans le paquetage `fr.umontpellier.iut.bcrypt` ; les paquetages `org.apache.commons` et `org.mindrot` sont des dépendances internes.  Cette bibliothèque permet de hacher un mot de passe avec l'algorithme `BCrypt` (qui permet de saler le mot de passe) et de renforcer la sécurité du tout en ajoutant un poivre (pepper), comme nous le faisons en TD de PHP. La classe `BCryptPasswordHasher` fonctionne ainsi :
 
     * On l'initialise avec le poivre (pepper) souhaité, qui est une chaîne aléatoire.
 
@@ -3111,7 +3111,7 @@ Vous avez compris le concept d'adaptateur ? Parfait ! Maintenant, revenons à no
 
 <div class="exercise">
 
-1. Une bibliothèque nommée `patternmon` est importée dans le projet ! Explorez ses classes en allant dans `src/main/resources/libs/patternmons-1.0.0.jar`.
+1. Une bibliothèque nommée `patternmons` est importée dans le projet ! Explorez ses classes en allant dans `src/main/resources/libs/patternmons-1.0.0.jar`.
 
 2. Comme vous pouvez le constater, cette bibliothèque définit de nouveaux monstres "patternmons" qu'on souhaite maintenant intégrer à notre système de simulation de combat. Comme vous l'avez deviné, nous allons donc devoir mettre en place un `Adaptateur` ! Cependant, comme il y a une hiérarchie de classes ici, la mise en place va être un poil plus complexe que sur notre exemple, donc nous allons le faire pas à pas :
 
