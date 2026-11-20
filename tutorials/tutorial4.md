@@ -389,7 +389,7 @@ class Main {
 
 ### Avertissement
 
-Vous maîtrisez maintenant le pattern **Singleton**, mais vous devez être très précautionneux quant à son utilisation. En conclusion du dernier TP vous étiez invités à aller jeter un coup d'œil aux [principes STUPID](https://openclassrooms.com/en/courses/5684096-use-mvc-solid-principles-and-design-patterns-in-java/6417836-avoid-stupid-practices-in-programming) qui sont un ensemble de mauvaises pratiques en conception logicielle. Regardez à quoi correspond le `S`.
+Vous maîtrisez maintenant le pattern **Singleton**, mais vous devez être très précautionneux quant à son utilisation. En conclusion du dernier TP vous étiez invités à aller jeter un coup d'œil aux [principes STUPID](https://openclassrooms.com/fr/courses/7959326-ecrivez-du-code-c-maintenable-avec-mvc-et-solid/8101608-evitez-les-mauvaises-pratiques-de-programmation-stupid) qui sont un ensemble de mauvaises pratiques en conception logicielle. Regardez à quoi correspond le `S`.
 
 En effet, l'abus de **Singleton** est dangereux pour la santé (du logiciel...) ! Ce pattern présente une solution qui semble plutôt efficace à un problème assez récurrent : la gestion des dépendances vers les services de l'application. À tel point qu'on retrouve parfois dans certains projets beaucoup trop de singletons. 
 
@@ -2640,7 +2640,8 @@ public class Main {
 
 La fabrique abstraite vise un fichier qui se situe dans `src/main/resources/config/niveau_factory_config.txt` qui contient simplement une chaîne de caractères. Par exemple : `chateau`.
 
-Avec cette nouvelle implémentation, il n'y a plus qu'à changer le contenu du fichier de configuration pour changer la fabrique concrète manipulée dans tout le programme. On notera qu'il n'y a plus besoin que les sous-classes soient des **singletons** (si c'était le cas avant), car elles sont instanciées par la fabrique abstraite. Cependant, on pourrait empêcher le fait que n'importe qui puisse instancier les fabriques concrètes en passant leurs constructeurs en visibilité `protected` (afin que seule `AbstractNiveauFactory` puisse les instancier).
+Avec cette nouvelle implémentation, il n'y a plus qu'à changer le contenu du fichier de configuration pour changer la fabrique concrète manipulée dans tout le programme. On notera qu'il n'y a plus besoin que les sous-classes soient des **singletons** (si c'était le cas avant), car elles sont instanciées par la fabrique abstraite. 
+Cependant, on pourrait limiter l'instanciation des fabriques concrètes en les plaçant dans le même paquetage que `AbstractNiveauFactory` et en donnant à leurs constructeurs la visibilité paquetage (aucun modificateur) : seules les classes de ce paquetage (dont `AbstractNiveauFactory`) pourront les instancier.
 
 Bien sûr, cette implémentation n'est pas forcément souhaitable dans tous les contextes ! C'est seulement si, à un instant t, on veut uniquement avoir un seul type de fabrique concrète utilisé et pouvoir en changer facilement (d'ailleurs, l'exemple donné est discutable, parce qu'on voudrait a priori pouvoir créer plusieurs types de niveaux différents à la fois).
 
@@ -3408,7 +3409,7 @@ Voici un bilan de ce que vous avez appris :
 
 Concernant les **design patterns GoF**, n'hésitez pas à aller consulter (et expérimenter) ceux que nous n'avons pas abordés dans ce cours (les autres patterns structurels et comportementaux). Pour rappel, il y en a 23 ! Il peut être particulièrement intéressant d'aller voir **observateur**, **état**, **itérateur**, **visiteur**.
 
-Il peut aussi être intéressant que vous vous renseigniez sur le concept de **conteneur de dépendances** (ou bien **conteneur IoC**) qui est au cœur de nombreux frameworks et permet de gérer facilement toutes les dépendances d'un programme sans avoir besoin de gérer plein de singletons (et donc, être moins [STUPID](https://openclassrooms.com/en/courses/5684096-use-mvc-solid-principles-and-design-patterns-in-java/6417836-avoid-stupid-practices-in-programming) !).
+Il peut aussi être intéressant que vous vous renseigniez sur le concept de **conteneur de dépendances** (ou bien **conteneur IoC**) qui est au cœur de nombreux frameworks et permet de gérer facilement toutes les dépendances d'un programme sans avoir besoin de gérer plein de singletons (et donc, être moins [STUPID](https://openclassrooms.com/fr/courses/7959326-ecrivez-du-code-c-maintenable-avec-mvc-et-solid/8101608-evitez-les-mauvaises-pratiques-de-programmation-stupid) !).
 
 Vous devez maîtriser toutes ces notions abordées dans ce cours pour la suite de votre cursus (et de votre carrière) et ainsi développer dès le début d'un projet un code d'une certaine qualité qui prévoit l'évolutivité et la modularité du projet sur le long terme. Si vous réussissez à appliquer cela, vous n'êtes alors plus un "simple" codeur, mais véritablement un "développeur", voire un **ingénieur logiciel**. 
 
