@@ -815,7 +815,7 @@ class Service {
 </div>
 
 
-L'application du prototype peut éventuellement être plus complexe dans des cas d'héritage. Par exemple, si un attribut dont a besoin une classe fille lors de sa construction est déclaré comme privé dans la classe mère, l'enfant n'y aura pas accès et ne pourra donc pas l'utiliser pour le clonage. Il faut donc prévoir cela et proposer des solutions pour que les classes filles puissent effectuer le clonage sans problème. On peut par exemple utiliser la visibilité `protected` sur l'attribut (dans ce cas, il faut bien organiser les **packages**) ou alors des **getters** (publics ou `protected`) qui renvoient l'objet inaccessible désiré, ou bien le clonent (si c'est un objet et qu'il peut être cloné).
+L'application du prototype peut éventuellement être plus complexe dans des cas d'héritage. Par exemple, si un attribut dont a besoin une classe fille lors de sa construction est déclaré comme privé dans la classe mère, l'enfant n'y aura pas accès et ne pourra donc pas l'utiliser pour le clonage. Il faut donc prévoir cela et proposer des solutions pour que les classes filles puissent effectuer le clonage sans problème. On peut par exemple utiliser la visibilité `protected` sur l'attribut (dans ce cas, il faut bien organiser les **packages**) ou alors des **getters** (publics ou `protected`) qui renvoient l'objet inaccessible désiré, ou bien le clonent (si c'est un objet et qu'il peut être cloné). On peut aussi définir dans la classe mère un constructeur par copie `protected`, que la classe fille appelle via `super(...)`.
 
 ```java
 abstract class ClasseMere {
@@ -863,6 +863,48 @@ abstract class ClasseMere {
   }
 
   ...
+
+}
+```
+
+Cette dernière solution permet de garder l'attribut `valeur` privé : chaque classe recopie ses propres attributs, et la classe fille délègue la copie de la partie *« mère »* à sa classe mère.
+
+```java
+abstract class ClasseMere {
+
+  private int valeur;
+
+  public ClasseMere(int valeur) {
+    this.valeur = valeur;
+  }
+
+  // Constructeur par copie, accessible aux classes filles (et au paquetage)
+  protected ClasseMere(ClasseMere aCopier) {
+    this(aCopier.valeur);
+  }
+
+  public abstract ClasseMere cloner();
+
+}
+
+class ClasseFille extends ClasseMere {
+
+  private String texte;
+
+  public ClasseFille(int valeur, String texte) {
+    super(valeur);
+    this.texte = texte;
+  }
+
+  private ClasseFille(ClasseFille aCopier) {
+    super(aCopier); // la classe mère copie ses propres attributs
+    this.texte = aCopier.texte;
+  }
+
+  @Override
+  public ClasseFille cloner() {
+    return new ClasseFille(this);
+  }
 
 }
 ```
