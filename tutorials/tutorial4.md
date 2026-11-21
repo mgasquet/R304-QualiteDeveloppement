@@ -11,7 +11,7 @@ Quand on parle de **design patterns** on fait généralement référence aux pat
 
 Pour rappel, un **design pattern** est une solution réutilisable et adaptable vis-à-vis d'un problème de conception logicielle assez récurrent. Un pattern est généralement présenté via un diagramme de classes de conception et un exemple d'implémentation. Un pattern a pour but d'être applicable et adaptable à n'importe quel projet ou contexte.
 
-Il existe d'autres types de design patterns (par exemple, les patterns GRASP) mais les plus connus et les plus utilisés sont ceux du **GoF** que nous allons explorer dans ce cours. Tous ces **patterns** permettent de renforcer l'application des principes **SOLID**. Par ailleurs, certains langages comme `Java` proposent (dans leur bibliothèque standard) des **classes** et **interfaces** permettant d'implémenter certains patterns **GoF** comme **itérateur** (`Iterator`), **observateur** (`PropertyChangeListener`, l'ancien `java.util.Observer` étant déprécié), **prototype** (`Cloneable`)....
+Il existe d'autres types de design patterns (par exemple, les patterns GRASP) mais les plus connus et les plus utilisés sont ceux du **GoF** que nous allons explorer dans ce cours. Tous ces **patterns** permettent de renforcer l'application des principes **SOLID**. Par ailleurs, certains langages comme `Java` proposent (dans leur bibliothèque standard) des **classes** et **interfaces** permettant d'implémenter certains patterns **GoF** comme **itérateur** (`Iterator`), **observateur** (`PropertyChangeListener`, l'ancien `java.util.Observer` étant déprécié), **prototype** (`Cloneable`)...
 
 Les design patterns **GoF** se divisent en trois catégories :
 
@@ -867,7 +867,7 @@ abstract class ClasseMere {
 }
 ```
 
-Cette dernière solution permet de garder l'attribut `valeur` privé : chaque classe recopie ses propres attributs, et la classe fille délègue la copie de la partie *« mère »* à sa classe mère.
+Enfin, un constructeur par copie `protected` dans la classe mère permet de garder l'attribut `valeur` privé : chaque classe recopie ses propres attributs, et la classe fille délègue la copie de la partie *« mère »* à sa classe mère.
 
 ```java
 abstract class ClasseMere {
@@ -2613,7 +2613,7 @@ Pour gérer l'instance concrète utilisée, on pourrait par exemple utiliser un 
 Par exemple, imaginons que nous souhaitons que notre **Jeu**, à un instant t, ne fonctionne qu'avec des **Plaines** ou qu'avec des **Châteaux Hantés** :
 
 ```java
-// On transforme notre interface en classe abstraite : elle doit stocker l'instance concrète  de la fabrique utilisée dans un attribut statique modifiable, ce qu'une interface ne permet pas (ses attributs sont implicitement public static final)
+// On transforme notre interface en classe abstraite : elle doit stocker l'instance concrète de la fabrique utilisée dans un attribut statique modifiable, ce qu'une interface ne permet pas (ses attributs sont implicitement public static final)
 
 public abstract class AbstractNiveauFactory {
 
