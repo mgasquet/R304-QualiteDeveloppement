@@ -197,7 +197,7 @@ Aussi, imaginons une classe d'accès à une base de données : celle-ci initiali
 
 4. Vérifiez que tout fonctionne et que les bugs sont bien résolus.
 
-5. Les classes `CreationAnimal` et `LectureAnimaux` récupèrent elles-mêmes leur dépendance vers `StockageAnimaux` via `getInstance()`. Refactorez ces deux classes : injectez la dépendance via le constructeur.
+5. Les classes `CreationAnimal` et `LectureAnimaux` récupèrent elles-mêmes leur dépendance vers `StockageAnimaux` via `getInstance()`. Refactorez ces deux classes : injectez la dépendance via le constructeur et adaptez la classe cliente en conséquence (c'est elle qui appellera `getInstance()`).
 
 6. Pensez-vous qu'il serait possible de se passer intégralement de singletons dans une application bien construite ? Vous pouvez discuter de votre réponse avec votre enseignant.
 
@@ -437,7 +437,7 @@ Ce pattern permet de résoudre le problème de création d'un objet qui a beauco
 
     Le fromage sera géré par un attribut `typeFromage` de type `Fromage` dans la classe `Burger` et la salade par un **booléen** (comme pour les tomates).
 
-    Ajoutez ces nouveaux attributs à la classe `Burger`.
+    Ajoutez ces nouveaux attributs à la classe `Burger` (et complétez `toString()`).
 
 3. Maintenant que nous avons ajouté ces deux options, quels sont tous les types de burgers qu'il est possible de créer ? Ajoutez de nouveaux **constructeurs** pour gérer tous les cas... Si vous bloquez à un moment, c'est normal ! Comprenez-vous pourquoi il n'est pas possible de poursuivre la conception actuelle ?
 
@@ -648,13 +648,13 @@ class Exemple {
 
 1. Refactorez le code de l'application de burgers pour mettre en place un `Builder`. Adaptez le `Main` en conséquence.
 
-2. Vérifiez que vous pouvez bien ajouter les burgers suivants :
+2. Vérifiez que vous pouvez bien créer (et afficher) les burgers suivants :
 
-    * Burger avec du pain moisi, avec de la salade et du poulet.
+    * *Moisi Poulet* - burger avec du pain moisi, de la salade et du poulet.
 
-    * Burger avec du pain au sésame, avec des tomates et de la salade.
+    * *Végé* - burger avec du pain au sésame, des tomates et de la salade.
 
-    * Burger avec du pain brioche, avec de la salade, des tomates, de la viande de bœuf et du cheddar.
+    * *Royal* - burger avec du pain brioche, de la salade, des tomates, de la viande de bœuf et du cheddar.
 
 3. Générez le **diagramme de classes de conception** de votre application (avec `IntelliJ`).
 
@@ -911,7 +911,8 @@ class ClasseFille extends ClasseMere {
 
 <div class="exercise">
 
-1. Refactorez votre code en appliquant le pattern **prototype** sur vos comptes bancaires. Adaptez aussi le code de `getCopieCompteCourant` en conséquence.
+1. Refactorez votre code en appliquant le pattern **prototype** sur vos comptes bancaires. Adaptez aussi le code de `getCopieCompteCourant` en conséquence : elle peut désormais renvoyer une copie de n'importe quel compte (son type de retour devient donc `CompteBancaire`) et donc on peut renommer cette méthode `getCopieCompte`.
+
 
 2. Vérifiez que le test unitaire passe toujours.
 
@@ -2621,25 +2622,22 @@ private static AbstractNiveauFactory INSTANCE;
 
   public static synchronized AbstractNiveauFactory getInstance() {
     if(INSTANCE == null) {
-      try {
-            InputStream stream = ClassLoader.getSystemResourceAsStream("config/niveau_factory_config.txt");
-            if(stream == null) {
-                throw new RuntimeException("Fichier de configuration manquant.");
-            }
-            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-            String config = reader.readLine();
-            switch (config) {
-              case "plaine" :
-                INSTANCE = new PlaineFactory();
-                break;
-              case "chateau" : 
-                INSTANCE = new ChateauHanteFactory();
-                break;
-              default: 
-                throw new IllegalArgumentException(String.format("Type de biome inconnu : %s", config));
-            }
+      InputStream stream = ClassLoader.getSystemResourceAsStream("config/niveau_factory_config.txt");
+      if(stream == null) {
+          throw new RuntimeException("Fichier de configuration manquant.");
+      }
+      try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
+        String config = reader.readLine();
+        if(config == null) {
+          throw new RuntimeException("Fichier de configuration vide.");
+        }
+        switch (config.strip()) {
+          case "plaine" -> INSTANCE = new PlaineFactory();
+          case "chateau" -> INSTANCE = new ChateauHanteFactory();
+          default -> throw new IllegalArgumentException(String.format("Type de biome inconnu : %s", config));
+        }
       } catch (IOException e) {
-          throw new RuntimeException("Fichier de configuration corrompu.");
+          throw new RuntimeException("Fichier de configuration illisible.", e);
       }
     }
     return INSTANCE;
