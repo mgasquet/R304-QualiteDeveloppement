@@ -205,7 +205,7 @@ Aussi, imaginons une classe d'accès à une base de données : celle-ci initiali
 
 ### Classe statique vs Singleton
 
-En introduction de cette section, nous avions évoqué le fait d'utiliser une **classe statique**  pour obtenir un résultat similaire au singleton. Une classe statique est une classe dans laquelle il n'y a que des attributs et des méthodes **de classe** qui appartiennent donc à la classe et pas à une instance en particulier. Ainsi, tous les objets qui manipulent cette classe utilisent la même "entité". Par conséquent créer des instances de cette classe est sans intérêt (car tous les membres sont statiques) et donc en général on préfère rendre son constructeur privé pour empêcher son instanciation.
+En introduction de cette section, nous avions évoqué le fait d'utiliser une **classe statique**  pour obtenir un résultat similaire au singleton. Une classe statique est une classe dans laquelle il n'y a que des attributs et des méthodes **de classe** qui appartiennent donc à la classe et pas à une instance en particulier. Ainsi, tous les objets qui manipulent cette classe utilisent la même "entité". Par conséquent, créer des instances de cette classe est sans intérêt (car tous les membres sont statiques) et donc en général on préfère rendre son constructeur privé pour empêcher son instanciation.
 
 Par exemple, on pourrait remplacer ce **Singleton** :
 
@@ -2018,7 +2018,7 @@ Vous avez donc sûrement trouvé une solution exploitant plusieurs **méthodes f
 
 Cependant, cette solution, même si globalement acceptable, n'est pas forcément la plus qualitative :
 * Il y a une duplication de code entre vos classes de débogage et vos classes d'armée.
-* La solution actuelle fonctionne mais repose excessivement sur l'héritage pour choisir les produits : les sous-classes (`ArmeeHumaine`/`ArmeeOrc`, `DebugueurHumain`/`DebugueurOrc`) se contentent d'instancier directement des classes concrètes via `new`. Quand seule la production d'objets varie, il est préférable de déléguer cette responsabilité à une fabrique injectée (**agrégation**,c'est-à-dire composition faible,  + **injection de dépendances**) plutôt que de multiplier des sous-classes.
+* La solution actuelle fonctionne mais repose excessivement sur l'héritage pour choisir les produits : les sous-classes (`ArmeeHumaine`/`ArmeeOrc`, `DebugueurHumain`/`DebugueurOrc`) se contentent d'instancier directement des classes concrètes via `new`. Quand seule la production d'objets varie, il est préférable de déléguer cette responsabilité à une fabrique injectée (**agrégation**, c'est-à-dire composition faible,  + **injection de dépendances**) plutôt que de multiplier des sous-classes.
 * Cette implémentation pourrait aussi poser un problème si on souhaite pouvoir **changer dynamiquement le comportement de création** souhaité.
 
 Imaginons que nous souhaitons faire en sorte qu'une armée puisse être **vaincue** par une autre armée. L'armée vaincue n'est pas détruite et continue d'exister (et on conserve les soldats encore vivants et les armes). Cependant, l'armée victorieuse impose son mode de fonctionnement à l'armée vaincue : elle produira maintenant les mêmes unités, les mêmes armes et les mêmes sorts que l'armée victorieuse.
@@ -2621,7 +2621,7 @@ Par exemple, imaginons que nous souhaitons que notre **Jeu**, à un instant t, n
 
 public abstract class AbstractNiveauFactory {
 
-private static AbstractNiveauFactory INSTANCE;
+  private static AbstractNiveauFactory INSTANCE;
 
   public static synchronized AbstractNiveauFactory getInstance() {
     if(INSTANCE == null) {
