@@ -9,9 +9,9 @@ lang: fr
 
 Quand on parle de **design patterns** on fait généralement référence aux patterns dits **GoF** (Gang of Four) présentés dans le livre **Design Patterns: Elements of Reusable Object-Oriented Software**, qui est une référence dans le monde de l'ingénierie logicielle. Le **Gang of Four** fait référence aux quatre auteurs de ce livre : **Erich Gamma**, **Richard Helm**, **Ralph Johnson** et **John Vlissides**.
 
-Pour rappel, un **design pattern** est une solution réutilisable et adaptable vis-à-vis d'un problème de conception logicielle assez récurrent. Un pattern est généralement présenté via un diagramme de classes de conception et un exemple d'implémentation. Un pattern a pour but d'être applicable et adaptable à n'importe quel projet ou contexte.
+Pour rappel, un **design pattern** est une solution réutilisable et adaptable vis-à-vis d'un problème de conception logicielle assez récurrent. Un pattern est généralement présenté via un diagramme de classes de conception et un exemple d'implémentation. Un pattern a pour but d'être applicable et adaptable aux projets indépendamment du contexte ou du langage de programmation orienté objets choisi.
 
-Il existe d'autres types de design patterns (par exemple, les patterns GRASP) mais les plus connus et les plus utilisés sont ceux du **GoF** que nous allons explorer dans ce cours. Tous ces **patterns** permettent de renforcer l'application des principes **SOLID**. Par ailleurs, certains langages comme `Java` proposent (dans leur bibliothèque standard) des **classes** et **interfaces** permettant d'implémenter certains patterns **GoF** comme **itérateur** (`Iterator`), **observateur** (`PropertyChangeListener`, l'ancien `java.util.Observer` étant déprécié), **prototype** (`Cloneable`)...
+Il existe d'autres types de design patterns (par exemple, les patterns GRASP) mais les plus connus et les plus utilisés sont ceux du **GoF** que nous allons explorer dans ce cours. Ces **patterns** permettent de renforcer l'application des principes **SOLID**, selon le contexte. Par ailleurs, certains langages comme `Java` proposent (dans leur bibliothèque standard) des **classes** et **interfaces** permettant d'implémenter certains patterns **GoF** comme **itérateur** (`Iterator`), **observateur** (`PropertyChangeListener`, l'ancien `java.util.Observer` étant déprécié), **prototype** (`Cloneable`)...
 
 Les design patterns **GoF** se divisent en trois catégories :
 
@@ -25,7 +25,7 @@ Dans le TP précédent, vous avez déjà vu un pattern **structurel** (Décorate
 
 Dans ce TP, nous allons voir **tous les patterns créateurs** et allons les mettre en application : **Singleton**, **Builder**, **Prototype**, **Méthode Fabrique** et enfin **Fabrique Abstraite**.
 
-Nous verrons aussi un autre pattern **structurel** appelé **adaptateur**. En fait, nous allons voir que beaucoup de ces patterns peuvent (et doivent) être combinés dans un projet plus large. Nous traitons souvent des problèmes "simples" avec quelques classes pour illustrer le fonctionnement d'un pattern, mais sur un projet plus large, il est tout à fait naturel de faire travailler en concert les différents patterns.
+Nous verrons aussi un autre pattern **structurel** appelé **adaptateur**. En fait, nous allons voir que beaucoup de ces patterns peuvent être combinés dans un projet plus large. Nous traitons souvent des problèmes "simples" avec quelques classes pour illustrer le fonctionnement d'un pattern, mais sur un projet plus large, il est tout à fait naturel de faire travailler en concert les différents patterns.
 
 **Attention** : Dans plusieurs exercices, il vous sera demandé de **générer un diagramme de classes** (avec `IntelliJ` ou autre IDE qui propose cette fonctionnalité). Bien que les diagrammes générés puissent être parfois légèrement erronés, et qu'il vaille généralement mieux faire le dessin soi-même, cela vous fera gagner du temps. Il est fortement conseillé de prendre des **captures d'écran** de chaque diagramme de classes et de les sauvegarder dans un sous-dossier de votre dépôt. Certains diagrammes permettent de comparer l'évolution de l'architecture et des dépendances avant/après **refactoring**.
 
@@ -43,7 +43,7 @@ Nous verrons aussi un autre pattern **structurel** appelé **adaptateur**. En fa
 
 L'idée du pattern **Singleton** est très simple : on souhaite garantir **qu'il n'existe qu'une seule instance d'une classe dans le programme et fournir un point d'accès global à cette instance**. Les autres objets/classes de l'application utilisent l'instance "globale" et **ne doivent pas pouvoir l'instancier directement** (l'utilisation de **new** doit être bloquée en dehors de la classe). L'instance globale doit être accessible à travers une méthode qui l'expose et qui a une visibilité appropriée.
 
-On pourrait penser que l'utilisation d'une **classe statique** (toutes les méthodes et attributs statiques) pourrait aussi faire l'affaire. C'est une solution à éviter, nous verrons pourquoi par la suite.
+On pourrait penser que l'utilisation d'une **classe à membres statiques** (toutes les méthodes et attributs statiques) pourrait aussi faire l'affaire. C'est une solution à éviter, nous verrons pourquoi par la suite.
 
 Commençons avec un exemple :
 
@@ -203,9 +203,9 @@ Aussi, imaginons une classe d'accès à une base de données : celle-ci initiali
 
 </div>
 
-### Classe statique vs Singleton
+### Classe à membres statiques vs Singleton
 
-En introduction de cette section, nous avions évoqué le fait d'utiliser une **classe statique**  pour obtenir un résultat similaire au singleton. Une classe statique est une classe dans laquelle il n'y a que des attributs et des méthodes **de classe** qui appartiennent donc à la classe et pas à une instance en particulier. Ainsi, tous les objets qui manipulent cette classe utilisent la même "entité". Par conséquent, créer des instances de cette classe est sans intérêt (car tous les membres sont statiques) et donc en général on préfère rendre son constructeur privé pour empêcher son instanciation.
+En introduction de cette section, nous avions évoqué le fait d'utiliser une **classe à membres statique**  pour obtenir un résultat similaire au singleton. Une classe à membres statiques est une classe dans laquelle il n'y a que des attributs et des méthodes **de classe** qui appartiennent donc à la classe et pas à une instance en particulier. Ainsi, tous les objets qui manipulent cette classe utilisent la même "entité". Par conséquent, créer des instances de cette classe est sans intérêt (car tous les membres sont statiques) et donc en général on préfère rendre son constructeur privé pour empêcher son instanciation.
 
 Par exemple, on pourrait remplacer ce **Singleton** :
 
@@ -289,13 +289,13 @@ class Main {
 
 Si cette méthode peut paraître plus "facile" à mettre en place et à utiliser (pas de `getInstance`, etc.) c'est généralement une **mauvaise idée**. Nous allons voir pourquoi avec le prochain exercice.
 
-**Attention**, dans l'exercice suivant, nous allons donc **volontairement programmer une mauvaise solution, très bancale** afin de démontrer les problèmes liés à l'utilisation d'une classe statique plutôt qu'un singleton, dans certains contextes.
+**Attention**, dans l'exercice suivant, nous allons donc **volontairement programmer une mauvaise solution, très bancale** afin de démontrer les problèmes liés à l'utilisation d'une classe à membres statiques plutôt qu'un singleton, dans certains contextes.
 
 <div class="exercise">
 
 1. Ouvrez le paquetage `fr.umontpellier.iut.singleton2`. Cette application permet de simuler des services de création d'utilisateurs et de gestion de commandes. Dans une application concrète, ces deux services sont susceptibles d'envoyer des mails. Testez un peu l'application. Aussi, deux classes de tests sont disponibles dans le dossier `src/test/java/fr/umontpellier/iut/singleton2`.
 
-2. Il semble inutile d'instancier la classe `ServiceMail` à chaque fois. Cette fois-ci, au lieu d'utiliser un `Singleton`, nous allons transformer `ServiceMail` en **classe statique**. Faites ce changement et adaptez le code dans les classes `ServiceUtilisateur` et `ServiceCommande`.
+2. Il semble inutile d'instancier la classe `ServiceMail` à chaque fois. Cette fois-ci, au lieu d'utiliser un `Singleton`, nous allons transformer `ServiceMail` en **classe à membres statique**. Faites ce changement et adaptez le code dans les classes `ServiceUtilisateur` et `ServiceCommande`.
 
 3. Si ce n'est pas déjà fait, lancez les tests unitaires des classes `ServiceUtilisateurTest` et `ServiceCommandeTest`. On voit bien que dans un contexte réel, des mails seraient vraiment envoyés pendant les tests (ceux où l'opération réussit) ! C'est un problème.
 
@@ -317,15 +317,15 @@ Si cette méthode peut paraître plus "facile" à mettre en place et à utiliser
 
 </div>
 
-En essayant de refactorer, vous avez dû rencontrer divers problèmes liés à l'impossibilité d'injecter une **classe statique** comme paramètre d'un constructeur. Eh oui, une classe n'est ni un objet ni une instance ! Elle ne peut donc pas être passée en paramètre.
+En essayant de refactorer, vous avez dû rencontrer divers problèmes liés à l'impossibilité d'injecter une **classe à membres statiques** comme paramètre d'un constructeur. Eh oui, une classe n'est ni un objet ni une instance ! Elle ne peut donc pas être passée en paramètre.
 
-L'utilisation d'une **classe statique** rend les services qui l'utilisent étroitement dépendants de la classe, ce qui rend ces services difficilement testables : ils ne peuvent pas être testés indépendamment des services concrets qui sont utilisés dans l'application. On ne peut pas remplacer le service par un "faux" service utilisé pour les tests unitaires (un **stub** ou un **mock**).
+L'utilisation d'une **classe à membres statiques** rend les services qui l'utilisent étroitement dépendants de la classe, ce qui rend ces services difficilement testables : ils ne peuvent pas être testés indépendamment des services concrets qui sont utilisés dans l'application. On ne peut pas remplacer le service par un "faux" service utilisé pour les tests unitaires (un **stub** ou un **mock**).
 
-L'utilisation d'un **Singleton** résout ces problèmes :
+Dans cette version, l'interface et l'injection de dépendances rendent le service substituable dans les tests. Cela reste possible avec un **Singleton**, grâce aux propriétés suivantes :
 
 * L'instance de la classe est une véritable instance, un objet. Elle peut donc être passée en paramètre dans un constructeur, par exemple.
 
-* Ses méthodes sont des méthodes d'instance : la classe peut implémenter une interface et être remplacée par une autre implémentation de cette interface (polymorphisme). À l'inverse, les méthodes `static` d'une classe statique ne sont pas polymorphes et ne peuvent pas servir d'implémentation à une interface.
+* Ses méthodes sont des méthodes d'instance : la classe peut implémenter une interface et être remplacée par une autre implémentation de cette interface (polymorphisme). À l'inverse, les méthodes `static` d'une classe à membres statique ne sont pas polymorphes et ne peuvent pas servir d'implémentation à une interface.
 
 ```java
 public interface Service {
@@ -374,7 +374,7 @@ class Main {
 
 <div class="exercise">
 
-1. À la place d'une classe statique, utilisez le pattern *Singleton* pour refactorer la classe `ServiceMail`.
+1. À la place d'une classe à membres statiques, utilisez le pattern *Singleton* pour refactorer la classe `ServiceMail`.
 
 2. Comme expliqué dans l'exercice précédent, introduisez une interface `ServiceMailInterface` pour abstraire ce service.
 
@@ -398,7 +398,7 @@ En effet, l'abus de **Singleton** est dangereux pour la santé (du logiciel...) 
 
 Mais pourquoi est-il déconseillé d'utiliser "trop" de singletons ?
 
-* Il n'est pas possible de passer des paramètres à un singleton pour son initialisation (comme un objet classique) car c'est lui-même qui se construit ; cependant, on peut éventuellement mettre en place un fichier de configuration que le singleton ira lire lors de son initialisation.
+* L'implémentation étudiée utilise un accès `getInstance()` sans paramètre. Sa configuration initiale peut néanmoins provenir d'un fichier lu lors de sa création.
 
 * Il est très difficile de **tester** un singleton, et surtout les classes qui l'utilisent via `getInstance` ! Pour ces classes, la dépendance est cachée et ne peut pas être remplacée par un "faux" objet. De plus, l'unique instance conserve son état d'un test à l'autre. Enfin, comme le constructeur est **privé**, on ne peut pas créer une instance "neuve" de la classe pour chaque test.
 
@@ -406,7 +406,7 @@ Mais pourquoi est-il déconseillé d'utiliser "trop" de singletons ?
 
 Attention, tout cela ne veut pas dire que le singleton est inutile ! Seulement qu'il ne doit pas être utilisé pour tout et n'importe quoi. Il faut également se poser la question "_est-ce que cette instance doit pouvoir être accessible par tout le monde ?_"
 
-On va notamment éviter d'appliquer **Singleton** sur des classes qui contiennent du **code métier** relatif à des règles de notre application et que nous allons sûrement vouloir tester. À l'inverse, nous allons bientôt parler des **Fabriques** et du pattern **Fabrique Abstraite**. Les classes issues de ces patterns ont pour but de créer et/ou fournir des objets (des dépendances). Ces classes doivent pouvoir être accessibles par toute l'application et on ne va pas spécialement les tester (pas de code métier). Il est alors judicieux d'appliquer **Singleton** sur ces classes.
+On va notamment éviter d'appliquer **Singleton** sur des classes qui contiennent du **code métier** relatif à des règles de notre application et que nous allons sûrement vouloir tester. À l'inverse, nous allons bientôt parler des **Fabriques** et du pattern **Fabrique Abstraite**. Les classes issues de ces patterns ont pour but de créer et/ou fournir des objets (des dépendances). Ces classes peuvent également contenir une logique à tester. Leur utilisation ne justifie pas à elle seule d'en faire des singletons.
 
 Certains membres du **GoF** regrettent un peu la surutilisation maladroite de **Singleton** par certains développeurs. Ces développeurs ont l'illusion de coder proprement, car ils utilisent un design pattern, mais c'est tout l'inverse. Appliquer les design patterns ne veut pas forcément dire que votre conception est de qualité. Il faut savoir quand et comment les utiliser !
 
@@ -663,7 +663,7 @@ class Exemple {
 
 **NB :** Certains IDE (dont IntelliJ) permettent de générer automatiquement le code d'un Builder à partir d'une classe. Sur IntelliJ, il faut placer le curseur sur le constructeur de la classe pour laquelle vous souhaitez générer le builder, puis taper `Alt+Entrée` puis sélectionner _Replace constructor with builder_. Le Builder sera généré comme une classe à part. Pour la rendre interne à la classe cible, il suffira juste de faire un Drag & Drop du Builder dans sa classe cible.
 
-**Remarque :** lorsqu'il s'agit d'une hiérarchie de classes (par héritage) pour laquelle il faut créer des builders, la solution n'est pas forcément évidente. En effet, il faut faire une hiérarchie de builders pour éviter la duplication de code, tout en respectant le principe LSP, à savoir : les méthodes **with...** doivent retourner le bon type de builder. Pour plus de détails, voir le [dernier TP](https://www.lirmm.fr/~pvalicov/Cours/dev-objets/TP11.pdf) du cours de Développement Orienté Objets de première année.
+**Remarque :** lorsqu'il s'agit d'une hiérarchie de classes (par héritage) pour laquelle il faut créer des builders, la solution n'est pas forcément évidente. En effet, une hiérarchie de builders peut limiter la duplication de code, mais il faut veiller au type de retour des méthodes **with...** pour permettre l'enchaînement des appels. Pour plus de détails, voir le [dernier TP](https://www.lirmm.fr/~pvalicov/Cours/dev-objets/TP11.pdf) du cours de Développement Orienté Objets de première année.
 
 </div>
 
@@ -679,11 +679,11 @@ Nous allons directement présenter le principe et l'intérêt du pattern **proto
 
 </div>
 
-Le test unitaire n'est pas mal écrit. En fait, comme la banque gère exclusivement les différents **comptes bancaires**, il ne doit pas être possible qu'une autre classe puisse récupérer et modifier les objets que contient la banque. C'est toute la sémantique derrière la **composition** (ou *agrégation forte*) sur un diagramme de classes. Le "composant" est créé dans la classe (c'est le cas) et ne doit pas en sortir (ce n'est pas le cas ici).
+Le test exprime une règle de cette application : seul l'objet `Banque` doit pouvoir modifier les comptes qu'il conserve. Exposer directement un de ces comptes permet de contourner cette règle d'encapsulation.
 
 Une première solution pourrait être d'ajouter une méthode `double recupererSolde(int numeroCompte)` dans la classe `Banque`. Mais dans certains cas, on a vraiment besoin d'obtenir l'objet `CompteCourant` cible, sans pour autant modifier l'original... alors comment faire ?
 
-L'idée est de renvoyer une **copie** complète de l'objet ! Toutes les valeurs des attributs de l'objet copié seront identiques dans le nouvel objet, mais s'il est modifié, l'objet original (stocké dans `Banque`) ne sera pas impacté. L'objet renvoyé par `getCopieCompteCourant` est alors un nouvel objet identique au compte, mais ce n'est pas l'objet original. Le principe de la composition est alors respecté.
+L'idée est de renvoyer une **copie** complète de l'objet ! Toutes les valeurs des attributs de l'objet copié seront identiques dans le nouvel objet, mais s'il est modifié, l'objet original (stocké dans `Banque`) ne sera pas impacté. L'objet renvoyé par `getCopieCompteCourant` est alors un nouvel objet identique au compte, mais ce n'est pas l'objet original. La règle d'encapsulation fixée pour cet exercice est alors respectée.
 
 Mais alors, qui doit faire cette copie ?
 
@@ -722,7 +722,7 @@ Mais alors, qui doit faire cette copie ?
 
     Vous devrez néanmoins conserver la méthode `ouvrirCompteCourant` telle quelle, car elle ouvre spécifiquement un compte courant. Vous devrez aussi ajouter une méthode `int ouvrirCompteEpargne(String nomProprietaire)` qui, comme `ouvrirCompteCourant`, retourne le numéro du compte créé. Le compte est créé avec le constructeur `CompteEpargne(String proprietaire, double taux)` : le taux est fixé à 5 % (`0.05`) par la banque lors de l'instanciation. Tout cela ne respecte pas vraiment le principe ouvert/fermé, mais nous allons nous en contenter pour cet exercice. 
     
-    Vous n'avez pas à ajouter de nouveaux attributs ou d'autres méthodes en dehors de `ouvrirCompteEpargne`. (Notamment, interdiction de faire une deuxième liste séparée gérant les comptes épargne).
+    À cette étape, n'ajoutez dans `Banque` ni nouvel attribut ni autre méthode que `ouvrirCompteEpargne`. En particulier, ne créez pas de deuxième liste pour les comptes épargne.
 
     Normalement, vous avez des erreurs de compilation dans la méthode `getCopieCompteCourant`. C'est normal.
 
@@ -914,7 +914,7 @@ class ClasseFille extends ClasseMere {
 
 <div class="exercise">
 
-1. Refactorez votre code en appliquant le pattern **prototype** sur vos comptes bancaires. Adaptez aussi le code de `getCopieCompteCourant` en conséquence : elle peut désormais renvoyer une copie de n'importe quel compte (son type de retour devient donc `CompteBancaire`) et donc on peut renommer cette méthode `getCopieCompte`.
+1. Refactorez votre code en appliquant le pattern **prototype** sur vos comptes bancaires et faites évoluer le code de `getCopieCompteCourant` en conséquence : elle peut désormais renvoyer une copie de n'importe quel compte (son type de retour devient donc `CompteBancaire`) et donc on peut renommer cette méthode `getCopieCompte`.
 
 
 2. Vérifiez que le test unitaire passe toujours.
@@ -944,7 +944,7 @@ tous les attributs sont d'un type primitif (`double`) ou d'un type immuable (`St
 
 Le concept de **Fabrique Simple** permet de centraliser l'instanciation d'une famille de classes dans une classe spécialisée. Les classes ayant besoin d'instancier des objets de cette famille ne vont plus faire elles-mêmes des **new**, mais vont plutôt passer par la fabrique. Ainsi les dépendances vers les types **concrets** sont centralisées dans une seule classe, et les classes ayant besoin d'instancier des objets ne possèdent qu'une dépendance vers la fabrique.
 
-**Remarque importante :** Bien que le concept de **Fabrique Simple** soit extrêmement pratique (et utilisé dans différents __design patterns__), il ne s'agit pas d'un design pattern à proprement parler. Prenons-le plutôt comme une application de règles de bon sens. En l'occurrence, il ne faut pas confondre la **Fabrique Simple** avec les patterns **Méthode Fabrique** (**Factory Method**) et **Fabrique Abstraite** (**Abstract Factory**) du **GoF**, dont nous allons parler dans ce TP.
+**Remarque importante :** La **Fabrique Simple** n'appartient pas au catalogue des 23 patterns du **GoF**. Elle reste un concept utile, une application de règles de bon sens. Mais elle est à distinguer des patterns **Méthode Fabrique** (**Factory Method**) et **Fabrique Abstraite** (**Abstract Factory**), présentés dans la suite de ce TP.
 
 La fabrique connaît les différents types concrets à instancier, mais elle va généralement renvoyer des abstractions (classes abstraites/interfaces) pour que les classes ayant besoin de créer des objets ne dépendent plus du tout d'un objet concret, mais plutôt de son abstraction. Ainsi, l'impact du changement diminue (si on veut changer la classe concrète utilisée) ce qui renforce notamment le principe ouvert/fermé.
 
@@ -1932,7 +1932,7 @@ Testons maintenant votre maîtrise du pattern **Méthode Fabrique** avec un nouv
 
 2. Un **gestionnaire de livraisons** permet de planifier et suivre la livraison d'une commande. Actuellement, tous les gestionnaires fonctionnent ainsi :
 
-   * On passe la commande à planifier à la méthode `planifierLivraison` qui instancie un objet de type `Livraison` selon la distance de la commande. Elle planifie également la date prévue pour la livraison (pour simplifier, dans notre exercice, elle sera fixe) :
+   * On passe la commande à planifier à la méthode `planifierLivraison` qui instancie un objet de type `Livraison` selon la distance de la commande. Elle calcule également la date prévue de livraison à partir d'un délai fixe pour chaque mode de livraison :
 
       * Si la distance est proche, un **drone** de puissance cinq est utilisé pour la livraison qui se déroulera en deux jours.
 
@@ -1972,9 +1972,9 @@ Testons maintenant votre maîtrise du pattern **Méthode Fabrique** avec un nouv
     //On actualise avec une date future pour déclencher divers événements...
     gestionnaireLivraisonJaponais.actualiserLivraisons(LocalDate.now().plusDays(2));
     System.out.println();
-    gestionnaireLivraisonJaponais.actualiserLivraisons(LocalDate.now().plusDays(9));
-    System.out.println();
     gestionnaireLivraisonJaponais.actualiserLivraisons(LocalDate.now().plusDays(3));
+    System.out.println();
+    gestionnaireLivraisonJaponais.actualiserLivraisons(LocalDate.now().plusDays(9));
     System.out.println();
     gestionnaireLivraisonJaponais.actualiserLivraisons(LocalDate.now().plusDays(10));
     ```
