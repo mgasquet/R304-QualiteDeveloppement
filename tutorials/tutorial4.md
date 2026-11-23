@@ -799,7 +799,7 @@ class B implements Exemple {
 }
 ```
 
-Avec cette nouvelle architecture, il suffit alors d'utiliser la méthode `cloner` sur l'objet abstrait :
+Cette architecture permet d'appeler `cloner` à travers le type abstrait de la référence :
 
 ```java
 class Service {
@@ -933,7 +933,7 @@ Réalisez le **diagramme de séquence des interactions** permettant de modélise
     ```
 -->
 
-L'objectif du pattern **prototype** est donc de définir un moyen d'obtenir des **copies** d'un objet, notamment dans un contexte où vos classes manipulent des abstractions (comme c'est souvent le cas quand on applique les principes **SOLID** et les **design patterns**). Si on souhaite pouvoir copier un objet abstrait manipulé, chaque classe concrète de la hiérarchie doit définir sa propre logique de copie via la méthode `cloner`.
+L'objectif du pattern **prototype** est donc de définir un moyen d'obtenir des **copies** d'un objet, notamment dans un contexte où vos classes manipulent des abstractions (comme c'est souvent le cas quand on applique les principes **SOLID** et les **design patterns**).  Chaque classe concrète définit sa logique de copie via la méthode `cloner`, même lorsque l'appel utilise une référence de type abstrait.
 
 Attention à la nature de la copie : dans nos comptes bancaires, 
 tous les attributs sont d'un type primitif (`double`) ou d'un type immuable (`String`, énumération), donc une **copie superficielle** (recopier les valeurs des attributs) suffit. En revanche, si un attribut est un objet mutable (par exemple une `List<Operation>`), il faut aussi le copier (ou le cloner) : on parle alors de **copie profonde**. Sinon, l'original et la copie partageraient le même objet, et modifier l'un modifierait l'autre.
@@ -2004,7 +2004,7 @@ Ce pattern va notamment permettre de créer et de sélectionner différents type
    * L'armée **humaine** construit des **canons** et utilise le sort **boule de feu** avec une puissance de feu de 10.
    * L'armée **orc** construit des **catapultes** et utilise le sort **aveuglement** avec une durée de 30 secondes.
 
-3. Commencez par importer le code que vous aviez déjà réalisé afin de mettre en place le **recrutement** des unités (depuis le package `v1`).
+3. Reportez dans les classes de `v2` les modifications réalisées dans `v1` pour le **recrutement** des unités, en conservant les ajouts propres à `v2`.
 
 4. Maintenant, faites en sorte que chaque armée (humaine et orc) puisse créer ses armes de siège spécifiques et créer et utiliser ses sorts spécifiques. Chaque arme de siège créée est ajoutée dans la liste correspondante. Un sort, quand il est créé, est seulement déclenché (il n'est pas stocké). Normalement, vous devriez pouvoir trouver une solution avec vos connaissances actuelles et les patterns que nous avons vus jusqu'ici. Si vous n'y arrivez pas, passez à la suite des explications.
 
@@ -2480,7 +2480,7 @@ Revenons une dernière fois sur l'application de gestion de livraisons afin de l
 
     Testez le `main` pour voir si cela fonctionne.
 
-3. Changez la méthode de livraison longue distance du `Japon` pour utiliser un avion. Quand votre `main` s'exécute : pour le territoire américain, des mails sont envoyés et des rapports au format HTML sont générés, mais pour le Japon, des SMS sont envoyés et des rapports JSON sont générés.
+3. 3. Remplacez le bateau utilisé pour les livraisons longue distance au `Japon` par un avion, en conservant le délai de dix jours. La présence ou non d'un pilote automatique est laissée à votre choix. Quand votre `main` s'exécute : pour le territoire américain, des mails sont envoyés et des rapports au format HTML sont générés, mais pour le Japon, des SMS sont envoyés et des rapports JSON sont générés.
 
 4. On souhaite pouvoir gérer un nouveau territoire : le territoire français. Sur ce territoire, des robots de modèle **A** sont utilisés pour effectuer les livraisons proches (en cinq jours), et des avions (sans pilote automatique) sont utilisés pour effectuer les livraisons longue distance (en quinze jours). Pour les livraisons effectuées sur le territoire français, on notifie le client par mail et on génère des rapports au format JSON.
 
@@ -2511,7 +2511,7 @@ Concernant la **Méthode Fabrique** :
   * La classe cliente appelle des méthodes à redéfinir pour permettre à l’application de personnaliser les objets créés.
 * **Limites** :
   * Pas réutilisable ailleurs sans héritage : la logique de création reste enfermée dans des sous-classes.
-  * Pas adapté si on veut dynamiquement changer les types d’objets instanciés à l’exécution.
+  * Pas adapté si on veut dynamiquement changer les types d’objets instanciés à l’exécution, car La politique de création est attachée à la sous-classe du client ; elle n'est pas un objet interchangeable à l'exécution.
 
 Concernant la **Fabrique Abstraite** :
 * C'est un pattern qui regroupe un ensemble de méthodes de création dans une classe/interface dédiée (la fabrique), et non dispersées dans le code client.
@@ -2540,7 +2540,7 @@ En résumé :
 On va utiliser la **Méthode Fabrique** si :
 * La création dépend des données ou de l’état interne de la sous-classe.
 * On veut ajouter un point d’extension à une hiérarchie existante.
-* On n’a pas besoin de changer dynamiquement les types instanciés.
+* On ne cherche pas à remplacer la politique de création d'une instance existante en cours d'exécution.
 
 On va utiliser une **Fabrique Abstraite** si :
 * On doit créer une famille d’objets liés.
@@ -2602,19 +2602,19 @@ Parfois, il n'est pas nécessairement souhaitable d'avoir la possibilité d'util
 
 2. Actuellement, dans le `Main`, on crée des pokémons et on utilise le simulateur de combat pour en faire combattre deux. À la place des pokémons, on voudrait parfois utiliser des digimons. Maintenant que vous connaissez le pattern **Fabrique Abstraite**, refactorez le code afin de pouvoir facilement switcher entre des combats avec divers pokémons et des combats avec divers digimons. Si vous rencontrez quelques petits problèmes, regardez les méthodes de `Digimon`... ne serait-il pas judicieux de lui faire implémenter une certaine interface ? Et pour les différentes sous-classes de `Digimon` ? (`DigimonEau`, `DigimonFeu`...). Vous devrez aussi adapter le `Main` et `SimulateurCombat`.
 
-3. Contrairement à l'exercice précédent sur les **donjons**, on ne veut pas que les deux fabriques cohabitent à un instant t du programme. On veut que l'application fonctionne exclusivement avec des pokémons ou bien fonctionne exclusivement avec des digimons. Mais on ne veut pas changer manuellement l'instance de la fabrique utilisée partout dans le code source. Il faut imaginer que cette fabrique est probablement utilisée à divers endroits et surtout, qu'on ne souhaite pas recompiler le code source à chaque changement. Comment pourrions-nous faire ?
+3. Contrairement à l'exercice précédent sur les **donjons**, on veut utiliser une seule famille de monstres pendant une même exécution du programme : exclusivement des pokémons ou exclusivement des digimons. Mais on ne veut pas changer manuellement l'instance de la fabrique utilisée partout dans le code source. Il faut imaginer que cette fabrique est probablement utilisée à divers endroits et surtout, qu'on ne souhaite pas recompiler le code source à chaque changement. Comment pourrions-nous faire ?
 
 </div>
 
 Nous sommes dans un cas particulier où tout le programme va utiliser une seule et même instance d'une fabrique donnée, même s'il y en a plusieurs à disposition. Par exemple, imaginons qu'une application utilise des fabriques pour gérer la connexion à une source de données afin de stocker les données du programme. Une première fabrique permet de stocker les informations dans une base de données, une deuxième dans un fichier XML. Pendant que le programme tournera, on n'utilisera qu'une seule source de données, mais pas les deux à la fois. Néanmoins, on utilise quand même une fabrique abstraite pour pouvoir changer facilement de source de stockage à l'avenir (par exemple, avec une configuration "test" utilisant une base de données en mémoire...)
 
-Mais comment faire cela sans modifier l'instance concrète utilisée un peu partout ? (car elle est sûrement injectée à différentes classes). La réponse est simple : il faut regrouper la logique qui instancie la classe concrètement utilisée à un seul endroit. On peut ensuite mettre un système de paramétrage qui permet de changer la fabrique utilisée facilement. Les classes qui ont besoin de cette fabrique iront donc appeler une méthode de cette classe afin de récupérer la fabrique concrète à utiliser.
+Mais comment faire cela sans modifier l'instance concrète utilisée un peu partout ? (car elle est sûrement injectée à différentes classes). La réponse est simple : il faut regrouper la logique qui instancie la classe concrètement utilisée à un seul endroit. On peut ensuite mettre un système de paramétrage qui permet de changer la fabrique utilisée facilement. La fabrique choisie sera récupérée au moment de construire les objets clients, puis injectée dans ceux-ci.
 
 La question est de savoir : où placer ce bout de code ? Il n'y a pas vraiment de réponse officielle à cette question. Cela pourrait être dans une classe indépendante (qui gère la **configuration** du programme) avec une méthode statique. Parfois, on retrouve aussi ce bout de code directement dans la **Fabrique Abstraite** par exemple en stockant l'instance de la fabrique concrète utilisée, couplé à une méthode statique permettant de renvoyer l'instance. C'est une sorte de dérivé du pattern *Singleton* (sans l'être réellement).
 
 Pour gérer l'instance concrète utilisée, on pourrait par exemple utiliser un **fichier de configuration** : lors de son initialisation, le code chargé de déterminer quelle est la fabrique à utiliser va lire dans ce fichier pour déterminer quelle fabrique instancier et stocker.
 
-Par exemple, imaginons que nous souhaitons que notre **Jeu**, à un instant t, ne fonctionne qu'avec des **Plaines** ou qu'avec des **Châteaux Hantés** :
+Prenons le cas d'un **Jeu** qui utilise uniquement des **Plaines**, ou uniquement des **Châteaux Hantés**, pendant une même exécution :
 
 ```java
 // On transforme notre interface en classe abstraite : elle doit stocker l'instance concrète de la fabrique utilisée dans un attribut statique modifiable, ce qu'une interface ne permet pas (ses attributs sont implicitement public static final)
@@ -2684,10 +2684,10 @@ public class Main {
 
 La fabrique abstraite vise un fichier qui se situe dans `src/main/resources/config/niveau_factory_config.txt` qui contient simplement une chaîne de caractères. Par exemple : `chateau`.
 
-Avec cette nouvelle implémentation, il n'y a plus qu'à changer le contenu du fichier de configuration pour changer la fabrique concrète manipulée dans tout le programme. On notera qu'il n'y a plus besoin que les sous-classes soient des **singletons** (si c'était le cas avant), car elles sont instanciées par la fabrique abstraite. 
+La nouvelle configuration sera prise en compte après modification du fichier et redémarrage du programme. On notera qu'il n'y a plus besoin que les sous-classes soient des **singletons** (si c'était le cas avant), car elles sont instanciées par la fabrique abstraite. 
 Cependant, on pourrait limiter l'instanciation des fabriques concrètes en les plaçant dans le même paquetage que `AbstractNiveauFactory` et en donnant à leurs constructeurs la visibilité paquetage (aucun modificateur) : seules les classes de ce paquetage (dont `AbstractNiveauFactory`) pourront les instancier.
 
-Bien sûr, cette implémentation n'est pas forcément souhaitable dans tous les contextes ! C'est seulement si, à un instant t, on veut uniquement avoir un seul type de fabrique concrète utilisé et pouvoir en changer facilement (d'ailleurs, l'exemple donné est discutable, parce qu'on voudrait a priori pouvoir créer plusieurs types de niveaux différents à la fois).
+Bien sûr, cette implémentation n'est pas forcément souhaitable dans tous les contextes ! Cette variante convient lorsqu'une exécution utilise un seul type de fabrique concrète, choisi au démarrage ; elle serait moins appropriée si plusieurs types de niveaux devaient coexister dans cette même exécution.
 
 De plus, on peut aussi discuter du fait que le code gérant la sélection de la fabrique concrète soit stocké dans la fabrique abstraite. Pour obtenir une meilleure répartition des **responsabilités**, on pourrait éventuellement déléguer cela à une classe dédiée (et donc laisser la fabrique abstraite comme une interface).
 
@@ -2695,7 +2695,7 @@ De plus, on peut aussi discuter du fait que le code gérant la sélection de la 
 
 1. Créez un dossier `config` dans `src/main/resources` puis, à l'intérieur de ce nouveau répertoire, un fichier `monstres_factory_config.txt`.
 
-2. Refactorez le code de l'application afin qu'il soit possible d'utiliser soit les pokémons, soit les digimons en changeant simplement le contenu du fichier de configuration.
+2. Refactorez l'application pour sélectionner les pokémons ou les digimons à partir du fichier de configuration, modifiable entre deux exécutions.
 
 3. Testez les deux versions !
 
@@ -2972,7 +2972,8 @@ Tout est donc parfait ! Non...?
 
 Peut-être que vous vous en êtes rendu compte, mais il est impossible de faire fonctionner ce code avec notre classe `ClientFilm`, elle attend des objets de type `Extracteur`. Or, les classes `SensCritiqueAPI` et `RottenTomatoesDataExtractor` n'implémentent pas cette interface (ce qui est normal : elles viennent d'une bibliothèque externe). Et de toute manière les classes en question ont un fonctionnement un peu différent. Les types d'objets retournés et les méthodes utilisées ne sont pas forcément compatibles. Et il est bien sûr **impossible de modifier le code de ces classes** (toujours parce qu'elles viennent d'une bibliothèque que vous ne pouvez pas éditer). Ces classes ne peuvent pas être utilisées en l'état, dans notre système.
 
-Que faire alors ? Laisser tomber ces bibliothèques et écrire notre propre code (deux nouvelles classes implémentant `Extracteur`) ? Cela serait réinventer la roue. Ou bien copier/coller le code de ces classes ? Cela serait du plagiat (et donc du vol) ! Étendre les classes et faire implémenter l'interface `Extracteur` aux classes filles ? Cela ne sent pas très bon, et c'est de toute façon impossible, car les deux classes sont déclarées comme `final`.
+Que faire alors ? Laisser tomber ces bibliothèques et écrire notre propre code (deux nouvelles classes implémentant `Extracteur`) ? Cela serait réinventer la roue. Ou bien copier/coller le code de ces classes ? Cne duplication à maintenir. Étendre les classes et faire implémenter l'interface `Extracteur` aux classes filles ? Cela ne sent pas très bon, et c'est de toute façon impossible, car les deux classes sont déclarées comme `final`.
+
 
 Cela semble compromis ! Mais pas de panique, un design pattern résout ce problème : `Adaptateur`.
 
@@ -3126,7 +3127,8 @@ Vous avez compris le concept d'adaptateur ? Parfait ! Maintenant, revenons à no
 
 </div>
 
-Le problème que vous avez dû rencontrer est le suivant : dans un de vos adaptateurs concrets, vous n'aviez pas accès au `Patternmon` passé à la classe parente. Une solution que vous avez peut-être mise en place est de changer la visibilité de cet attribut en `protected`, mais même là, vous aviez sans doute des erreurs ! 
+
+L'exemple suivant illustre deux difficultés possibles : l'accès à l'attribut contenant le `Patternmon`, puis l'utilisation des méthodes propres à son type concret. Le passage de cet attribut en `protected` ne suffit pas à résoudre la seconde difficulté.
 
 Voyons un peu tout ça :
 
@@ -3166,7 +3168,7 @@ public int getTemperatureMaxEau() {
 }
 ```
 
-Mais cette solution n'est pas élégante et il en existe une bien meilleure : la **généricité**. Dans la classe mère, il est possible de définir un (ou plusieurs) "type paramétré" qu'on peut par exemple nommer `T`. On peut imposer des restrictions, par exemple, que `T` soit une classe qui descende d'une autre classe spécifique.
+Mais cette solution n'est pas élégante et il en existe une bien meilleure : la **généricité**. La classe mère peut déclarer un ou plusieurs *paramètres de type*, nommés par exemple `T`. On peut imposer des restrictions, par exemple, que `T` soit une classe qui descende d'une autre classe spécifique.
 
 Quand une classe enfant étend la classe mère, elle peut alors préciser la classe concrète utilisée à la place de `T`. Ainsi, la classe mère est configurée pour utiliser ce type.
 
@@ -3218,7 +3220,7 @@ Si vous n'avez pas tout compris, n'hésitez pas à en parler avec votre enseigna
 
 3. Adaptez le code de votre **Fabrique Abstraite** afin de pouvoir gérer votre nouvelle fabrique.
 
-4. Un simple changement dans le fichier de configuration doit suffire pour utiliser les patternmons. Testez et vérifiez que tout marche bien (les attaques des monstres devraient avoir des noms anglais).
+4. La famille des patternmons doit pouvoir être sélectionnée au lancement suivant, après modification du fichier de configuration. Testez et vérifiez que tout marche bien (les attaques des monstres devraient avoir des noms anglais).
 
 </div>
 
@@ -3345,11 +3347,11 @@ Attention, l'implémentation de `Builder` que nous allons présenter est une **a
 
   * La classe `SalarieBuilder` va se trouver à l'extérieur de `Salarie`. Autrement, `Salarie` (le composant de base) dépendrait de tous ses décorateurs, ce qui n'est pas souhaitable.
 
-  * Le produit va être instancié dès le départ puis augmenté au fur et à mesure alors que normalement, la cible du builder n'est instanciée que quand on appelle la méthode `build`.
+  * Ici, la construction du produit commence dans le constructeur du builder et se poursuit lors des appels suivants. Dans le premier exemple, elle était différée jusqu'à `build`.
 
   * La méthode `build` renvoie une **copie** (clone) de l'instance (prototype).
 
-Bref, retenez simplement que c'est une adaptation un peu particulière et qui s'éloigne un peu du pattern de base. Néanmoins, nous allons voir que cette adaptation s'emboîte assez bien avec **décorateur** :
+Cette version diffère donc de l'implémentation présentée précédemment. Néanmoins, nous allons voir que cette adaptation s'emboîte assez bien avec **décorateur** :
 
 ```java
 class SalarieBuilder {
@@ -3404,7 +3406,7 @@ Et si nous essayions de combiner plus de patterns ? Nous avons l'application id�
 
 <div class="exercise">
 
-1. Nous aimerions maintenant que les différentes salles puissent être combinées afin de créer une "super-salle". Par exemple, on aimerait avoir des salles avec des coffres et 20 ennemis, une salle avec une énigme et un boss, une salle avec tout à la fois... ! Quel design pattern pouvez-vous utiliser pour mettre en place une telle fonctionnalité ? La seule méthode qui nous intéresse est `toString`. À l'affichage, on doit avoir les informations de toutes les salles qui composent une salle. Après vos refactorings, vous devrez logiquement adapter le code de vos deux **fabriques**. Pour la configuration des salles **difficiles**, on souhaite faire des changements supplémentaires :
+1. Nous aimerions maintenant que les différentes salles puissent être combinées afin de créer une "super-salle". Par exemple, on aimerait avoir des salles avec des coffres et 20 ennemis, une salle avec une énigme et un boss, une salle avec tout à la fois... ! Quel design pattern pouvez-vous utiliser pour mettre en place une telle fonctionnalité ? La nouvelle fonctionnalité concerne uniquement l'affichage fourni par `toString`.. À l'affichage, on doit avoir les informations de toutes les salles qui composent une salle. Après vos refactorings, vous devrez logiquement adapter le code de vos deux **fabriques**. Pour la configuration des salles **difficiles**, on souhaite faire des changements supplémentaires :
 
     * Une salle normale est une salle avec un coffre et entre 20 et 40 ennemis.
 
