@@ -2018,7 +2018,7 @@ Vous avez donc sûrement trouvé une solution exploitant plusieurs **méthodes f
 
 Cependant, cette solution, même si globalement acceptable, n'est pas forcément la plus qualitative :
 * Il y a une duplication de code entre vos classes de débogage et vos classes d'armée.
-* La solution actuelle fonctionne mais repose excessivement sur l'héritage pour choisir les produits : les sous-classes (`ArmeeHumaine`/`ArmeeOrc`, `DebugueurHumain`/`DebugueurOrc`) se contentent d'instancier directement des classes concrètes via `new`. Quand seule la production d'objets varie, il est préférable de déléguer cette responsabilité à une fabrique injectée (**la composition** faible + **injection de dépendances**) plutôt que de multiplier des sous-classes.
+* La solution actuelle fonctionne mais repose excessivement sur l'héritage pour choisir les produits : les sous-classes (`ArmeeHumaine`/`ArmeeOrc`, `DebugueurHumain`/`DebugueurOrc`) se contentent d'instancier directement des classes concrètes via `new`. Quand seule la production d'objets varie, il est préférable de déléguer cette responsabilité à une fabrique injectée (**agrégation**,c'est-à-dire composition faible,  + **injection de dépendances**) plutôt que de multiplier des sous-classes.
 * Cette implémentation pourrait aussi poser un problème si on souhaite pouvoir **changer dynamiquement le comportement de création** souhaité.
 
 Imaginons que nous souhaitons faire en sorte qu'une armée puisse être **vaincue** par une autre armée. L'armée vaincue n'est pas détruite et continue d'exister (et on conserve les soldats encore vivants et les armes). Cependant, l'armée victorieuse impose son mode de fonctionnement à l'armée vaincue : elle produira maintenant les mêmes unités, les mêmes armes et les mêmes sorts que l'armée victorieuse.
@@ -2586,7 +2586,7 @@ On va utiliser une **Fabrique Abstraite** si :
 
 3. Dans le `Main`, adaptez le code pour faire en sorte d'étendre le donjon d'exemple fourni une fois avec des salles **faciles** et deux fois avec des salles **difficiles**. 
 
-4. La méthode `getInfosSalles(int)` doit permettre de récupérer les informations d'une salle du donjon "à l'extérieur". Cependant, son implémentation est problématique... Par exemple, que pourriez-vous faire comme action indésirable en récupérant une salle d'un `Donjon` dans le `Main` (indice : seul le donjon devrait avoir le droit de modifier l'état de ses salles) ? Quel pattern que nous avons vu pendant ce TP pourriez-vous appliquer pour régler ce problème ? Refactorez votre code dans ce sens.
+4. La méthode `getInfosSalle(int)` doit permettre de récupérer les informations d'une salle du donjon "à l'extérieur". Cependant, son implémentation est problématique... Par exemple, que pourriez-vous faire comme action indésirable en récupérant une salle d'un `Donjon` dans le `Main` (indice : seul le donjon devrait avoir le droit de modifier l'état de ses salles) ? Quel pattern que nous avons vu pendant ce TP pourriez-vous appliquer pour régler ce problème ? Refactorez votre code dans ce sens.
 
 5. Générez le **diagramme de classes de conception** de votre application (avec `IntelliJ`).
 
