@@ -3433,7 +3433,7 @@ Et si nous essayions de combiner plus de patterns ? Nous avons l'application id�
 
 ## Conclusion
 
-Vous maîtrisez maintenant l'ensemble des **design patterns créateurs** (du moins ceux du **GoF**) ainsi que le pattern **Adaptateur**. Ce TP vous a aussi logiquement permis de renforcer votre pratique de la conception logicielle et de l'application des principes `SOLID`.
+Ce TP vous a fait pratiquer les cinq patterns créateurs du **GoF**, ainsi que le pattern **Adaptateur**, à travers plusieurs exercices de conception et de refactoring mobilisant les principes `SOLID`.
 
 Toutefois, attention à ne pas attraper la **patternite** : c'est une maladie connue qu'attrapent les jeunes ingénieurs logiciels qui découvrent les **design patterns**. Cela se manifeste par une envie de mettre des patterns partout à tort et à travers même quand cela n'est pas nécessaire. Comme pour le **singleton**, il faut se poser la question de savoir si un pattern est nécessaire ou non. Normalement, l'utilisation d'un pattern vient assez naturellement quand on souhaite résoudre le problème qui lui est lié. Si son utilisation semble un peu trop forcée, c'est que cela est probablement injustifié, ou pire : on est en train de construire un [anti-pattern](https://en.wikipedia.org/wiki/Anti-pattern), une solution non seulement injustifiée, mais aussi qui a plus de conséquences négatives que positives. Bref, comme toujours, il faut avoir une vision générale et sur le long terme !
 
@@ -3457,6 +3457,6 @@ Concernant les **design patterns GoF**, n'hésitez pas à aller consulter (et ex
 
 Il peut aussi être intéressant que vous vous renseigniez sur le concept de **conteneur de dépendances** (ou bien **conteneur IoC**) qui est au cœur de nombreux frameworks et permet de gérer facilement toutes les dépendances d'un programme sans avoir besoin de gérer plein de singletons (et donc, être moins [STUPID](https://openclassrooms.com/fr/courses/7959326-ecrivez-du-code-c-maintenable-avec-mvc-et-solid/8101608-evitez-les-mauvaises-pratiques-de-programmation-stupid) !).
 
-Vous devez maîtriser toutes ces notions abordées dans ce cours pour la suite de votre cursus (et de votre carrière) et ainsi développer dès le début d'un projet un code d'une certaine qualité qui prévoit l'évolutivité et la modularité du projet sur le long terme. Si vous réussissez à appliquer cela, vous n'êtes alors plus un "simple" codeur, mais véritablement un "développeur", voire un **ingénieur logiciel**. 
+Vous devez maîtriser toutes ces notions abordées dans ce cours pour la suite de votre cursus (et de votre carrière) et ainsi développer dès le début d'un projet un code d'une certaine qualité qui prévoit l'évolutivité et la modularité du projet sur le long terme. L'objectif est de savoir justifier vos choix de conception en fonction des besoins du projet. Si vous réussissez à appliquer cela, vous n'êtes alors plus un "simple" codeur ou "prompteur", mais véritablement un "développeur". 
 
 À vous de jouer !
