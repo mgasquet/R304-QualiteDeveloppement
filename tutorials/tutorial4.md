@@ -205,7 +205,7 @@ Aussi, imaginons une classe d'accès à une base de données : celle-ci initiali
 
 ### Classe statique vs Singleton
 
-En introduction de cette section, nous avions évoqué le fait d'utiliser une **classe statique** pour obtenir un résultat similaire au singleton. Une classe statique est une classe dans laquelle il n'y a que des attributs et des méthodes **de classe** qui appartiennent donc à la classe et pas à une instance en particulier. Ainsi, tous les objets qui manipulent cette classe utilisent la même "entité" (en fait, il n'y a juste pas d'instance).
+En introduction de cette section, nous avions évoqué le fait d'utiliser une **classe statique**  pour obtenir un résultat similaire au singleton. Une classe statique est une classe dans laquelle il n'y a que des attributs et des méthodes **de classe** qui appartiennent donc à la classe et pas à une instance en particulier. Ainsi, tous les objets qui manipulent cette classe utilisent la même "entité". Par conséquent créer des instances de cette classe est sans intérêt (car tous les membres sont statiques) et donc en général on préfère rendre son constructeur privé pour empêcher son instanciation.
 
 Par exemple, on pourrait remplacer ce **Singleton** :
 
@@ -257,8 +257,11 @@ public class Service {
 
   private static String data;
 
+  // Empêche l'instanciation de cette classe utilitaire
+  private Service() {}
+
   static {
-    //Opérations à réaliser lors de l'initialisation de la classe
+    // Opérations à réaliser lors de l'initialisation de la classe
   }
 
   public static void action() {
@@ -474,7 +477,7 @@ Pour pallier cela, on pourrait mettre en place la solution bancale suivante :
 
 Cette solution est mauvaise, car on part du principe que tous les **setters** nécessaires sont accessibles publiquement. Ce n'est pas forcément le cas et dans le cas du `Burger`, seul le **setter** du `nom` est accessible. On a décidé qu'une fois créé, on ne doit pas pouvoir modifier les ingrédients du Burger, mais qu'on peut le renommer. Il n'est donc pas possible d'ajouter des **setters** !
 
-Le pattern **builder** permet de résoudre ce problème avec une classe qui permet de contrôler comment l'objet est créé. Cette classe est généralement placée **à l'intérieur de la classe à construire** même si on retrouve des versions et des variantes avec la classe "Builder" comme classe externe indépendante.
+Le pattern **builder** permet de résoudre ce problème avec une classe qui permet de contrôler comment l'objet est créé. Cette classe est généralement placée **à l'intérieur de la classe à construire**, sous forme de classe imbriquée statique (`public static class Builder` - au fait, pourquoi `static` ici ?), même si on retrouve des versions et des variantes avec la classe "Builder" comme classe externe indépendante.
 
 Cette classe possède :
 
